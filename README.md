@@ -27,11 +27,25 @@ npm run dev
 npm run build
 ```
 
+Static files are generated into `out/`.
+
 ## Preview static output
 
 ```bash
 npm run preview
 ```
+
+## Deploy on Vercel
+
+This repo is preconfigured for Vercel in `vercel.json`.
+
+When creating the Vercel project, use:
+
+- Framework Preset: `Next.js`
+- Build Command: `npm run build`
+- Output Directory: `out`
+
+Because the app uses `output: "export"` in Next config, Vercel will deploy it as a static site.
 
 ## Suggested next steps
 
