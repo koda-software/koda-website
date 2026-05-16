@@ -42,8 +42,8 @@ This repo is preconfigured for Vercel in `vercel.json`.
 When creating the Vercel project, use:
 
 - Framework Preset: `Next.js`
-- Build Command: `npm run build`
-- Output Directory: `out`
+- Build Command: `npm run build` (or leave default)
+- Output Directory: leave empty/default for Next.js
 
 Because the app uses `output: "export"` in Next config, Vercel will deploy it as a static site.
 
