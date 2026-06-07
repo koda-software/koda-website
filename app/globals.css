@@ -140,26 +140,6 @@ button:focus-visible {
     linear-gradient(120deg, rgba(2, 2, 13, 0.46), rgba(22, 28, 72, 0.42) 55%, rgba(0, 103, 244, 0.32));
 }
 
-@keyframes flowStepIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes questionPop {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes connectorIn {
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes aiChatIn {
   to {
     opacity: 1;
@@ -302,187 +282,6 @@ button:focus-visible {
   }
 }
 
-@keyframes mappingUnitIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes mappingScan {
-  0%,
-  35% {
-    transform: translateX(-100%);
-  }
-
-  80%,
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes mappingLoader {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes mappingCheck {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.hero-flow-step {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.opero-flow.is-in-view .hero-flow-step {
-  animation: flowStepIn 780ms ease-out forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery {
-  animation-delay: 180ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--magic {
-  animation-delay: 2300ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--result {
-  animation-delay: 9400ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery .hero-flow-chip {
-  animation: questionPop 640ms ease-out forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery .hero-flow-chip:nth-child(1) {
-  animation-delay: 700ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery .hero-flow-chip:nth-child(2) {
-  animation-delay: 1050ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery .hero-flow-chip:nth-child(3) {
-  animation-delay: 1400ms;
-}
-
-.opero-flow.is-in-view .hero-flow-step--discovery .hero-flow-chip:nth-child(4) {
-  animation-delay: 1750ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit {
-  animation: mappingUnitIn 520ms ease-out forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit::after {
-  animation: none;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit i {
-  animation: mappingLoader 520ms linear infinite;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit svg {
-  animation: mappingCheck 260ms ease-out forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(1) {
-  animation-delay: 2700ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(1)::after {
-  animation: mappingScan 820ms ease-in-out 3000ms 1 forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(1) i {
-  animation-delay: 2700ms;
-  animation-duration: 520ms;
-  animation-iteration-count: 2;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(1) svg {
-  animation-delay: 3820ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(2) {
-  animation-delay: 4300ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(2)::after {
-  animation: mappingScan 820ms ease-in-out 4600ms 1 forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(2) i {
-  animation-delay: 4300ms;
-  animation-duration: 520ms;
-  animation-iteration-count: 2;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(2) svg {
-  animation-delay: 5420ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(3) {
-  animation-delay: 5900ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(3)::after {
-  animation: mappingScan 820ms ease-in-out 6200ms 1 forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(3) i {
-  animation-delay: 5900ms;
-  animation-duration: 520ms;
-  animation-iteration-count: 2;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(3) svg {
-  animation-delay: 7020ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(4) {
-  animation-delay: 7500ms;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(4)::after {
-  animation: mappingScan 820ms ease-in-out 7800ms 1 forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(4) i {
-  animation-delay: 7500ms;
-  animation-duration: 520ms;
-  animation-iteration-count: 2;
-}
-
-.opero-flow.is-in-view .hero-flow-mapping-unit:nth-child(4) svg {
-  animation-delay: 8620ms;
-}
-
-.opero-flow.is-in-view .hero-flow-outcome-item {
-  animation: questionPop 560ms ease-out forwards;
-}
-
-.opero-flow.is-in-view .hero-flow-outcome-item:nth-child(1) {
-  animation-delay: 9550ms;
-}
-
-.opero-flow.is-in-view .hero-flow-outcome-item:nth-child(2) {
-  animation-delay: 9700ms;
-}
-
-.opero-flow.is-in-view .hero-flow-outcome-item:nth-child(3) {
-  animation-delay: 9850ms;
-}
-
-.opero-flow.is-in-view .hero-flow-outcome-item:nth-child(4) {
-  animation-delay: 10000ms;
-}
-
 .ai-chat-message {
   opacity: 0;
   transform: translateY(12px) scale(0.985);
@@ -574,24 +373,17 @@ button:focus-visible {
     scroll-behavior: auto;
   }
 
-  .hero-flow-step,
-  .hero-flow-chip,
-  .hero-flow-outcome-item,
-    .ai-chat-message,
-    .ai-typing-indicator span,
-    .ai-send-button,
-    .hero-assistant-orb,
-    .hero-assistant-popup,
-    .hero-assistant-scrim,
-    .hero-assistant-message,
-    .hero-assistant-caret,
-    .hero-assistant-dot,
-    .hero-dashboard-shimmer,
-    .hero-dashboard-bar,
-    .hero-flow-mapping-unit,
-    .hero-flow-mapping-unit::after,
-    .hero-flow-mapping-unit i,
-  .hero-flow-mapping-unit svg {
+  .ai-chat-message,
+  .ai-typing-indicator span,
+  .ai-send-button,
+  .hero-assistant-orb,
+  .hero-assistant-popup,
+  .hero-assistant-scrim,
+  .hero-assistant-message,
+  .hero-assistant-caret,
+  .hero-assistant-dot,
+  .hero-dashboard-shimmer,
+  .hero-dashboard-bar {
     opacity: 1;
     transform: none;
     animation: none;

@@ -78,7 +78,6 @@ export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffo
           <SectionIntro eyebrow={content.ai.label} title={content.ai.title} description={content.ai.description} />
         </div>
         <div className="relative" aria-label={content.ai.label}>
-          <div className="pointer-events-none absolute right-[-3rem] top-[-3rem] h-48 w-48 rounded-full bg-[var(--color-blue)]/[0.1] blur-3xl" aria-hidden="true" />
           <AiChatMockup chat={content.ai.chat} />
         </div>
       </LandingSection>

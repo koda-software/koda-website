@@ -9,13 +9,15 @@ export const commonContent: ShellContent = {
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },
-      { page: "about", label: "About" },
       { page: "contact", label: "Book a demo" },
     ],
   },
   footer: {
     tagline: "Adaptive ERP software built around how companies actually work.",
+    description:
+      "Koda Soft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
     languageLabel: "Language",
+    productLine: "Adaptive ERP by Koda Soft",
   },
 };
 

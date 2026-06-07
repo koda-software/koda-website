@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
 import { commonContent, navItems } from "@/content/en/common";
-import { placeholderPages } from "@/content/en/placeholders";
+import { solutionsContent, solutionsCtas } from "@/content/en/solutions";
 import { PageShell } from "@/components/layout/PageShell";
-import { PlaceholderPage } from "@/components/layout/PlaceholderPage";
-import { localizePath } from "@/lib/i18n/routes";
+import { SolutionsPage } from "@/components/layout/SolutionsPage";
 import { createPageMetadata } from "@/lib/seo/metadata";
-
-const content = placeholderPages.solutions;
 
 export const metadata: Metadata = createPageMetadata({
   locale: "en",
   page: "solutions",
-  ...content.seo,
+  ...solutionsContent.seo,
 });
 
 export default function EnSolutionsPage() {
   return (
     <PageShell locale="en" page="solutions" shell={commonContent} navItems={navItems}>
-      <PlaceholderPage content={content} homeHref={localizePath("en", "home")} />
+      <SolutionsPage content={solutionsContent} primaryHref={solutionsCtas.primary} secondaryHref={solutionsCtas.secondary} />
     </PageShell>
   );
 }

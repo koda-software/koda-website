@@ -24,7 +24,7 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 ## 2. Site Structure
 
 - [x] Define launch sitemap with only the pages needed for a strong first release.
-- [x] Recommended first release: Home, Opero, Solutions, About, Contact / Book Demo.
+- [x] Recommended first release: Home, Opero, Solutions, Contact / Book Demo.
 - [x] Decide which pages are static now and which content areas can expand later.
 - [x] Map every page to one primary conversion goal.
 - [ ] Stop and discuss: approve sitemap and page priorities.
@@ -86,15 +86,15 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 - [x] Build the homepage first as the quality bar for the whole site.
 - [x] Include hero, problem framing, Opero solution, AI empowerment, flexible modules/workflows, trust/company section, and demo CTA.
 - [x] Keep components static by default and client-side JavaScript minimal.
-- [ ] Validate desktop and mobile layouts early.
-- [ ] Stop and discuss: review homepage before adding more pages.
+- [x] Validate desktop and mobile layouts early.
+- [x] Stop and discuss: review homepage before adding more pages.
 
 ## 7. Supporting Pages
 
-- [ ] Build the Opero product page with feature depth and product narrative.
-- [ ] Build Solutions / Use Cases around business problems Opero can solve.
-- [ ] Build About Koda Soft with credibility, mission, and product-building philosophy.
-- [ ] Build Contact / Book Demo with a short, low-friction conversion path.
+- [x] Build the Opero product page with feature depth and product narrative.
+- [x] Build Solutions / Use Cases around business problems Opero can solve.
+- [x] Defer About Koda Soft for the first release.
+- [x] Build Contact / Book Demo with a short, low-friction conversion path.
 - [ ] Stop and discuss: review page set and conversion flow.
 
 ## 8. SEO And Metadata

@@ -22,16 +22,6 @@ export const placeholderPages: Record<Exclude<PageKey, "home">, PlaceholderPageC
     description: "Ta trasa jest gotowa na tresci o problemach biznesowych, ktore Opero pomaga modelowac i automatyzowac.",
     cta: "Wroc na strone glowna",
   },
-  about: {
-    seo: {
-      title: "O Koda Soft - Inzynieria oprogramowania produktowej jakosci",
-      description: "Poznaj Koda Soft, firme tworzaca Opero z mysleniem systemowym, architektura i produktowa jakoscia wykonania.",
-    },
-    eyebrow: "O nas",
-    title: "Szkielet strony O nas",
-    description: "Ta trasa jest gotowa na historie Koda Soft, wiarygodnosc i podejscie do budowy produktu.",
-    cta: "Wroc na strone glowna",
-  },
   contact: {
     seo: {
       title: "Kontakt z Koda Soft - Umow demo Opero",

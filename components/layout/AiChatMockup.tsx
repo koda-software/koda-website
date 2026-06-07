@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SendIcon, WorkflowIcon, XIcon } from "lucide-react";
+import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
+import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
+import XIcon from "lucide-react/dist/esm/icons/x.mjs";
 import type { HomeContent } from "@/content/types";
 
 type AiChatMockupProps = {

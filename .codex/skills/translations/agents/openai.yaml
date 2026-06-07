@@ -1,0 +1,4 @@
+interface:
+  display_name: "Translations"
+  short_description: "Manage EN/PL website translations."
+  default_prompt: "Use $translations to add or update localized Opero website copy while keeping it server-first, typed, and static-friendly."

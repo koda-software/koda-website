@@ -9,13 +9,15 @@ export const commonContent: ShellContent = {
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Rozwiązania" },
-      { page: "about", label: "O nas" },
       { page: "contact", label: "Umów demo" },
     ],
   },
   footer: {
     tagline: "Elastyczny ERP dopasowany do tego, jak firmy naprawdę pracują.",
+    description:
+      "Koda Soft tworzy Opero dla firm, które potrzebują stabilnego oprogramowania dopasowanego do realnych operacji, kontroli, automatyzacji i praktycznego AI.",
     languageLabel: "Język",
+    productLine: "Adaptacyjny ERP od Koda Soft",
   },
 };
 

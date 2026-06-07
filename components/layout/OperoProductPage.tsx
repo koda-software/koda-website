@@ -1,0 +1,248 @@
+import Link from "next/link";
+import type { OperoProductContent, ProductFeatureRow } from "@/content/types";
+
+type OperoProductPageProps = {
+  content: OperoProductContent;
+  primaryHref: string;
+  secondaryHref: string;
+};
+
+const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
+const sectionClass = `${shellClass} py-[var(--section-y)]`;
+const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
+const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+const sectionTitleClass = "m-0 max-w-[860px] text-[3.15rem] leading-[1.05] text-[var(--color-ink)] max-[809px]:text-[2.2rem]";
+const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
+const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
+
+function CtaPair({
+  primaryHref,
+  primaryLabel,
+  secondaryHref,
+  secondaryLabel,
+  invert = false,
+}: {
+  invert?: boolean;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+}) {
+  return (
+    <div className="mt-8 flex flex-wrap gap-3">
+      <Link className={`${buttonClass} bg-[linear-gradient(135deg,#1f7cff,#004fc4)] text-white`} href={primaryHref}>
+        {primaryLabel}
+      </Link>
+      <Link
+        className={`${buttonClass} border ${
+          invert ? "border-white/[0.18] bg-white/[0.08] text-white hover:bg-white/[0.12]" : "border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(0,103,244,0.24)]"
+        }`}
+        href={secondaryHref}
+      >
+        {secondaryLabel}
+      </Link>
+    </div>
+  );
+}
+
+function HeroDiagram({ items }: { items: string[] }) {
+  return (
+    <div className="relative min-h-[24rem] border-y border-white/[0.12] py-10 max-[809px]:min-h-0">
+      <div className="absolute inset-y-10 left-1/2 w-px bg-white/[0.08] max-[809px]:hidden" aria-hidden="true" />
+      <ol className="grid list-none gap-0 p-0">
+        {items.map((item, index) => (
+          <li
+            className={`grid grid-cols-[1fr_auto_1fr] items-center gap-5 border-b border-white/[0.08] py-4 last:border-b-0 max-[809px]:grid-cols-[auto_1fr] ${
+              index % 2 === 0 ? "" : "text-right max-[809px]:text-left"
+            }`}
+            key={item}
+          >
+            <span className={`${index % 2 === 0 ? "text-white/72" : "text-transparent"} text-[0.95rem] font-light max-[809px]:hidden`}>
+              {index % 2 === 0 ? item : ""}
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.16] bg-white/[0.06] text-[0.78rem] font-semibold text-[var(--color-blue-soft)]">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className={`${index % 2 === 1 ? "text-white/72" : "text-transparent max-[809px]:text-white/72"} text-[0.95rem] font-light`}>
+              {item}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function SupportLines({ items }: { items: string[] }) {
+  return (
+    <ul className="m-0 grid list-none gap-2 p-0 text-[0.9rem] leading-[1.5] text-[var(--color-ink-soft)]">
+      {items.map((item) => (
+        <li className="border-b border-[rgba(2,2,13,0.08)] pb-2 last:border-b-0 last:pb-0" key={item}>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function FeatureRow({ row }: { row: ProductFeatureRow }) {
+  return (
+    <article className="grid grid-cols-[minmax(12rem,0.55fr)_minmax(0,1fr)_minmax(14rem,0.62fr)] gap-8 border-t border-[rgba(2,2,13,0.12)] py-8 max-[980px]:grid-cols-1 max-[980px]:gap-4">
+      <h3 className="m-0 text-[1.45rem] font-medium leading-[1.18] text-[var(--color-ink)]">{row.title}</h3>
+      <p className={bodyClass}>{row.description}</p>
+      <SupportLines items={row.supports} />
+    </article>
+  );
+}
+
+export function OperoProductPage({ content, primaryHref, secondaryHref }: OperoProductPageProps) {
+  return (
+    <>
+      <section className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+        <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(22rem,0.82fr)] items-center gap-16 max-[980px]:grid-cols-1">
+          <div>
+            <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
+            <h1 className="m-0 max-w-[900px] text-[4.4rem] leading-[0.98] max-[809px]:text-[2.85rem]">{content.hero.title}</h1>
+            <p className="mt-6 max-w-[760px] text-[1.25rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
+              {content.hero.description}
+            </p>
+            <CtaPair
+              invert
+              primaryHref={primaryHref}
+              primaryLabel={content.hero.primaryCta}
+              secondaryHref={secondaryHref}
+              secondaryLabel={content.hero.secondaryCta}
+            />
+          </div>
+          <HeroDiagram items={content.hero.diagramItems} />
+        </div>
+      </section>
+
+      <section className={`${sectionClass} grid grid-cols-[minmax(0,0.65fr)_minmax(0,1fr)] gap-16 max-[980px]:grid-cols-1`}>
+        <div>
+          <p className={eyebrowClass}>{content.overview.eyebrow}</p>
+          <h2 className={sectionTitleClass}>{content.overview.title}</h2>
+        </div>
+        <div className="grid gap-6">
+          {content.overview.paragraphs.map((paragraph) => (
+            <p className={bodyClass} key={paragraph}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.features.eyebrow}</p>
+        <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(18rem,0.48fr)] gap-12 max-[980px]:grid-cols-1">
+          <h2 className={sectionTitleClass}>{content.features.title}</h2>
+          <p className={bodyClass}>{content.features.description}</p>
+        </div>
+        <div className="mt-10 border-b border-[rgba(2,2,13,0.12)]">
+          {content.features.rows.map((row) => (
+            <FeatureRow key={row.title} row={row} />
+          ))}
+        </div>
+      </section>
+
+      <section className="px-[var(--page-gutter)] py-[var(--section-y)]">
+        <div className="mx-auto w-[min(100%,var(--shell-width))] rounded-[var(--radius-panel)] [background:var(--gradient-technical)] p-[3.5rem] text-white max-[809px]:p-6">
+          <div className="grid grid-cols-[minmax(0,0.78fr)_minmax(20rem,0.74fr)] gap-12 max-[980px]:grid-cols-1">
+            <div>
+              <p className={darkEyebrowClass}>{content.connectedModel.eyebrow}</p>
+              <h2 className="m-0 max-w-[760px] text-[3rem] leading-[1.06] max-[809px]:text-[2.05rem]">{content.connectedModel.title}</h2>
+              <p className="mt-6 max-w-[680px] text-[1.04rem] font-light leading-[1.7] text-white/68">{content.connectedModel.description}</p>
+            </div>
+            <ol className="m-0 grid list-none gap-0 p-0">
+              {content.connectedModel.layers.map((layer, index) => (
+                <li className="grid grid-cols-[3rem_1fr] gap-4 border-t border-white/[0.12] py-5 first:border-t-0" key={layer.label}>
+                  <span className="text-[0.82rem] font-semibold text-[var(--color-blue-soft)]">{String(index + 1).padStart(2, "0")}</span>
+                  <span>
+                    <strong className="block font-medium text-white">{layer.label}</strong>
+                    <span className="mt-1 block text-[0.94rem] font-light leading-[1.6] text-white/62">{layer.detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.contractorExample.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.contractorExample.title}</h2>
+        <p className={`${bodyClass} mt-5 max-w-[760px]`}>{content.contractorExample.description}</p>
+        <div className="mt-10 overflow-x-auto border-y border-[rgba(2,2,13,0.12)]">
+          <table className="w-full min-w-[44rem] border-collapse text-left">
+            <thead className="text-[0.76rem] uppercase tracking-[0.08em] text-[var(--color-muted)]">
+              <tr>
+                <th className="w-[32%] py-4 pr-6 font-semibold">{content.contractorExample.needLabel}</th>
+                <th className="py-4 font-semibold">{content.contractorExample.supportLabel}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {content.contractorExample.rows.map((row) => (
+                <tr className="border-t border-[rgba(2,2,13,0.08)]" key={row.need}>
+                  <td className="py-5 pr-6 align-top text-[1rem] font-medium text-[var(--color-ink)]">{row.need}</td>
+                  <td className="py-5 align-top text-[1rem] font-light leading-[1.65] text-[var(--color-muted)]">{row.support}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.implementation.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.implementation.title}</h2>
+        <ol className="mt-10 grid list-none gap-0 border-b border-[rgba(2,2,13,0.12)] p-0">
+          {content.implementation.steps.map((step, index) => (
+            <li className="grid grid-cols-[5rem_minmax(0,0.42fr)_minmax(0,1fr)] gap-8 border-t border-[rgba(2,2,13,0.12)] py-8 max-[809px]:grid-cols-1 max-[809px]:gap-3" key={step.title}>
+              <span className="text-[1.2rem] font-semibold text-[var(--color-blue)]">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="m-0 text-[1.4rem] font-medium text-[var(--color-ink)]">{step.title}</h3>
+              <div>
+                <p className={bodyClass}>{step.description}</p>
+                <p className="mt-3 text-[0.9rem] leading-[1.6] text-[var(--color-ink-soft)]">{step.supports.join(" / ")}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.comparison.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.comparison.title}</h2>
+        <div className="mt-10 overflow-x-auto border-y border-[rgba(2,2,13,0.12)]">
+          <table className="w-full min-w-[56rem] border-collapse text-left">
+            <tbody>
+              {content.comparison.columns.map((column) => (
+                <tr className="border-t border-[rgba(2,2,13,0.08)] first:border-t-0" key={column.label}>
+                  <th className="w-[26%] py-6 pr-8 align-top text-[1.15rem] font-medium text-[var(--color-ink)]">{column.label}</th>
+                  <td className="py-6 align-top text-[1rem] font-light leading-[1.7] text-[var(--color-muted)]">{column.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className={`${sectionClass} pt-0`}>
+        <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
+          <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
+          <h2 className="mx-auto m-0 max-w-[860px] text-[3.25rem] leading-[1.04] text-[var(--color-ink)] max-[809px]:text-[2.2rem]">
+            {content.finalCta.title}
+          </h2>
+          <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>
+          <div className="flex justify-center">
+            <CtaPair
+              primaryHref={primaryHref}
+              primaryLabel={content.finalCta.primaryCta}
+              secondaryHref={secondaryHref}
+              secondaryLabel={content.finalCta.secondaryCta}
+            />
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

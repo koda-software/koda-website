@@ -22,16 +22,6 @@ export const placeholderPages: Record<Exclude<PageKey, "home">, PlaceholderPageC
     description: "This route is ready for use-case content around business problems Opero can model and automate.",
     cta: "Back to homepage",
   },
-  about: {
-    seo: {
-      title: "About Koda Soft - Product-Grade Software Engineering",
-      description: "Learn about Koda Soft, the software company building Opero with systems thinking, architecture, and product-quality execution.",
-    },
-    eyebrow: "About",
-    title: "About page scaffold",
-    description: "This route is ready for Koda Soft credibility, philosophy, and product-building story.",
-    cta: "Back to homepage",
-  },
   contact: {
     seo: {
       title: "Contact Koda Soft - Book an Opero Demo",

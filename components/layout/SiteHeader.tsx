@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import MenuIcon from "lucide-react/dist/esm/icons/menu.mjs";
+import XIcon from "lucide-react/dist/esm/icons/x.mjs";
 import type { Locale } from "@/lib/i18n/config";
 import { localizePath, type PageKey } from "@/lib/i18n/routes";
 import type { NavItem, ShellContent } from "@/content/types";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type SiteHeaderProps = {
   locale: Locale;
@@ -17,8 +18,11 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuLeft, setMenuLeft] = useState<number | null>(null);
   const menuSlotRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const headerItems = useMemo<NavItem[]>(
     () => [
       {
@@ -45,15 +49,47 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
       setIsScrolled(window.scrollY > 16);
     };
 
+    const handleResize = () => {
+      updateScrolled();
+      setIsMobileMenuOpen(false);
+    };
+
     updateScrolled();
     window.addEventListener("scroll", updateScrolled, { passive: true });
-    window.addEventListener("resize", updateScrolled);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", updateScrolled);
-      window.removeEventListener("resize", updateScrolled);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return;
+    }
+
+    const handleOutsidePointer = (event: PointerEvent) => {
+      const target = event.target instanceof Node ? event.target : null;
+
+      if (!target) {
+        return;
+      }
+
+      const clickedMenu = mobileMenuRef.current?.contains(target);
+      const clickedButton = mobileMenuButtonRef.current?.contains(target);
+
+      if (!clickedMenu && !clickedButton) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsidePointer);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+    };
+  }, [isMobileMenuOpen]);
 
   const menuLinks = headerItems.map((item, index) => {
     const isActive = item.page === page;
@@ -80,7 +116,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
   return (
     <header className="absolute inset-x-0 top-0 z-30 px-[var(--page-gutter)] py-4 text-[var(--color-paper)]">
       <nav
-        className="mx-auto grid w-[min(100%,var(--shell-width))] max-w-[var(--shell-width)] grid-cols-[auto_1fr_auto] items-center gap-4 min-[810px]:gap-6"
+        className="mx-auto grid w-[min(100%,var(--shell-width))] max-w-[var(--shell-width)] grid-cols-[auto_1fr_auto] items-center gap-3 min-[810px]:gap-6"
         aria-label="Primary navigation"
       >
         <Link className="shrink-0 px-1" href={localizePath(locale, "home")} aria-label={content.brand}>
@@ -128,8 +164,50 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
             {menuLinks}
           </div>
         </div>
-        <LanguageSwitcher locale={locale} page={page} label={content.footer.languageLabel} />
+        <button
+          ref={mobileMenuButtonRef}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-button)] border border-white/[0.18] bg-white/[0.08] text-white transition-colors hover:bg-white/[0.14] min-[810px]:hidden"
+          type="button"
+          aria-label={isMobileMenuOpen ? content.nav.closeMenu : content.nav.openMenu}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setIsMobileMenuOpen((current) => !current)}
+        >
+          {isMobileMenuOpen ? <XIcon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" /> : <MenuIcon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />}
+        </button>
       </nav>
+      <div
+        ref={mobileMenuRef}
+        className={`mx-auto mt-3 w-[min(100%,var(--shell-width))] max-w-[var(--shell-width)] overflow-hidden rounded-[calc(var(--radius-panel)-12px)] border border-white/[0.14] bg-[#070b18]/95 shadow-[0_18px_54px_rgba(2,2,13,0.28)] transition-[max-height,opacity] duration-200 min-[810px]:hidden ${
+          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+        id="mobile-navigation"
+      >
+        <div className="grid gap-1 p-2 text-[0.96rem] font-medium">
+          {headerItems.map((item, index) => {
+            const isActive = item.page === page;
+            const isPrimaryAction = index === headerItems.length - 1;
+
+            return (
+              <Link
+                className={`rounded-[var(--radius-button)] px-3.5 py-3 transition-colors ${
+                  isActive
+                    ? "site-menu-link-active bg-white"
+                    : isPrimaryAction
+                      ? "bg-[var(--color-blue)] text-white"
+                      : "text-white/78 hover:bg-white/[0.08] hover:text-white"
+                }`}
+                href={item.href}
+                key={item.page}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </header>
   );
 }

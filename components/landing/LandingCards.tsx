@@ -62,7 +62,7 @@ export function PillarGrid({ icons, items }: PillarGridProps) {
 
         return (
           <article
-            className="group relative min-h-[21rem] overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.86)_56%,rgba(0,103,244,0.075))] p-[clamp(1.2rem,3vw,1.85rem)] transition-colors duration-200 before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan),transparent_76%)] after:pointer-events-none after:absolute after:-right-12 after:-top-14 after:h-48 after:w-48 after:rounded-full after:bg-[var(--color-blue)]/[0.055] after:blur-3xl hover:border-[rgba(0,103,244,0.18)] max-[809px]:min-h-0"
+            className="group relative min-h-[21rem] overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.86)_56%,rgba(0,103,244,0.075))] p-[clamp(1.2rem,3vw,1.85rem)] transition-colors duration-200 before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan),transparent_76%)] hover:border-[rgba(0,103,244,0.18)] max-[809px]:min-h-0"
             key={pillar.title}
           >
             <div className="relative z-[1] flex min-h-full flex-col">

@@ -10,6 +10,8 @@ const sora = Sora({
   display: "swap",
 });
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
