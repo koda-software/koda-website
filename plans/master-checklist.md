@@ -48,7 +48,7 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 ## 4.5 Localisation
 
 - [x] Define URL-based language strategy: `/` English homepage, `/pl` Polish homepage, prefixed non-homepage routes.
-- [x] Preserve static export compatibility without middleware/proxy locale detection.
+- [x] Preserve static generation without middleware/proxy locale detection.
 - [x] Define route/section-scoped translation storage.
 - [x] Require server-first translation rendering.
 - [x] Prevent full translation dictionaries from being passed to Client Components.
@@ -65,8 +65,8 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 
 ## 5. Performance And SSG Architecture
 
-- [x] Preserve static generation / static export as the default architecture.
-- [x] Avoid runtime dependencies that hurt TTFB, LCP, CLS, INP, or static export compatibility.
+- [x] Preserve static generation / static-first rendering as the default architecture.
+- [x] Avoid runtime dependencies that hurt TTFB, LCP, CLS, INP, or static-first rendering.
 - [x] Plan images, fonts, CSS, and animations around Core Web Vitals from the start.
 - [x] Prefer lightweight CSS-driven visuals over heavy client-side animation libraries unless clearly justified.
 - [x] Define CWV budget: excellent LCP, near-zero CLS, minimal JS, responsive images, and fast mobile load.
@@ -78,7 +78,7 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 - [x] Define SEO scaffold: metadata helpers, canonical/alternate helpers, sitemap/robots, JSON-LD helpers.
 - [x] Define performance scaffold: `next/font`, global tokens, static asset rules, minimal JS guardrails.
 - [x] Define shared shell scaffold: header, footer, page shell, locale-aware nav links.
-- [x] Define verification gate for static export, no full client dictionaries, and no static-breaking features.
+- [x] Define verification gate for static generation, no full client dictionaries, and no unnecessary runtime features.
 - [x] Stop and discuss: approve implementation prerequisites before writing code.
 
 ## 6. Homepage Implementation
@@ -95,19 +95,19 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 - [x] Build Solutions / Use Cases around business problems Opero can solve.
 - [x] Defer About Koda Soft for the first release.
 - [x] Build Contact / Book Demo with a short, low-friction conversion path.
-- [ ] Stop and discuss: review page set and conversion flow.
+- [x] Stop and discuss: review page set and conversion flow.
 
 ## 8. SEO And Metadata
 
-- [ ] Add static metadata, titles, descriptions, Open Graph, canonical URLs, and sitemap/robots if needed.
-- [ ] Shape keywords around flexible ERP, AI-enabled ERP, business process software, workflow automation, and company operations.
-- [ ] Ensure copy is readable for humans first and search engines second.
+- [x] Add static metadata, titles, descriptions, Open Graph, canonical URLs, and sitemap/robots if needed.
+- [x] Shape keywords around flexible ERP, AI-enabled ERP, business process software, workflow automation, and company operations.
+- [x] Ensure copy is readable for humans first and search engines second.
 - [ ] Stop and discuss: approve SEO positioning and metadata.
 
 ## 9. Quality Gates
 
 - [ ] Run `npm run lint`.
-- [ ] Run `npm run build` and confirm static export succeeds.
+- [ ] Run `npm run build` and confirm static pages plus server route compile.
 - [ ] Preview generated output with `npm run preview`.
 - [ ] Check responsive layout, keyboard navigation, semantic HTML, image sizing, and obvious accessibility issues.
 - [ ] Run Lighthouse / PageSpeed-style checks focused on mobile CWV.

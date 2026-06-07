@@ -5,7 +5,7 @@ export const solutionsContent: SolutionsContent = {
   seo: {
     title: "Solutions - Flexible ERP for Industry Operations",
     description:
-      "See how Opero can support healthcare operations, logistics, manufacturing, field service, construction, real estate, retail, and multi-location work.",
+      "See how Opero supports healthcare, logistics, manufacturing, field service, construction, real estate, retail, and multi-location operations.",
   },
   hero: {
     eyebrow: "Solutions",

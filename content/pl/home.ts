@@ -3,7 +3,7 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Koda Soft: Opero, elastyczny ERP dla firmowej pracy",
+    title: "Opero, elastyczny ERP dla procesów firmy",
     description:
       "Koda Soft tworzy Opero: elastyczną platformę ERP do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
   },

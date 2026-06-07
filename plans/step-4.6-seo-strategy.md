@@ -75,8 +75,6 @@ Keyword usage rules:
 | `/pl/opero` | Polish product evaluation | Funkcje Opero, elastyczny ERP, procesy, AI, kontrola danych. |
 | `/en/solutions` | Problem/use-case exploration | Business problems Opero can model and automate. |
 | `/pl/solutions` | Polish use-case exploration | Problemy operacyjne, ktore Opero pomaga uporzadkowac i automatyzowac. |
-| `/en/about` | Trust/company validation | Koda Soft expertise, product-quality execution, systems thinking. |
-| `/pl/about` | Polish company validation | Doswiadczenie Koda Soft, jakosc inzynierska, podejscie produktowe. |
 | `/en/contact` | Conversion | Book demo / discuss workflow. |
 | `/pl/contact` | Polish conversion | Umow rozmowe / pokaz procesu. |
 
@@ -196,8 +194,6 @@ Current route contract:
 - `/pl/opero`
 - `/en/solutions`
 - `/pl/solutions`
-- `/en/about`
-- `/pl/about`
 - `/en/contact`
 - `/pl/contact`
 
@@ -205,7 +201,7 @@ Internal links:
 
 - Every page should be reachable through crawlable `<a href>` links.
 - Header/footer nav must use real links, not JS-only navigation.
-- Homepage should link to Opero, Solutions, About, and Contact.
+- Homepage should link to Opero, Solutions, and Contact.
 - Footer should include all main localized pages.
 - Language switcher should use real links to equivalent localized pages.
 
@@ -318,7 +314,7 @@ Sitemap:
 - Include every canonical indexable route.
 - Include localized URLs.
 - Include alternates/hreflang if supported cleanly by implementation.
-- If Next's typed sitemap API is insufficient for our alternates needs, use a static XML file or route-compatible static generation approach that still works with `output: "export"`.
+- If Next's typed sitemap API is insufficient for our alternates needs, use a static XML file or route-compatible static generation approach.
 - Keep sitemap generated from the same route map used by navigation/metadata.
 
 Sitemap route list for launch:
@@ -330,8 +326,6 @@ Sitemap route list for launch:
 /pl/opero
 /en/solutions
 /pl/solutions
-/en/about
-/pl/about
 /en/contact
 /pl/contact
 ```
@@ -344,7 +338,7 @@ Use:
 - `metadataBase` once production domain is known.
 - `alternates.canonical` and `alternates.languages` per route.
 - `app/robots.ts` or static `public/robots.txt`.
-- `app/sitemap.ts` if static export emits it cleanly for our needs.
+- `app/sitemap.ts` if it emits the localized route map cleanly for our needs.
 - Static OG image file convention if sufficient.
 - JSON-LD script components rendered as server/static HTML.
 
@@ -353,7 +347,7 @@ Avoid:
 - Client-side metadata changes.
 - `next/head` in App Router pages.
 - Dynamic metadata that depends on runtime requests.
-- Middleware redirects for SEO/locales under static export.
+- Middleware redirects for SEO/locales when static generation can express the route directly.
 - Duplicate pages with unclear canonical strategy.
 
 ## 11. SEO Tools And Verification

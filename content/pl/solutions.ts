@@ -5,7 +5,7 @@ export const solutionsContent: SolutionsContent = {
   seo: {
     title: "Rozwiązania - Elastyczny ERP dla operacji branżowych",
     description:
-      "Zobacz, jak Opero może wspierać operacje w medycynie, logistyce, produkcji, serwisie, budownictwie, nieruchomościach, retailu i pracy wielooddziałowej.",
+      "Zobacz, jak Opero wspiera operacje w medycynie, logistyce, produkcji, serwisie, budownictwie, nieruchomościach, retailu i pracy wielooddziałowej.",
   },
   hero: {
     eyebrow: "Rozwiązania",

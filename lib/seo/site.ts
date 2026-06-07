@@ -5,7 +5,7 @@ export const siteConfig = {
   name: "Koda Soft",
   productName: "Opero",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://kodasoft.pl",
-  defaultOgImage: "/og-image.svg",
+  defaultOgImage: "/og-image.png",
 };
 
 export const routeMap = pageKeys.map((page) => ({

@@ -4,6 +4,7 @@ import { operoProductContent, operoProductCtas } from "@/content/en/opero";
 import { OperoProductPage } from "@/components/layout/OperoProductPage";
 import { PageShell } from "@/components/layout/PageShell";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { SoftwareApplicationJsonLd } from "@/lib/seo/json-ld";
 
 export const metadata: Metadata = createPageMetadata({
   locale: "en",
@@ -13,8 +14,11 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function EnOperoPage() {
   return (
-    <PageShell locale="en" page="opero" shell={commonContent} navItems={navItems}>
-      <OperoProductPage content={operoProductContent} primaryHref={operoProductCtas.primary} secondaryHref={operoProductCtas.secondary} />
-    </PageShell>
+    <>
+      <SoftwareApplicationJsonLd locale="en" description={operoProductContent.seo.description} />
+      <PageShell locale="en" page="opero" shell={commonContent} navItems={navItems}>
+        <OperoProductPage content={operoProductContent} primaryHref={operoProductCtas.primary} secondaryHref={operoProductCtas.secondary} />
+      </PageShell>
+    </>
   );
 }

@@ -31,14 +31,6 @@ export type ShellContent = {
   };
 };
 
-export type PlaceholderPageContent = {
-  seo: SeoContent;
-  eyebrow: string;
-  title: string;
-  description: string;
-  cta: string;
-};
-
 export type FeaturePillar = {
   title: string;
   description: string;
