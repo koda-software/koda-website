@@ -1,0 +1,7 @@
+interface:
+  display_name: "Hello"
+  short_description: "Brief Codex as website quality guardian."
+  default_prompt: "Use $hello before helping me update the Opero website so quality, performance, localization, SEO, and design stay aligned."
+
+policy:
+  allow_implicit_invocation: false

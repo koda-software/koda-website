@@ -1,0 +1,7 @@
+interface:
+  display_name: "Deploy"
+  short_description: "Commit, fix hooks, and push."
+  default_prompt: "Use $deploy to commit all current Opero website changes with a thorough message, fix hook failures, and push."
+
+policy:
+  allow_implicit_invocation: false
