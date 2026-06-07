@@ -17,7 +17,7 @@ const pages = [
   { file: ".next/server/app/pl/contact.html", route: "/pl/contact", locale: "pl", canonical: `${siteUrl}/pl/contact`, alternates: { en: `${siteUrl}/en/contact`, pl: `${siteUrl}/pl/contact`, "x-default": `${siteUrl}/en/contact` }, contact: true },
 ];
 
-const expectedSitemap = pages.map((page) => (page.route === "/" ? `${siteUrl}/` : page.canonical));
+const expectedSitemap = pages.map((page) => page.canonical);
 const failures = [];
 
 function read(relativePath) {
@@ -65,11 +65,22 @@ for (const page of pages) {
   assert(!html.includes("/en/about") && !html.includes("/pl/about"), `${page.route}: contains deferred About route`);
 }
 
-const sitemap = read(".next/server/app/sitemap.xml.body");
+const sitemap = fs.existsSync(path.join(root, "public/sitemap.xml"))
+  ? read("public/sitemap.xml")
+  : read(".next/server/app/sitemap.xml.body");
 const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
 assert(JSON.stringify(locs) === JSON.stringify(expectedSitemap), "sitemap routes do not match expected launch routes");
 assert(!sitemap.includes("/about"), "sitemap contains deferred About route");
 assert((sitemap.match(/hreflang="x-default"/g) ?? []).length === expectedSitemap.length, "sitemap missing x-default alternates");
+
+for (const page of pages) {
+  for (const [locale, href] of Object.entries(page.alternates)) {
+    assert(
+      sitemap.includes(`hreflang="${locale}" href="${href}"`),
+      `sitemap missing alternate ${locale} for ${page.route}`,
+    );
+  }
+}
 
 const robots = read(".next/server/app/robots.txt.body");
 assert(robots.includes("User-Agent: *"), "robots.txt missing User-Agent rule");
