@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
     "dev": "next dev -p 3003",
     "build": "next build --webpack",
-    "preview": "npx serve@latest out",
-    "lint": "eslint"
+    "preview": "next start -p 3004",
+    "lint": "eslint",
+    "typegen": "next typegen",
+    "type-check": "tsc --noEmit --incremental false",
+    "quality:nonvisual": "node scripts/quality-nonvisual.mjs",
+    "quality:lighthouse": "node scripts/quality-lighthouse.mjs",
+    "quality:precommit": "npm run typegen && npm run type-check && npm run lint"
   },
   "dependencies": {
     "country-flag-icons": "^1.6.17",
@@ -17,12 +23,14 @@
     "resend": "^6.12.4"
   },
   "devDependencies": {
+    "@puppeteer/browsers": "^3.0.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "lighthouse": "^12.8.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

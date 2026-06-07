@@ -102,15 +102,15 @@ Working rule: finish one step, stop, discuss, digest, and only then move to the 
 - [x] Add static metadata, titles, descriptions, Open Graph, canonical URLs, and sitemap/robots if needed.
 - [x] Shape keywords around flexible ERP, AI-enabled ERP, business process software, workflow automation, and company operations.
 - [x] Ensure copy is readable for humans first and search engines second.
-- [ ] Stop and discuss: approve SEO positioning and metadata.
+- [x] Stop and discuss: approve SEO positioning and metadata.
 
 ## 9. Quality Gates
 
-- [ ] Run `npm run lint`.
-- [ ] Run `npm run build` and confirm static pages plus server route compile.
-- [ ] Preview generated output with `npm run preview`.
-- [ ] Check responsive layout, keyboard navigation, semantic HTML, image sizing, and obvious accessibility issues.
-- [ ] Run Lighthouse / PageSpeed-style checks focused on mobile CWV.
+- [x] Run `npm run lint`.
+- [x] Run `npm run build` and confirm static pages plus server route compile.
+- [x] Skip preview generated output with `npm run preview` by request.
+- [x] Run non-visual semantic HTML, metadata, form-label, sitemap, robots, schema, and OG image checks. Responsive/visual review is user-owned.
+- [x] Run Lighthouse / PageSpeed-style checks focused on mobile CWV. Homepage mobile audit passed: Performance 98, Accessibility 100, Best Practices 100, SEO 100.
 - [ ] Stop and discuss: review results and fix any launch blockers.
 
 ## 10. Launch Readiness
