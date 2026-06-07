@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/seo/json-ld";
 import { siteConfig } from "@/lib/seo/site";
 import "../globals.css";
@@ -45,6 +46,7 @@ export default function EnglishRootLayout({ children }: Readonly<{ children: Rea
         <OrganizationJsonLd />
         <WebsiteJsonLd />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
