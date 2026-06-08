@@ -1,5 +1,15 @@
 #!/bin/sh
 set -eu
 
+# Add nvm-managed node to PATH if npm is not already available
+if ! command -v npm >/dev/null 2>&1; then
+  NVM_DIR="$HOME/.nvm"
+  # find the highest version available
+  NVM_NODE=$(ls "$NVM_DIR/versions/node" 2>/dev/null | sort -V | tail -1)
+  if [ -n "$NVM_NODE" ]; then
+    export PATH="$NVM_DIR/versions/node/$NVM_NODE/bin:$PATH"
+  fi
+fi
+
 echo "Running pre-commit quality gate..."
 npm run quality:precommit
