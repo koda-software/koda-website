@@ -9,7 +9,7 @@ export const homeContent: HomeContent = {
   },
   hero: {
     eyebrow: "Adaptive ERP by Koda Soft",
-    title: "Turn the way you work into software.",
+    title: "ERP that fits your operations. Not the other way around.",
     description:
       "Koda Soft builds Opero, adaptive ERP software that helps companies model custom operations, automate workflows, govern business data, and use AI where work actually happens.",
     primaryCta: "Book a demo",
