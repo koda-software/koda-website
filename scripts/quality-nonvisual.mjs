@@ -3,7 +3,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const root = process.cwd();
-const siteUrl = "https://kodasoft.pl";
+const siteUrl = "https://www.kodasoft.pl";
 const ogImage = `${siteUrl}/og-image.png`;
 
 const pages = [
@@ -85,7 +85,7 @@ for (const page of pages) {
 const robots = read(".next/server/app/robots.txt.body");
 assert(robots.includes("User-Agent: *"), "robots.txt missing User-Agent rule");
 assert(robots.includes("Allow: /"), "robots.txt missing Allow rule");
-assert(robots.includes("Sitemap: https://kodasoft.pl/sitemap.xml"), "robots.txt missing sitemap URL");
+assert(robots.includes(`${siteUrl}/sitemap.xml`), "robots.txt missing sitemap URL");
 
 const ogMetadata = await sharp(path.join(root, "public/og-image.png")).metadata();
 assert(ogMetadata.width === 1200 && ogMetadata.height === 630, "OG image must be 1200x630");

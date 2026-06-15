@@ -107,7 +107,7 @@ lib/seo/json-ld.tsx
 
 - site name: `Koda Soft`
 - product name: `Opero`
-- production URL confirmed as `https://kodasoft.pl`
+- production URL confirmed as `https://www.kodasoft.pl`
 - default social image path placeholder
 - route map for all launch pages
 

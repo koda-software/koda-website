@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/i18n/config";
 export const siteConfig = {
   name: "Koda Soft",
   productName: "Opero",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://kodasoft.pl",
+  url: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl"),
   defaultOgImage: "/og-image.png",
 };
 
@@ -24,4 +24,14 @@ export function getRoutePath(page: PageKey, locale: Locale) {
 
 export function absoluteUrl(path: string) {
   return new URL(path, siteConfig.url).toString();
+}
+
+function normalizeSiteUrl(url: string) {
+  const parsedUrl = new URL(url);
+
+  if (parsedUrl.hostname === "kodasoft.pl") {
+    parsedUrl.hostname = "www.kodasoft.pl";
+  }
+
+  return parsedUrl.toString().replace(/\/$/, "");
 }

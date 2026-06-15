@@ -1,4 +1,4 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://kodasoft.pl";
+const siteUrl = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl");
 
 const routes = [
   { page: "home", path: "/" },
@@ -61,3 +61,13 @@ module.exports = {
   transform: async () => null,
   additionalPaths: async () => routes.map(sitemapEntry),
 };
+
+function normalizeSiteUrl(url) {
+  const parsedUrl = new URL(url);
+
+  if (parsedUrl.hostname === "kodasoft.pl") {
+    parsedUrl.hostname = "www.kodasoft.pl";
+  }
+
+  return parsedUrl.toString().replace(/\/$/, "");
+}
