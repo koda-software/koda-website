@@ -10,6 +10,11 @@ type LanguageSwitcherProps = {
   locale: Locale;
   page: PageKey;
   label: string;
+  /**
+   * Overrides the static route map. Blog pages pass CMS-derived paths so the
+   * switcher lands on the translated slug instead of the blog index.
+   */
+  alternatePaths?: Partial<Record<Locale, string>>;
 };
 
 const languageOptions = [
@@ -17,9 +22,9 @@ const languageOptions = [
   { Flag: FlagPl, label: "Polski", locale: "pl" },
 ];
 
-export function LanguageSwitcher({ locale, page, label }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ locale, page, label, alternatePaths }: LanguageSwitcherProps) {
   const selectId = useId();
-  const alternates = getAlternatePaths(page);
+  const alternates = { ...getAlternatePaths(page), ...alternatePaths };
   const selectedOption = languageOptions.find((option) => option.locale === locale) ?? languageOptions[0];
   const SelectedFlag = selectedOption.Flag;
 

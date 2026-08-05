@@ -10,9 +10,10 @@ type SiteFooterProps = {
   page: PageKey;
   content: ShellContent;
   navItems: NavItem[];
+  alternatePaths?: Partial<Record<Locale, string>>;
 };
 
-export function SiteFooter({ locale, page, content, navItems }: SiteFooterProps) {
+export function SiteFooter({ locale, page, content, navItems, alternatePaths }: SiteFooterProps) {
   return (
     <footer className="relative overflow-hidden bg-[#050713] px-[var(--page-gutter)] py-[clamp(4rem,8vw,6.5rem)] text-[var(--color-paper)]">
       <div
@@ -47,7 +48,7 @@ export function SiteFooter({ locale, page, content, navItems }: SiteFooterProps)
             ))}
           </div>
           <div className="border-t border-white/[0.12] pt-6 text-white/66 transition-colors hover:text-white">
-            <LanguageSwitcher locale={locale} page={page} label={content.footer.languageLabel} />
+            <LanguageSwitcher alternatePaths={alternatePaths} locale={locale} page={page} label={content.footer.languageLabel} />
           </div>
         </div>
       </div>

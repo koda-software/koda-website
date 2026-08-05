@@ -9,6 +9,7 @@ export const commonContent: ShellContent = {
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },
+      { page: "blog", label: "Blog" },
       { page: "contact", label: "Book a demo" },
     ],
   },

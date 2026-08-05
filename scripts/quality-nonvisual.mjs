@@ -13,6 +13,9 @@ const pages = [
   { file: ".next/server/app/pl/opero.html", route: "/pl/opero", locale: "pl", canonical: `${siteUrl}/pl/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, software: true },
   { file: ".next/server/app/en/solutions.html", route: "/en/solutions", locale: "en", canonical: `${siteUrl}/en/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
   { file: ".next/server/app/pl/solutions.html", route: "/pl/solutions", locale: "pl", canonical: `${siteUrl}/pl/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
+  // Blog index only: article slugs are CMS content and may be renamed or unpublished.
+  { file: ".next/server/app/en/blog.html", route: "/en/blog", locale: "en", canonical: `${siteUrl}/en/blog`, alternates: { en: `${siteUrl}/en/blog`, pl: `${siteUrl}/pl/blog`, "x-default": `${siteUrl}/en/blog` } },
+  { file: ".next/server/app/pl/blog.html", route: "/pl/blog", locale: "pl", canonical: `${siteUrl}/pl/blog`, alternates: { en: `${siteUrl}/en/blog`, pl: `${siteUrl}/pl/blog`, "x-default": `${siteUrl}/en/blog` } },
   { file: ".next/server/app/en/contact.html", route: "/en/contact", locale: "en", canonical: `${siteUrl}/en/contact`, alternates: { en: `${siteUrl}/en/contact`, pl: `${siteUrl}/pl/contact`, "x-default": `${siteUrl}/en/contact` }, contact: true },
   { file: ".next/server/app/pl/contact.html", route: "/pl/contact", locale: "pl", canonical: `${siteUrl}/pl/contact`, alternates: { en: `${siteUrl}/en/contact`, pl: `${siteUrl}/pl/contact`, "x-default": `${siteUrl}/en/contact` }, contact: true },
 ];
@@ -86,6 +89,7 @@ const robots = read(".next/server/app/robots.txt.body");
 assert(robots.includes("User-Agent: *"), "robots.txt missing User-Agent rule");
 assert(robots.includes("Allow: /"), "robots.txt missing Allow rule");
 assert(robots.includes(`${siteUrl}/sitemap.xml`), "robots.txt missing sitemap URL");
+assert(robots.includes(`${siteUrl}/blog-sitemap.xml`), "robots.txt missing blog sitemap URL");
 
 const ogMetadata = await sharp(path.join(root, "public/og-image.png")).metadata();
 assert(ogMetadata.width === 1200 && ogMetadata.height === 630, "OG image must be 1200x630");

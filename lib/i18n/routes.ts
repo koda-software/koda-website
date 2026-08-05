@@ -1,14 +1,15 @@
 import { defaultLocale, type Locale, locales } from "./config";
 
-export type PageKey = "home" | "opero" | "solutions" | "contact";
+export type PageKey = "home" | "opero" | "solutions" | "blog" | "contact";
 
 export const pageSlugs: Record<Exclude<PageKey, "home">, string> = {
   opero: "opero",
   solutions: "solutions",
+  blog: "blog",
   contact: "contact",
 };
 
-export const pageKeys: PageKey[] = ["home", "opero", "solutions", "contact"];
+export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "contact"];
 
 export function localizePath(locale: Locale, page: PageKey): string {
   if (page === "home") {

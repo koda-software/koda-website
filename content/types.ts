@@ -272,6 +272,69 @@ export type SolutionsContent = {
   };
 };
 
+/**
+ * Chrome and copy for the blog. Everything editorial comes from Opero; this
+ * module only carries the surrounding UI strings, in both locales.
+ */
+export type BlogUiContent = {
+  seo: SeoContent;
+  index: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
+  labels: {
+    featured: string;
+    minRead: string;
+    published: string;
+    updated: string;
+    tags: string;
+    related: string;
+    aboutAuthor: string;
+    allArticles: string;
+    inCategory: string;
+    byAuthor: string;
+    emptyState: string;
+    previous: string;
+    next: string;
+    pagination: string;
+    page: string;
+    breadcrumbHome: string;
+  };
+  archives: {
+    categoryEyebrow: string;
+    tagEyebrow: string;
+    authorEyebrow: string;
+    categoryDescription: string;
+    tagDescription: string;
+    authorDescription: string;
+  };
+  seoTemplates: {
+    /** `{name}` is replaced with the category/tag/author name. */
+    categoryTitle: string;
+    categoryDescription: string;
+    tagTitle: string;
+    tagDescription: string;
+    authorTitle: string;
+    authorDescription: string;
+    /** `{page}` is replaced with the page number. */
+    pageTitle: string;
+    pageDescription: string;
+  };
+  notFound: {
+    title: string;
+    description: string;
+    backLabel: string;
+  };
+  cta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+  };
+};
+
 export type ContactFormContent = {
   nameLabel: string;
   companyLabel: string;

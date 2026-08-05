@@ -55,6 +55,77 @@ export function BreadcrumbJsonLd({ items }: { items: Array<{ name: string; path:
   );
 }
 
+export type ArticleJsonLdInput = {
+  type: "BlogPosting" | "Article" | "NewsArticle";
+  headline: string;
+  description: string;
+  /** Absolute image URL; falls back to the site OG image upstream. */
+  image: string;
+  url: string;
+  datePublished: string;
+  dateModified: string;
+  inLanguage: string;
+  author?: {
+    name: string;
+    url?: string;
+    sameAs?: string[];
+  };
+  keywords?: string[];
+};
+
+export function ArticleJsonLd({
+  type,
+  headline,
+  description,
+  image,
+  url,
+  datePublished,
+  dateModified,
+  inLanguage,
+  author,
+  keywords,
+}: ArticleJsonLdInput) {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": type,
+        headline,
+        description,
+        image: [image],
+        url,
+        datePublished,
+        dateModified,
+        inLanguage,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": url,
+        },
+        ...(author
+          ? {
+              author: {
+                "@type": "Person",
+                name: author.name,
+                ...(author.url ? { url: author.url } : {}),
+                ...(author.sameAs?.length ? { sameAs: author.sameAs } : {}),
+              },
+            }
+          : {}),
+        ...(keywords?.length ? { keywords: keywords.join(", ") } : {}),
+        publisher: {
+          "@type": "Organization",
+          name: siteConfig.name,
+          url: siteConfig.url,
+          logo: {
+            "@type": "ImageObject",
+            url: absoluteUrl("/branding/kodasoft-logo.svg"),
+          },
+        },
+      }}
+    />
+  );
+}
+
 export function SoftwareApplicationJsonLd({
   description,
   locale,

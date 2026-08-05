@@ -11,14 +11,16 @@ type PageShellProps = {
   shell: ShellContent;
   navItems: NavItem[];
   children: ReactNode;
+  /** Per-page overrides for the language switcher; defaults to the static route map. */
+  alternatePaths?: Partial<Record<Locale, string>>;
 };
 
-export function PageShell({ locale, page, shell, navItems, children }: PageShellProps) {
+export function PageShell({ locale, page, shell, navItems, children, alternatePaths }: PageShellProps) {
   return (
     <>
       <SiteHeader locale={locale} page={page} content={shell} navItems={navItems} />
       <main className="min-h-[70vh]">{children}</main>
-      <SiteFooter locale={locale} page={page} content={shell} navItems={navItems} />
+      <SiteFooter alternatePaths={alternatePaths} locale={locale} page={page} content={shell} navItems={navItems} />
     </>
   );
 }

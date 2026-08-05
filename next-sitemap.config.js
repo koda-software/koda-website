@@ -7,6 +7,10 @@ const routes = [
   { page: "opero", path: "/pl/opero" },
   { page: "solutions", path: "/en/solutions" },
   { page: "solutions", path: "/pl/solutions" },
+  // Only the blog index lives here; every article and archive URL is emitted by
+  // /blog-sitemap.xml, which is regenerated from the CMS on revalidation.
+  { page: "blog", path: "/en/blog" },
+  { page: "blog", path: "/pl/blog" },
   { page: "contact", path: "/en/contact" },
   { page: "contact", path: "/pl/contact" },
 ];
@@ -26,6 +30,11 @@ const alternatePaths = {
     en: "/en/solutions",
     pl: "/pl/solutions",
     "x-default": "/en/solutions",
+  },
+  blog: {
+    en: "/en/blog",
+    pl: "/pl/blog",
+    "x-default": "/en/blog",
   },
   contact: {
     en: "/en/contact",
