@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { unstable_cache } from "next/cache";
 import { BLOG_TAG, blogTag } from "./tags";
 
@@ -59,11 +60,28 @@ export async function operoFetch(path: string, init?: RequestInit): Promise<Resp
   return response;
 }
 
+/**
+ * Identifies the credential without disclosing it, so a 401 in a build log says
+ * whether the deploy holds the key we think it does. Length and hash together
+ * catch the usual damage: a stale value, a truncated paste, wrapping quotes.
+ */
+function keyFingerprint() {
+  const apiKey = process.env.OPERO_API_KEY ?? "";
+  const digest = createHash("sha256").update(apiKey).digest("hex").slice(0, 12);
+
+  return `len=${apiKey.length} sha256:12=${digest}`;
+}
+
 async function operoJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await operoFetch(path, init);
 
   if (!response.ok) {
     const body = await response.text().catch(() => "");
+
+    if (response.status === 401 || response.status === 403) {
+      throw new OperoApiError(response.status, path, `${body.slice(0, 240)} [OPERO_API_KEY ${keyFingerprint()}]`);
+    }
+
     throw new OperoApiError(response.status, path, body.slice(0, 240));
   }
 
