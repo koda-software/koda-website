@@ -40,13 +40,13 @@ function XGlyph() {
 }
 
 /** `invert` switches the borders and ink for the dark author-archive header. */
-export function AuthorLinks({ author, invert = false }: { author: BlogAuthor; invert?: boolean }) {
+export function AuthorLinks({ author, invert = false, className = "mt-5" }: { author: BlogAuthor; invert?: boolean; className?: string }) {
   if (!author.linkedin && !author.x && !author.www) return null;
 
   const linkClass = invert ? socialLinkDarkClass : socialLinkLightClass;
 
   return (
-    <div className="mt-5 flex gap-2">
+    <div className={`${className} flex gap-2`}>
       {author.linkedin ? (
         <a className={linkClass} href={author.linkedin} rel="noopener noreferrer nofollow" target="_blank" aria-label={`LinkedIn — ${author.nazwa}`}>
           <LinkedInGlyph />
@@ -89,23 +89,27 @@ export function AuthorAvatar({ author, size = 40 }: { author: BlogAuthor; size?:
 /** Bordered author block that closes an article. */
 export function AuthorBox({ author, locale, ui }: { author: BlogAuthor; locale: BlogLocale; ui: BlogUiContent }) {
   return (
-    <section className="mt-14 border-y border-[rgba(2,2,13,0.12)] py-8">
-      <p className={blogMetaClass}>{ui.labels.aboutAuthor}</p>
-      <div className="mt-5 flex gap-5 max-[560px]:flex-col max-[560px]:gap-4">
-        <AuthorAvatar author={author} size={64} />
-        <div className="min-w-0">
-          <h2 className="m-0 text-[1.25rem] font-medium text-[var(--color-ink)]">
-            {author.slug ? (
-              <Link className="transition-colors hover:text-[var(--color-blue)]" href={authorPath(locale, author.slug)}>
-                {author.nazwa}
-              </Link>
-            ) : (
-              author.nazwa
-            )}
-          </h2>
-          {author.stanowisko ? <p className="m-0 mt-1 text-[0.92rem] text-[var(--color-muted)]">{author.stanowisko}</p> : null}
-          {author.bio ? <div className="blog-prose blog-prose-compact mt-4">{renderTiptap(author.bio)}</div> : null}
-          <AuthorLinks author={author} />
+    <section className="mt-12 rounded-[var(--radius-card)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper-soft)] p-6 max-[560px]:p-5">
+      <p className={`${blogMetaClass} m-0`}>{ui.labels.aboutAuthor}</p>
+      <div className="mt-4 flex gap-5 max-[560px]:gap-4">
+        <AuthorAvatar author={author} size={56} />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <div className="min-w-0">
+              <h2 className="m-0 text-[1.1rem] font-medium leading-tight text-[var(--color-ink)]">
+                {author.slug ? (
+                  <Link className="transition-colors hover:text-[var(--color-blue)]" href={authorPath(locale, author.slug)}>
+                    {author.nazwa}
+                  </Link>
+                ) : (
+                  author.nazwa
+                )}
+              </h2>
+              {author.stanowisko ? <p className="m-0 mt-1 text-[0.88rem] text-[var(--color-muted)]">{author.stanowisko}</p> : null}
+            </div>
+            <AuthorLinks author={author} className="shrink-0" />
+          </div>
+          {author.bio ? <div className="blog-prose blog-prose-compact mt-3.5">{renderTiptap(author.bio)}</div> : null}
         </div>
       </div>
     </section>

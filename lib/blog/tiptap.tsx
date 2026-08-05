@@ -158,14 +158,22 @@ function renderNode(node: TiptapNode | null | undefined, key: string): ReactNode
 
     case "orderedList": {
       const start = attrNumber(node.attrs, "start");
+      // `type` carries the marker style (a/A/i/I) when the editor exposes one.
+      const listType = attrString(node.attrs, "type");
       return (
-        <ol key={key} start={start && start !== 1 ? start : undefined}>
+        <ol
+          key={key}
+          start={start && start !== 1 ? start : undefined}
+          type={listType === "a" || listType === "A" || listType === "i" || listType === "I" ? listType : undefined}
+        >
           {renderChildren(node.content, key)}
         </ol>
       );
     }
 
     case "listItem":
+    case "orderedListItem":
+    case "bulletListItem":
       return <li key={key}>{renderChildren(node.content, key)}</li>;
 
     case "taskList":
@@ -252,6 +260,56 @@ function renderNode(node: TiptapNode | null | undefined, key: string): ReactNode
 
     case "horizontalRule":
       return <hr key={key} />;
+
+    // Collapsible block: Tiptap splits it into a summary node and a body node.
+    case "details":
+      return (
+        <details key={key} open={node.attrs?.open === true}>
+          {renderChildren(node.content, key)}
+        </details>
+      );
+
+    case "detailsSummary":
+      return <summary key={key}>{renderChildren(node.content, key)}</summary>;
+
+    case "detailsContent":
+      return <div key={key}>{renderChildren(node.content, key)}</div>;
+
+    // Callout / info box — the editor keeps the variant on `type` or `variant`.
+    case "callout":
+    case "infoBox":
+      return (
+        <aside className="blog-callout" data-variant={attrString(node.attrs, "variant") ?? attrString(node.attrs, "type") ?? undefined} key={key}>
+          {renderChildren(node.content, key)}
+        </aside>
+      );
+
+    case "youtube":
+    case "video":
+    case "iframe":
+    case "embed": {
+      const src = attrString(node.attrs, "src") ?? attrString(node.attrs, "url");
+
+      if (!src) return null;
+
+      return (
+        <div className="blog-embed" key={key}>
+          <iframe
+            src={src}
+            title={attrString(node.attrs, "title") ?? "Embed"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            loading="lazy"
+          />
+        </div>
+      );
+    }
+
+    case "emoji":
+      return <span key={key}>{attrString(node.attrs, "emoji") ?? attrString(node.attrs, "name") ?? ""}</span>;
+
+    case "mention":
+      return <span key={key}>{attrString(node.attrs, "label") ?? attrString(node.attrs, "id") ?? ""}</span>;
 
     default:
       warnOnce("node", node.type);

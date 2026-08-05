@@ -1,4 +1,4 @@
-import { uncachedForBuild } from "./queries";
+import { filterPublishedRows, uncachedForBuild } from "./queries";
 import { toBlogLocale } from "./routes";
 import type { BlogLocale } from "./types";
 
@@ -11,7 +11,7 @@ import type { BlogLocale } from "./types";
  */
 
 async function slugsOfType(typ: "artykul" | "kategoria" | "tag" | "autor", locale?: BlogLocale) {
-  const rows = await uncachedForBuild.sitemapEntries();
+  const rows = filterPublishedRows(await uncachedForBuild.sitemapEntries());
 
   return [
     ...new Set(

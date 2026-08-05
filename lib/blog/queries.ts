@@ -36,6 +36,31 @@ function totalOf(rows: Array<{ total?: number | null }>, fallback: number) {
   return typeof total === "number" ? total : fallback;
 }
 
+/**
+ * Whether an article is public *now*.
+ *
+ * The CMS queries disagree about scheduling: `blog_lista_artykulow` gates on
+ * `data_publikacji <= now`, but `blog_artykul_po_slug` and `blog_sitemap` gate
+ * on status alone. Taken at face value that makes a scheduled article reachable
+ * and crawlable at its own URL hours before it appears in any listing. The site
+ * applies the stricter rule uniformly so "scheduled" means "not public yet".
+ *
+ * Evaluated outside `unstable_cache` so the comparison uses the current time
+ * rather than whenever the entry happened to be written.
+ */
+export function isPublished(dataPublikacji: string | null | undefined): boolean {
+  if (!dataPublikacji) return false;
+
+  const publishedAt = new Date(dataPublikacji).getTime();
+
+  return Number.isFinite(publishedAt) && publishedAt <= Date.now();
+}
+
+/** Drops article rows that are still scheduled; taxonomy rows always pass. */
+export function filterPublishedRows(rows: SitemapRow[]): SitemapRow[] {
+  return rows.filter((row) => row.typ !== "artykul" || isPublished(row.data_publikacji));
+}
+
 export const getSettings = unstable_cache(
   async (): Promise<BlogSettings | null> => getSingletonValues<BlogSettings>("ustawienia"),
   ["blog", "settings"],
@@ -86,7 +111,9 @@ export async function getArticleBySlug(slug: string, jezyk: BlogLocale): Promise
     { tags: [BLOG_TAG, blogTag("artykul", slug)] },
   );
 
-  return read();
+  const article = await read();
+
+  return article && isPublished(article.data_publikacji) ? article : null;
 }
 
 const fetchArticlesByTag = unstable_cache(

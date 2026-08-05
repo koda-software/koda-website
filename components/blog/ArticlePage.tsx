@@ -18,7 +18,7 @@ type ArticlePageProps = {
 };
 
 const columnClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
-const proseColumnClass = "mx-auto max-w-[760px]";
+const proseColumnClass = "mx-auto max-w-[820px]";
 
 export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps) {
   const heroImage = blogImageSrc(article.obraz_glowny);
@@ -42,8 +42,9 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
 
   return (
     <>
-      <header className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[3.5rem] pt-[9rem] text-white max-[809px]:pt-28">
-        <div className={`${columnClass} ${proseColumnClass}`}>
+      <header className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
+        {/* The <header> already owns the page gutter; the column only sets the measure. */}
+        <div className={proseColumnClass}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.78rem] font-semibold uppercase tracking-[0.08em]">
             {article.kategoria_slug && article.kategoria_nazwa ? (
               <Link className="text-[var(--color-blue-soft)] transition-opacity hover:opacity-75" href={categoryPath(locale, article.kategoria_slug)}>
@@ -68,11 +69,11 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
             <p className="mt-6 text-[1.18rem] font-light leading-[1.6] text-white/72 max-[809px]:text-[1.02rem]">{article.zajawka}</p>
           ) : null}
 
-          <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/[0.12] pt-6">
+          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/[0.12] pt-3.5 text-[0.85rem]">
             {author ? (
-              <div className="flex items-center gap-3">
-                <AuthorAvatar author={author} size={40} />
-                <div className="text-[0.92rem] leading-tight">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <AuthorAvatar author={author} size={28} />
+                <span className="min-w-0 truncate">
                   {author.slug ? (
                     <Link className="font-medium text-white transition-opacity hover:opacity-75" href={authorPath(locale, author.slug)}>
                       {author.nazwa}
@@ -80,13 +81,13 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
                   ) : (
                     <span className="font-medium text-white">{author.nazwa}</span>
                   )}
-                  {author.stanowisko ? <p className="m-0 mt-1 text-[0.82rem] text-white/48">{author.stanowisko}</p> : null}
-                </div>
+                  {author.stanowisko ? <span className="text-white/48">{` · ${author.stanowisko}`}</span> : null}
+                </span>
               </div>
             ) : null}
 
             {article.czas_czytania ? (
-              <span className="ml-auto rounded-[var(--radius-button)] border border-white/[0.16] px-3 py-1.5 text-[0.8rem] text-white/64 max-[560px]:ml-0">
+              <span className="ml-auto shrink-0 text-white/56 max-[560px]:ml-0">
                 {article.czas_czytania} {ui.labels.minRead}
               </span>
             ) : null}

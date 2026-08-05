@@ -64,9 +64,14 @@ p {
   text-wrap: pretty;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Must sit in `base`: unlayered rules outrank Tailwind's `utilities` layer, so an
+   unlayered `color: inherit` here would silently beat every `text-*` class on a
+   link — e.g. white CTA labels falling back to the surrounding ink colour. */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 a:focus-visible,
@@ -159,7 +164,7 @@ button:focus-visible {
 
 .blog-prose p {
   margin: 0 0 1.35rem;
-  max-width: 72ch;
+  max-width: 78ch;
 }
 
 .blog-prose h2,
@@ -207,16 +212,48 @@ button:focus-visible {
   font-weight: 600;
 }
 
+/* Tailwind's preflight strips list markers globally, so the prose lists have to
+   opt back in explicitly. */
 .blog-prose ul,
 .blog-prose ol {
   margin: 0 0 1.35rem;
-  padding-left: 1.25rem;
-  max-width: 72ch;
+  padding-left: 1.35rem;
+  max-width: 78ch;
+  list-style-position: outside;
+}
+
+.blog-prose ul {
+  list-style-type: disc;
+}
+
+.blog-prose ol {
+  list-style-type: decimal;
+}
+
+.blog-prose ul ul {
+  list-style-type: circle;
+}
+
+.blog-prose ul ul ul {
+  list-style-type: square;
 }
 
 .blog-prose li {
   margin-bottom: 0.6rem;
   padding-left: 0.25rem;
+}
+
+.blog-prose li > ul,
+.blog-prose li > ol {
+  margin: 0.6rem 0 0;
+}
+
+.blog-prose li > p {
+  margin-bottom: 0.6rem;
+}
+
+.blog-prose li > p:last-child {
+  margin-bottom: 0;
 }
 
 .blog-prose li::marker {
@@ -332,6 +369,52 @@ button:focus-visible {
   margin: 3rem 0;
   border: 0;
   border-top: 1px solid var(--color-border-light);
+}
+
+.blog-prose details {
+  margin: 2rem 0;
+  padding: 1.1rem 1.35rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-card);
+}
+
+.blog-prose summary {
+  cursor: pointer;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.blog-prose details[open] summary {
+  margin-bottom: 0.9rem;
+}
+
+.blog-prose .blog-callout {
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  border-left: 3px solid var(--color-blue);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  background: rgba(0, 103, 244, 0.05);
+}
+
+.blog-prose .blog-callout > *:last-child {
+  margin-bottom: 0;
+}
+
+.blog-prose .blog-embed {
+  position: relative;
+  margin: 2.5rem 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-ink);
+}
+
+.blog-prose .blog-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 /* Tightened variant for short rich text such as an author bio. */
