@@ -120,7 +120,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
         aria-label="Primary navigation"
       >
         <Link className="shrink-0 px-1" href={localizePath(locale, "home")} aria-label={content.brand}>
-          <Image className="h-8 w-auto" src="/branding/kodasoft-logo-white.svg" width={622} height={169} alt="" aria-hidden="true" priority />
+          <Image className="h-5 w-auto" src="/branding/kodasoft-logo-white.svg" width={1404} height={247} alt="" aria-hidden="true" priority />
           <span className="sr-only">{content.brand}</span>
         </Link>
         <div ref={menuSlotRef} className="relative flex w-fit max-w-[calc(100vw-2rem)] justify-self-center whitespace-nowrap max-[809px]:hidden">

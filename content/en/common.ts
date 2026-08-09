@@ -14,11 +14,11 @@ export const commonContent: ShellContent = {
     ],
   },
   footer: {
-    tagline: "Adaptive ERP software built around how companies actually work.",
+    tagline: "A no-code BPM platform built around how companies actually work.",
     description:
       "Koda Soft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
     languageLabel: "Language",
-    productLine: "Adaptive ERP by Koda Soft",
+    productLine: "No-code BPM by Koda Soft",
   },
 };
 

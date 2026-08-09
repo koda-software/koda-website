@@ -3,15 +3,15 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Opero, elastyczny ERP dla procesów firmy",
+    title: "Opero, platforma BPM no-code dla procesów firmy",
     description:
-      "Koda Soft tworzy Opero: elastyczną platformę ERP do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
+      "Koda Soft tworzy Opero: platformę BPM no-code do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
   },
   hero: {
-    eyebrow: "Adaptacyjny ERP od Koda Soft",
+    eyebrow: "BPM no-code od Koda Soft",
     title: "Zamień swój sposób działania w oprogramowanie",
     description:
-      "Tworzymy Opero: elastyczną platformę ERP, która pozwala modelować własne operacje, automatyzować przepływy pracy, porządkować dane i używać AI tam, gdzie faktycznie toczy się praca.",
+      "Tworzymy Opero: platformę BPM no-code, która pozwala modelować własne procesy, automatyzować przepływy pracy, porządkować dane i używać AI tam, gdzie faktycznie toczy się praca.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
     supportPoints: [
@@ -126,7 +126,7 @@ export const homeContent: HomeContent = {
     label: "Rozwiązanie",
     title: "Opero dopasowuje się do sposobu pracy firmy.",
     description:
-      "Opero daje elastyczną podstawę ERP dla danych, procesów, reguł, ról, wyszukiwania i działań wspieranych przez AI. Pomaga przełożyć realną pracę na uporządkowane, kontrolowane oprogramowanie.",
+      "Opero daje podstawę low-code dla danych, procesów, reguł, ról, wyszukiwania i działań wspieranych przez AI. Pomaga przełożyć realną pracę na uporządkowane, kontrolowane oprogramowanie.",
     points: [
       "Modeluj własne procesy przez obiekty, pola, relacje i formularze.",
       "Automatyzuj zmiany rekordów, powiadomienia, kontrole i kroki procesu.",
@@ -136,7 +136,7 @@ export const homeContent: HomeContent = {
   },
   pillars: {
     label: "Możliwości Opero",
-    title: "Elastyczne ERP dla pracy, która się zmienia.",
+    title: "Fundament no-code dla procesów, które się zmieniają.",
     description:
       "Opero działa jak warstwa operacyjna firmy: modele danych, automatyzacja, uprawnienia, wyszukiwanie i wsparcie AI pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
     items: [

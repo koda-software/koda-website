@@ -3,13 +3,13 @@ import type { SolutionsContent } from "../types";
 
 export const solutionsContent: SolutionsContent = {
   seo: {
-    title: "Solutions - Flexible ERP for Industry Operations",
+    title: "Solutions - No-Code BPM for Industry Operations",
     description:
       "See how Opero supports healthcare, logistics, manufacturing, field service, construction, real estate, retail, and multi-location operations.",
   },
   hero: {
     eyebrow: "Solutions",
-    title: "Flexible ERP for operations that do not fit one template.",
+    title: "No-code BPM for processes that do not fit one template.",
     description:
       "Every industry has work that standard systems struggle to represent: local procedures, approvals, exceptions, documents, roles, and handoffs. Opero gives Koda Soft a configurable foundation to model that work without losing control.",
     supportLine: "Built for custom records, workflow automation, permissions, search, and practical AI assistance.",

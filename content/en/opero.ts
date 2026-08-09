@@ -3,13 +3,13 @@ import type { OperoProductContent } from "../types";
 
 export const operoProductContent: OperoProductContent = {
   seo: {
-    title: "Opero - Adaptive ERP for Custom Operations",
+    title: "Opero - No-Code BPM Platform for Custom Processes",
     description:
-      "Explore Opero, adaptive ERP software for custom operational data, workflows, automation, governance, and practical AI assistance.",
+      "Explore Opero, a no-code BPM platform for custom operational data, workflows, automation, governance, and practical AI assistance.",
   },
   hero: {
     eyebrow: "Opero product",
-    title: "Adaptive ERP for companies with custom operations.",
+    title: "No-code BPM for companies with custom processes.",
     description:
       "Opero helps Koda Soft model the records, workflows, permissions, automation, and AI-assisted actions that match how a company actually works.",
     primaryCta: "Book a demo",

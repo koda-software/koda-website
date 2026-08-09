@@ -3,13 +3,13 @@ import type { SolutionsContent } from "../types";
 
 export const solutionsContent: SolutionsContent = {
   seo: {
-    title: "Rozwiązania - Elastyczny ERP dla operacji branżowych",
+    title: "Rozwiązania - BPM no-code dla operacji branżowych",
     description:
       "Zobacz, jak Opero wspiera operacje w medycynie, logistyce, produkcji, serwisie, budownictwie, nieruchomościach, retailu i pracy wielooddziałowej.",
   },
   hero: {
     eyebrow: "Rozwiązania",
-    title: "Elastyczny ERP dla operacji, które nie mieszczą się w jednym szablonie.",
+    title: "BPM no-code dla procesów, które nie mieszczą się w jednym szablonie.",
     description:
       "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. Opero daje Koda Soft konfigurowalną podstawę do modelowania tej pracy bez utraty kontroli.",
     supportLine: "Dla własnych rekordów, automatyzacji workflow, uprawnień, wyszukiwania i praktycznego wsparcia AI.",

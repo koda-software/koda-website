@@ -28,7 +28,7 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
       <div className="relative mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_auto] gap-[clamp(2.5rem,6vw,6rem)] max-[809px]:grid-cols-1">
         <div className="max-w-[44rem]">
           <Link className="mb-6 inline-block" href={localizePath(locale, "home")} aria-label={content.brand}>
-            <Image className="h-9 w-auto" src="/branding/kodasoft-logo-white.svg" width={622} height={169} alt="" aria-hidden="true" />
+            <Image className="h-6 w-auto" src="/branding/kodasoft-logo-white.svg" width={1404} height={247} alt="" aria-hidden="true" />
             <span className="sr-only">{content.brand}</span>
           </Link>
           <p className="m-0 max-w-[38rem] text-[2rem] font-light leading-[1.18] text-white/82 max-[809px]:text-[1.55rem]">

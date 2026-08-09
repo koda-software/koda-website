@@ -3,13 +3,13 @@ import type { BlogUiContent } from "../types";
 
 export const blogContent: BlogUiContent = {
   seo: {
-    title: "Blog - Notes on Adaptive ERP, Automation, and Practical AI",
+    title: "Blog - Notes on BPM, No-Code, Automation, and Practical AI",
     description:
-      "Field notes from the team building Opero: ERP implementations, workflow automation, data modelling, governance, and where AI genuinely helps operations.",
+      "Field notes from the team building Opero: BPM implementations, no-code process design, workflow automation, data modelling, governance, and where AI genuinely helps operations.",
   },
   index: {
     eyebrow: "Blog",
-    title: "Notes from building adaptive ERP.",
+    title: "Notes from building a no-code BPM platform.",
     description:
       "What we learn shipping Opero into real operations: how processes get modelled, where automation earns its keep, what governance actually requires, and where AI helps instead of getting in the way.",
   },

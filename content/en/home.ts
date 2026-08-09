@@ -3,15 +3,15 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Koda Soft - Adaptive ERP Software Built Around Your Work",
+    title: "Koda Soft - No-Code BPM Platform Built Around Your Work",
     description:
-      "Koda Soft builds Opero, adaptive ERP software for custom operations, workflow automation, governance, and practical AI assistance.",
+      "Koda Soft builds Opero, a no-code BPM platform for custom business processes, workflow automation, governance, and practical AI assistance.",
   },
   hero: {
-    eyebrow: "Adaptive ERP by Koda Soft",
-    title: "ERP that fits your operations. Not the other way around.",
+    eyebrow: "No-code BPM by Koda Soft",
+    title: "Business process software that fits your operations. Not the other way around.",
     description:
-      "Koda Soft builds Opero, adaptive ERP software that helps companies model custom operations, automate workflows, govern business data, and use AI where work actually happens.",
+      "Koda Soft builds Opero, a no-code BPM platform that helps companies model custom processes, automate workflows, govern business data, and use AI where work actually happens.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
     supportPoints: [
@@ -126,7 +126,7 @@ export const homeContent: HomeContent = {
     label: "The solution",
     title: "Opero adapts around the work, not the other way around.",
     description:
-      "Opero gives companies a flexible ERP foundation for custom data, workflows, rules, roles, search, and AI-assisted actions. It turns the way people already work into structured, governable software.",
+      "Opero gives companies a low-code foundation for custom data, workflows, rules, roles, search, and AI-assisted actions. It turns the way people already work into structured, governable software.",
     points: [
       "Model custom operations with objects, fields, relations, and forms.",
       "Automate record changes, notifications, checks, and workflow steps.",
@@ -136,7 +136,7 @@ export const homeContent: HomeContent = {
   },
   pillars: {
     label: "Opero capabilities",
-    title: "A flexible ERP backbone for work that keeps changing.",
+    title: "A no-code backbone for processes that keep changing.",
     description:
       "Opero is built as an operating layer: data models, automation, permissions, search, and AI assistance stay connected instead of becoming another set of disconnected tools.",
     items: [

@@ -3,13 +3,13 @@ import type { BlogUiContent } from "../types";
 
 export const blogContent: BlogUiContent = {
   seo: {
-    title: "Blog - Elastyczny ERP, automatyzacja i praktyczne AI",
+    title: "Blog - BPM, no-code, automatyzacja i praktyczne AI",
     description:
-      "Notatki zespołu, który tworzy Opero: wdrożenia ERP, automatyzacja procesów, modelowanie danych, kontrola dostępu i miejsca, w których AI realnie pomaga.",
+      "Notatki zespołu, który tworzy Opero: wdrożenia BPM, projektowanie procesów no-code, automatyzacja, modelowanie danych, kontrola dostępu i miejsca, w których AI realnie pomaga.",
   },
   index: {
     eyebrow: "Blog",
-    title: "Notatki z budowania elastycznego ERP.",
+    title: "Notatki z budowania platformy BPM no-code.",
     description:
       "To, czego uczymy się wdrażając Opero w realnych operacjach: jak modelować procesy, gdzie automatyzacja naprawdę się opłaca, czego wymaga kontrola nad danymi i kiedy AI pomaga, a kiedy przeszkadza.",
   },

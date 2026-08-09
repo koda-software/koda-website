@@ -3,7 +3,7 @@ import type { ContactPageContent } from "../types";
 export const contactContent: ContactPageContent = {
   seo: {
     title: "Umów demo Opero",
-    description: "Skontaktuj się z Koda Soft, aby omówić Opero, automatyzację procesów, elastyczny ERP i oprogramowanie dopasowane do pracy firmy.",
+    description: "Skontaktuj się z Koda Soft, aby omówić Opero, automatyzację procesów, projektowanie procesów no-code i oprogramowanie dopasowane do pracy firmy.",
   },
   hero: {
     eyebrow: "Umów demo",

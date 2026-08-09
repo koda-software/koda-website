@@ -14,11 +14,11 @@ export const commonContent: ShellContent = {
     ],
   },
   footer: {
-    tagline: "Elastyczny ERP dopasowany do tego, jak firmy naprawdę pracują.",
+    tagline: "Platforma BPM no-code dopasowana do tego, jak firmy naprawdę pracują.",
     description:
       "Koda Soft tworzy Opero dla firm, które potrzebują stabilnego oprogramowania dopasowanego do realnych operacji, kontroli, automatyzacji i praktycznego AI.",
     languageLabel: "Język",
-    productLine: "Adaptacyjny ERP od Koda Soft",
+    productLine: "BPM no-code od Koda Soft",
   },
 };
 

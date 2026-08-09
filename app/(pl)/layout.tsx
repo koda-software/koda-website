@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
-  description: "Koda Soft tworzy Opero, elastyczny system ERP dla procesow firmowych.",
+  description: "Koda Soft tworzy Opero, platformę BPM no-code do procesów firmowych.",
   applicationName: siteConfig.name,
   icons: {
     icon: [
