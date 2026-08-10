@@ -1,11 +1,14 @@
 import { localizePath } from "@/lib/i18n/routes";
 import type { ShellContent } from "../types";
+import { featureNavItems } from "./features";
 
 export const commonContent: ShellContent = {
-  brand: "Koda Soft",
+  brand: "KodaSoft",
   nav: {
+    home: "Home",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    toggleSubmenu: "Show system features",
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },
@@ -16,13 +19,14 @@ export const commonContent: ShellContent = {
   footer: {
     tagline: "A no-code BPM platform built around how companies actually work.",
     description:
-      "Koda Soft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
+      "KodaSoft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
     languageLabel: "Language",
-    productLine: "No-code BPM by Koda Soft",
+    productLine: "No-code BPM by KodaSoft",
   },
 };
 
 export const navItems = commonContent.nav.items.map((item) => ({
   ...item,
   href: localizePath("en", item.page),
+  ...(item.page === "opero" ? { submenu: featureNavItems } : {}),
 }));

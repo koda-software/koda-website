@@ -5,10 +5,10 @@ export const homeContent: HomeContent = {
   seo: {
     title: "Opero, platforma BPM no-code dla procesów firmy",
     description:
-      "Koda Soft tworzy Opero: platformę BPM no-code do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
+      "KodaSoft tworzy Opero: platformę BPM no-code do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
   },
   hero: {
-    eyebrow: "BPM no-code od Koda Soft",
+    eyebrow: "BPM no-code od KodaSoft",
     title: "Zamień swój sposób działania w oprogramowanie",
     description:
       "Tworzymy Opero: platformę BPM no-code, która pozwala modelować własne procesy, automatyzować przepływy pracy, porządkować dane i używać AI tam, gdzie faktycznie toczy się praca.",
@@ -190,7 +190,7 @@ export const homeContent: HomeContent = {
     label: "Jak to działa",
     title: "Od chaotycznych operacji do uporządkowanego systemu.",
     description:
-      "Koda Soft traktuje Opero jak solidną warstwę produktową: najpierw porządkujemy obraz pracy firmy, a potem przekładamy go na stabilne procesy.",
+      "KodaSoft traktuje Opero jak solidną warstwę produktową: najpierw porządkujemy obraz pracy firmy, a potem przekładamy go na stabilne procesy.",
     steps: [
       {
         label: "01",
@@ -202,7 +202,7 @@ export const homeContent: HomeContent = {
         label: "02",
         title: "Zamodeluj",
         description:
-          "Przełóż je na konfigurowalne struktury danych, formularze, relacje i ekrany operacyjne.",
+          "Przełóż je na konfigurowalne struktury danych, formularze, relacje i widoki operacyjne.",
       },
       {
         label: "03",
@@ -260,7 +260,7 @@ export const homeContent: HomeContent = {
     label: "Gdzie pasuje",
     title: "Dla operacji, które wyrosły z gotowych systemów.",
     description:
-      "Opero wychodzi od realnego sposobu pracy w firmie, a potem daje Koda Soft trwałą podstawę do konfiguracji, automatyzacji i dalszego rozwoju.",
+      "Opero wychodzi od realnego sposobu pracy w firmie, a potem daje KodaSoft trwałą podstawę do konfiguracji, automatyzacji i dalszego rozwoju.",
     items: [
       {
         title: "Obsługa kontrahentów i partnerów",
@@ -285,10 +285,10 @@ export const homeContent: HomeContent = {
     ],
   },
   trust: {
-    label: "Tworzone przez Koda Soft",
+    label: "Tworzone przez KodaSoft",
     title: "Doświadczenie software house’u, wykonanie na poziomie produktu.",
     description:
-      "Koda Soft buduje Opero z dyscypliną inżynieryjną: w oparciu o elastyczną architekturę, utrzymywalne systemy, kontrolowane uprawnienia, sprawdzalną automatyzację i świadome podejście do wydajności.",
+      "KodaSoft buduje Opero z dyscypliną inżynieryjną: w oparciu o elastyczną architekturę, utrzymywalne systemy, kontrolowane uprawnienia, sprawdzalną automatyzację i świadome podejście do wydajności.",
     points: [
       "Architektura dla konfigurowalnych operacji.",
       "Kontrola oparta na uprawnieniach, rolach i logach audytowych.",
@@ -300,7 +300,7 @@ export const homeContent: HomeContent = {
     eyebrow: "Zacznij od procesu",
     title: "Buduj oprogramowanie wokół tego, jak firma naprawdę pracuje.",
     description:
-      "Zobacz, jak Koda Soft i Opero pomagają zamienić operacje w elastyczne, kontrolowane oprogramowanie biznesowe wspierane praktycznym AI.",
+      "Zobacz, jak KodaSoft i Opero pomagają zamienić operacje w elastyczne, kontrolowane oprogramowanie biznesowe wspierane praktycznym AI.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
   },

@@ -31,7 +31,7 @@ type BlogMetadataInput = {
   title: string;
   description: string;
   path: string;
-  /** Absolute title bypasses the root layout's `%s | Koda Soft` template. */
+  /** Absolute title bypasses the root layout's `%s | KodaSoft` template. */
   absoluteTitle?: string;
   image?: string;
   noIndex?: boolean;

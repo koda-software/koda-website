@@ -6,11 +6,41 @@ const root = process.cwd();
 const siteUrl = "https://www.kodasoft.pl";
 const ogImage = `${siteUrl}/og-image.png`;
 
+// Mirrors featureSlugs in lib/i18n/features.ts and next-sitemap.config.js.
+const featureSlugs = {
+  processes: { en: "process-workflow", pl: "procesy-workflow" },
+  documents: { en: "document-management", pl: "eod-dms" },
+  noCode: { en: "no-code", pl: "no-code" },
+  lowCode: { en: "low-code-automation", pl: "low-code-automatyzacje" },
+  reports: { en: "reports-analytics", pl: "raporty" },
+  security: { en: "security-permissions", pl: "bezpieczenstwo-uprawnienia" },
+  integrations: { en: "integrations-compliance", pl: "integracje-zgodnosc" },
+  ai: { en: "contextual-ai", pl: "kontekstowe-ai" },
+};
+
+const featurePages = Object.values(featureSlugs).flatMap((slugs) => {
+  const alternates = {
+    en: `${siteUrl}/en/opero/${slugs.en}`,
+    pl: `${siteUrl}/pl/opero/${slugs.pl}`,
+    "x-default": `${siteUrl}/en/opero/${slugs.en}`,
+  };
+
+  return ["en", "pl"].map((locale) => ({
+    file: `.next/server/app/${locale}/opero/${slugs[locale]}.html`,
+    route: `/${locale}/opero/${slugs[locale]}`,
+    locale,
+    canonical: `${siteUrl}/${locale}/opero/${slugs[locale]}`,
+    alternates,
+    breadcrumb: true,
+  }));
+});
+
 const pages = [
   { file: ".next/server/app/index.html", route: "/", locale: "en", canonical: siteUrl, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
   { file: ".next/server/app/pl.html", route: "/pl", locale: "pl", canonical: `${siteUrl}/pl`, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
   { file: ".next/server/app/en/opero.html", route: "/en/opero", locale: "en", canonical: `${siteUrl}/en/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, software: true },
   { file: ".next/server/app/pl/opero.html", route: "/pl/opero", locale: "pl", canonical: `${siteUrl}/pl/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, software: true },
+  ...featurePages,
   { file: ".next/server/app/en/solutions.html", route: "/en/solutions", locale: "en", canonical: `${siteUrl}/en/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
   { file: ".next/server/app/pl/solutions.html", route: "/pl/solutions", locale: "pl", canonical: `${siteUrl}/pl/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
   // Blog index only: article slugs are CMS content and may be renamed or unpublished.
@@ -58,6 +88,10 @@ for (const page of pages) {
   if (page.software) {
     assert(html.includes('"@type":"SoftwareApplication"'), `${page.route}: missing SoftwareApplication JSON-LD`);
     assert(html.includes('"applicationCategory":"BusinessApplication"'), `${page.route}: missing SoftwareApplication category`);
+  }
+
+  if (page.breadcrumb) {
+    assert(html.includes('"@type":"BreadcrumbList"'), `${page.route}: missing BreadcrumbList JSON-LD`);
   }
 
   if (page.contact) {

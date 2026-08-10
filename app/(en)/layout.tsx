@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
-  description: "Koda Soft builds Opero, a no-code BPM platform for flexible company processes.",
+  description: "KodaSoft builds Opero, a no-code BPM platform for flexible company processes.",
   applicationName: siteConfig.name,
   icons: {
     icon: [

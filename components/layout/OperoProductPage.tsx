@@ -1,8 +1,11 @@
 import Link from "next/link";
-import type { OperoProductContent, ProductFeatureRow } from "@/content/types";
+import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
+import type { NavSubItem, OperoProductContent, ProductFeatureRow } from "@/content/types";
 
 type OperoProductPageProps = {
   content: OperoProductContent;
+  /** The eight feature pages nested under this route. */
+  featureLinks: NavSubItem[];
   primaryHref: string;
   secondaryHref: string;
 };
@@ -95,7 +98,7 @@ function FeatureRow({ row }: { row: ProductFeatureRow }) {
   );
 }
 
-export function OperoProductPage({ content, primaryHref, secondaryHref }: OperoProductPageProps) {
+export function OperoProductPage({ content, featureLinks, primaryHref, secondaryHref }: OperoProductPageProps) {
   return (
     <>
       <section className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
@@ -143,6 +146,31 @@ export function OperoProductPage({ content, primaryHref, secondaryHref }: OperoP
             <FeatureRow key={row.title} row={row} />
           ))}
         </div>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.featureLinks.eyebrow}</p>
+        <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(18rem,0.48fr)] gap-12 max-[980px]:grid-cols-1">
+          <h2 className={sectionTitleClass}>{content.featureLinks.title}</h2>
+          <p className={bodyClass}>{content.featureLinks.description}</p>
+        </div>
+        <ul className="mt-10 grid list-none grid-cols-4 gap-4 p-0 max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
+          {featureLinks.map((item) => (
+            <li key={item.feature}>
+              <Link
+                className="group flex h-full items-center justify-between gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 text-[1.05rem] font-medium leading-[1.25] text-[var(--color-ink)] transition-colors hover:border-[rgba(0,103,244,0.24)]"
+                href={item.href}
+              >
+                {item.label}
+                <ArrowRightIcon
+                  className="h-5 w-5 shrink-0 text-[var(--color-blue)] transition-transform duration-200 group-hover:translate-x-1"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="px-[var(--page-gutter)] py-[var(--section-y)]">

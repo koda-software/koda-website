@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/config";
+import { getFeatureAlternatePaths, localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
 import { getAlternatePaths, localizePath, type PageKey } from "@/lib/i18n/routes";
 import { absoluteUrl, siteConfig } from "./site";
 
@@ -16,9 +17,50 @@ export type PageSeoInput = {
   noIndex?: boolean;
 };
 
+export type FeatureSeoInput = {
+  locale: Locale;
+  feature: FeatureKey;
+  title: string;
+  description: string;
+};
+
 export function createPageMetadata({ locale, page, title, description, noIndex }: PageSeoInput): Metadata {
-  const path = localizePath(locale, page);
-  const alternates = getAlternatePaths(page);
+  return buildMetadata({
+    locale,
+    path: localizePath(locale, page),
+    alternates: getAlternatePaths(page),
+    title,
+    description,
+    noIndex,
+  });
+}
+
+/** Same envelope as `createPageMetadata`, for the feature pages nested under /opero. */
+export function createFeaturePageMetadata({ locale, feature, title, description }: FeatureSeoInput): Metadata {
+  return buildMetadata({
+    locale,
+    path: localizeFeaturePath(locale, feature),
+    alternates: getFeatureAlternatePaths(feature),
+    title,
+    description,
+  });
+}
+
+function buildMetadata({
+  locale,
+  path,
+  alternates,
+  title,
+  description,
+  noIndex,
+}: {
+  locale: Locale;
+  path: string;
+  alternates: Record<Locale | "x-default", string>;
+  title: string;
+  description: string;
+  noIndex?: boolean;
+}): Metadata {
   const languages = Object.fromEntries(
     Object.entries(alternates).map(([key, value]) => [key, absoluteUrl(value)]),
   );

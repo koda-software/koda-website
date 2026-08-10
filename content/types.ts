@@ -1,9 +1,18 @@
+import type { FeatureKey } from "@/lib/i18n/features";
 import type { PageKey } from "@/lib/i18n/routes";
+
+export type NavSubItem = {
+  feature: FeatureKey;
+  label: string;
+  href: string;
+};
 
 export type NavItem = {
   page: PageKey;
   label: string;
   href: string;
+  /** Rendered as a dropdown under the parent link; only the Opero tab uses it. */
+  submenu?: NavSubItem[];
 };
 
 export type SeoContent = {
@@ -19,8 +28,11 @@ export type CtaContent = {
 export type ShellContent = {
   brand: string;
   nav: {
+    home: string;
     openMenu: string;
     closeMenu: string;
+    /** Label for the control that expands the Opero submenu on touch devices. */
+    toggleSubmenu: string;
     items: Array<{ page: Exclude<PageKey, "home">; label: string }>;
   };
   footer: {
@@ -178,6 +190,12 @@ export type OperoProductContent = {
     description: string;
     rows: ProductFeatureRow[];
   };
+  /** Entry point to the eight "system features" pages nested under this route. */
+  featureLinks: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
   connectedModel: {
     eyebrow: string;
     title: string;
@@ -213,6 +231,71 @@ export type OperoProductContent = {
     secondaryCta: string;
   };
 };
+
+export type FeatureBlock = {
+  title: string;
+  description: string;
+};
+
+/**
+ * A slot in the screenshot band. `src` is the real, reviewed screenshot; a shot
+ * is only defined when a picture exists, so the page never renders a gray
+ * placeholder frame. `width`/`height` are the source file's intrinsic pixel
+ * dimensions - each screenshot keeps its own aspect ratio instead of being
+ * cropped into a shared shape.
+ */
+export type FeatureShot = {
+  /** Path under /public to the real screenshot. */
+  src: string;
+  width: number;
+  height: number;
+  /** Visible caption under the image. */
+  caption: string;
+  alt: string;
+};
+
+export type FeaturePageContent = {
+  seo: SeoContent;
+  /** Short label used in the navigation dropdown and in related-page links. */
+  navLabel: string;
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+    /** Omit when no reviewed screenshot exists yet; the hero falls back to a text-only layout. */
+    shot?: FeatureShot;
+  };
+  intro: {
+    eyebrow: string;
+    paragraph: string;
+  };
+  blocks: {
+    eyebrow: string;
+    title: string;
+    items: FeatureBlock[];
+  };
+  /** Omit the whole band when the page has no reviewed screenshots yet. */
+  shots?: {
+    eyebrow: string;
+    title: string;
+    items: FeatureShot[];
+  };
+  finalCta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+  };
+  related: {
+    eyebrow: string;
+    title: string;
+    items: FeatureKey[];
+  };
+};
+
+export type FeaturePagesContent = Record<FeatureKey, FeaturePageContent>;
 
 export type SolutionIndustry = {
   title: string;

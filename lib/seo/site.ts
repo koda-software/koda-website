@@ -2,7 +2,7 @@ import { getAllLocalizedRoutes, localizePath, pageKeys, type PageKey } from "@/l
 import type { Locale } from "@/lib/i18n/config";
 
 export const siteConfig = {
-  name: "Koda Soft",
+  name: "KodaSoft",
   productName: "Opero",
   url: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl"),
   defaultOgImage: "/og-image.png",

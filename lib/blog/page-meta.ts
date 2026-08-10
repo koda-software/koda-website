@@ -9,7 +9,7 @@ import type { BlogLocale } from "./types";
 
 /**
  * `generateMetadata` bodies for every blog route. Listing and archive pages use
- * the root layout's `%s | Koda Soft` title template; article pages take their
+ * the root layout's `%s | KodaSoft` title template; article pages take their
  * title verbatim from the CMS (with the CMS suffix) to avoid a double suffix.
  */
 

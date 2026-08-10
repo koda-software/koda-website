@@ -11,7 +11,7 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Opero product",
     title: "No-code BPM for companies with custom processes.",
     description:
-      "Opero helps Koda Soft model the records, workflows, permissions, automation, and AI-assisted actions that match how a company actually works.",
+      "Opero helps KodaSoft model the records, workflows, permissions, automation, and AI-assisted actions that match how a company actually works.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore solutions",
     diagramItems: ["Records", "Forms", "Workflows", "Rules", "Search", "Governance"],
@@ -38,7 +38,7 @@ export const operoProductContent: OperoProductContent = {
         supports: ["Custom objects and modules", "Fields and relations", "Dictionaries and statuses", "Contractor records"],
       },
       {
-        title: "Forms and record screens",
+        title: "Forms and record views",
         description:
           "Capture the right information for each process through structured forms and record views that can reflect the data, ownership, files, and related context a team needs.",
         supports: ["Process-specific forms", "Linked records", "Files and notes", "Record layouts"],
@@ -74,6 +74,12 @@ export const operoProductContent: OperoProductContent = {
         supports: ["Roles and permissions", "Organization isolation", "Audit logs", "API tokens"],
       },
     ],
+  },
+  featureLinks: {
+    eyebrow: "System features",
+    title: "The eight areas Opero is made of.",
+    description:
+      "Each area has its own page describing exactly what you get and what it looks like inside the system.",
   },
   connectedModel: {
     eyebrow: "Connected model",
@@ -114,7 +120,7 @@ export const operoProductContent: OperoProductContent = {
       },
       {
         title: "Model",
-        description: "Turn that operating model into objects, fields, forms, relations, screens, permissions, and searchable data.",
+        description: "Turn that operating model into objects, fields, forms, relations, layouts, permissions, and searchable data.",
         supports: ["Objects", "Forms", "Permissions"],
       },
       {
@@ -155,7 +161,7 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Book a demo",
     title: "If your process is specific, your software should be able to understand it.",
     description:
-      "Show Koda Soft how your company works. We will show how Opero can model the data, workflows, controls, and AI assistance around it.",
+      "Show KodaSoft how your company works. We will show how Opero can model the data, workflows, controls, and AI assistance around it.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore solutions",
   },

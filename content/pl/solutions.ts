@@ -11,7 +11,7 @@ export const solutionsContent: SolutionsContent = {
     eyebrow: "Rozwiązania",
     title: "BPM no-code dla procesów, które nie mieszczą się w jednym szablonie.",
     description:
-      "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. Opero daje Koda Soft konfigurowalną podstawę do modelowania tej pracy bez utraty kontroli.",
+      "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. Opero daje KodaSoft konfigurowalną podstawę do modelowania tej pracy bez utraty kontroli.",
     supportLine: "Dla własnych rekordów, automatyzacji workflow, uprawnień, wyszukiwania i praktycznego wsparcia AI.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
@@ -54,7 +54,7 @@ export const solutionsContent: SolutionsContent = {
         useCasesLabel: "Typowe zastosowania",
         useCases: [
           "Zarządzanie wyjątkami wysyłek, które potrzebują właściciela, statusu, dowodów i działań follow-up.",
-          "Śledzenie dokumentów transportowych, brakujących plików, notatek przekazania i stanów akceptacji.",
+          "Śledzenie dokumentów transportowych, brakujących plików, notatek przekazania i etapów akceptacji.",
           "Utrzymywanie rekordów przewoźników i partnerów z własnymi polami, kontaktami i historią procesu.",
           "Koordynacja kontroli magazynowych, kontroli pojazdów, reklamacji i cyklicznych raportów operacyjnych.",
         ],
@@ -186,7 +186,7 @@ export const solutionsContent: SolutionsContent = {
     goodFit: [
       "Proces ma własne rekordy lub pola.",
       "Kilka zespołów dotyka tego samego workflow.",
-      "Właściciel, status lub stan dokumentów ma znaczenie.",
+      "Właściciel, status lub etap dokumentów ma znaczenie.",
       "Firma potrzebuje uprawnień i śladu działania.",
       "Workflow zmienia się na tyle często, że potrzebna jest konfiguracja.",
     ],
@@ -201,7 +201,7 @@ export const solutionsContent: SolutionsContent = {
     eyebrow: "Zacznij od procesu",
     title: "Opowiedz, jak działa Twoja operacja. Powiemy, czy Opero pasuje.",
     description:
-      "Koda Soft może zmapować rekordy, role, dokumenty, akceptacje i wyjątki w Twoim procesie, a potem pokazać, czy Opero jest właściwą podstawą.",
+      "KodaSoft może zmapować rekordy, role, dokumenty, akceptacje i wyjątki w Twoim procesie, a potem pokazać, czy Opero jest właściwą podstawą.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
   },

@@ -3,7 +3,7 @@ import type { ContactPageContent } from "../types";
 export const contactContent: ContactPageContent = {
   seo: {
     title: "Umów demo Opero",
-    description: "Skontaktuj się z Koda Soft, aby omówić Opero, automatyzację procesów, projektowanie procesów no-code i oprogramowanie dopasowane do pracy firmy.",
+    description: "Skontaktuj się z KodaSoft, aby omówić Opero, automatyzację procesów, projektowanie procesów no-code i oprogramowanie dopasowane do pracy firmy.",
   },
   hero: {
     eyebrow: "Umów demo",
@@ -43,7 +43,7 @@ export const contactContent: ContactPageContent = {
     phoneLabel: "Telefon",
     interestLabel: "Główny temat",
     messageLabel: "Co chcesz omówić?",
-    consent: "Wysyłając formularz, zgadzasz się na kontakt Koda Soft w sprawie zapytania.",
+    consent: "Wysyłając formularz, zgadzasz się na kontakt KodaSoft w sprawie zapytania.",
     requiredHint: "Wymagane",
     optionalHint: "Opcjonalne",
     submitLabel: "Wyślij zapytanie",

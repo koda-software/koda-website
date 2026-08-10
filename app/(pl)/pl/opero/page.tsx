@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { commonContent, navItems } from "@/content/pl/common";
+import { featureNavItems } from "@/content/pl/features";
 import { operoProductContent, operoProductCtas } from "@/content/pl/opero";
 import { OperoProductPage } from "@/components/layout/OperoProductPage";
 import { PageShell } from "@/components/layout/PageShell";
@@ -17,7 +18,12 @@ export default function PlOperoPage() {
     <>
       <SoftwareApplicationJsonLd locale="pl" description={operoProductContent.seo.description} />
       <PageShell locale="pl" page="opero" shell={commonContent} navItems={navItems}>
-        <OperoProductPage content={operoProductContent} primaryHref={operoProductCtas.primary} secondaryHref={operoProductCtas.secondary} />
+        <OperoProductPage
+          content={operoProductContent}
+          featureLinks={featureNavItems}
+          primaryHref={operoProductCtas.primary}
+          secondaryHref={operoProductCtas.secondary}
+        />
       </PageShell>
     </>
   );

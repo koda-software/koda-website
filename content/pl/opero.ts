@@ -11,7 +11,7 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Produkt Opero",
     title: "BPM no-code dla firm z własnymi procesami.",
     description:
-      "Opero pomaga Koda Soft modelować rekordy, workflow, uprawnienia, automatyzację i działania wspierane przez AI zgodnie z tym, jak firma naprawdę pracuje.",
+      "Opero pomaga KodaSoft modelować rekordy, workflow, uprawnienia, automatyzację i działania wspierane przez AI zgodnie z tym, jak firma naprawdę pracuje.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
     diagramItems: ["Rekordy", "Formularze", "Workflow", "Reguły", "Wyszukiwanie", "Kontrola"],
@@ -38,7 +38,7 @@ export const operoProductContent: OperoProductContent = {
         supports: ["Własne obiekty i moduły", "Pola i relacje", "Słowniki i statusy", "Rekordy kontrahentów"],
       },
       {
-        title: "Formularze i ekrany rekordów",
+        title: "Formularze i widoki rekordów",
         description:
           "Zbieraj właściwe informacje dla każdego procesu przez formularze i widoki rekordów, które pokazują dane, właścicieli, pliki i powiązany kontekst.",
         supports: ["Formularze procesowe", "Powiązane rekordy", "Pliki i notatki", "Układy rekordów"],
@@ -74,6 +74,12 @@ export const operoProductContent: OperoProductContent = {
         supports: ["Role i uprawnienia", "Izolacja organizacji", "Logi audytowe", "Tokeny API"],
       },
     ],
+  },
+  featureLinks: {
+    eyebrow: "Funkcje systemu",
+    title: "Osiem obszarów, z których składa się Opero.",
+    description:
+      "Każdy obszar ma własną stronę z opisem, co dokładnie dostajesz i jak to wygląda w systemie.",
   },
   connectedModel: {
     eyebrow: "Połączony model",
@@ -114,7 +120,7 @@ export const operoProductContent: OperoProductContent = {
       },
       {
         title: "Modelowanie",
-        description: "Przekładamy model operacyjny na obiekty, pola, formularze, relacje, ekrany, uprawnienia i dane możliwe do wyszukania.",
+        description: "Przekładamy model operacyjny na obiekty, pola, formularze, relacje, układy, uprawnienia i dane możliwe do wyszukania.",
         supports: ["Obiekty", "Formularze", "Uprawnienia"],
       },
       {
@@ -155,7 +161,7 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Umów demo",
     title: "Jeśli proces jest specyficzny, oprogramowanie powinno umieć go zrozumieć.",
     description:
-      "Pokaż Koda Soft, jak działa Twoja firma. Pokażemy, jak Opero może modelować dane, workflow, kontrolę i wsparcie AI wokół tego procesu.",
+      "Pokaż KodaSoft, jak działa Twoja firma. Pokażemy, jak Opero może modelować dane, workflow, kontrolę i wsparcie AI wokół tego procesu.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
   },

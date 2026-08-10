@@ -11,7 +11,7 @@ export const solutionsContent: SolutionsContent = {
     eyebrow: "Solutions",
     title: "No-code BPM for processes that do not fit one template.",
     description:
-      "Every industry has work that standard systems struggle to represent: local procedures, approvals, exceptions, documents, roles, and handoffs. Opero gives Koda Soft a configurable foundation to model that work without losing control.",
+      "Every industry has work that standard systems struggle to represent: local procedures, approvals, exceptions, documents, roles, and handoffs. Opero gives KodaSoft a configurable foundation to model that work without losing control.",
     supportLine: "Built for custom records, workflow automation, permissions, search, and practical AI assistance.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
@@ -54,7 +54,7 @@ export const solutionsContent: SolutionsContent = {
         useCasesLabel: "Typical use cases",
         useCases: [
           "Managing shipment exceptions that need ownership, status, evidence, and follow-up.",
-          "Tracking transport documents, missing files, handoff notes, and approval states.",
+          "Tracking transport documents, missing files, handoff notes, and approval stages.",
           "Maintaining carrier and partner records with custom fields, contacts, and process history.",
           "Coordinating warehouse checks, vehicle checks, claims, and recurring operational reports.",
         ],
@@ -106,7 +106,7 @@ export const solutionsContent: SolutionsContent = {
         ],
         helpfulFeaturesLabel: "Helpful Opero features",
         helpfulFeatures: [
-          "Record screens for service cases, assets, assignments, checklists, and files.",
+          "Record views for service cases, assets, assignments, checklists, and files.",
           "Workflow statuses for intake, diagnosis, parts needed, in progress, ready, and closed.",
           "Scheduled rules for recurring checks, overdue reminders, and daily reports.",
           "AI-assisted summaries for case history and operational reporting.",
@@ -186,7 +186,7 @@ export const solutionsContent: SolutionsContent = {
     goodFit: [
       "The process has custom records or fields.",
       "Multiple teams touch the same workflow.",
-      "Ownership, status, or document state matters.",
+      "Ownership, status, or document stage matters.",
       "The company needs permissions and traceability.",
       "The workflow changes often enough to need configuration.",
     ],
@@ -201,7 +201,7 @@ export const solutionsContent: SolutionsContent = {
     eyebrow: "Start with the process",
     title: "Tell us how your operation works. We will tell you if Opero fits.",
     description:
-      "Koda Soft can map the records, roles, documents, approvals, and exceptions behind your process and show whether Opero is the right foundation.",
+      "KodaSoft can map the records, roles, documents, approvals, and exceptions behind your process and show whether Opero is the right foundation.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
   },

@@ -3,15 +3,15 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Koda Soft - No-Code BPM Platform Built Around Your Work",
+    title: "KodaSoft - No-Code BPM Platform Built Around Your Work",
     description:
-      "Koda Soft builds Opero, a no-code BPM platform for custom business processes, workflow automation, governance, and practical AI assistance.",
+      "KodaSoft builds Opero, a no-code BPM platform for custom business processes, workflow automation, governance, and practical AI assistance.",
   },
   hero: {
-    eyebrow: "No-code BPM by Koda Soft",
+    eyebrow: "No-code BPM by KodaSoft",
     title: "Business process software that fits your operations. Not the other way around.",
     description:
-      "Koda Soft builds Opero, a no-code BPM platform that helps companies model custom processes, automate workflows, govern business data, and use AI where work actually happens.",
+      "KodaSoft builds Opero, a no-code BPM platform that helps companies model custom processes, automate workflows, govern business data, and use AI where work actually happens.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
     supportPoints: [
@@ -170,7 +170,7 @@ export const homeContent: HomeContent = {
     label: "How it works",
     title: "From messy operations to structured software.",
     description:
-      "Koda Soft approaches Opero as a product-grade system for modeling reality first, then turning that model into dependable workflows.",
+      "KodaSoft approaches Opero as a product-grade system for modeling reality first, then turning that model into dependable workflows.",
     steps: [
       {
         label: "01",
@@ -180,7 +180,7 @@ export const homeContent: HomeContent = {
       {
         label: "02",
         title: "Model",
-        description: "Turn them into configurable data structures, forms, relationships, and operational screens.",
+        description: "Turn them into configurable data structures, forms, relationships, and operational views.",
       },
       {
         label: "03",
@@ -235,7 +235,7 @@ export const homeContent: HomeContent = {
     label: "Where it fits",
     title: "For operations that outgrow off-the-shelf software.",
     description:
-      "Opero starts with the shape of your work, then gives Koda Soft a durable foundation to configure, automate, and extend it.",
+      "Opero starts with the shape of your work, then gives KodaSoft a durable foundation to configure, automate, and extend it.",
     items: [
       {
         title: "Contractor and partner operations",
@@ -260,10 +260,10 @@ export const homeContent: HomeContent = {
     ],
   },
   trust: {
-    label: "Built by Koda Soft",
+    label: "Built by KodaSoft",
     title: "Software-house expertise, product-grade execution.",
     description:
-      "Koda Soft builds Opero with the discipline of a software engineering company: flexible architecture, maintainable systems, controlled permissions, inspectable automation, and performance-conscious delivery.",
+      "KodaSoft builds Opero with the discipline of a software engineering company: flexible architecture, maintainable systems, controlled permissions, inspectable automation, and performance-conscious delivery.",
     points: [
       "Architecture for configurable operations.",
       "Governance through permissions, roles, and audit logs.",
@@ -275,7 +275,7 @@ export const homeContent: HomeContent = {
     eyebrow: "Start with the workflow",
     title: "Build software around the way your company actually works.",
     description:
-      "See how Koda Soft and Opero can turn your operations into flexible, governed, AI-assisted business software.",
+      "See how KodaSoft and Opero can turn your operations into flexible, governed, AI-assisted business software.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
   },

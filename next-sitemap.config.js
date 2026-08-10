@@ -1,10 +1,40 @@
 const siteUrl = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl");
 
+// Mirrors featureSlugs in lib/i18n/features.ts: the eight feature pages nested
+// under /opero. Keep both lists in step when a slug changes.
+const featureSlugs = {
+  processes: { en: "process-workflow", pl: "procesy-workflow" },
+  documents: { en: "document-management", pl: "eod-dms" },
+  noCode: { en: "no-code", pl: "no-code" },
+  lowCode: { en: "low-code-automation", pl: "low-code-automatyzacje" },
+  reports: { en: "reports-analytics", pl: "raporty" },
+  security: { en: "security-permissions", pl: "bezpieczenstwo-uprawnienia" },
+  integrations: { en: "integrations-compliance", pl: "integracje-zgodnosc" },
+  ai: { en: "contextual-ai", pl: "kontekstowe-ai" },
+};
+
+const featureRoutes = Object.entries(featureSlugs).flatMap(([key, slugs]) => [
+  { page: `feature:${key}`, path: `/en/opero/${slugs.en}` },
+  { page: `feature:${key}`, path: `/pl/opero/${slugs.pl}` },
+]);
+
+const featureAlternatePaths = Object.fromEntries(
+  Object.entries(featureSlugs).map(([key, slugs]) => [
+    `feature:${key}`,
+    {
+      en: `/en/opero/${slugs.en}`,
+      pl: `/pl/opero/${slugs.pl}`,
+      "x-default": `/en/opero/${slugs.en}`,
+    },
+  ]),
+);
+
 const routes = [
   { page: "home", path: "/" },
   { page: "home", path: "/pl" },
   { page: "opero", path: "/en/opero" },
   { page: "opero", path: "/pl/opero" },
+  ...featureRoutes,
   { page: "solutions", path: "/en/solutions" },
   { page: "solutions", path: "/pl/solutions" },
   // Only the blog index lives here; every article and archive URL is emitted by
@@ -41,6 +71,7 @@ const alternatePaths = {
     pl: "/pl/contact",
     "x-default": "/en/contact",
   },
+  ...featureAlternatePaths,
 };
 
 function absoluteUrl(path) {
