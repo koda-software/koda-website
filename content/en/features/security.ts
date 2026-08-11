@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const securityFeature: FeaturePageContent = {
   seo: {
-    title: "Security and permissions in Opero - roles, companies, API tokens",
+    title: "Security, Roles and Permissions | Opero",
     description:
-      "Roles and permissions down to module, object and field level, many companies in one organisation, API tokens, multi-factor authentication and event logs.",
+      "Roles, permissions down to fields, multiple companies, API tokens and MFA. Control access to company data at the level IT departments expect.",
   },
   navLabel: "Security and permissions",
   hero: {
@@ -55,6 +55,30 @@ export const securityFeature: FeaturePageContent = {
     title: "Take control of access to your data.",
     description: "We will show you a role and permission model matched to your company structure.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "Access to your data, fully under control.",
+    paragraphs: [
+      "Security in Opero starts with precise access control. You set permissions from the organisation and its companies, through roles and members, down to visibility and editing at the level of a single module, object and field. Roles mean a permission change applies immediately to everyone who holds that role, and every user sees exactly what they should.",
+      "Multi-company support lets you run a group of companies on one platform. Configuration is shared, but each company's operational data stays separate, so information never mixes. Integrations are secured with API tokens that carry a defined permission scope, independent of people's accounts.",
+      "Multi-factor authentication (MFA) and an event log raise protection to the standard IT departments expect. A \"who, what, when\" log gives the transparency audits and compliance requirements call for.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "How do permissions work in Opero?",
+        answer:
+          "Access is granted through roles, which define visibility and editing at the module, object and field level. Access can also be scoped to individual companies.",
+      },
+      {
+        question: "Does Opero support multiple companies?",
+        answer: "Yes. One organisation can run multiple companies with shared configuration and separate, isolated data.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

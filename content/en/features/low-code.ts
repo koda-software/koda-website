@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const lowCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Low-code and automation - rules, scripts and SQL in Opero",
+    title: "Process Automation and Low-Code | Opero",
     description:
-      "A rule engine built on “when a condition is met, run these steps”, a script engine and parameterised SQL queries. Automate decisions and data processing.",
+      "Automate decisions with rules, scripts and SQL queries. A \"condition, then action\" rule engine without building a separate system. Low-code in Opero.",
   },
   navLabel: "Low-code and automation",
   hero: {
@@ -66,6 +66,30 @@ export const lowCodeFeature: FeaturePageContent = {
     title: "Automate the repetitive work.",
     description: "See how rules and scripts take over the manual steps your team does today.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "Automation that takes over repetitive work.",
+    paragraphs: [
+      "The low-code layer in Opero automates the work that eats into your team's time today. The rule engine runs on a simple \"when a condition is met, run these steps\" basis: set a field, create a record, send a notification, block a transition in a process. You define and test rules before rollout, so automation stays predictable rather than risky.",
+      "For scenarios that go beyond visual configuration, the script engine takes over. You run expression and script fragments from rules, calculated fields and templates whenever non-standard data processing is needed. That is the low-code part: you reach for code only where it actually pays off, without building a separate system.",
+      "SQL queries give you full control over the data. Named, parameterised, reusable queries feed rules, reports and choice fields whenever standard filters are not enough. Together, rules, scripts and SQL turn Opero into a platform that does the repetitive work for you.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "How does the rule engine work?",
+        answer:
+          "A rule is written as \"condition, then action\". When the condition is met (for example priority changes to critical), the system runs the defined steps, such as setting a field or sending a notification.",
+      },
+      {
+        question: "Do automations require a developer?",
+        answer: "Rules are built visually. Scripts and SQL queries are optional and only become useful for more complex logic.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

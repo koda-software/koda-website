@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const processesFeature: FeaturePageContent = {
   seo: {
-    title: "Processes and workflow (BPM) in Opero",
+    title: "Workflow and BPM Process System | Opero",
     description:
-      "Model every flow of work as a process: stages, transitions, tasks, kanban and a full history. Approvals and procedures under control, without a developer.",
+      "Design a flow of work as a process: stages, transitions, tasks and kanban. Automate approvals and procedures without code. See workflow in Opero.",
   },
   navLabel: "Processes and workflow",
   hero: {
@@ -63,6 +63,30 @@ export const processesFeature: FeaturePageContent = {
     title: "Map your first process in Opero.",
     description: "We will show you how to move a flow out of email and spreadsheets into one controlled process.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "A workflow system that enforces order and deadlines.",
+    paragraphs: [
+      "Opero is a workflow system that turns every process in your company into a repeatable, controlled flow. A record moves through defined stages and transitions while the system enforces order, permissions and deadlines. Instead of decisions scattered across email and spreadsheets, you get one place that shows which stage a case is at, who owns it and what happened before.",
+      "Business process management (BPM) in Opero does not require a developer. You design a flow visually: add stages, connect them with transitions, set conditions and the people responsible. Entering a stage opens a task, and the team's work lines up on a kanban board and in \"my tasks\" lists. Request approvals, invoice flow, ticket handling or quality procedures all work exactly the way you describe them.",
+      "Because you attach a workflow to any custom object, the flow covers your company's own data rather than a rigid, imposed schema. A full history and the ability to replay a run give you the order that both audits and daily work require.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "What is a workflow in Opero?",
+        answer:
+          "It is a defined flow of work made of stages and transitions that a record (such as a request or ticket) moves through. Opero enforces order, permissions, tasks and deadlines at every stage.",
+      },
+      {
+        question: "Does building a process require a developer?",
+        answer: "No. Processes are designed visually, without code, and changing them does not require a development rollout.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

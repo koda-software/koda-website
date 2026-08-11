@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const documentsFeature: FeaturePageContent = {
   seo: {
-    title: "Document workflow and file management in Opero",
+    title: "Document Workflow and File Management (DMS) | Opero",
     description:
-      "Register documents, run them through approval, and keep every file version with the case. Versioning, templates and access control included.",
+      "Register documents, route them through approval and keep file versions with the case. Document workflow and DMS in one platform: Opero.",
   },
   navLabel: "Documents and files",
   hero: {
@@ -56,6 +56,30 @@ export const documentsFeature: FeaturePageContent = {
     title: "Put document flow in order.",
     description: "See how Opero carries a document from intake to archive with no gaps and no lost files.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "Documents under control from intake to archive.",
+    paragraphs: [
+      "Electronic document workflow in Opero puts every letter, request and invoice on a controlled path: from intake, through assignment and approvals, to archiving. A document gets its own record built as a custom object, with intake fields and numbering, plus a flow built on stages and transitions. That makes it clear where a case is and whose desk it is on.",
+      "The file-management layer keeps files where they belong: attached to the case record. Attachments are stored, versioned and searchable, with permission control, so documents do not get lost across drives and inboxes. Document templates generate a contract, decision or letter straight from record data, always in the current version and format.",
+      "Combining document workflow and file management on one platform means the flow, the data and the files are not split across separate tools. That is a shorter path for a case, less manual retyping, and a full history for control and compliance.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "What is the difference between document workflow and a DMS?",
+        answer:
+          "Document workflow is the path a document takes through the company (registration, approvals, archiving). A DMS manages the files themselves: storage, versioning, search and permissions. Opero combines both.",
+      },
+      {
+        question: "Can documents be generated automatically?",
+        answer: "Yes. Document templates produce finished letters and contracts from record data, combining variables with fixed content.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

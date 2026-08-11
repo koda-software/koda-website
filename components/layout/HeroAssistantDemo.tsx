@@ -203,7 +203,7 @@ export function HeroAssistantDemo({ demo }: HeroAssistantDemoProps) {
                   ))}
                 </div>
                 <div className="rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4">
-                  <div className="h-14 rounded-xl bg-[linear-gradient(135deg,rgba(126,87,255,0.26),rgba(0,103,244,0.14))]" />
+                  <div className="h-14 rounded-xl bg-[linear-gradient(135deg,rgba(126,87,255,0.26),rgba(56, 182, 255,0.14))]" />
                 </div>
               </div>
             </div>
@@ -222,7 +222,7 @@ export function HeroAssistantDemo({ demo }: HeroAssistantDemoProps) {
 
         {isPopupVisible ? (
           <>
-            <div className={`hero-assistant-scrim absolute inset-3 z-[25] rounded-[1.25rem] bg-[#02020d]/28 backdrop-blur-[3px] ${phase === "closing" ? "hero-assistant-scrim--closing" : ""}`} aria-hidden="true" />
+            <div className={`hero-assistant-scrim absolute inset-3 z-[25] rounded-[1.25rem] bg-[#000407]/28 backdrop-blur-[3px] ${phase === "closing" ? "hero-assistant-scrim--closing" : ""}`} aria-hidden="true" />
             <div
               className={`hero-assistant-popup absolute bottom-24 right-5 z-30 w-[min(26rem,calc(100%-2.5rem))] rounded-[1.35rem] border border-white/[0.14] bg-[#0b0f1d]/95 p-3 text-white shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl ${phase === "closing" ? "hero-assistant-popup--closing" : ""}`}
               aria-live="polite"

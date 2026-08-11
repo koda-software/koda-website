@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const aiFeature: FeaturePageContent = {
   seo: {
-    title: "Contextual AI in Opero - an assistant that knows your system",
+    title: "Contextual AI for Business | Opero",
     description:
-      "The AI assistant knows the structure, configuration and data of your instance. Consultants build configuration with it, users ask about data in natural language.",
+      "An AI assistant that knows the structure and data of your system. Consultants build configuration with it, users ask about data in natural language.",
   },
   navLabel: "Contextual AI",
   hero: {
@@ -46,6 +46,30 @@ export const aiFeature: FeaturePageContent = {
     title: "See AI that knows your Opero.",
     description: "We will show you how the assistant speeds up both configuration and daily work with data.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "An AI assistant that understands your system.",
+    paragraphs: [
+      "Contextual AI in Opero is an assistant that knows the structure and data of your instance. Instead of generic answers you get help that is aware of context: the AI understands your objects, fields, processes and permissions, because it connects to the platform through a secure, access-controlled mechanism. The same mechanism serves two audiences: consultants and end users.",
+      "For consultants, AI speeds up configuration. In a dialogue with the assistant you build and change objects, forms, rules and processes, with validation before saving. Because the AI knows the platform's contract, rollout moves faster and with fewer mistakes. For end users, AI simplifies daily work: you ask about data in natural language, search records and get summaries without clicking through views.",
+      "The foundation is secure, context-aware access to configuration and data, with full respect for the user's permissions. That makes AI in Opero a practical work tool, not an add-on detached from the system.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "How does the AI learn the context of your system?",
+        answer:
+          "The assistant connects to the configuration and current data of your instance through a secure, context-aware mechanism, respecting the permissions of the user asking the question.",
+      },
+      {
+        question: "What is AI used for in Opero?",
+        answer: "It helps consultants build configuration (objects, rules, processes) and answers end users' questions about data in natural language.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

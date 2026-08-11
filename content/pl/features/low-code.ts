@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const lowCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Low-code i automatyzacje - reguły, skrypty i SQL w Opero",
+    title: "Automatyzacja procesów i low-code | Opero",
     description:
-      "Silnik reguł „gdy warunek → wykonaj kroki”, silnik skryptów i parametryzowane zapytania SQL. Automatyzujesz decyzje i przetwarzanie danych.",
+      "Automatyzuj decyzje regułami, skryptami i zapytaniami SQL. Silnik reguł „warunek to akcja” bez budowy osobnego systemu. Low-code w Opero.",
   },
   navLabel: "Low-code i automatyzacje",
   hero: {
@@ -66,6 +66,31 @@ export const lowCodeFeature: FeaturePageContent = {
     title: "Zautomatyzuj powtarzalne zadania.",
     description: "Zobacz, jak reguły i skrypty przejmują ręczne kroki, które dziś robi zespół.",
     primaryCta: "Umów prezentację",
+  },
+  seoText: {
+    eyebrow: "Więcej o funkcji",
+    title: "Automatyzacja, która przejmuje powtarzalną pracę.",
+    paragraphs: [
+      "Warstwa low-code Opero automatyzuje pracę, która dziś pochłania czas zespołu. Silnik reguł działa według prostej zasady „gdy zajdzie warunek, wykonaj kroki”: ustaw pole, utwórz rekord, wyślij powiadomienie, zablokuj przejście w procesie. Reguły definiujesz i testujesz przed wdrożeniem, więc automatyzacja jest przewidywalna, a nie ryzykowna.",
+      "Dla scenariuszy wykraczających poza konfigurację wizualną wchodzi silnik skryptów. Fragmenty wyrażeń i skryptów uruchamiasz z reguł, pól wyliczanych i szablonów, gdy potrzebne jest niestandardowe przetwarzanie danych. To element low-code: sięgasz po kod tylko tam, gdzie faktycznie się opłaca, bez budowania osobnego systemu.",
+      "Zapytania SQL dają pełną kontrolę nad danymi. Nazwane, parametryzowane zapytania wielokrotnego użytku zasilają reguły, raporty i pola wyboru, gdy standardowe filtry to za mało. Razem reguły, skrypty i SQL zamieniają Opero w platformę, która wykonuje powtarzalną pracę za Ciebie.",
+    ],
+  },
+  faq: {
+    eyebrow: "Pytania",
+    title: "Najczęściej zadawane pytania.",
+    items: [
+      {
+        question: "Jak działa silnik reguł?",
+        answer:
+          "Reguła to zapis „warunek to akcja”. Gdy spełniony jest warunek (np. zmiana priorytetu na krytyczny), system wykonuje zdefiniowane kroki, na przykład ustawia pole lub wysyła powiadomienie.",
+      },
+      {
+        question: "Czy automatyzacje wymagają programisty?",
+        answer:
+          "Reguły buduje się wizualnie. Skrypty i zapytania SQL są opcjonalne i przydają się dopiero przy bardziej złożonej logice.",
+      },
+    ],
   },
   related: {
     eyebrow: "Pokrewne funkcje",

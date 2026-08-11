@@ -148,8 +148,8 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
       );
     }
 
-    // The link and its chevron share one pill so the active white background
-    // stays a single shape and the ink-coloured chevron remains readable.
+    // Opero has no direct link of its own on desktop: clicking it opens the
+    // dropdown, which leads with a link to the general Opero page instead.
     return (
       <span
         className={`flex items-center ${
@@ -157,23 +157,15 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
         }`}
         key={item.page}
       >
-        <Link
-          className={isActive ? "rounded-full py-2.5 pl-3.5 pr-2" : linkClass(false, false)}
-          href={item.href}
-          aria-current={isActive ? "page" : undefined}
-        >
-          {item.label}
-        </Link>
         <button
-          className={`inline-flex h-8 w-7 items-center justify-center rounded-full transition-colors ${
-            isActive ? "" : "-ml-1.5 text-white/[0.78] hover:text-white"
-          }`}
+          className={`inline-flex items-center gap-1.5 ${isActive ? "rounded-full py-2.5 pl-3.5 pr-3" : `${linkClass(false, false)} gap-1.5`}`}
           type="button"
-          aria-label={content.nav.toggleSubmenu}
+          aria-haspopup="true"
           aria-expanded={isSubmenuOpen}
           aria-controls={submenuId}
           onClick={() => setIsSubmenuOpen((current) => !current)}
         >
+          {item.label}
           <ChevronDownIcon
             className={`h-4 w-4 transition-transform duration-200 ${isSubmenuOpen ? "rotate-180" : ""}`}
             strokeWidth={1.8}
@@ -184,7 +176,8 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
     );
   });
 
-  const submenuItems = headerItems.find((item) => item.submenu?.length)?.submenu ?? [];
+  const operoNavItem = headerItems.find((item) => item.submenu?.length);
+  const submenuItems = operoNavItem?.submenu ?? [];
 
   return (
     <header className="absolute inset-x-0 top-0 z-30 px-[var(--page-gutter)] py-4 text-[var(--color-paper)]">
@@ -204,8 +197,10 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
 
               return (
                 <span className="flex items-center" key={item.page}>
-                  <span className={linkClass(isActive, isPrimaryAction)}>{item.label}</span>
-                  {item.submenu?.length ? <span className="-ml-1.5 inline-block h-8 w-7" /> : null}
+                  <span className={`${linkClass(isActive, isPrimaryAction)} ${item.submenu?.length ? "inline-flex items-center gap-1.5" : ""}`}>
+                    {item.label}
+                    {item.submenu?.length ? <ChevronDownIcon className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" /> : null}
+                  </span>
                 </span>
               );
             })}
@@ -251,22 +246,34 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
                 {/* Same glass treatment as the menu pill, so the dropdown reads
                     as an extension of it rather than a separate dark panel. */}
                 <div
-                  className="site-menu-pill site-menu-pill-scrolled grid grid-cols-2 gap-1 rounded-[calc(var(--radius-panel)-10px)] p-1.5"
+                  className="site-menu-pill site-menu-pill-scrolled grid gap-1 rounded-[calc(var(--radius-panel)-10px)] p-1.5"
                   style={{
                     WebkitBackdropFilter: "blur(6px) saturate(140%) contrast(104%)",
                     backdropFilter: "blur(6px) saturate(140%) contrast(104%)",
                   }}
                 >
-                  {submenuItems.map((subItem) => (
+                  {operoNavItem ? (
                     <Link
-                      className="rounded-full px-3.5 py-2.5 text-[0.86rem] font-medium text-white/[0.78] transition-colors hover:bg-white/10 hover:text-white"
-                      href={subItem.href}
-                      key={subItem.feature}
+                      className="rounded-full px-3.5 py-2.5 text-[0.86rem] font-semibold text-white transition-colors hover:bg-white/10"
+                      href={operoNavItem.href}
                       onClick={() => setIsSubmenuOpen(false)}
                     >
-                      {subItem.label}
+                      {content.nav.exploreOpero}
                     </Link>
-                  ))}
+                  ) : null}
+                  <div className="mx-1 my-0.5 h-px bg-white/[0.12]" aria-hidden="true" />
+                  <div className="grid grid-cols-2 gap-1">
+                    {submenuItems.map((subItem) => (
+                      <Link
+                        className="rounded-full px-3.5 py-2.5 text-[0.86rem] font-medium text-white/[0.78] transition-colors hover:bg-white/10 hover:text-white"
+                        href={subItem.href}
+                        key={subItem.feature}
+                        onClick={() => setIsSubmenuOpen(false)}
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -317,33 +324,33 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
               );
             }
 
+            // Opero has no direct link of its own on mobile either: tapping the
+            // row opens the submenu, which leads with a link to the general
+            // Opero page instead.
             return (
               <div key={item.page}>
-                <div className="flex items-center gap-1">
+                <button
+                  className={`${rowClass} flex w-full items-center justify-between gap-1 text-left`}
+                  type="button"
+                  aria-expanded={isMobileSubmenuOpen}
+                  aria-controls={`${submenuId}-mobile`}
+                  onClick={() => setIsMobileSubmenuOpen((current) => !current)}
+                >
+                  {item.label}
+                  <ChevronDownIcon
+                    className={`h-5 w-5 shrink-0 transition-transform duration-200 ${isMobileSubmenuOpen ? "rotate-180" : ""}`}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                </button>
+                <div className="grid gap-1 pl-3 pt-1" id={`${submenuId}-mobile`} hidden={!isMobileSubmenuOpen}>
                   <Link
-                    className={`${rowClass} flex-1`}
+                    className="rounded-[var(--radius-button)] px-3.5 py-2.5 text-[0.9rem] font-semibold text-white/[0.85] transition-colors hover:bg-white/[0.08] hover:text-white"
                     href={item.href}
-                    aria-current={isActive ? "page" : undefined}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    {item.label}
+                    {content.nav.exploreOpero}
                   </Link>
-                  <button
-                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-button)] text-white/78 transition-colors hover:bg-white/[0.08] hover:text-white"
-                    type="button"
-                    aria-label={content.nav.toggleSubmenu}
-                    aria-expanded={isMobileSubmenuOpen}
-                    aria-controls={`${submenuId}-mobile`}
-                    onClick={() => setIsMobileSubmenuOpen((current) => !current)}
-                  >
-                    <ChevronDownIcon
-                      className={`h-5 w-5 transition-transform duration-200 ${isMobileSubmenuOpen ? "rotate-180" : ""}`}
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-                <div className="grid gap-1 pl-3 pt-1" id={`${submenuId}-mobile`} hidden={!isMobileSubmenuOpen}>
                   {item.submenu.map((subItem) => (
                     <Link
                       className="rounded-[var(--radius-button)] px-3.5 py-2.5 text-[0.9rem] font-normal text-white/[0.68] transition-colors hover:bg-white/[0.08] hover:text-white"

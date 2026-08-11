@@ -14,7 +14,7 @@ const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutt
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
-const sectionTitleClass = "m-0 max-w-[860px] text-[3.15rem] leading-[1.05] text-[var(--color-ink)] max-[809px]:text-[2.2rem]";
+const sectionTitleClass = "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
 
@@ -33,12 +33,12 @@ function CtaPair({
 }) {
   return (
     <div className="mt-8 flex flex-wrap gap-3">
-      <Link className={`${buttonClass} bg-[linear-gradient(135deg,#1f7cff,#004fc4)] text-white`} href={primaryHref}>
+      <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
         {primaryLabel}
       </Link>
       <Link
         className={`${buttonClass} border ${
-          invert ? "border-white/[0.18] bg-white/[0.08] text-white hover:bg-white/[0.12]" : "border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(0,103,244,0.24)]"
+          invert ? "border-white/[0.18] bg-white/[0.08] text-white hover:bg-white/[0.12]" : "border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(56, 182, 255,0.24)]"
         }`}
         href={secondaryHref}
       >
@@ -101,7 +101,7 @@ function FeatureRow({ row }: { row: ProductFeatureRow }) {
 export function OperoProductPage({ content, featureLinks, primaryHref, secondaryHref }: OperoProductPageProps) {
   return (
     <>
-      <section className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(22rem,0.82fr)] items-center gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
@@ -158,7 +158,7 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
           {featureLinks.map((item) => (
             <li key={item.feature}>
               <Link
-                className="group flex h-full items-center justify-between gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 text-[1.05rem] font-medium leading-[1.25] text-[var(--color-ink)] transition-colors hover:border-[rgba(0,103,244,0.24)]"
+                className="group flex h-full items-center justify-between gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 text-[1.05rem] font-medium leading-[1.25] text-[var(--color-ink)] transition-colors hover:border-[rgba(56, 182, 255,0.24)]"
                 href={item.href}
               >
                 {item.label}
@@ -178,7 +178,7 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
           <div className="grid grid-cols-[minmax(0,0.78fr)_minmax(20rem,0.74fr)] gap-12 max-[980px]:grid-cols-1">
             <div>
               <p className={darkEyebrowClass}>{content.connectedModel.eyebrow}</p>
-              <h2 className="m-0 max-w-[760px] text-[3rem] leading-[1.06] max-[809px]:text-[2.05rem]">{content.connectedModel.title}</h2>
+              <h2 className="m-0 max-w-[760px] text-[2.5rem] leading-[1.1] max-[809px]:text-[1.75rem]">{content.connectedModel.title}</h2>
               <p className="mt-6 max-w-[680px] text-[1.04rem] font-light leading-[1.7] text-white/68">{content.connectedModel.description}</p>
             </div>
             <ol className="m-0 grid list-none gap-0 p-0">
@@ -257,7 +257,7 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
       <section className={`${sectionClass} pt-0`}>
         <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
           <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
-          <h2 className="mx-auto m-0 max-w-[860px] text-[3.25rem] leading-[1.04] text-[var(--color-ink)] max-[809px]:text-[2.2rem]">
+          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
             {content.finalCta.title}
           </h2>
           <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>

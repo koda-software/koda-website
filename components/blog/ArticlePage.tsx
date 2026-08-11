@@ -42,7 +42,7 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
 
   return (
     <>
-      <header className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
+      <header className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
         {/* The <header> already owns the page gutter; the column only sets the measure. */}
         <div className={proseColumnClass}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.78rem] font-semibold uppercase tracking-[0.08em]">

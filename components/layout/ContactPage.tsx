@@ -16,7 +16,7 @@ const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color
 export function ContactPage({ locale, content }: ContactPageProps) {
   return (
     <>
-      <section className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto w-[min(100%,var(--shell-width))]">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
@@ -31,7 +31,7 @@ export function ContactPage({ locale, content }: ContactPageProps) {
       <section className={`${sectionClass} grid grid-cols-[minmax(0,0.78fr)_minmax(24rem,0.74fr)] gap-16 max-[980px]:grid-cols-1`}>
         <div>
           <p className={eyebrowClass}>{content.context.eyebrow}</p>
-          <h2 className="m-0 max-w-[760px] text-[3rem] leading-[1.06] text-[var(--color-ink)] max-[809px]:text-[2.05rem]">{content.context.title}</h2>
+          <h2 className="m-0 max-w-[760px] text-[2.5rem] leading-[1.1] text-[var(--color-ink)] max-[809px]:text-[1.75rem]">{content.context.title}</h2>
           <div className="mt-7 grid gap-5">
             {content.context.paragraphs.map((paragraph) => (
               <p className={bodyClass} key={paragraph}>

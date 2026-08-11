@@ -31,8 +31,8 @@ export type ShellContent = {
     home: string;
     openMenu: string;
     closeMenu: string;
-    /** Label for the control that expands the Opero submenu on touch devices. */
-    toggleSubmenu: string;
+    /** Link to the general Opero product page, shown as the first row inside the Opero dropdown. */
+    exploreOpero: string;
     items: Array<{ page: Exclude<PageKey, "home">; label: string }>;
   };
   footer: {
@@ -287,6 +287,18 @@ export type FeaturePageContent = {
     title: string;
     description: string;
     primaryCta: string;
+  };
+  /** Longer-form SEO copy near the bottom of the page - written for search intent, not skimming. */
+  seoText: {
+    eyebrow: string;
+    title: string;
+    paragraphs: string[];
+  };
+  /** Long-tail Q&A, also emitted as FAQPage structured data. */
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ question: string; answer: string }>;
   };
   related: {
     eyebrow: string;

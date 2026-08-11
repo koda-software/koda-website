@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const processesFeature: FeaturePageContent = {
   seo: {
-    title: "Procesy i workflow (BPM) w Opero",
+    title: "System workflow i procesy BPM | Opero",
     description:
-      "Modeluj obiegi pracy jako procesy: etapy, przejścia, zadania, kanban i pełna historia. Akceptacje i procedury pod kontrolą, bez programisty.",
+      "Zaprojektuj obieg pracy jako proces: etapy, przejścia, zadania i kanban. Automatyzuj akceptacje i procedury bez kodu. Zobacz workflow w Opero.",
   },
   navLabel: "Procesy i workflow",
   hero: {
@@ -63,6 +63,31 @@ export const processesFeature: FeaturePageContent = {
     title: "Zmapuj swój pierwszy proces w Opero.",
     description: "Pokażemy, jak przenieść obieg z maili i Excela do jednego, kontrolowanego procesu.",
     primaryCta: "Umów prezentację",
+  },
+  seoText: {
+    eyebrow: "Więcej o funkcji",
+    title: "System workflow, który pilnuje kolejności i terminów.",
+    paragraphs: [
+      "Opero to system workflow, w którym każdy proces w firmie zamieniasz w powtarzalny, kontrolowany obieg. Rekord przechodzi przez zdefiniowane etapy i przejścia, a system pilnuje kolejności, uprawnień i terminów. Zamiast ustaleń rozproszonych w mailach i arkuszach masz jedno miejsce, w którym widać, na jakim etapie jest sprawa, kto za nią odpowiada i co wydarzyło się wcześniej.",
+      "Zarządzanie procesami biznesowymi (BPM) w Opero nie wymaga programisty. Obieg projektujesz wizualnie: dodajesz etapy, łączysz je przejściami, ustawiasz warunki i osoby odpowiedzialne. Każde wejście na etap otwiera zadanie, a praca zespołu układa się na tablicy kanban i listach „moje zadania”. Akceptacje wniosków, obieg faktur, obsługa zgłoszeń czy procedury jakościowe działają dokładnie tak, jak je opiszesz.",
+      "Ponieważ workflow przypinasz do dowolnego obiektu własnego, obiegiem obejmujesz własne dane firmy, a nie sztywny, narzucony schemat. Pełna historia i możliwość odtworzenia przebiegu dają porządek wymagany w audycie i codziennej pracy.",
+    ],
+  },
+  faq: {
+    eyebrow: "Pytania",
+    title: "Najczęściej zadawane pytania.",
+    items: [
+      {
+        question: "Czym jest workflow w systemie Opero?",
+        answer:
+          "To zdefiniowany obieg pracy złożony z etapów i przejść, przez które przechodzi rekord (np. zgłoszenie lub wniosek). Opero pilnuje kolejności, uprawnień, zadań i terminów na każdym etapie.",
+      },
+      {
+        question: "Czy zbudowanie procesu wymaga programisty?",
+        answer:
+          "Nie. Procesy projektuje się wizualnie, bez kodu, a ich zmiana nie wymaga wdrożenia programistycznego.",
+      },
+    ],
   },
   related: {
     eyebrow: "Pokrewne funkcje",

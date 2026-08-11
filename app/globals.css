@@ -7,8 +7,16 @@
   --color-muted-light: #c0c2c6;
   --color-paper: #ffffff;
   --color-paper-soft: #f9f9f9;
-  --color-blue: #0067f4;
-  --color-blue-soft: #76b9fc;
+  /* Brand blue is #38B6FF (logo). Used directly for decorative accents (glows,
+     gradients, icons/borders on dark) and as --color-blue-soft, since dark
+     backgrounds give it huge contrast headroom. As text on a white background
+     it only reaches ~2.3:1 contrast though - well under the ~4.5:1 WCAG AA
+     text needs - so --color-blue stays a slightly deeper, still-recognizably-
+     brand shade of the same hue, tuned as close to #38B6FF as the contrast
+     floor allows. */
+  --color-brand-blue: #38b6ff;
+  --color-blue: #0b7bbe;
+  --color-blue-soft: #38b6ff;
   --color-blue-deep: #1f26aa;
   --color-cyan: #7ee7ff;
   --color-signal: #9ee37d;
@@ -23,13 +31,15 @@
   --radius-button: 6px;
   --radius-card: 14px;
   --radius-panel: 24px;
-  --gradient-technical:
-    linear-gradient(128deg, rgba(83, 101, 119, 0.22) 0%, rgba(83, 101, 119, 0) 36%),
-    linear-gradient(218deg, rgba(158, 227, 125, 0.08) 0%, rgba(158, 227, 125, 0) 38%),
-    linear-gradient(34deg, rgba(0, 103, 244, 0.13) 0%, rgba(0, 103, 244, 0) 42%),
-    linear-gradient(145deg, #101116 0%, #151923 38%, #0d1118 68%, #090a0f 100%);
-  --gradient-hero:
-    linear-gradient(126deg, #02020d 0%, #04102a 32%, #071b3a 49%, #04091d 72%, #02020d 100%);
+  /* Subtler than a full bright-to-black sweep: both stops stay inside the
+     mid-to-light end of the brand blue range. */
+  --gradient-cta: linear-gradient(135deg, #2ca6f0, #0b4e7d);
+  /* Kept nearly flat on purpose: gradients are reserved for the hero banners,
+     everywhere else (panels, cards) gets a plain dark tone instead. */
+  --gradient-technical: linear-gradient(165deg, #050e17 0%, #02070d 55%, #000407 100%);
+  /* One clean diagonal sweep from near-black to brand blue - matches the
+     KodaSoft business card, not a hazy multi-stop glow. */
+  --gradient-hero: linear-gradient(135deg, #000407 0%, #051730 38%, #0d3a68 68%, #1a68b3 100%);
 }
 
 @theme inline {
@@ -111,7 +121,7 @@ button:focus-visible {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 52%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05) 42%, rgba(126, 231, 255, 0.14)),
-    linear-gradient(120deg, rgba(2, 2, 13, 0.5), rgba(18, 24, 60, 0.46) 54%, rgba(0, 103, 244, 0.34));
+    linear-gradient(120deg, rgba(2, 2, 13, 0.5), rgba(18, 24, 60, 0.46) 54%, rgba(56, 182, 255, 0.34));
   pointer-events: none;
 }
 
@@ -142,7 +152,7 @@ button:focus-visible {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 54%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.07) 40%, rgba(126, 231, 255, 0.18)),
-    linear-gradient(120deg, rgba(2, 2, 13, 0.46), rgba(22, 28, 72, 0.42) 55%, rgba(0, 103, 244, 0.32));
+    linear-gradient(120deg, rgba(2, 2, 13, 0.46), rgba(22, 28, 72, 0.42) 55%, rgba(56, 182, 255, 0.32));
 }
 
 /* Rich text rendered from the Opero blog module. Token-based so article bodies
@@ -393,7 +403,7 @@ button:focus-visible {
   padding: 1.25rem 1.5rem;
   border-left: 3px solid var(--color-blue);
   border-radius: 0 var(--radius-card) var(--radius-card) 0;
-  background: rgba(0, 103, 244, 0.05);
+  background: rgba(56, 182, 255, 0.05);
 }
 
 .blog-prose .blog-callout > *:last-child {
@@ -452,12 +462,12 @@ button:focus-visible {
   0%,
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 103, 244, 0), 0 10px 24px rgba(2, 2, 13, 0.16);
+    box-shadow: 0 0 0 0 rgba(56, 182, 255, 0), 0 10px 24px rgba(2, 2, 13, 0.16);
   }
 
   50% {
     transform: scale(1.08);
-    box-shadow: 0 0 0 0.55rem rgba(0, 103, 244, 0.16), 0 14px 34px rgba(0, 103, 244, 0.22);
+    box-shadow: 0 0 0 0.55rem rgba(56, 182, 255, 0.16), 0 14px 34px rgba(56, 182, 255, 0.22);
   }
 }
 

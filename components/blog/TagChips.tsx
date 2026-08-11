@@ -20,7 +20,7 @@ export function TagChips({ tags, locale, ui }: TagChipsProps) {
         {tags.map((tag) => (
           <li key={tag.slug}>
             <Link
-              className="inline-flex items-center rounded-[var(--radius-button)] border border-[rgba(2,2,13,0.12)] px-2.5 py-1 text-[0.82rem] text-[var(--color-ink-soft)] transition-colors hover:border-[rgba(0,103,244,0.24)] hover:text-[var(--color-blue)]"
+              className="inline-flex items-center rounded-[var(--radius-button)] border border-[rgba(2,2,13,0.12)] px-2.5 py-1 text-[0.82rem] text-[var(--color-ink-soft)] transition-colors hover:border-[rgba(56, 182, 255,0.24)] hover:text-[var(--color-blue)]"
               href={tagPath(locale, tag.slug)}
             >
               {tag.nazwa}

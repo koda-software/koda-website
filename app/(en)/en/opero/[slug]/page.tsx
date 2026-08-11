@@ -4,7 +4,7 @@ import { commonContent, navItems } from "@/content/en/common";
 import { featureCtas, featurePages } from "@/content/en/features";
 import { FeaturePage } from "@/components/layout/FeaturePage";
 import { PageShell } from "@/components/layout/PageShell";
-import { BreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
 import { createFeaturePageMetadata } from "@/lib/seo/metadata";
 import { featureFromSlug, featureKeys, featureSlugs, getFeatureAlternatePaths, localizeFeaturePath } from "@/lib/i18n/features";
 import { localizePath } from "@/lib/i18n/routes";
@@ -44,6 +44,7 @@ export default async function EnOperoFeaturePage({ params }: PageProps<"/en/oper
           { name: featurePages[feature].navLabel, path: localizeFeaturePath("en", feature) },
         ]}
       />
+      <FaqJsonLd items={featurePages[feature].faq.items} />
       <PageShell
         locale="en"
         page="opero"

@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const noCodeFeature: FeaturePageContent = {
   seo: {
-    title: "No-code platform - build your own system in Opero",
+    title: "No-Code Platform for Building Applications | Opero",
     description:
-      "Custom objects, fields, forms, layouts, menus, custom pages and dictionaries. You design data and views in visual configuration, with no code.",
+      "Design data, views and navigation in visual configuration. Build your own business system without a developer on the Opero no-code platform.",
   },
   navLabel: "No-code platform",
   hero: {
@@ -79,6 +79,31 @@ export const noCodeFeature: FeaturePageContent = {
     title: "Build your first object in minutes.",
     description: "We will show you how an empty instance becomes a working application, without a single line of code.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "An application built without code, shaped around your company.",
+    paragraphs: [
+      "The Opero no-code platform lets you build your own business system without writing code. You describe the data structure with custom objects and fields (more than 20 types: text, amount, date, choice, relation, file, calculated field), and Opero immediately generates lists, forms and the interface. Structure changes go through a safe draft before they reach production.",
+      "You assemble views from forms and layouts. A form decides which fields a user sees and in what mode, while a layout controls the visual arrangement of sections and tabs. You build navigation with menus and custom pages, and dictionaries and custom lists keep the data consistent. All of it is visual configuration, open to people without a development background.",
+      "An application built with no-code is not a rigid template. You can attach a workflow, rules and reports to any object, so the system grows with the company and handles exactly the processes you need. It is a faster path to a tailor-made solution than a classic development project.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "Can I really build an application without a developer?",
+        answer:
+          "Yes. Objects, fields, forms, layouts and menus are created visually, without code. Advanced logic can be added in the low-code layer, but it is not required for a working application.",
+      },
+      {
+        question: "What is a custom object?",
+        answer:
+          "It is a data definition you design yourself, the equivalent of a table (for example Client, Contract, Request). Opero generates views and lists for it.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

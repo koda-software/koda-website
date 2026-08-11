@@ -34,7 +34,7 @@ export function NumberedPointGrid({ points }: NumberedPointGridProps) {
     <div className="relative mt-[clamp(2.4rem,5vw,4.8rem)] grid grid-cols-4 gap-4 max-[809px]:grid-cols-1">
       {points.map((point, index) => (
         <article
-          className="group relative min-h-[18rem] overflow-hidden rounded-[var(--radius-card)] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(249,249,249,0.82)_58%,rgba(0,103,244,0.06))] px-[clamp(1.05rem,2vw,1.55rem)] py-[clamp(1.4rem,3vw,2rem)] ring-1 ring-black/[0.055] transition-colors duration-200 hover:bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_58%,rgba(0,103,244,0.085))] even:translate-y-8 max-[809px]:min-h-0 max-[809px]:translate-y-0 max-[809px]:py-7"
+          className="group relative min-h-[18rem] overflow-hidden rounded-[var(--radius-card)] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(249,249,249,0.82)_58%,rgba(56, 182, 255,0.06))] px-[clamp(1.05rem,2vw,1.55rem)] py-[clamp(1.4rem,3vw,2rem)] ring-1 ring-black/[0.055] transition-colors duration-200 hover:bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_58%,rgba(56, 182, 255,0.085))] even:translate-y-8 max-[809px]:min-h-0 max-[809px]:translate-y-0 max-[809px]:py-7"
           key={point}
         >
           <span
@@ -62,7 +62,7 @@ export function PillarGrid({ icons, items }: PillarGridProps) {
 
         return (
           <article
-            className="group relative min-h-[21rem] overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.86)_56%,rgba(0,103,244,0.075))] p-[clamp(1.2rem,3vw,1.85rem)] transition-colors duration-200 before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan),transparent_76%)] hover:border-[rgba(0,103,244,0.18)] max-[809px]:min-h-0"
+            className="group relative min-h-[21rem] overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.86)_56%,rgba(56, 182, 255,0.075))] p-[clamp(1.2rem,3vw,1.85rem)] transition-colors duration-200 before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan),transparent_76%)] hover:border-[rgba(56, 182, 255,0.18)] max-[809px]:min-h-0"
             key={pillar.title}
           >
             <div className="relative z-[1] flex min-h-full flex-col">
@@ -129,10 +129,10 @@ export function IconTextGrid({ icons, items }: IconTextGridProps) {
 
         return (
           <article
-            className="group relative grid min-h-[13.5rem] grid-cols-[auto_1fr] gap-5 overflow-hidden rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(249,249,249,0.86)_58%,rgba(0,103,244,0.045))] p-[clamp(1.1rem,2.6vw,1.6rem)] shadow-[0_18px_54px_rgba(2,2,13,0.055)] transition-[border-color,background] duration-200 before:pointer-events-none before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r-full before:bg-[linear-gradient(180deg,var(--color-blue),rgba(126,231,255,0.5))] hover:border-[rgba(0,103,244,0.18)] max-[520px]:grid-cols-1"
+            className="group relative grid min-h-[13.5rem] grid-cols-[auto_1fr] gap-5 overflow-hidden rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(249,249,249,0.86)_58%,rgba(56, 182, 255,0.045))] p-[clamp(1.1rem,2.6vw,1.6rem)] shadow-[0_18px_54px_rgba(2,2,13,0.055)] transition-[border-color,background] duration-200 before:pointer-events-none before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r-full before:bg-[linear-gradient(180deg,var(--color-blue),rgba(126,231,255,0.5))] hover:border-[rgba(56, 182, 255,0.18)] max-[520px]:grid-cols-1"
             key={item.title}
           >
-            <span className="relative z-[1] flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(2,2,13,0.08)] bg-white text-[var(--color-blue)] shadow-[0_10px_30px_rgba(0,103,244,0.08)] transition-colors duration-200 group-hover:bg-[var(--color-blue)] group-hover:text-white" aria-hidden="true">
+            <span className="relative z-[1] flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(2,2,13,0.08)] bg-white text-[var(--color-blue)] shadow-[0_10px_30px_rgba(56, 182, 255,0.08)] transition-colors duration-200 group-hover:bg-[var(--color-blue)] group-hover:text-white" aria-hidden="true">
               <ItemIcon className="h-6 w-6" strokeWidth={1.65} />
             </span>
             <div className="relative z-[1] self-center">

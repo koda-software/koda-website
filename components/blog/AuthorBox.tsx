@@ -19,7 +19,7 @@ export type BlogAuthor = {
 };
 
 const socialLinkBaseClass = "inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-button)] border transition-colors";
-const socialLinkLightClass = `${socialLinkBaseClass} border-[rgba(2,2,13,0.12)] text-[var(--color-muted)] hover:border-[rgba(0,103,244,0.24)] hover:text-[var(--color-blue)]`;
+const socialLinkLightClass = `${socialLinkBaseClass} border-[rgba(2,2,13,0.12)] text-[var(--color-muted)] hover:border-[rgba(56, 182, 255,0.24)] hover:text-[var(--color-blue)]`;
 const socialLinkDarkClass = `${socialLinkBaseClass} border-white/[0.18] text-white/64 hover:border-white/[0.32] hover:text-white`;
 
 /** lucide v1 dropped brand marks, so the two social glyphs are inlined. */

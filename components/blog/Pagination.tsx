@@ -10,7 +10,7 @@ type PaginationProps = {
 
 const baseLinkClass =
   "inline-flex h-11 min-w-11 items-center justify-center rounded-[var(--radius-button)] border px-3.5 text-[0.92rem] font-medium transition-colors";
-const idleClass = `${baseLinkClass} border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(0,103,244,0.24)] hover:text-[var(--color-blue)]`;
+const idleClass = `${baseLinkClass} border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(56, 182, 255,0.24)] hover:text-[var(--color-blue)]`;
 const currentClass = `${baseLinkClass} border-transparent bg-[var(--color-ink)] text-white`;
 const disabledClass = `${baseLinkClass} border-[rgba(2,2,13,0.08)] bg-white text-[var(--color-muted-light)]`;
 

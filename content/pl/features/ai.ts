@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const aiFeature: FeaturePageContent = {
   seo: {
-    title: "Kontekstowe AI w Opero - asystent, który zna Twój system",
+    title: "Kontekstowe AI dla firm | Opero",
     description:
-      "Asystent AI zna strukturę, konfigurację i dane Twojej instancji. Konsultant buduje nim konfigurację, użytkownik pyta o dane w języku naturalnym.",
+      "Asystent AI, który zna strukturę i dane Twojego systemu. Konsultant buduje nim konfigurację, użytkownik pyta o dane w języku naturalnym.",
   },
   navLabel: "Kontekstowe AI",
   hero: {
@@ -46,6 +46,31 @@ export const aiFeature: FeaturePageContent = {
     title: "Zobacz AI, które zna Twój Opero.",
     description: "Pokażemy, jak asystent przyspiesza i konfigurację, i codzienną pracę z danymi.",
     primaryCta: "Umów prezentację",
+  },
+  seoText: {
+    eyebrow: "Więcej o funkcji",
+    title: "Asystent AI, który rozumie Twój system.",
+    paragraphs: [
+      "Kontekstowe AI w Opero to asystent, który zna strukturę i dane Twojej instancji. Zamiast ogólnych odpowiedzi dostajesz pomoc świadomą kontekstu: AI rozumie Twoje obiekty, pola, procesy i uprawnienia, bo łączy się z platformą przez bezpieczny, kontrolowany dostępem mechanizm. Ten sam mechanizm obsługuje dwie grupy odbiorców, konsultantów i użytkowników końcowych.",
+      "Dla konsultantów AI przyspiesza konfigurację. W dialogu z asystentem budujesz i zmieniasz obiekty, formularze, reguły i procesy, z walidacją przed zapisem. Ponieważ AI zna kontrakt platformy, wdrożenie idzie szybciej, a błędów jest mniej. Dla użytkowników końcowych AI upraszcza codzienną pracę: pytasz o dane w języku naturalnym, wyszukujesz rekordy i dostajesz podsumowania bez klikania po widokach.",
+      "Fundamentem jest bezpieczny, świadomy kontekstu dostęp do konfiguracji i danych, z pełnym poszanowaniem uprawnień użytkownika. To sprawia, że AI w Opero jest praktycznym narzędziem pracy, a nie oderwanym od systemu dodatkiem.",
+    ],
+  },
+  faq: {
+    eyebrow: "Pytania",
+    title: "Najczęściej zadawane pytania.",
+    items: [
+      {
+        question: "Jak AI poznaje kontekst Twojego systemu?",
+        answer:
+          "Asystent łączy się z konfiguracją i bieżącymi danymi Twojej instancji przez bezpieczny, świadomy kontekstu mechanizm, z zachowaniem uprawnień użytkownika, który zadaje pytanie.",
+      },
+      {
+        question: "Do czego służy AI w Opero?",
+        answer:
+          "Konsultantom pomaga budować konfigurację (obiekty, reguły, procesy), a użytkownikom końcowym odpowiada na pytania o dane w języku naturalnym.",
+      },
+    ],
   },
   related: {
     eyebrow: "Pokrewne funkcje",

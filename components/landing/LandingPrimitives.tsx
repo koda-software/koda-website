@@ -57,7 +57,7 @@ type FinalCtaPanelProps = {
 
 export const landingShellClass = "mx-auto w-[min(100%,var(--shell-width))]";
 
-export const sectionTitleClass = "m-0 text-[clamp(2.35rem,4.5vw,3.45rem)] leading-[1.04] tracking-[-0.045em]";
+export const sectionTitleClass = "m-0 text-[clamp(2rem,3.6vw,2.85rem)] leading-[1.06] tracking-[-0.04em]";
 
 export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] font-light leading-[1.62] text-[var(--color-muted)]";
 
@@ -70,7 +70,7 @@ const sectionHeadingClass = "max-w-[790px]";
 const splitHeadingClass = `${sectionHeadingClass} grid max-w-none items-end gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] max-[809px]:grid-cols-1`;
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-[background,border-color] duration-150";
 const buttonClasses = {
-  primary: `${buttonClass} bg-[linear-gradient(135deg,#1f7cff,#004fc4)] text-[var(--color-paper)]`,
+  primary: `${buttonClass} bg-[image:var(--gradient-cta)] text-[var(--color-paper)]`,
   darkGhost: `${buttonClass} bg-white/10 text-[var(--color-paper)] hover:bg-white/[0.14]`,
 };
 
@@ -143,7 +143,7 @@ export function LandingHero({
   title,
 }: LandingHeroProps) {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
+    <section className="relative min-h-screen overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
       <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
           <Eyebrow invert>{eyebrow}</Eyebrow>

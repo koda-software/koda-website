@@ -8,7 +8,7 @@ export const commonContent: ShellContent = {
     home: "Home",
     openMenu: "Open menu",
     closeMenu: "Close menu",
-    toggleSubmenu: "Show system features",
+    exploreOpero: "Explore Opero",
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },

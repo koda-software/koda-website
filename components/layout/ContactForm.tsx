@@ -191,7 +191,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
 
       <div className="flex flex-wrap items-center gap-4">
         <button
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[linear-gradient(135deg,#1f7cff,#004fc4)] px-5 py-3 font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[image:var(--gradient-cta)] px-5 py-3 font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitState === "submitting"}
           type="submit"
         >

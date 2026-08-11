@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const integrationsFeature: FeaturePageContent = {
   seo: {
-    title: "Integrations and compliance in Opero - KSeF, e-Delivery, NBP, VAT, API",
+    title: "Integrations and Compliance: KSeF, e-Delivery | Opero",
     description:
-      "KSeF, e-Delivery, NBP exchange rates and VAT verification work straight from the system, and an open API connects Opero with the rest of your tools.",
+      "KSeF, e-Delivery, NBP exchange rates and VAT checks straight from the system. An open API connects Opero with your tools, no extra software needed.",
   },
   navLabel: "Integrations and compliance",
   hero: {
@@ -56,6 +56,29 @@ export const integrationsFeature: FeaturePageContent = {
     title: "Connect Opero with your systems.",
     description: "See how compliance and integrations work without any additional software.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "Compliance and integrations in one place.",
+    paragraphs: [
+      "Opero meets Polish regulatory requirements and exchanges data with the outside world without separate software. The KSeF integration lets you send and receive structured invoices in line with mandatory e-invoicing, and e-Delivery brings official electronic correspondence straight into the system, with no trip to an external portal.",
+      "Everyday operations are supported by further integrations. Exchange rates pulled automatically from the NBP API (Table A) feed multi-currency conversions, with correct handling of non-working days. VAT verification checks a counterparty's status on the Polish white list and in VIES before you issue a document, cutting risk and manual checking.",
+      "An open API connects Opero with the rest of your company's tools in both directions, turning the platform into part of your ecosystem rather than another isolated island of data. Compliance and integrations gathered in one place shorten the path and simplify maintenance.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "Does Opero support KSeF?",
+        answer: "Yes. Opero integrates with Poland's National e-Invoice System, sending and receiving structured invoices in line with the requirements.",
+      },
+      {
+        question: "How does VAT verification work?",
+        answer: "The system checks a counterparty's VAT number on the white list and in VIES, confirming their status before you issue a document.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

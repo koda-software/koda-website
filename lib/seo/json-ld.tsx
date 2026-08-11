@@ -38,6 +38,25 @@ export function WebsiteJsonLd() {
   );
 }
 
+export function FaqJsonLd({ items }: { items: Array<{ question: string; answer: string }> }) {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: items.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }}
+    />
+  );
+}
+
 export function BreadcrumbJsonLd({ items }: { items: Array<{ name: string; path: string }> }) {
   return (
     <JsonLd

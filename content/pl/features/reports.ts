@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const reportsFeature: FeaturePageContent = {
   seo: {
-    title: "Raporty i analityka w Opero - zestawienia, wykresy, dashboardy",
+    title: "Raporty, dashboardy i analityka danych | Opero",
     description:
-      "Buduj raporty, wykresy i pulpity na żywych danych systemu. Drill-down prowadzi od wskaźnika do rekordów źródłowych, bez eksportu do Excela.",
+      "Buduj raporty, wykresy i dashboardy na żywych danych. Drąż od wskaźnika do rekordu bez eksportu do Excela. Analityka biznesowa w Opero.",
   },
   navLabel: "Raporty i analityka",
   hero: {
@@ -50,6 +50,31 @@ export const reportsFeature: FeaturePageContent = {
     title: "Zobacz swoje dane w jednym miejscu.",
     description: "Pokażemy raport i dashboard zbudowane na Twoim typie danych.",
     primaryCta: "Umów prezentację",
+  },
+  seoText: {
+    eyebrow: "Więcej o funkcji",
+    title: "Dane operacyjne zamienione w decyzje.",
+    paragraphs: [
+      "Raporty w Opero zamieniają dane operacyjne w decyzje. Zestawienia budujesz na danych obiektów: agregacje, grupowania, wskaźniki i wykresy powstają na żywych informacjach z systemu, bez eksportu do arkuszy. Dzięki drążeniu szczegółów (drill-down) przechodzisz od wartości zbiorczej do pojedynczych rekordów, które się na nią składają, więc każdą liczbę można sprawdzić u źródła.",
+      "Dashboardy zbierają najważniejsze wskaźniki w jednym miejscu. Kafelki i widgety z metrykami, wykresami i skrótami układasz osobno dla każdego zespołu, tak aby każdy otwierał system na tym, co dla niego istotne. To analityka dostępna na co dzień, nie raz na kwartał.",
+      "Gdy standardowe filtry nie wystarczają, raport zasilasz własnym zapytaniem SQL. Parametryzowane zapytania pozwalają wyciąć dane dokładnie tak, jak potrzebujesz, i wykorzystać je wielokrotnie. Raportowanie w Opero łączy prostotę codziennego wglądu z mocą zaawansowanych analiz.",
+    ],
+  },
+  faq: {
+    eyebrow: "Pytania",
+    title: "Najczęściej zadawane pytania.",
+    items: [
+      {
+        question: "Czym jest drill-down w raporcie?",
+        answer:
+          "To przejście od wartości zbiorczej do rekordów, które ją tworzą. Klikasz liczbę na raporcie i widzisz konkretne pozycje, które się na nią złożyły.",
+      },
+      {
+        question: "Czy raporty działają na aktualnych danych?",
+        answer:
+          "Tak. Raporty i dashboardy budowane są na żywych danych systemu, więc pokazują bieżący stan bez ręcznego odświeżania.",
+      },
+    ],
   },
   related: {
     eyebrow: "Pokrewne funkcje",

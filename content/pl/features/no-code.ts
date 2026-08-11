@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const noCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Platforma no-code - zbuduj własny system w Opero",
+    title: "Platforma no-code do budowy aplikacji | Opero",
     description:
-      "Obiekty własne, pola, formularze, układy, menu, strony własne i słowniki. Projektujesz dane i widoki w konfiguracji wizualnej, bez kodu.",
+      "Projektuj dane, ekrany i nawigację w konfiguracji wizualnej. Zbuduj własny system biznesowy bez programisty na platformie no-code Opero.",
   },
   navLabel: "Platforma No-Code",
   hero: {
@@ -79,6 +79,31 @@ export const noCodeFeature: FeaturePageContent = {
     title: "Zbuduj pierwszy obiekt w kilka minut.",
     description: "Pokażemy, jak z pustej instancji powstaje działająca aplikacja - bez ani jednej linijki kodu.",
     primaryCta: "Umów prezentację",
+  },
+  seoText: {
+    eyebrow: "Więcej o funkcji",
+    title: "Aplikacja bez kodu, dopasowana do Twojej firmy.",
+    paragraphs: [
+      "Platforma no-code Opero pozwala zbudować własny system biznesowy bez pisania kodu. Strukturę danych opisujesz obiektami własnymi i polami (ponad 20 typów: tekst, kwota, data, wybór, powiązanie, plik, pole wyliczane), a Opero od razu generuje listy, formularze i interfejs. Zmiany struktury wprowadzasz bezpiecznie w wersji roboczej, zanim trafią na produkcję.",
+      "Ekrany składasz z formularzy i układów. Formularz decyduje, które pola i w jakim trybie widzi użytkownik, a układ odpowiada za wizualne rozmieszczenie sekcji i zakładek. Nawigację budujesz z menu i stron własnych, a spójność danych pilnują słowniki i listy własne. To wszystko konfiguracja wizualna, dostępna dla osób bez zaplecza programistycznego.",
+      "Aplikacja zbudowana w no-code nie jest sztywnym szablonem. Do każdego obiektu przypniesz workflow, reguły i raporty, więc system rośnie razem z firmą i obsługuje dokładnie te procesy, których potrzebujesz. To szybsza droga do rozwiązania szytego na miarę niż klasyczne wdrożenie programistyczne.",
+    ],
+  },
+  faq: {
+    eyebrow: "Pytania",
+    title: "Najczęściej zadawane pytania.",
+    items: [
+      {
+        question: "Czy naprawdę zbuduję aplikację bez programisty?",
+        answer:
+          "Tak. Obiekty, pola, formularze, układy i menu tworzy się wizualnie, bez kodu. Zaawansowaną logikę można dodać w warstwie low-code, ale nie jest ona wymagana do działającej aplikacji.",
+      },
+      {
+        question: "Czym jest obiekt własny?",
+        answer:
+          "To definicja danych, którą sam projektujesz, odpowiednik tabeli (np. Klient, Umowa, Zgłoszenie). Opero generuje dla niej ekrany i listy.",
+      },
+    ],
   },
   related: {
     eyebrow: "Pokrewne funkcje",

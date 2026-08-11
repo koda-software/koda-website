@@ -51,7 +51,7 @@ const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutt
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
-const sectionTitleClass = "m-0 max-w-[860px] text-[3.15rem] leading-[1.05] text-[var(--color-ink)] max-[809px]:text-[2.2rem]";
+const sectionTitleClass = "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
 
@@ -133,7 +133,7 @@ function TileBlocks({ icons, items }: { icons: LandingIcon[]; items: FeatureBloc
 
         return (
           <article
-            className="flex flex-col gap-4 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_60%,rgba(0,103,244,0.05))] p-6 transition-colors duration-200 hover:border-[rgba(0,103,244,0.18)]"
+            className="flex flex-col gap-4 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_60%,rgba(56, 182, 255,0.05))] p-6 transition-colors duration-200 hover:border-[rgba(56, 182, 255,0.18)]"
             key={item.title}
           >
             <span
@@ -309,7 +309,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
         {content.hero.description}
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link className={`${buttonClass} bg-[linear-gradient(135deg,#1f7cff,#004fc4)] text-white`} href={primaryHref}>
+        <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
           {content.hero.primaryCta}
         </Link>
         <Link
@@ -324,7 +324,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   return (
     <>
-      <section className="bg-[#02020d] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         {content.hero.shot ? (
           <div
             className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-16 max-[980px]:grid-cols-1 ${
@@ -347,15 +347,50 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       <section className={`${sectionClass} pt-0`}>
         <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
           <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
-          <h2 className="mx-auto m-0 max-w-[860px] text-[3.25rem] leading-[1.04] text-[var(--color-ink)] max-[809px]:text-[2.2rem]">
+          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
             {content.finalCta.title}
           </h2>
           <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>
           <div className="mt-8 flex justify-center">
-            <Link className={`${buttonClass} bg-[linear-gradient(135deg,#1f7cff,#004fc4)] text-white`} href={primaryHref}>
+            <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
               {content.finalCta.primaryCta}
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className={`${sectionClass} pt-0`}>
+        <p className={eyebrowClass}>{content.seoText.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.seoText.title}</h2>
+        <div className="mt-6 grid max-w-[62rem] gap-5">
+          {content.seoText.paragraphs.map((paragraph) => (
+            <p className={bodyClass} key={paragraph}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section className={`${sectionClass} pt-0`}>
+        <p className={eyebrowClass}>{content.faq.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.faq.title}</h2>
+        <div className="mt-8 grid max-w-[52rem] gap-3">
+          {content.faq.items.map((item) => (
+            <details
+              className="group rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 open:pb-5"
+              key={item.question}
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] font-medium leading-[1.3] text-[var(--color-ink)] marker:content-none [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <ArrowRightIcon
+                  className="h-5 w-5 shrink-0 -rotate-45 text-[var(--color-blue)] transition-transform duration-200 group-open:rotate-45"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+              </summary>
+              <p className={`${bodyClass} mt-3`}>{item.answer}</p>
+            </details>
+          ))}
         </div>
       </section>
 
@@ -365,7 +400,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
         <div className="mt-8 grid grid-cols-3 gap-4 max-[809px]:grid-cols-1">
           {related.map((item) => (
             <Link
-              className="group grid gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-6 transition-colors hover:border-[rgba(0,103,244,0.24)]"
+              className="group grid gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-6 transition-colors hover:border-[rgba(56, 182, 255,0.24)]"
               href={item.href}
               key={item.key}
             >

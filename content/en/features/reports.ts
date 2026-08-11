@@ -2,9 +2,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const reportsFeature: FeaturePageContent = {
   seo: {
-    title: "Reports and analytics in Opero - tables, charts, dashboards",
+    title: "Reports, Dashboards and Data Analytics | Opero",
     description:
-      "Build reports, charts and dashboards on live system data. Drill-down takes you from a metric to the source records, with no export to spreadsheets.",
+      "Build reports, charts and dashboards on live data. Drill down from a metric to a record with no export to spreadsheets. Business analytics in Opero.",
   },
   navLabel: "Reports and analytics",
   hero: {
@@ -50,6 +50,30 @@ export const reportsFeature: FeaturePageContent = {
     title: "See your data in one place.",
     description: "We will show you a report and a dashboard built on your own data type.",
     primaryCta: "Book a demo",
+  },
+  seoText: {
+    eyebrow: "More about this",
+    title: "Operational data turned into decisions.",
+    paragraphs: [
+      "Reports in Opero turn operational data into decisions. You build tables on object data: aggregations, groupings, metrics and charts run on live information from the system, with no export to spreadsheets. Drill-down takes you from an aggregate value down to the individual records behind it, so every number can be checked at the source.",
+      "Dashboards collect the metrics that matter most in one place. You arrange tiles and widgets with metrics, charts and shortcuts separately for each team, so everyone opens the system on what is relevant to them. This is analytics you use daily, not once a quarter.",
+      "When standard filters are not enough, you feed the report with your own SQL query. Parameterised queries let you cut the data exactly the way you need and reuse that cut elsewhere. Reporting in Opero combines the simplicity of a daily glance with the power of deeper analysis.",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Frequently asked questions.",
+    items: [
+      {
+        question: "What is drill-down in a report?",
+        answer:
+          "It is the move from an aggregate value to the records that make it up. You click a number on the report and see the specific entries behind it.",
+      },
+      {
+        question: "Do reports run on current data?",
+        answer: "Yes. Reports and dashboards are built on live system data, so they show the current state without a manual refresh.",
+      },
+    ],
   },
   related: {
     eyebrow: "Related features",

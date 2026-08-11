@@ -86,7 +86,7 @@ export function AiChatMockup({ chat }: AiChatMockupProps) {
             {showReply ? (
               <>
                 <div className="ai-chat-message flex justify-start">
-                  <p className="m-0 max-w-[min(100%,28rem)] rounded-[1.25rem] rounded-bl-sm border border-[rgba(0,103,244,0.16)] bg-white/90 px-4 py-3 leading-[1.5] text-[var(--color-ink-soft)] shadow-[0_10px_30px_rgba(0,103,244,0.08)]">
+                  <p className="m-0 max-w-[min(100%,28rem)] rounded-[1.25rem] rounded-bl-sm border border-[rgba(56, 182, 255,0.16)] bg-white/90 px-4 py-3 leading-[1.5] text-[var(--color-ink-soft)] shadow-[0_10px_30px_rgba(56, 182, 255,0.08)]">
                     {chat.assistantReply}
                   </p>
                 </div>

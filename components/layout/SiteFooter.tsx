@@ -17,11 +17,11 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
   return (
     <footer className="relative overflow-hidden bg-[#050713] px-[var(--page-gutter)] py-[clamp(4rem,8vw,6.5rem)] text-[var(--color-paper)]">
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.45),rgba(0,103,244,0.42),transparent)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.45),rgba(56, 182, 255,0.42),transparent)]"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(0,103,244,0.12),transparent_32%),linear-gradient(225deg,rgba(126,231,255,0.08),transparent_34%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(56, 182, 255,0.12),transparent_32%),linear-gradient(225deg,rgba(126,231,255,0.08),transparent_34%)]"
         aria-hidden="true"
       />
 
