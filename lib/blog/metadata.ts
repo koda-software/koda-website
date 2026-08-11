@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
 import type { Locale } from "@/lib/i18n/config";
 import { blogImagePath, isFileId } from "./images";
-import { getLanguageVariants, getSettings } from "./queries";
-import { articlePath, blogIndexPath, toBlogLocale } from "./routes";
+import { getSettings } from "./queries";
+import { articlePath, articleSlugsByLocale, blogIndexPath } from "./routes";
 import type { ArticleFullRow, BlogLocale } from "./types";
 
 const ogLocale: Record<Locale, string> = {
@@ -97,19 +97,22 @@ export function createBlogMetadata({
 }
 
 /**
- * hreflang map for an article, built from the CMS translation group so the
- * emitted alternates always match the language switcher.
+ * hreflang map for an article.
+ *
+ * Localisation collapsed the old translation group into a single record, so
+ * variants now come straight off the row (`slug_zrodlowy` + `slugi_i18n`) with
+ * no extra request. Locales the article has not been translated into are simply
+ * absent, which is what we want in hreflang.
  */
-export async function getArticleAlternates(article: ArticleFullRow, locale: BlogLocale) {
-  const variants = await getLanguageVariants(article.grupa_tlumaczen);
-  const paths = new Map<BlogLocale, string>([[locale, articlePath(locale, article.slug)]]);
+export function getArticleAlternates(article: ArticleFullRow, locale: BlogLocale) {
+  const paths = new Map<BlogLocale, string>();
 
-  for (const variant of variants) {
-    const variantLocale = toBlogLocale(variant.jezyk);
-    if (variantLocale) {
-      paths.set(variantLocale, articlePath(variantLocale, variant.slug));
-    }
+  for (const [variantLocale, slug] of articleSlugsByLocale(article)) {
+    paths.set(variantLocale, articlePath(variantLocale, slug));
   }
+
+  // The rendered locale always self-references, even mid-translation.
+  paths.set(locale, articlePath(locale, article.slug));
 
   const languages: Record<string, string> = {};
 
@@ -137,7 +140,7 @@ export function symmetricAlternates(paths: Record<BlogLocale, string>) {
  */
 export async function createArticleMetadata(article: ArticleFullRow, locale: BlogLocale): Promise<Metadata> {
   const settings = await getSettings();
-  const { languages } = await getArticleAlternates(article, locale);
+  const { languages } = getArticleAlternates(article, locale);
   const title = article.meta_title ?? article.tytul;
   const suffix = settings?.sufiks_title ?? "";
   const description = truncate(article.meta_description ?? article.zajawka ?? "");

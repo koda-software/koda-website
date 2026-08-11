@@ -54,7 +54,7 @@ export function BlogListPage({
         ) : (
           <div>
             {rows.map((article) => (
-              <ArticleRow article={article} key={`${article.jezyk}-${article.slug}`} locale={locale} ui={ui} />
+              <ArticleRow article={article} key={article.id} locale={locale} ui={ui} />
             ))}
           </div>
         )}

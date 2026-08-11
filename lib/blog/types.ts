@@ -30,11 +30,15 @@ export type TiptapPayload = {
   mentionRefs?: unknown[] | null;
 };
 
+/**
+ * One article record now holds every language: the saved queries take a `jezyk`
+ * parameter and return that locale's values, so rows no longer carry a `jezyk`
+ * column of their own.
+ */
 export type ArticleListRow = {
   id: string;
   tytul: string;
   slug: string;
-  jezyk: string;
   zajawka: string | null;
   data_publikacji: string;
   updated_at: string;
@@ -52,7 +56,14 @@ export type ArticleListRow = {
 export type SchemaType = "BlogPosting" | "Article" | "NewsArticle";
 
 export type ArticleFullRow = ArticleListRow & {
-  grupa_tlumaczen: string;
+  /** Slug in the source language (`contentSourceLanguage`, currently `pl`). */
+  slug_zrodlowy: string;
+  /**
+   * Translated slugs keyed by locale, e.g. `{ "en": "why-..." }`. The source
+   * locale is absent here — it lives in `slug_zrodlowy`. Replaces the old
+   * `grupa_tlumaczen` + `blog_warianty_jezykowe` pairing.
+   */
+  slugi_i18n: Record<string, string> | null;
   tresc: TiptapPayload | null;
   liczba_slow: number | null;
   meta_title: string | null;
@@ -81,18 +92,19 @@ export type AuthorArticleRow = ArticleListRow & {
   autor_x: string | null;
 };
 
+/**
+ * An indexable blog URL. Derived in `queries.ts` from the article listing plus
+ * the taxonomy records — the `blog_sitemap` saved query was not migrated to the
+ * localisation model and still fails server-side.
+ */
 export type SitemapRow = {
   typ: "artykul" | "kategoria" | "tag" | "autor";
+  /** Localized slug for `jezyk`; taxonomy slugs are shared across locales. */
   slug: string;
-  jezyk: string | null;
+  /** `null` for taxonomy, which is not localizable in the CMS. */
+  jezyk: BlogLocale | null;
   lastmod: string;
   data_publikacji: string | null;
-};
-
-export type VariantRow = {
-  jezyk: string;
-  slug: string;
-  tytul: string;
 };
 
 export type RedirectRow = {

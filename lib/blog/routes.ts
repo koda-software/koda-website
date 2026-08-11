@@ -9,6 +9,34 @@ import type { BlogLocale, SitemapRow } from "./types";
 
 export const blogLocales: BlogLocale[] = ["pl", "en"];
 
+/**
+ * The CMS authoring language (`contentSourceLanguage` on the `artykul` object).
+ * Source-language values live in the base columns; every other locale lives in
+ * the `__i18n` maps, which is why `slugi_i18n` never contains this locale.
+ */
+export const sourceLocale: BlogLocale = "pl";
+
+/**
+ * Localized slug per locale for one article, built from the source slug plus
+ * the translation map. Locales without a translation are simply absent.
+ */
+export function articleSlugsByLocale(article: {
+  slug_zrodlowy: string;
+  slugi_i18n: Record<string, string> | null;
+}): Map<BlogLocale, string> {
+  const slugs = new Map<BlogLocale, string>([[sourceLocale, article.slug_zrodlowy]]);
+
+  for (const [jezyk, slug] of Object.entries(article.slugi_i18n ?? {})) {
+    const locale = toBlogLocale(jezyk);
+
+    if (locale && slug) {
+      slugs.set(locale, slug);
+    }
+  }
+
+  return slugs;
+}
+
 export const archiveSegments: Record<BlogLocale, { category: string; tag: string; author: string }> = {
   pl: { category: "kategoria", tag: "tag", author: "autor" },
   en: { category: "category", tag: "tag", author: "author" },

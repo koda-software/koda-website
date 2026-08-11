@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { executeSavedQuery, getRecords, getSingletonValues } from "./opero";
+import { executeSavedQuery, getRecords, getRecordsWithMeta, getSingletonValues } from "./opero";
 import { BLOG_TAG, blogTag } from "./tags";
 import type {
   ArticleFullRow,
@@ -13,9 +13,8 @@ import type {
   RedirectRow,
   SitemapRow,
   TagRecord,
-  VariantRow,
 } from "./types";
-import { toBlogLocale } from "./routes";
+import { blogLocales } from "./routes";
 
 /**
  * Every read is wrapped in `unstable_cache` and tagged, so pages prerender at
@@ -175,11 +174,75 @@ export async function getArticlesByAuthor(options: {
   return fetchArticlesByAuthor(options.autorSlug, options.jezyk, pageSize, (page - 1) * pageSize);
 }
 
+/**
+ * Every indexable blog URL, assembled from the article listing (once per
+ * locale) and the taxonomy records.
+ *
+ * This deliberately does not use the `blog_sitemap` saved query: that query was
+ * not migrated to the localisation model — its SQL still selects the dropped
+ * `a.f_jezyk` column, so it fails server-side. Deriving the list here also
+ * removes a single point of failure for `generateStaticParams`.
+ *
+ * Known gap: `blog_lista_artykulow` does not return `noindex`, so a noindex
+ * article is still listed. Categories are filtered, since the record API does
+ * expose their flag. Ask the backend to add `noindex` to the listing query.
+ */
 async function readSitemapEntries(): Promise<SitemapRow[]> {
-  const rows = await executeSavedQuery<SitemapRow>("blog_sitemap");
+  const [categories, tags, authors] = await Promise.all([
+    getRecordsWithMeta<CategoryRecord>("kategoria"),
+    getRecordsWithMeta<TagRecord>("tag"),
+    getRecordsWithMeta<AuthorRecord>("autor"),
+  ]);
 
-  // Rows for languages we do not publish (e.g. `de`) never reach a page.
-  return rows.filter((row) => row.jezyk === null || toBlogLocale(row.jezyk) !== null);
+  const rows: SitemapRow[] = [];
+
+  for (const jezyk of blogLocales) {
+    for (const article of await readAllArticles(jezyk)) {
+      rows.push({
+        typ: "artykul",
+        slug: article.slug,
+        jezyk,
+        lastmod: article.updated_at,
+        data_publikacji: article.data_publikacji,
+      });
+    }
+  }
+
+  for (const category of categories) {
+    if (category.values.noindex === true) continue;
+    rows.push({ typ: "kategoria", slug: category.values.slug, jezyk: null, lastmod: category.updatedAt, data_publikacji: null });
+  }
+
+  for (const tag of tags) {
+    rows.push({ typ: "tag", slug: tag.values.slug, jezyk: null, lastmod: tag.updatedAt, data_publikacji: null });
+  }
+
+  for (const author of authors) {
+    if (author.values.aktywny === false) continue;
+    rows.push({ typ: "autor", slug: author.values.slug, jezyk: null, lastmod: author.updatedAt, data_publikacji: null });
+  }
+
+  return rows;
+}
+
+/** Walks the whole published listing for one locale, a page at a time. */
+async function readAllArticles(jezyk: BlogLocale): Promise<ArticleListRow[]> {
+  const pageSize = 100;
+  const all: ArticleListRow[] = [];
+
+  for (let offset = 0; offset < pageSize * 50; offset += pageSize) {
+    const rows = await executeSavedQuery<ArticleListRow>("blog_lista_artykulow", {
+      jezyk,
+      limit_wierszy: pageSize,
+      offset_wierszy: offset,
+    });
+
+    all.push(...rows);
+
+    if (rows.length < pageSize) break;
+  }
+
+  return all;
 }
 
 export const getSitemapEntries = unstable_cache(readSitemapEntries, ["blog", "sitemap"], {
@@ -213,16 +276,6 @@ export const uncachedForBuild = {
     return typeof size === "number" && size > 0 ? size : fallbackPageSize;
   },
 };
-
-export const getLanguageVariants = unstable_cache(
-  async (grupa: string): Promise<VariantRow[]> => {
-    const rows = await executeSavedQuery<VariantRow>("blog_warianty_jezykowe", { grupa });
-
-    return rows.filter((row) => toBlogLocale(row.jezyk) !== null);
-  },
-  ["blog", "warianty"],
-  { tags: [BLOG_TAG, blogTag("warianty")] },
-);
 
 export const getRedirects = unstable_cache(
   async (): Promise<RedirectRow[]> => executeSavedQuery<RedirectRow>("blog_przekierowania"),

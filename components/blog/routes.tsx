@@ -18,7 +18,9 @@ import {
 } from "@/lib/blog/queries";
 import {
   articlePath,
+  articleSlugsByLocale,
   authorPath,
+  blogLocales,
   blogIndexPath,
   blogPagePath,
   categoryPath,
@@ -215,10 +217,33 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
       redirect(match.sciezka_do);
     }
 
+    // The CMS resolves a slug under its own locale and the source locale only,
+    // so /pl/blog/{en-slug} misses here. Look it up in the other locales and
+    // send the visitor to this locale's slug if the article is translated.
+    for (const other of blogLocales) {
+      if (other === locale) continue;
+
+      const translated = await getArticleBySlug(slug, other);
+      const localizedSlug = translated && articleSlugsByLocale(translated).get(locale);
+
+      if (localizedSlug) {
+        permanentRedirect(articlePath(locale, localizedSlug));
+      }
+    }
+
     notFound();
   }
 
-  const [settings, { paths }] = await Promise.all([getSettings(), getArticleAlternates(article, locale)]);
+  // The CMS resolves an article by its slug in *any* locale, so /en/blog/{pl-slug}
+  // would serve the English article at a second URL. Send it to the canonical one.
+  const canonicalSlug = articleSlugsByLocale(article).get(locale);
+
+  if (canonicalSlug && canonicalSlug !== slug) {
+    permanentRedirect(articlePath(locale, canonicalSlug));
+  }
+
+  const settings = await getSettings();
+  const { paths } = getArticleAlternates(article, locale);
   const imageFileId = [article.og_image, article.obraz_glowny, settings?.domyslny_og_image].find(isFileId);
   const sameAs = [article.autor_linkedin, article.autor_x, article.autor_www].filter(
     (value): value is string => typeof value === "string" && value.length > 0,

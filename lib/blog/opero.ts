@@ -43,21 +43,138 @@ export function requireCompanyId() {
   return companyId;
 }
 
+/** Upstream states that are worth retrying rather than failing the build over. */
+const retryableStatuses = new Set([408, 425, 429, 500, 502, 503, 504]);
+const maxAttempts = 6;
+const maxBackoffMs = 70_000;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Caps how many requests this process has in flight at once.
+ *
+ * `next build` runs ~23 worker processes in parallel, and the blog now
+ * prerenders ~110 pages. Without a cap the origin sees a burst of several
+ * hundred requests in a couple of seconds and nginx starts returning 503, which
+ * fails the whole build. Four in flight per worker keeps the site building fast
+ * while staying well inside what the origin will absorb.
+ */
+const maxConcurrent = 4;
+let inFlight = 0;
+const waiting: Array<() => void> = [];
+
+async function acquireSlot() {
+  if (inFlight < maxConcurrent) {
+    inFlight += 1;
+    return;
+  }
+
+  await new Promise<void>((resolve) => waiting.push(resolve));
+  inFlight += 1;
+}
+
+function releaseSlot() {
+  inFlight -= 1;
+  waiting.shift()?.();
+}
+
+/**
+ * Collapses concurrent identical GETs within one process.
+ *
+ * Every page reads the settings singleton for its metadata, so a cold build
+ * would otherwise request it once per page per worker. `unstable_cache` dedupes
+ * across runs but not across simultaneous first-callers.
+ */
+const inFlightGets = new Map<string, Promise<Response>>();
+
+/**
+ * How long to wait before retrying.
+ *
+ * The API rate-limits at 500 requests/minute and advertises the window via
+ * `retry-after` / `x-ratelimit-reset`. Exponential backoff alone tops out well
+ * inside that window, so when the server tells us when to come back, we listen —
+ * otherwise a large build would burn its attempts and fail on a limit that
+ * clears in under a minute.
+ */
+function retryDelayMs(response: Response | null, attempt: number) {
+  const advertised = response?.headers.get("retry-after") ?? response?.headers.get("x-ratelimit-reset");
+  const seconds = advertised ? Number(advertised) : Number.NaN;
+
+  if (Number.isFinite(seconds) && seconds > 0) {
+    return Math.min(seconds * 1000 + 250, maxBackoffMs);
+  }
+
+  // 400ms, 800ms, 1600ms… plus jitter so parallel build workers desynchronise.
+  return Math.min(400 * 2 ** (attempt - 1) + Math.floor(Math.random() * 400), maxBackoffMs);
+}
+
 /**
  * Raw request against the Opero API. Caching is deliberately disabled here so
  * that the `unstable_cache` wrappers in `queries.ts` are the only cache layer.
+ *
+ * Concurrency is capped and identical in-flight GETs are shared, because
+ * `next build` fans out across many workers. Transient failures are retried
+ * with jittered, rate-limit-aware backoff; a genuine outage still fails the
+ * build once the attempts are exhausted, which is the behaviour we want for a
+ * content site.
  */
 export async function operoFetch(path: string, init?: RequestInit): Promise<Response> {
-  const response = await fetch(`${apiBase}${path}`, {
-    ...init,
-    cache: "no-store",
-    headers: {
-      Authorization: `Bearer ${requireApiKey()}`,
-      ...init?.headers,
-    },
-  });
+  const isGet = !init?.method || init.method.toUpperCase() === "GET";
 
-  return response;
+  if (!isGet) {
+    return requestWithRetry(path, init);
+  }
+
+  const pending = inFlightGets.get(path);
+
+  if (pending) {
+    // Response bodies can only be read once, so hand each caller its own clone.
+    return (await pending).clone();
+  }
+
+  const request = requestWithRetry(path, init).finally(() => inFlightGets.delete(path));
+  inFlightGets.set(path, request);
+
+  return (await request).clone();
+}
+
+async function requestWithRetry(path: string, init?: RequestInit): Promise<Response> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    let response: Response | null = null;
+
+    try {
+      await acquireSlot();
+
+      try {
+        response = await fetch(`${apiBase}${path}`, {
+          ...init,
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${requireApiKey()}`,
+            ...init?.headers,
+          },
+        });
+      } finally {
+        releaseSlot();
+      }
+
+      if (!retryableStatuses.has(response.status) || attempt === maxAttempts) {
+        return response;
+      }
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === maxAttempts) break;
+    }
+
+    await sleep(retryDelayMs(response, attempt));
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Opero API request to ${path} failed after ${maxAttempts} attempts.`);
 }
 
 /**
@@ -140,22 +257,29 @@ export async function executeSavedQuery<T>(key: string, params: Record<string, u
 const recordPageLimit = 100;
 const recordPageCap = 20;
 
-export async function getRecords<T>(objectKey: string): Promise<T[]> {
-  const values: T[] = [];
+export type BlogRecord<T> = { values: T; updatedAt: string };
+
+/** Records with their `updatedAt`, which the sitemap needs for `<lastmod>`. */
+export async function getRecordsWithMeta<T>(objectKey: string): Promise<Array<BlogRecord<T>>> {
+  const records: Array<BlogRecord<T>> = [];
 
   for (let page = 1; page <= recordPageCap; page += 1) {
     const response = await operoJson<RecordListResponse<T>>(
       `/v1/custom-modules/blog/objects/${objectKey}/records?limit=${recordPageLimit}&page=${page}`,
     );
 
-    values.push(...response.data.map((record) => record.values));
+    records.push(...response.data.map((record) => ({ values: record.values, updatedAt: record.updatedAt })));
 
     if (response.data.length < recordPageLimit) {
       break;
     }
   }
 
-  return values;
+  return records;
+}
+
+export async function getRecords<T>(objectKey: string): Promise<T[]> {
+  return (await getRecordsWithMeta<T>(objectKey)).map((record) => record.values);
 }
 
 export async function getSingletonValues<T>(objectKey: string): Promise<T | null> {
