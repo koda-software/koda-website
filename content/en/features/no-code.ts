@@ -86,7 +86,7 @@ export const noCodeFeature: FeaturePageContent = {
     paragraphs: [
       "The Opero no-code platform lets you build your own business system without writing code. You describe the data structure with custom objects and fields (more than 20 types: text, amount, date, choice, relation, file, calculated field), and Opero immediately generates lists, forms and the interface. Structure changes go through a safe draft before they reach production.",
       "You assemble views from forms and layouts. A form decides which fields a user sees and in what mode, while a layout controls the visual arrangement of sections and tabs. You build navigation with menus and custom pages, and dictionaries and custom lists keep the data consistent. All of it is visual configuration, open to people without a development background.",
-      "An application built with no-code is not a rigid template. You can attach a workflow, rules and reports to any object, so the system grows with the company and handles exactly the processes you need. It is a faster path to a tailor-made solution than a classic development project.",
+      "An application built with no-code does not stop at what you design on day one. You can attach a workflow, rules and reports to any object, so the system grows with the company and handles exactly the processes you need. It is a faster path to a tailor-made solution than a classic development project.",
     ],
   },
   faq: {

@@ -36,7 +36,7 @@ export const reportsFeature: FeaturePageContent = {
       {
         title: "Dashboards",
         description:
-          "Boards of tiles and widgets that collect key metrics and shortcuts in one place, separately for each team.",
+          "Boards of tiles and widgets that collect the metrics that matter most and shortcuts, separately for each team.",
       },
       {
         title: "SQL queries as a source",
@@ -47,7 +47,7 @@ export const reportsFeature: FeaturePageContent = {
   },
   finalCta: {
     eyebrow: "Next step",
-    title: "See your data in one place.",
+    title: "See your data the way you actually need it.",
     description: "We will show you a report and a dashboard built on your own data type.",
     primaryCta: "Book a demo",
   },
@@ -56,7 +56,7 @@ export const reportsFeature: FeaturePageContent = {
     title: "Operational data turned into decisions.",
     paragraphs: [
       "Reports in Opero turn operational data into decisions. You build tables on object data: aggregations, groupings, metrics and charts run on live information from the system, with no export to spreadsheets. Drill-down takes you from an aggregate value down to the individual records behind it, so every number can be checked at the source.",
-      "Dashboards collect the metrics that matter most in one place. You arrange tiles and widgets with metrics, charts and shortcuts separately for each team, so everyone opens the system on what is relevant to them. This is analytics you use daily, not once a quarter.",
+      "Dashboards collect the metrics that matter most on a single board. You arrange tiles and widgets with metrics, charts and shortcuts separately for each team, so everyone opens the system on what is relevant to them. This is analytics you use daily, not once a quarter.",
       "When standard filters are not enough, you feed the report with your own SQL query. Parameterised queries let you cut the data exactly the way you need and reuse that cut elsewhere. Reporting in Opero combines the simplicity of a daily glance with the power of deeper analysis.",
     ],
   },

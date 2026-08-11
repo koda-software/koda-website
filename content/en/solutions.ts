@@ -9,7 +9,7 @@ export const solutionsContent: SolutionsContent = {
   },
   hero: {
     eyebrow: "Solutions",
-    title: "No-code BPM for processes that do not fit one template.",
+    title: "No-code BPM for processes that off-the-shelf systems cannot handle.",
     description:
       "Every industry has work that standard systems struggle to describe: local procedures, approvals, exceptions, documents, roles and handoffs. In Opero you model it without losing control of the data.",
     supportLine: "Custom objects, processes, document workflow, automation, permissions and reports on one platform.",
@@ -48,7 +48,7 @@ export const solutionsContent: SolutionsContent = {
       {
         title: "Logistics and transport",
         scenario: [
-          "Logistics teams live on exceptions: missing documents, carrier problems, warehouse handoffs, claims, vehicle inspections, delayed shipments and partner coordination. These processes change faster than a rigid system can be reconfigured.",
+          "Logistics teams live on exceptions: missing documents, carrier problems, warehouse handoffs, claims, vehicle inspections, delayed shipments and partner coordination. These processes change faster than a standard system can be reconfigured.",
           "In Opero you model transport exceptions, carrier records, document statuses, vehicle and warehouse checks, and approval paths. The team gets one place that shows what happened, who owns the next step and which cases are still waiting.",
         ],
         useCasesLabel: "Common uses",

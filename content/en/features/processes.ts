@@ -70,7 +70,7 @@ export const processesFeature: FeaturePageContent = {
     paragraphs: [
       "Opero is a workflow system that turns every process in your company into a repeatable, controlled flow. A record moves through defined stages and transitions while the system enforces order, permissions and deadlines. Instead of decisions scattered across email and spreadsheets, you get one place that shows which stage a case is at, who owns it and what happened before.",
       "Business process management (BPM) in Opero does not require a developer. You design a flow visually: add stages, connect them with transitions, set conditions and the people responsible. Entering a stage opens a task, and the team's work lines up on a kanban board and in \"my tasks\" lists. Request approvals, invoice flow, ticket handling or quality procedures all work exactly the way you describe them.",
-      "Because you attach a workflow to any custom object, the flow covers your company's own data rather than a rigid, imposed schema. A full history and the ability to replay a run give you the order that both audits and daily work require.",
+      "Because you attach a workflow to any custom object, the flow covers your company's own data rather than a schema imposed by the system. A full history and the ability to replay a run give you the order that both audits and daily work require.",
     ],
   },
   faq: {

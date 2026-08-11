@@ -205,7 +205,8 @@ export type OperoProductContent = {
       detail: string;
     }>;
   };
-  contractorExample: {
+  /** One end-to-end process walked step by step, to make the abstract capabilities concrete. */
+  workflowExample: {
     eyebrow: string;
     title: string;
     description: string;

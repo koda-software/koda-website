@@ -11,14 +11,14 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Produkt Opero",
     title: "Platforma BPM no-code dla firm z własnymi procesami.",
     description:
-      "Opero zamienia sposób pracy Twojej firmy w działający system: obiegi pracy, dokumenty, automatyzacje, raporty i uprawnienia w jednym miejscu, bez pisania kodu.",
+      "Opero zamienia sposób pracy Twojej firmy w działający system: obiegi pracy, dokumenty, automatyzacje, raporty i uprawnienia pod jednym dachem, bez pisania kodu.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
     diagramItems: ["Obiekty własne", "Formularze i układy", "Procesy", "Reguły", "Raporty", "Uprawnienia"],
   },
   overview: {
     eyebrow: "Czym jest Opero",
-    title: "Konfigurowalna platforma, nie kolejny sztywny szablon.",
+    title: "Konfigurowalna platforma zamiast rozwiązania pudełkowego.",
     paragraphs: [
       "Standardowy ERP zaczyna od gotowych modułów i oczekuje, że firma się do nich dopasuje. Opero zaczyna od tego, jak pracujesz naprawdę: jakie rekordy prowadzisz, kto co akceptuje, gdzie sprawa przechodzi między działami i które wyjątki zdarzają się na tyle często, że muszą mieć swoje miejsce w systemie.",
       "Strukturę danych, widoki i nawigację projektujesz w konfiguracji wizualnej. Do tego dochodzą procesy oparte na etapach i przejściach, elektroniczny obieg dokumentów, silnik reguł, raporty i precyzyjne uprawnienia. Wszystko na jednym modelu danych, w jednej platformie.",
@@ -100,19 +100,38 @@ export const operoProductContent: OperoProductContent = {
       { label: "Uprawnienia", detail: "Role, dostęp do pól, spółki, tokeny API i logi." },
     ],
   },
-  contractorExample: {
+  workflowExample: {
     eyebrow: "Przykład",
-    title: "Kontrahenci i partnerzy w jednym miejscu.",
+    title: "Faktura kosztowa: od wpływu do raportu.",
     description:
-      "Zamiast trzymać dane kontrahentów w plikach, arkuszach i skrzynkach mailowych, prowadzisz je jako obiekt własny z pełnym kontekstem: dokumentami, obiegiem akceptacji i weryfikacją VAT.",
-    needLabel: "Potrzeba",
+      "Faktury krążące po mailach zna każda firma. Poniżej ten sam proces poprowadzony w Opero, krok po kroku: od wpływu dokumentu, przez akceptacje i terminy, aż po raport dla zarządu.",
+    needLabel: "Co się dzieje",
     supportLabel: "Jak działa to w Opero",
     rows: [
-      { need: "Kartoteka kontrahenta", support: "Profile, kontakty, adresy, statusy i własne pola dopasowane do procesu." },
-      { need: "Sprawdzenie przed transakcją", support: "Weryfikacja numeru VAT na białej liście i w VIES wprost z kartoteki." },
-      { need: "Dokumenty przy sprawie", support: "Umowy i pisma powiązane z rekordem, wersjonowane i przeszukiwalne." },
-      { need: "Przesuwanie sprawy dalej", support: "Etapy, akceptacje, zadania, powiadomienia i kolejne kroki procesu." },
-      { need: "Kontrola dostępu", support: "Role, uprawnienia do pól, podział na spółki i rejestr zdarzeń." },
+      {
+        need: "Faktura wpływa do firmy",
+        support: "Pobierasz ją z KSeF albo rejestrujesz ręcznie. Od razu powstaje rekord z numerem, kontrahentem i kwotą.",
+      },
+      {
+        need: "Trzeba ją opisać i przypisać",
+        support: "Dekretacja na dział, projekt lub miejsce powstawania kosztu. Kancelaria widzi inny zestaw pól niż osoba merytoryczna.",
+      },
+      {
+        need: "Ktoś musi ją zatwierdzić",
+        support: "Ścieżka akceptacji zależna od kwoty i działu, z zadaniem oraz terminem na każdym etapie.",
+      },
+      {
+        need: "Dokument nie może zaginąć",
+        support: "Skan i każda kolejna wersja pliku zostają przy rekordzie: przeszukiwalne, z kontrolą uprawnień i pełną historią.",
+      },
+      {
+        need: "Zbliża się termin płatności",
+        support: "Reguła przypomina odpowiedzialnym, zanim termin minie, i eskaluje sprawę, gdy nikt nie zareagował.",
+      },
+      {
+        need: "Zarząd pyta o koszty",
+        support: "Raport z podziałem na działy i miesiące, z drążeniem od sumy aż do pojedynczej faktury.",
+      },
     ],
   },
   implementation: {
@@ -143,7 +162,7 @@ export const operoProductContent: OperoProductContent = {
   },
   comparison: {
     eyebrow: "Gdzie pasuje",
-    title: "Pomiędzy sztywnym ERP a kruchymi obejściami.",
+    title: "Pomiędzy gotowym ERP a kruchymi obejściami.",
     columns: [
       {
         label: "Standardowy ERP",
@@ -159,7 +178,7 @@ export const operoProductContent: OperoProductContent = {
       },
       {
         label: "Opero",
-        description: "Konfigurowalna platforma, która dopasowuje się do Twojej pracy i utrzymuje dane, procesy, automatyzacje, raporty i kontrolę w jednym miejscu.",
+        description: "Konfigurowalna platforma, która dopasowuje się do Twojej pracy i utrzymuje dane, procesy, automatyzacje, raporty i kontrolę w spójnej całości.",
       },
     ],
   },

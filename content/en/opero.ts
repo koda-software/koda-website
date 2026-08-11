@@ -11,14 +11,14 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Opero product",
     title: "A no-code BPM platform for companies with custom processes.",
     description:
-      "Opero turns the way your company works into a working system: workflows, documents, automation, reports and permissions in one place, with no code written.",
+      "Opero turns the way your company works into a working system: workflows, documents, automation, reports and permissions under one roof, with no code written.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore solutions",
     diagramItems: ["Custom objects", "Forms and layouts", "Processes", "Rules", "Reports", "Permissions"],
   },
   overview: {
     eyebrow: "What Opero is",
-    title: "A configurable platform, not another fixed template.",
+    title: "A configurable platform instead of off-the-shelf software.",
     paragraphs: [
       "Standard ERP starts with predefined modules and expects the company to adapt to them. Opero starts with how you actually work: the records you manage, who approves what, where a case moves between departments, and which exceptions happen often enough to deserve a place in the system.",
       "You design the data structure, the views and the navigation in visual configuration. On top of that come processes built on stages and transitions, document workflow, a rule engine, reports and precise permissions. All on one data model, in one platform.",
@@ -99,19 +99,38 @@ export const operoProductContent: OperoProductContent = {
       { label: "Permissions", detail: "Roles, field access, companies, API tokens and logs." },
     ],
   },
-  contractorExample: {
+  workflowExample: {
     eyebrow: "Example",
-    title: "Counterparties and partners in one place.",
+    title: "A cost invoice: from arrival to report.",
     description:
-      "Instead of keeping counterparty data across files, spreadsheets and inboxes, you run it as a custom object with the full context: documents, an approval flow and VAT verification.",
-    needLabel: "Need",
-    supportLabel: "How it works in Opero",
+      "Invoices circulating over email are a problem every company knows. Below is that same process run in Opero, step by step: from the document arriving, through approvals and deadlines, to the report for management.",
+    needLabel: "What happens",
+    supportLabel: "How Opero handles it",
     rows: [
-      { need: "A counterparty record", support: "Profiles, contacts, addresses, statuses and custom fields matched to the process." },
-      { need: "A check before the deal", support: "VAT number verification against the white list and VIES straight from the record." },
-      { need: "Documents with the case", support: "Contracts and letters linked to the record, versioned and searchable." },
-      { need: "Moving the case forward", support: "Stages, approvals, tasks, notifications and the next steps of the process." },
-      { need: "Access control", support: "Roles, field permissions, separation by company and an event log." },
+      {
+        need: "An invoice arrives",
+        support: "You pull it in from KSeF or register it manually. A record is created immediately, with a number, counterparty and amount.",
+      },
+      {
+        need: "It needs describing and assigning",
+        support: "Assignment to a department, project or cost centre. The front office sees a different set of fields than the person reviewing it.",
+      },
+      {
+        need: "Someone has to approve it",
+        support: "An approval path that depends on the amount and the department, with a task and a deadline at every stage.",
+      },
+      {
+        need: "The document must not get lost",
+        support: "The scan and every later version of the file stay on the record: searchable, access-controlled and with a full history.",
+      },
+      {
+        need: "The payment date is approaching",
+        support: "A rule reminds the people responsible before the deadline passes, and escalates the case when nobody reacts.",
+      },
+      {
+        need: "Management asks about costs",
+        support: "A report broken down by department and month, with drill-down from the total to a single invoice.",
+      },
     ],
   },
   implementation: {
@@ -142,7 +161,7 @@ export const operoProductContent: OperoProductContent = {
   },
   comparison: {
     eyebrow: "Where it fits",
-    title: "Between rigid ERP and fragile workarounds.",
+    title: "Between packaged ERP and fragile workarounds.",
     columns: [
       {
         label: "Standard ERP",
@@ -158,7 +177,7 @@ export const operoProductContent: OperoProductContent = {
       },
       {
         label: "Opero",
-        description: "A configurable platform that adapts to your work and keeps data, processes, automation, reports and control in one place.",
+        description: "A configurable platform that adapts to your work and keeps data, processes, automation, reports and control as one coherent whole.",
       },
     ],
   },

@@ -24,7 +24,7 @@ export const contactContent: ContactPageContent = {
     items: [
       {
         title: "Data and records",
-        description: "How your objects, relationships, statuses, documents, and responsible people could be represented without forcing everything into one rigid template.",
+        description: "How your objects, relationships, statuses, documents, and responsible people could be represented without forcing everything into predefined modules.",
       },
       {
         title: "Workflows and approvals",

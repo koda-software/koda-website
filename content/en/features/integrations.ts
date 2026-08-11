@@ -18,7 +18,7 @@ export const integrationsFeature: FeaturePageContent = {
   intro: {
     eyebrow: "In short",
     paragraph:
-      "Opero meets Polish regulatory requirements (e-invoicing, official correspondence) and exchanges data with the outside world without separate software - compliance and integrations in one place.",
+      "Opero meets Polish regulatory requirements (e-invoicing, official correspondence) and exchanges data with the outside world without separate software.",
   },
   blocks: {
     eyebrow: "What you get",
@@ -59,11 +59,11 @@ export const integrationsFeature: FeaturePageContent = {
   },
   seoText: {
     eyebrow: "More about this",
-    title: "Compliance and integrations in one place.",
+    title: "Compliance and integrations without extra applications.",
     paragraphs: [
       "Opero meets Polish regulatory requirements and exchanges data with the outside world without separate software. The KSeF integration lets you send and receive structured invoices in line with mandatory e-invoicing, and e-Delivery brings official electronic correspondence straight into the system, with no trip to an external portal.",
       "Everyday operations are supported by further integrations. Exchange rates pulled automatically from the NBP API (Table A) feed multi-currency conversions, with correct handling of non-working days. VAT verification checks a counterparty's status on the Polish white list and in VIES before you issue a document, cutting risk and manual checking.",
-      "An open API connects Opero with the rest of your company's tools in both directions, turning the platform into part of your ecosystem rather than another isolated island of data. Compliance and integrations gathered in one place shorten the path and simplify maintenance.",
+      "An open API connects Opero with the rest of your company's tools in both directions, turning the platform into part of your ecosystem rather than another isolated island of data. Gathering compliance and integrations inside the platform itself shortens the path and simplifies maintenance.",
     ],
   },
   faq: {

@@ -36,7 +36,7 @@ export const reportsFeature: FeaturePageContent = {
       {
         title: "Dashboardy",
         description:
-          "Pulpity z kafelkami i widgetami zbierające kluczowe metryki i skróty w jednym miejscu, osobne dla każdego zespołu.",
+          "Pulpity z kafelkami i widgetami zbierające najważniejsze metryki i skróty, osobne dla każdego zespołu.",
       },
       {
         title: "Zapytania SQL jako źródło",
@@ -47,7 +47,7 @@ export const reportsFeature: FeaturePageContent = {
   },
   finalCta: {
     eyebrow: "Następny krok",
-    title: "Zobacz swoje dane w jednym miejscu.",
+    title: "Zobacz swoje dane tak, jak ich potrzebujesz.",
     description: "Pokażemy raport i dashboard zbudowane na Twoim typie danych.",
     primaryCta: "Umów prezentację",
   },
@@ -56,7 +56,7 @@ export const reportsFeature: FeaturePageContent = {
     title: "Dane operacyjne zamienione w decyzje.",
     paragraphs: [
       "Raporty w Opero zamieniają dane operacyjne w decyzje. Zestawienia budujesz na danych obiektów: agregacje, grupowania, wskaźniki i wykresy powstają na żywych informacjach z systemu, bez eksportu do arkuszy. Dzięki drążeniu szczegółów (drill-down) przechodzisz od wartości zbiorczej do pojedynczych rekordów, które się na nią składają, więc każdą liczbę można sprawdzić u źródła.",
-      "Dashboardy zbierają najważniejsze wskaźniki w jednym miejscu. Kafelki i widgety z metrykami, wykresami i skrótami układasz osobno dla każdego zespołu, tak aby każdy otwierał system na tym, co dla niego istotne. To analityka dostępna na co dzień, nie raz na kwartał.",
+      "Dashboardy zbierają najważniejsze wskaźniki na jednym pulpicie. Kafelki i widgety z metrykami, wykresami i skrótami układasz osobno dla każdego zespołu, tak aby każdy otwierał system na tym, co dla niego istotne. To analityka dostępna na co dzień, nie raz na kwartał.",
       "Gdy standardowe filtry nie wystarczają, raport zasilasz własnym zapytaniem SQL. Parametryzowane zapytania pozwalają wyciąć dane dokładnie tak, jak potrzebujesz, i wykorzystać je wielokrotnie. Raportowanie w Opero łączy prostotę codziennego wglądu z mocą zaawansowanych analiz.",
     ],
   },

@@ -24,7 +24,7 @@ export const contactContent: ContactPageContent = {
     items: [
       {
         title: "Dane i rekordy",
-        description: "Jak obiekty, relacje, statusy, dokumenty i osoby odpowiedzialne można odwzorować bez wciskania wszystkiego w jeden sztywny schemat.",
+        description: "Jak obiekty, relacje, statusy, dokumenty i osoby odpowiedzialne można odwzorować bez wciskania wszystkiego w gotowe moduły.",
       },
       {
         title: "Procesy i akceptacje",

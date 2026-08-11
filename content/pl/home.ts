@@ -112,7 +112,7 @@ export const homeContent: HomeContent = {
   },
   problem: {
     label: "Problem",
-    title: "Firmy nie działają według sztywnych szablonów.",
+    title: "Żadne dwie firmy nie pracują tak samo.",
     description:
       "Gdy system nie nadąża za realną pracą, zespoły budują obejścia: arkusze, akceptacje w mailu, rozproszone narzędzia, zdublowane rekordy i przekazania, których nie widać w żadnym procesie.",
     points: [
@@ -290,7 +290,7 @@ export const homeContent: HomeContent = {
     description:
       "KodaSoft buduje Opero z dyscypliną inżynieryjną: elastyczna architektura, utrzymywalny kod, kontrolowane uprawnienia, sprawdzalna automatyzacja i świadome podejście do wydajności.",
     points: [
-      "Architektura pod konfigurowalne procesy, nie pod jeden szablon.",
+      "Architektura pod konfigurowalne procesy, nie pod zamknięty zestaw modułów.",
       "Kontrola oparta na rolach, uprawnieniach i rejestrze zdarzeń.",
       "Automatyzacja, którą da się przetestować przed wdrożeniem.",
       "Myślenie produktowe wsparte solidną inżynierią.",

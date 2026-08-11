@@ -18,7 +18,7 @@ export const integrationsFeature: FeaturePageContent = {
   intro: {
     eyebrow: "W skrócie",
     paragraph:
-      "Opero spełnia polskie wymogi (e-fakturowanie, korespondencja urzędowa) i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania - zgodność i integracje w jednym miejscu.",
+      "Opero spełnia polskie wymogi (e-fakturowanie, korespondencja urzędowa) i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania.",
   },
   blocks: {
     eyebrow: "Co dostajesz",
@@ -58,11 +58,11 @@ export const integrationsFeature: FeaturePageContent = {
   },
   seoText: {
     eyebrow: "Więcej o funkcji",
-    title: "Zgodność i integracje w jednym miejscu.",
+    title: "Zgodność i integracje bez dodatkowych aplikacji.",
     paragraphs: [
       "Opero spełnia polskie wymogi prawne i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania. Integracja z KSeF pozwala wysyłać i odbierać faktury ustrukturyzowane zgodnie z obowiązkowym e-fakturowaniem, a e-Doręczenia umożliwiają elektroniczną korespondencję urzędową wprost z systemu, bez wychodzenia do zewnętrznych portali.",
       "Codzienne operacje wspierają kolejne integracje. Kursy walut pobierane automatycznie z API NBP (Tabela A) zasilają przeliczenia wielowalutowe, z poprawną obsługą dni wolnych. Weryfikacja VAT sprawdza status kontrahenta na białej liście i w VIES, zanim wystawisz dokument, co ogranicza ryzyko i ręczne sprawdzanie.",
-      "Otwarte API łączy Opero z pozostałymi narzędziami firmy w obie strony. Dzięki temu platforma staje się częścią Twojego ekosystemu, a nie kolejną odizolowaną wyspą danych. Zgodność i integracje zebrane w jednym miejscu skracają drogę i upraszczają utrzymanie.",
+      "Otwarte API łączy Opero z pozostałymi narzędziami firmy w obie strony. Dzięki temu platforma staje się częścią Twojego ekosystemu, a nie kolejną odizolowaną wyspą danych. Zebranie zgodności i integracji w samej platformie skraca drogę i upraszcza utrzymanie.",
     ],
   },
   faq: {

@@ -197,19 +197,19 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
       </section>
 
       <section className={sectionClass}>
-        <p className={eyebrowClass}>{content.contractorExample.eyebrow}</p>
-        <h2 className={sectionTitleClass}>{content.contractorExample.title}</h2>
-        <p className={`${bodyClass} mt-5 max-w-[760px]`}>{content.contractorExample.description}</p>
+        <p className={eyebrowClass}>{content.workflowExample.eyebrow}</p>
+        <h2 className={sectionTitleClass}>{content.workflowExample.title}</h2>
+        <p className={`${bodyClass} mt-5 max-w-[760px]`}>{content.workflowExample.description}</p>
         <div className="mt-10 overflow-x-auto border-y border-[rgba(2,2,13,0.12)]">
           <table className="w-full min-w-[44rem] border-collapse text-left">
             <thead className="text-[0.76rem] uppercase tracking-[0.08em] text-[var(--color-muted)]">
               <tr>
-                <th className="w-[32%] py-4 pr-6 font-semibold">{content.contractorExample.needLabel}</th>
-                <th className="py-4 font-semibold">{content.contractorExample.supportLabel}</th>
+                <th className="w-[32%] py-4 pr-6 font-semibold">{content.workflowExample.needLabel}</th>
+                <th className="py-4 font-semibold">{content.workflowExample.supportLabel}</th>
               </tr>
             </thead>
             <tbody>
-              {content.contractorExample.rows.map((row) => (
+              {content.workflowExample.rows.map((row) => (
                 <tr className="border-t border-[rgba(2,2,13,0.08)]" key={row.need}>
                   <td className="py-5 pr-6 align-top text-[1rem] font-medium text-[var(--color-ink)]">{row.need}</td>
                   <td className="py-5 align-top text-[1rem] font-light leading-[1.65] text-[var(--color-muted)]">{row.support}</td>

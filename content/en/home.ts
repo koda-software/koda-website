@@ -112,7 +112,7 @@ export const homeContent: HomeContent = {
   },
   problem: {
     label: "The problem",
-    title: "Real companies do not work in fixed templates.",
+    title: "No two companies work the same way.",
     description:
       "When the system cannot keep up with real work, teams build workarounds: spreadsheets, approvals over email, scattered tools, duplicated records and handoffs that no process ever sees.",
     points: [
@@ -290,7 +290,7 @@ export const homeContent: HomeContent = {
     description:
       "KodaSoft builds Opero with engineering discipline: flexible architecture, maintainable code, controlled permissions, inspectable automation and a deliberate approach to performance.",
     points: [
-      "Architecture built for configurable processes, not one fixed template.",
+      "Architecture built for configurable processes, not a closed set of modules.",
       "Control based on roles, permissions and an event log.",
       "Automation you can test before rollout.",
       "Product thinking backed by solid engineering.",

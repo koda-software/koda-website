@@ -9,7 +9,7 @@ export const solutionsContent: SolutionsContent = {
   },
   hero: {
     eyebrow: "Rozwiązania",
-    title: "BPM no-code dla procesów, które nie mieszczą się w jednym szablonie.",
+    title: "BPM no-code dla procesów, których nie obsłuży system pudełkowy.",
     description:
       "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. W Opero modelujesz ją bez utraty kontroli nad danymi.",
     supportLine: "Obiekty własne, procesy, obieg dokumentów, automatyzacje, uprawnienia i raporty na jednej platformie.",
@@ -48,7 +48,7 @@ export const solutionsContent: SolutionsContent = {
       {
         title: "Logistyka i transport",
         scenario: [
-          "Zespoły logistyczne żyją wyjątkami: brakującymi dokumentami, problemami przewoźników, przekazaniami magazynowymi, reklamacjami, kontrolami pojazdów, opóźnionymi wysyłkami i koordynacją partnerów. Te procesy zmieniają się szybciej, niż da się przekonfigurować sztywny system.",
+          "Zespoły logistyczne żyją wyjątkami: brakującymi dokumentami, problemami przewoźników, przekazaniami magazynowymi, reklamacjami, kontrolami pojazdów, opóźnionymi wysyłkami i koordynacją partnerów. Te procesy zmieniają się szybciej, niż da się przekonfigurować standardowy system.",
           "W Opero modelujesz wyjątki transportowe, kartoteki przewoźników, statusy dokumentów, kontrole pojazdów i magazynów oraz ścieżki akceptacji. Zespół dostaje jedno miejsce, w którym widać, co się wydarzyło, kto ma następny krok i które sprawy nadal czekają.",
         ],
         useCasesLabel: "Typowe zastosowania",

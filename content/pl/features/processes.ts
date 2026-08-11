@@ -70,7 +70,7 @@ export const processesFeature: FeaturePageContent = {
     paragraphs: [
       "Opero to system workflow, w którym każdy proces w firmie zamieniasz w powtarzalny, kontrolowany obieg. Rekord przechodzi przez zdefiniowane etapy i przejścia, a system pilnuje kolejności, uprawnień i terminów. Zamiast ustaleń rozproszonych w mailach i arkuszach masz jedno miejsce, w którym widać, na jakim etapie jest sprawa, kto za nią odpowiada i co wydarzyło się wcześniej.",
       "Zarządzanie procesami biznesowymi (BPM) w Opero nie wymaga programisty. Obieg projektujesz wizualnie: dodajesz etapy, łączysz je przejściami, ustawiasz warunki i osoby odpowiedzialne. Każde wejście na etap otwiera zadanie, a praca zespołu układa się na tablicy kanban i listach „moje zadania”. Akceptacje wniosków, obieg faktur, obsługa zgłoszeń czy procedury jakościowe działają dokładnie tak, jak je opiszesz.",
-      "Ponieważ workflow przypinasz do dowolnego obiektu własnego, obiegiem obejmujesz własne dane firmy, a nie sztywny, narzucony schemat. Pełna historia i możliwość odtworzenia przebiegu dają porządek wymagany w audycie i codziennej pracy.",
+      "Ponieważ workflow przypinasz do dowolnego obiektu własnego, obiegiem obejmujesz własne dane firmy, a nie schemat narzucony przez system. Pełna historia i możliwość odtworzenia przebiegu dają porządek wymagany w audycie i codziennej pracy.",
     ],
   },
   faq: {

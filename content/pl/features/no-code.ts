@@ -86,7 +86,7 @@ export const noCodeFeature: FeaturePageContent = {
     paragraphs: [
       "Platforma no-code Opero pozwala zbudować własny system biznesowy bez pisania kodu. Strukturę danych opisujesz obiektami własnymi i polami (ponad 20 typów: tekst, kwota, data, wybór, powiązanie, plik, pole wyliczane), a Opero od razu generuje listy, formularze i interfejs. Zmiany struktury wprowadzasz bezpiecznie w wersji roboczej, zanim trafią na produkcję.",
       "Ekrany składasz z formularzy i układów. Formularz decyduje, które pola i w jakim trybie widzi użytkownik, a układ odpowiada za wizualne rozmieszczenie sekcji i zakładek. Nawigację budujesz z menu i stron własnych, a spójność danych pilnują słowniki i listy własne. To wszystko konfiguracja wizualna, dostępna dla osób bez zaplecza programistycznego.",
-      "Aplikacja zbudowana w no-code nie jest sztywnym szablonem. Do każdego obiektu przypniesz workflow, reguły i raporty, więc system rośnie razem z firmą i obsługuje dokładnie te procesy, których potrzebujesz. To szybsza droga do rozwiązania szytego na miarę niż klasyczne wdrożenie programistyczne.",
+      "Aplikacja zbudowana w no-code nie kończy się na tym, co zaprojektujesz na starcie. Do każdego obiektu przypniesz workflow, reguły i raporty, więc system rośnie razem z firmą i obsługuje dokładnie te procesy, których potrzebujesz. To szybsza droga do rozwiązania szytego na miarę niż klasyczne wdrożenie programistyczne.",
     ],
   },
   faq: {
