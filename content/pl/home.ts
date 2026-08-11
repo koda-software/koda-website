@@ -3,21 +3,21 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Opero, platforma BPM no-code dla procesów firmy",
+    title: "Platforma BPM no-code do procesów i dokumentów",
     description:
-      "KodaSoft tworzy Opero: platformę BPM no-code do procesów, automatyzacji, kontroli danych i praktycznego wykorzystania AI.",
+      "Opero to platforma BPM no-code: procesy i workflow, elektroniczny obieg dokumentów, automatyzacja, raporty i uprawnienia. Zbuduj system bez programisty.",
   },
   hero: {
     eyebrow: "BPM no-code od KodaSoft",
     title: "Zamień swój sposób działania w oprogramowanie",
     description:
-      "Tworzymy Opero: platformę BPM no-code, która pozwala modelować własne procesy, automatyzować przepływy pracy, porządkować dane i używać AI tam, gdzie faktycznie toczy się praca.",
+      "Opero to platforma BPM no-code, w której modelujesz własne procesy, prowadzisz obieg dokumentów, automatyzujesz powtarzalne kroki i trzymasz dane firmy pod kontrolą. Bez pisania kodu.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
     supportPoints: [
-      "Własne rekordy, formularze i przepływy pracy.",
-      "Reguły automatyzacji z praktycznym wsparciem AI.",
-      "Uprawnienia, audyt i wyszukiwanie dla kontroli operacyjnej.",
+      "Obiekty własne, formularze i procesy dopasowane do firmy.",
+      "Automatyzacje, raporty i asystent AI na Twoich danych.",
+      "Uprawnienia, obieg dokumentów i pełna historia zmian.",
     ],
     visual: {
       questions: ["Jak wyglądają procesy?", "Kto za co odpowiada?", "W jakiej kolejności?", "Co warto zautomatyzować?"],
@@ -25,17 +25,17 @@ export const homeContent: HomeContent = {
         {
           label: "01",
           title: "Opowiadasz nam, jak działa firma",
-          description: "Procesy, role, rekordy, przekazania zadań, wyjątki.",
+          description: "Procesy, role, rekordy, akceptacje, wyjątki.",
         },
         {
           label: "02",
-          title: "Opero układa model operacyjny",
-          description: "Dane, przepływy pracy, uprawnienia, reguły, wsparcie AI.",
+          title: "Opero układa to w system",
+          description: "Dane, procesy, uprawnienia, reguły, wsparcie AI.",
         },
         {
           label: "03",
-          title: "Otrzymujesz system dopasowany do pracy",
-          description: "Oprogramowanie szyte na miarę, które zespół może używać i rozwijać.",
+          title: "Dostajesz system dopasowany do pracy",
+          description: "Rozwiązanie szyte na miarę, które zespół rozwija dalej.",
         },
       ],
       magicLabel: "Mapowanie Opero",
@@ -114,113 +114,113 @@ export const homeContent: HomeContent = {
     label: "Problem",
     title: "Firmy nie działają według sztywnych szablonów.",
     description:
-      "Gdy system nie nadąża za realną pracą, zespoły budują obejścia: arkusze, ręczne akceptacje, rozproszone narzędzia, zdublowane rekordy i przekazania zadań, których nie widać w procesie.",
+      "Gdy system nie nadąża za realną pracą, zespoły budują obejścia: arkusze, akceptacje w mailu, rozproszone narzędzia, zdublowane rekordy i przekazania, których nie widać w żadnym procesie.",
     points: [
-      "Procesy zmieniają się szybciej niż standardowe konfiguracje ERP.",
-      "Kluczowe rekordy są rozproszone po arkuszach i osobnych narzędziach.",
-      "Ręczne przekazania spowalniają pracę i utrudniają audyt.",
-      "AI często działa poza procesem, bez realnego kontekstu operacyjnego.",
+      "Procesy zmieniają się szybciej niż konfiguracja standardowego ERP.",
+      "Kluczowe dane rozjeżdżają się po arkuszach i osobnych narzędziach.",
+      "Dokumenty krążą po mailach, więc nie wiadomo, u kogo leży sprawa.",
+      "AI działa obok systemu, bez dostępu do realnego kontekstu firmy.",
     ],
   },
   solution: {
     label: "Rozwiązanie",
     title: "Opero dopasowuje się do sposobu pracy firmy.",
     description:
-      "Opero daje podstawę low-code dla danych, procesów, reguł, ról, wyszukiwania i działań wspieranych przez AI. Pomaga przełożyć realną pracę na uporządkowane, kontrolowane oprogramowanie.",
+      "Zamiast dopasowywać firmę do gotowych modułów, projektujesz własne obiekty, procesy i widoki w konfiguracji wizualnej. Dane, obieg dokumentów, automatyzacje i uprawnienia pozostają w jednym systemie.",
     points: [
-      "Modeluj własne procesy przez obiekty, pola, relacje i formularze.",
-      "Automatyzuj zmiany rekordów, powiadomienia, kontrole i kroki procesu.",
-      "Zarządzaj dostępem przez role, uprawnienia, izolację organizacji i logi audytowe.",
-      "Włączaj AI do zapytań, skryptów i reguł tam, gdzie liczy się kontekst.",
+      "Modelujesz własne dane obiektami, polami, relacjami i formularzami.",
+      "Prowadzisz dokumenty przez obieg akceptacji, z wersjami plików przy sprawie.",
+      "Automatyzujesz powtarzalne kroki regułami, skryptami i zapytaniami SQL.",
+      "Kontrolujesz dostęp rolami, uprawnieniami do pól i rejestrem zdarzeń.",
     ],
   },
   pillars: {
     label: "Możliwości Opero",
     title: "Fundament no-code dla procesów, które się zmieniają.",
     description:
-      "Opero działa jak warstwa operacyjna firmy: modele danych, automatyzacja, uprawnienia, wyszukiwanie i wsparcie AI pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
+      "Opero działa jak warstwa operacyjna firmy: model danych, procesy, obieg dokumentów, automatyzacje, raporty i uprawnienia pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
     items: [
       {
-        title: "Modeluj operacje",
+        title: "Projektuj bez kodu",
         description:
-          "Twórz rekordy, pola, formularze, relacje i moduły dopasowane do tego, jak naprawdę pracuje firma.",
+          "Twórz obiekty własne, pola, formularze, układy i menu dopasowane do tego, jak naprawdę pracuje firma.",
         capabilities: [
-          "Własne moduły i obiekty",
-          "Dynamiczne pola i relacje",
-          "Konfigurowalne formularze",
-          "Rekordy kontrahentów",
+          "Obiekty i moduły własne",
+          "Ponad 20 typów pól",
+          "Formularze i układy",
+          "Słowniki i listy własne",
         ],
       },
       {
-        title: "Automatyzuj przepływy",
+        title: "Prowadź procesy i dokumenty",
         description:
-          "Buduj reguły reagujące na zdarzenia, harmonogramy, ręczne akcje i zmiany w rekordach.",
+          "Modeluj obiegi pracy jako etapy i przejścia, prowadź dokumenty przez akceptacje i trzymaj wersje plików przy sprawie.",
         capabilities: [
-          "Wyzwalacze i kroki reguł",
-          "Powiadomienia i webhooki",
-          "Aktualizacje rekordów",
-          "Historia wykonań",
+          "Etapy, przejścia i zadania",
+          "Tablice kanban",
+          "Obieg dokumentów i dekretacja",
+          "Szablony dokumentów",
         ],
       },
       {
-        title: "Dodawaj AI w kontekście pracy",
+        title: "Automatyzuj i analizuj",
         description:
-          "Wykorzystuj AI do zapytań, skryptów, podsumowań i wsparcia decyzji tam, gdzie dostępny jest kontekst operacyjny.",
+          "Reguły przejmują powtarzalne kroki, a raporty i dashboardy pokazują bieżący stan bez eksportu do arkuszy.",
         capabilities: [
-          "Zapytania wspierane przez AI",
-          "Planowanie skryptów",
-          "Kroki reguł AI",
-          "Konfigurowalni dostawcy LLM",
+          "Silnik reguł i skrypty",
+          "Zapytania SQL",
+          "Raporty i dashboardy",
+          "Asystent AI na Twoich danych",
         ],
       },
       {
         title: "Zachowaj kontrolę",
         description:
-          "Utrzymuj dane operacyjne w porządku: z wyszukiwaniem, audytem oraz dostępem ograniczonym rolami i organizacją.",
+          "Uprawnienia sięgają pojedynczego pola, a integracje z KSeF i e-Doręczeniami trzymają zgodność w jednym systemie.",
         capabilities: [
-          "Role i uprawnienia",
-          "Logi audytowe",
-          "Izolacja organizacji",
-          "Tokeny API i wyszukiwanie",
+          "Role i uprawnienia do pól",
+          "Wiele spółek w organizacji",
+          "KSeF i e-Doręczenia",
+          "Tokeny API, MFA i logi",
         ],
       },
     ],
   },
   workflow: {
     label: "Jak to działa",
-    title: "Od chaotycznych operacji do uporządkowanego systemu.",
+    title: "Od rozproszonych operacji do uporządkowanego systemu.",
     description:
-      "KodaSoft traktuje Opero jak solidną warstwę produktową: najpierw porządkujemy obraz pracy firmy, a potem przekładamy go na stabilne procesy.",
+      "KodaSoft traktuje Opero jak solidną warstwę produktową: najpierw porządkujemy obraz pracy firmy, a potem przekładamy go na stabilne, kontrolowane procesy.",
     steps: [
       {
         label: "01",
         title: "Rozpoznaj",
         description:
-          "Nazwij rekordy, procesy, role, akceptacje i przekazania zadań, które faktycznie prowadzą firmę.",
+          "Nazwij rekordy, procesy, role, akceptacje i przekazania, które faktycznie prowadzą firmę.",
       },
       {
         label: "02",
         title: "Zamodeluj",
         description:
-          "Przełóż je na konfigurowalne struktury danych, formularze, relacje i widoki operacyjne.",
+          "Przełóż je na obiekty własne, pola, formularze, relacje i widoki operacyjne.",
       },
       {
         label: "03",
         title: "Automatyzuj",
         description:
-          "Dodaj reguły, powiadomienia, aktualizacje rekordów, harmonogramy, skrypty, webhooki i AI.",
+          "Dodaj reguły, powiadomienia, kontrole cykliczne, integracje i wsparcie AI tam, gdzie oszczędzają czas.",
       },
       {
         label: "04",
         title: "Kontroluj",
         description:
-          "Zarządzaj dostępem, utrzymuj audytowalność i pokazuj operacje przez listy oraz wyszukiwanie.",
+          "Ustaw role i uprawnienia, utrzymaj ślad zmian i pokaż stan operacji w raportach oraz wyszukiwaniu.",
       },
       {
         label: "05",
-        title: "Doskonal",
+        title: "Rozwijaj",
         description:
-          "Dostosowuj system do zmian w firmie, zamiast budować kolejne rozwiązanie od zera.",
+          "Zmieniaj konfigurację wraz z firmą, zamiast zamawiać kolejne rozwiązanie od zera.",
       },
     ],
   },
@@ -228,13 +228,13 @@ export const homeContent: HomeContent = {
     label: "Praktyczne AI",
     title: "AI powinno pracować w procesie, nie obok niego.",
     description:
-      "Opero wykorzystuje AI tam, gdzie istnieje kontekst operacyjny: w zapytaniach, regułach, skryptach, rekordach i decyzjach. Dzięki temu wsparcie pozostaje powiązane z danymi, uprawnieniami i przebiegiem pracy.",
+      "Asystent Opero zna strukturę, konfigurację i dane Twojej instancji, więc odpowiada konkretami zamiast ogólników. Konsultant buduje nim konfigurację, a użytkownik pyta o dane w języku naturalnym, w granicach swoich uprawnień.",
     points: [
-      "Tworzenie zapisanego zapytania na podstawie pytania biznesowego.",
-      "Generowanie lub planowanie skryptu dla wartości obliczanych.",
-      "Streszczanie kontekstu rekordu wewnątrz procesu.",
-      "Klasyfikowanie lub przekształcanie danych podczas wykonania reguły.",
-      "Wspieranie decyzji tak/nie kontrolowanym promptem.",
+      "Budowa obiektów, formularzy i reguł w dialogu z asystentem.",
+      "Pytania o dane w języku naturalnym, bez klikania po widokach.",
+      "Podsumowania kontekstu rekordu w trakcie procesu.",
+      "Klasyfikacja i przekształcanie danych podczas wykonania reguły.",
+      "Uprawnienia użytkownika obowiązują tak samo jak przy zwykłej pracy.",
     ],
     chat: {
       assistantPrompt: "Jak mogę pomóc?",
@@ -243,7 +243,7 @@ export const homeContent: HomeContent = {
       reportTitle: "Najlepsze produkty - ostatni tydzień",
       statusLabel: "gotowe",
       scopeLabel: "kontrolowane",
-      footer: "Wsparcie pozostaje powiązane z rekordami, regułami, uprawnieniami i kolejnym krokiem procesu.",
+      footer: "Odpowiedzi zawsze pozostają powiązane z rekordami, regułami i uprawnieniami użytkownika.",
       inputPlaceholder: "Zapytaj o rekordy, raporty, reguły...",
       sendLabel: "Wyślij",
       tableHeaders: ["Produkt", "Szt.", "Przychód"],
@@ -258,29 +258,29 @@ export const homeContent: HomeContent = {
   },
   useCases: {
     label: "Gdzie pasuje",
-    title: "Dla operacji, które wyrosły z gotowych systemów.",
+    title: "Dla procesów, które wyrosły z gotowych systemów.",
     description:
-      "Opero wychodzi od realnego sposobu pracy w firmie, a potem daje KodaSoft trwałą podstawę do konfiguracji, automatyzacji i dalszego rozwoju.",
+      "Opero sprawdza się tam, gdzie proces jest specyficzny dla firmy, a mimo to musi być kontrolowany, przeszukiwalny i gotowy na audyt.",
     items: [
       {
-        title: "Obsługa kontrahentów i partnerów",
+        title: "Obieg dokumentów i akceptacje",
         description:
-          "Zarządzaj podmiotami zewnętrznymi przez rekordy, kontakty, adresy, dokumenty, statusy, własne pola i powiązane procesy.",
+          "Prowadź pisma, faktury i wnioski przez dekretację, opinie i zatwierdzenie, z wersjami plików i pełną historią przy sprawie.",
       },
       {
         title: "Własne rekordy operacyjne",
         description:
-          "Buduj obiekty i formularze dopasowane do firmy, gdy standardowe moduły ERP nie odpowiadają procesowi.",
+          "Buduj obiekty i formularze dla zleceń, zgłoszeń, sprzętu czy umów, gdy standardowe moduły ERP nie odpowiadają procesowi.",
       },
       {
-        title: "Akceptacje i procesy wewnętrzne",
+        title: "Automatyzacja powtarzalnej pracy",
         description:
-          "Automatyzuj przekazania zadań, powiadomienia, aktualizacje rekordów, cykliczne kontrole i punkty decyzyjne.",
+          "Przenieś ręczne kroki do reguł: nadawanie numerów, powiadomienia, kontrole terminów i cykliczne raporty.",
       },
       {
-        title: "Wyszukiwanie i widoczność operacji",
+        title: "Raportowanie bez eksportów",
         description:
-          "Odnajduj dane biznesowe w rekordach, modułach, kontrahentach, słownikach i własnych polach.",
+          "Zbieraj wskaźniki na żywych danych i schodź od liczby zbiorczej do pojedynczych rekordów, które ją tworzą.",
       },
     ],
   },
@@ -288,11 +288,11 @@ export const homeContent: HomeContent = {
     label: "Tworzone przez KodaSoft",
     title: "Doświadczenie software house’u, wykonanie na poziomie produktu.",
     description:
-      "KodaSoft buduje Opero z dyscypliną inżynieryjną: w oparciu o elastyczną architekturę, utrzymywalne systemy, kontrolowane uprawnienia, sprawdzalną automatyzację i świadome podejście do wydajności.",
+      "KodaSoft buduje Opero z dyscypliną inżynieryjną: elastyczna architektura, utrzymywalny kod, kontrolowane uprawnienia, sprawdzalna automatyzacja i świadome podejście do wydajności.",
     points: [
-      "Architektura dla konfigurowalnych operacji.",
-      "Kontrola oparta na uprawnieniach, rolach i logach audytowych.",
-      "Sprawdzalna automatyzacja z historią wykonań.",
+      "Architektura pod konfigurowalne procesy, nie pod jeden szablon.",
+      "Kontrola oparta na rolach, uprawnieniach i rejestrze zdarzeń.",
+      "Automatyzacja, którą da się przetestować przed wdrożeniem.",
       "Myślenie produktowe wsparte solidną inżynierią.",
     ],
   },
@@ -300,7 +300,7 @@ export const homeContent: HomeContent = {
     eyebrow: "Zacznij od procesu",
     title: "Buduj oprogramowanie wokół tego, jak firma naprawdę pracuje.",
     description:
-      "Zobacz, jak KodaSoft i Opero pomagają zamienić operacje w elastyczne, kontrolowane oprogramowanie biznesowe wspierane praktycznym AI.",
+      "Pokaż nam jeden proces, który dziś żyje w mailach i arkuszach. Zobaczysz, jak wygląda w Opero.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
   },

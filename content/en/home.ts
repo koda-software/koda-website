@@ -3,39 +3,39 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "KodaSoft - No-Code BPM Platform Built Around Your Work",
+    title: "No-Code BPM Platform for Processes and Documents",
     description:
-      "KodaSoft builds Opero, a no-code BPM platform for custom business processes, workflow automation, governance, and practical AI assistance.",
+      "Opero is a no-code BPM platform: processes and workflow, document management, automation, reports and permissions. Build your system without a developer.",
   },
   hero: {
     eyebrow: "No-code BPM by KodaSoft",
-    title: "Business process software that fits your operations. Not the other way around.",
+    title: "Turn the way you work into software",
     description:
-      "KodaSoft builds Opero, a no-code BPM platform that helps companies model custom processes, automate workflows, govern business data, and use AI where work actually happens.",
+      "Opero is a no-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. With no code written.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
     supportPoints: [
-      "Custom records, forms, and workflows.",
-      "Automation rules with practical AI assistance.",
-      "Permissions, auditability, and search built for operational control.",
+      "Custom objects, forms and processes shaped around your company.",
+      "Automation, reports and an AI assistant on your own data.",
+      "Permissions, document workflow and a full history of changes.",
     ],
     visual: {
-      questions: ["What are your processes?", "Who does what?", "In what order?", "What should be automated?"],
+      questions: ["What are the processes?", "Who owns what?", "In what order?", "What is worth automating?"],
       steps: [
         {
           label: "01",
-          title: "You tell us how work happens",
-          description: "Processes, roles, records, handoffs, exceptions.",
+          title: "You tell us how the company works",
+          description: "Processes, roles, records, approvals, exceptions.",
         },
         {
           label: "02",
-          title: "Opero maps the operating model",
-          description: "Data, workflows, permissions, rules, AI assistance.",
+          title: "Opero turns it into a system",
+          description: "Data, processes, permissions, rules, AI support.",
         },
         {
           label: "03",
-          title: "You get software shaped around work",
-          description: "A tailored system your team can use and evolve.",
+          title: "You get a system that fits the work",
+          description: "Tailored software your team keeps developing.",
         },
       ],
       magicLabel: "Opero mapping",
@@ -114,168 +114,193 @@ export const homeContent: HomeContent = {
     label: "The problem",
     title: "Real companies do not work in fixed templates.",
     description:
-      "Teams build workarounds when software cannot match the way operations actually run: spreadsheets, manual approvals, disconnected tools, duplicated records, and invisible handoffs.",
+      "When the system cannot keep up with real work, teams build workarounds: spreadsheets, approvals over email, scattered tools, duplicated records and handoffs that no process ever sees.",
     points: [
-      "Processes change faster than standard ERP setups.",
-      "Important records live across spreadsheets and separate tools.",
-      "Manual handoffs make work slow, hard to audit, and easy to miss.",
-      "AI is often separate from the workflow instead of connected to real operational context.",
+      "Processes change faster than a standard ERP can be reconfigured.",
+      "Key data drifts apart across spreadsheets and separate tools.",
+      "Documents circulate over email, so nobody knows whose desk a case is on.",
+      "AI runs beside the system, with no access to real company context.",
     ],
   },
   solution: {
     label: "The solution",
-    title: "Opero adapts around the work, not the other way around.",
+    title: "Opero adapts to the way your company works.",
     description:
-      "Opero gives companies a low-code foundation for custom data, workflows, rules, roles, search, and AI-assisted actions. It turns the way people already work into structured, governable software.",
+      "Instead of fitting the company to predefined modules, you design your own objects, processes and views in visual configuration. Data, document workflow, automation and permissions all stay in one system.",
     points: [
-      "Model custom operations with objects, fields, relations, and forms.",
-      "Automate record changes, notifications, checks, and workflow steps.",
-      "Govern access with roles, permissions, organization isolation, and audit logs.",
-      "Add AI inside queries, scripts, and rules where context matters.",
+      "Model your own data with objects, fields, relations and forms.",
+      "Route documents through approval, with file versions kept on the case.",
+      "Automate repetitive steps with rules, scripts and SQL queries.",
+      "Control access with roles, field-level permissions and an event log.",
     ],
   },
   pillars: {
-    label: "Opero capabilities",
-    title: "A no-code backbone for processes that keep changing.",
+    label: "What Opero can do",
+    title: "A no-code foundation for processes that keep changing.",
     description:
-      "Opero is built as an operating layer: data models, automation, permissions, search, and AI assistance stay connected instead of becoming another set of disconnected tools.",
+      "Opero works as your company's operating layer: the data model, processes, document workflow, automation, reports and permissions stay connected instead of becoming more separate tools.",
     items: [
       {
-        title: "Model your operations",
+        title: "Design without code",
         description:
-          "Create the records, fields, forms, relationships, and modules your company actually needs.",
-        capabilities: ["Custom modules and objects", "Dynamic fields and relations", "Configurable forms", "Contractor records"],
+          "Create custom objects, fields, forms, layouts and menus shaped around how the company actually works.",
+        capabilities: [
+          "Custom objects and modules",
+          "More than 20 field types",
+          "Forms and layouts",
+          "Dictionaries and custom lists",
+        ],
       },
       {
-        title: "Automate the flow",
+        title: "Run processes and documents",
         description:
-          "Build rules that respond to events, schedules, manual actions, and record changes.",
-        capabilities: ["Triggers and rule steps", "Notifications and webhooks", "Record updates", "Execution history"],
+          "Model flows of work as stages and transitions, route documents through approval and keep file versions with the case.",
+        capabilities: [
+          "Stages, transitions and tasks",
+          "Kanban boards",
+          "Document workflow and assignment",
+          "Document templates",
+        ],
       },
       {
-        title: "Add AI where work happens",
+        title: "Automate and analyse",
         description:
-          "Use AI to draft queries, generate scripts, summarize context, classify data, and assist workflow decisions.",
-        capabilities: ["AI-assisted saved queries", "Script planning", "AI rule steps", "Configurable LLM providers"],
+          "Rules take over the repetitive steps, while reports and dashboards show the current state with no export to spreadsheets.",
+        capabilities: [
+          "Rule engine and scripts",
+          "SQL queries",
+          "Reports and dashboards",
+          "AI assistant on your data",
+        ],
       },
       {
-        title: "Govern with confidence",
+        title: "Stay in control",
         description:
-          "Keep business data controlled, searchable, auditable, and scoped to the right organization and roles.",
-        capabilities: ["Roles and permissions", "Audit logs", "Organization isolation", "API tokens and search"],
+          "Permissions reach down to a single field, and integrations keep regulatory compliance inside the same system.",
+        capabilities: [
+          "Roles and field permissions",
+          "Many companies in one org",
+          "KSeF and e-Delivery",
+          "API tokens, MFA and logs",
+        ],
       },
     ],
   },
   workflow: {
     label: "How it works",
-    title: "From messy operations to structured software.",
+    title: "From scattered operations to a system you can govern.",
     description:
-      "KodaSoft approaches Opero as a product-grade system for modeling reality first, then turning that model into dependable workflows.",
+      "KodaSoft approaches Opero as a product-grade layer: first we get a clear picture of how the company works, then we turn it into dependable, governed processes.",
     steps: [
       {
         label: "01",
-        title: "Map",
-        description: "Identify the records, workflows, roles, approvals, and handoffs that run the business.",
+        title: "Identify",
+        description:
+          "Name the records, processes, roles, approvals and handoffs that actually run the company.",
       },
       {
         label: "02",
         title: "Model",
-        description: "Turn them into configurable data structures, forms, relationships, and operational views.",
+        description:
+          "Turn them into custom objects, fields, forms, relations and operational views.",
       },
       {
         label: "03",
         title: "Automate",
-        description: "Add rules, notifications, record updates, schedules, scripts, webhooks, and AI assistance.",
+        description:
+          "Add rules, notifications, scheduled checks, integrations and AI support where they save real time.",
       },
       {
         label: "04",
         title: "Govern",
-        description: "Control access, preserve auditability, and keep operations visible through search and lists.",
+        description:
+          "Set roles and permissions, keep a trail of changes and surface the state of operations in reports and search.",
       },
       {
         label: "05",
-        title: "Improve",
-        description: "Adapt the system as the company changes instead of starting another custom build from scratch.",
+        title: "Evolve",
+        description:
+          "Change the configuration as the company changes, instead of commissioning the next system from scratch.",
       },
     ],
   },
   ai: {
     label: "Practical AI",
-    title: "AI belongs inside the workflow, not in a separate tab.",
+    title: "AI should work inside the process, not next to it.",
     description:
-      "Opero is built to use AI where operational context already exists: queries, rules, scripts, records, and decisions. That keeps assistance connected to the data, permissions, and processes that matter.",
+      "The Opero assistant knows the structure, configuration and data of your instance, so it answers with specifics rather than generalities. Consultants use it to build configuration, and users ask about data in natural language, within their own permissions.",
     points: [
-      "Draft a saved query from a business question.",
-      "Generate or plan a script for computed values.",
-      "Summarize record context inside a workflow.",
-      "Classify or transform data during a rule execution.",
-      "Assist yes/no decisions with a controlled prompt.",
+      "Building objects, forms and rules in a dialogue with the assistant.",
+      "Questions about data in natural language, without clicking through views.",
+      "Summaries of record context in the middle of a process.",
+      "Classifying and transforming data during a rule execution.",
+      "The user's permissions apply exactly as they do in normal work.",
     ],
     chat: {
-      assistantPrompt: "How can I help you?",
-      userRequest: "I need a report of the 5 top selling products from last week.",
-      assistantReply: "Sure. Here is the report based on your sales records.",
+      assistantPrompt: "How can I help?",
+      userRequest: "I need a report of the 5 best-selling products from last week.",
+      assistantReply: "Sure. Here is the report built from your sales records.",
       reportTitle: "Top products - last week",
       statusLabel: "ready",
       scopeLabel: "governed",
-      footer: "Assistance stays attached to records, rules, permissions, and the next workflow action.",
+      footer: "Answers always stay tied to the records, rules and the user's own permissions.",
       inputPlaceholder: "Ask about records, reports, rules...",
       sendLabel: "Send",
       tableHeaders: ["Product", "Units", "Revenue"],
       tableRows: [
-        ["Hydraulic set A", "184", "$42.8k"],
-        ["Service kit Pro", "139", "$31.4k"],
-        ["Control module X2", "112", "$28.1k"],
-        ["Sensor pack", "96", "$19.6k"],
-        ["Mounting frame", "81", "$17.9k"],
+        ["Hydraulic kit A", "184", "42.8k"],
+        ["Service pack Pro", "139", "31.4k"],
+        ["Control module X2", "112", "28.1k"],
+        ["Sensor bundle", "96", "19.6k"],
+        ["Mounting frame", "81", "17.9k"],
       ],
     },
   },
   useCases: {
     label: "Where it fits",
-    title: "For operations that outgrow off-the-shelf software.",
+    title: "For processes that have outgrown off-the-shelf systems.",
     description:
-      "Opero starts with the shape of your work, then gives KodaSoft a durable foundation to configure, automate, and extend it.",
+      "Opero works best where the process is specific to your company yet still has to be governed, searchable and ready for an audit.",
     items: [
       {
-        title: "Contractor and partner operations",
+        title: "Document workflow and approvals",
         description:
-          "Manage external entities with structured records, contacts, addresses, documents, statuses, custom fields, and related workflows.",
+          "Route letters, invoices and requests through assignment, review and approval, with file versions and a full history on the case.",
       },
       {
         title: "Custom operational records",
         description:
-          "Build the objects and forms your company needs when standard ERP modules do not match the process.",
+          "Build objects and forms for orders, tickets, equipment or contracts when standard ERP modules do not match the process.",
       },
       {
-        title: "Approvals and internal workflows",
+        title: "Automating repetitive work",
         description:
-          "Automate handoffs, notifications, record updates, scheduled checks, and decision points.",
+          "Move manual steps into rules: numbering, notifications, deadline checks and recurring reports.",
       },
       {
-        title: "Search and operational visibility",
+        title: "Reporting without exports",
         description:
-          "Find built-in and custom business data across records, modules, contractors, dictionaries, and custom fields.",
+          "Collect metrics on live data and go from an aggregate number down to the individual records behind it.",
       },
     ],
   },
   trust: {
     label: "Built by KodaSoft",
-    title: "Software-house expertise, product-grade execution.",
+    title: "Software house experience, product-grade delivery.",
     description:
-      "KodaSoft builds Opero with the discipline of a software engineering company: flexible architecture, maintainable systems, controlled permissions, inspectable automation, and performance-conscious delivery.",
+      "KodaSoft builds Opero with engineering discipline: flexible architecture, maintainable code, controlled permissions, inspectable automation and a deliberate approach to performance.",
     points: [
-      "Architecture for configurable operations.",
-      "Governance through permissions, roles, and audit logs.",
-      "Inspectable automation with execution history.",
-      "Product thinking backed by real engineering work.",
+      "Architecture built for configurable processes, not one fixed template.",
+      "Control based on roles, permissions and an event log.",
+      "Automation you can test before rollout.",
+      "Product thinking backed by solid engineering.",
     ],
   },
   finalCta: {
-    eyebrow: "Start with the workflow",
-    title: "Build software around the way your company actually works.",
+    eyebrow: "Start with the process",
+    title: "Build software around how your company actually works.",
     description:
-      "See how KodaSoft and Opero can turn your operations into flexible, governed, AI-assisted business software.",
+      "Show us one process that lives in email and spreadsheets today. You will see what it looks like in Opero.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
   },

@@ -3,135 +3,141 @@ import type { OperoProductContent } from "../types";
 
 export const operoProductContent: OperoProductContent = {
   seo: {
-    title: "Opero - Platforma BPM no-code dla procesów firmy",
+    title: "Opero - platforma BPM, no-code i obieg dokumentów",
     description:
-      "Poznaj Opero: platformę BPM no-code do własnych danych operacyjnych, workflow, automatyzacji, kontroli i praktycznego wsparcia AI.",
+      "Opero łączy procesy i workflow, elektroniczny obieg dokumentów, platformę no-code, automatyzacje, raporty, uprawnienia, integracje z KSeF i kontekstowe AI.",
   },
   hero: {
     eyebrow: "Produkt Opero",
-    title: "BPM no-code dla firm z własnymi procesami.",
+    title: "Platforma BPM no-code dla firm z własnymi procesami.",
     description:
-      "Opero pomaga KodaSoft modelować rekordy, workflow, uprawnienia, automatyzację i działania wspierane przez AI zgodnie z tym, jak firma naprawdę pracuje.",
+      "Opero zamienia sposób pracy Twojej firmy w działający system: obiegi pracy, dokumenty, automatyzacje, raporty i uprawnienia w jednym miejscu, bez pisania kodu.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
-    diagramItems: ["Rekordy", "Formularze", "Workflow", "Reguły", "Wyszukiwanie", "Kontrola"],
+    diagramItems: ["Obiekty własne", "Formularze i układy", "Procesy", "Reguły", "Raporty", "Uprawnienia"],
   },
   overview: {
     eyebrow: "Czym jest Opero",
-    title: "Konfigurowalna warstwa operacyjna, nie kolejny sztywny szablon.",
+    title: "Konfigurowalna platforma, nie kolejny sztywny szablon.",
     paragraphs: [
-      "Standardowy ERP zaczyna od gotowych modułów. Opero zaczyna od modelu pracy firmy: rekordów, które zespół prowadzi, powtarzalnych przekazań, potrzebnych akceptacji i wyjątków, które definiują realny proces.",
-      "Produkt łączy własne dane, strukturę workflow, automatyzację, wsparcie AI, wyszukiwanie, uprawnienia i audytowalność w jednym miejscu. To ważne, bo elastyczne oprogramowanie staje się ryzykowne, gdy kontrola jest oddzielona od konfiguracji.",
-      "Opero jest dla firm, które potrzebują systemu dopasowanego do ich operacji, ale nadal chcą rozwiązania, które da się kontrolować, przeszukiwać, automatyzować i rozwijać w czasie.",
+      "Standardowy ERP zaczyna od gotowych modułów i oczekuje, że firma się do nich dopasuje. Opero zaczyna od tego, jak pracujesz naprawdę: jakie rekordy prowadzisz, kto co akceptuje, gdzie sprawa przechodzi między działami i które wyjątki zdarzają się na tyle często, że muszą mieć swoje miejsce w systemie.",
+      "Strukturę danych, widoki i nawigację projektujesz w konfiguracji wizualnej. Do tego dochodzą procesy oparte na etapach i przejściach, elektroniczny obieg dokumentów, silnik reguł, raporty i precyzyjne uprawnienia. Wszystko na jednym modelu danych, w jednej platformie.",
+      "To rozwiązanie dla firm, które wyrosły z arkuszy i gotowych modułów, ale nie chcą zamawiać systemu pisanego od zera. Konfiguracja zmienia się razem z firmą, a nie przy kolejnym projekcie programistycznym.",
     ],
   },
   features: {
     eyebrow: "Funkcje w praktyce",
-    title: "Co Opero może modelować, automatyzować i kontrolować.",
+    title: "Osiem obszarów, które składają się na jeden system.",
     description:
-      "Każda część Opero wspiera konkretny detal operacyjny bez zamieniania systemu w zbiór odłączonych narzędzi.",
+      "Każdy obszar rozwiązuje konkretny problem operacyjny, ale wszystkie działają na tych samych danych, uprawnieniach i procesach.",
     rows: [
       {
-        title: "Model danych operacyjnych",
+        title: "Procesy i workflow (BPM)",
         description:
-          "Twórz typy rekordów, których faktycznie używa firma: sprawy serwisowe, zasoby, wizyty, akceptacje, kontrahentów, zgłoszenia i wewnętrzne obiekty procesu.",
-        supports: ["Własne obiekty i moduły", "Pola i relacje", "Słowniki i statusy", "Rekordy kontrahentów"],
+          "Obieg pracy modelujesz jako etapy i przejścia, z warunkami, terminami i osobami odpowiedzialnymi. Każdy etap generuje zadania, a praca zespołu układa się na tablicy kanban i listach „moje zadania”.",
+        supports: ["Etapy i przejścia", "Zadania i kanban", "Akceptacje i przekierowania", "Pełna historia przebiegu"],
       },
       {
-        title: "Formularze i widoki rekordów",
+        title: "Elektroniczny obieg dokumentów",
         description:
-          "Zbieraj właściwe informacje dla każdego procesu przez formularze i widoki rekordów, które pokazują dane, właścicieli, pliki i powiązany kontekst.",
-        supports: ["Formularze procesowe", "Powiązane rekordy", "Pliki i notatki", "Układy rekordów"],
+          "Dokument ma własną kartotekę, ścieżkę akceptacji i komplet plików z wersjami. Umowy, pisma i decyzje generujesz z szablonów wprost z danych rekordu, zawsze w aktualnej wersji.",
+        supports: ["Rejestracja i numeracja", "Dekretacja i akceptacje", "Wersjonowanie plików", "Szablony dokumentów"],
       },
       {
-        title: "Struktura workflow",
+        title: "Platforma no-code",
         description:
-          "Odwzoruj, jak praca przechodzi przez firmę: właścicieli, przekazania, akceptacje, zmiany statusów, zgłoszenia wewnętrzne i kroki operacyjne.",
-        supports: ["Kroki i statusy", "Akceptacje i przekazania", "Właściciele", "Checklisty operacyjne"],
+          "Obiekty własne i ponad 20 typów pól opisują dane, formularze i układy budują widoki, a menu i strony własne układają nawigację. Strukturę zmieniasz bezpiecznie w wersji roboczej.",
+        supports: ["Obiekty i pola własne", "Formularze i układy", "Menu i strony własne", "Słowniki i listy własne"],
       },
       {
-        title: "Reguły automatyzacji",
+        title: "Low-code i automatyzacje",
         description:
-          "Reguły mogą reagować na zdarzenia, harmonogramy, ręczne akcje i zmiany rekordów. Opero może aktualizować dane, wysyłać powiadomienia, uruchamiać webhooki i zapisywać historię wykonań.",
-        supports: ["Wyzwalacze zdarzeń", "Akcje cykliczne", "Powiadomienia i webhooki", "Historia wykonań"],
+          "Silnik reguł działa według zasady warunek to akcja: ustaw pole, utwórz rekord, wyślij powiadomienie, zablokuj przejście. Reguły testujesz przed wdrożeniem, więc automatyzacja jest przewidywalna.",
+        supports: ["Wyzwalacze zdarzeń", "Kroki akcji i harmonogramy", "Skrypty i zapytania SQL", "Historia wykonań"],
       },
       {
-        title: "Wyszukiwanie i widoczność",
+        title: "Raporty i analityka",
         description:
-          "Własne dane operacyjne pozostają użyteczne, bo zespoły mogą znajdować rekordy systemowe i własne, powiązane encje, słowniki, pola i kontekst procesu.",
-        supports: ["Wyszukiwanie operacyjne", "Listy danych własnych", "Powiązane rekordy", "Przeszukiwalne słowniki"],
+          "Agregacje, wykresy i dashboardy powstają na żywych danych systemu, bez eksportu do arkuszy. Drążenie szczegółów prowadzi od liczby zbiorczej do rekordów, które się na nią składają.",
+        supports: ["Raporty i wykresy", "Dashboardy zespołowe", "Drill-down do rekordów", "Zapytania SQL jako źródło"],
       },
       {
-        title: "Praca wspierana przez AI",
+        title: "Bezpieczeństwo i uprawnienia",
         description:
-          "AI działa tam, gdzie istnieje kontekst pracy: przy tworzeniu zapytań, raportów, planowaniu skryptów, podsumowaniach, klasyfikacji i kontrolowanym wsparciu decyzji.",
-        supports: ["Tworzenie zapytań", "Wsparcie raportów", "Planowanie skryptów", "Podsumowania i klasyfikacja"],
+          "Dostęp układasz od organizacji i jej spółek, przez role, aż po widoczność pojedynczego pola. Integracje zabezpieczasz tokenami API, a konta uwierzytelnianiem wieloskładnikowym.",
+        supports: ["Role i uprawnienia do pól", "Wiele spółek w organizacji", "Tokeny API i MFA", "Rejestr zdarzeń"],
       },
       {
-        title: "Kontrola i governance",
+        title: "Integracje i zgodność",
         description:
-          "Elastyczność pozostaje pod kontrolą dzięki rolom, uprawnieniom, granicom organizacji, tokenom API i logom audytowym przypiętym do tego samego modelu pracy.",
-        supports: ["Role i uprawnienia", "Izolacja organizacji", "Logi audytowe", "Tokeny API"],
+          "KSeF, e-Doręczenia, kursy walut NBP i weryfikacja VAT działają wprost z systemu, a otwarte API łączy Opero dwukierunkowo z pozostałymi narzędziami firmy.",
+        supports: ["KSeF i e-Doręczenia", "Kursy walut NBP", "Biała lista VAT i VIES", "Otwarte API"],
+      },
+      {
+        title: "Kontekstowe AI",
+        description:
+          "Asystent zna strukturę, konfigurację i dane Twojej instancji. Konsultant buduje nim konfigurację, użytkownik pyta o dane w języku naturalnym, a uprawnienia obowiązują tak samo jak przy zwykłej pracy.",
+        supports: ["AI przy konfiguracji", "Pytania o dane", "Podsumowania rekordów", "Uprawnienia obowiązują AI"],
       },
     ],
   },
   featureLinks: {
     eyebrow: "Funkcje systemu",
-    title: "Osiem obszarów, z których składa się Opero.",
+    title: "Każdy obszar ma własną stronę.",
     description:
-      "Każdy obszar ma własną stronę z opisem, co dokładnie dostajesz i jak to wygląda w systemie.",
+      "Wejdź głębiej tam, gdzie potrzebujesz szczegółów: co dokładnie dostajesz i jak to wygląda w systemie.",
   },
   connectedModel: {
     eyebrow: "Połączony model",
     title: "Ten sam model zasila dane, proces, automatyzację i kontrolę.",
     description:
-      "Wartość Opero wynika z tego, że elementy systemu pozostają połączone. Workflow zna rekord. Reguła działa na tych samych danych. AI korzysta z kontekstu operacyjnego. Uprawnienia i audyt są nadal przypięte do procesu.",
+      "Wartość Opero bierze się z tego, że elementy systemu pozostają połączone. Proces zna rekord. Reguła działa na tych samych danych. Raport liczy je bez eksportu. AI korzysta z tego samego kontekstu, a uprawnienia obowiązują wszędzie tak samo.",
     layers: [
-      { label: "Model danych", detail: "Obiekty, pola, relacje, słowniki i kontrahenci." },
-      { label: "Warstwa workflow", detail: "Statusy, właściciele, akceptacje i kroki operacyjne." },
-      { label: "Warstwa automatyzacji", detail: "Reguły, harmonogramy, powiadomienia, aktualizacje i webhooki." },
-      { label: "Wsparcie AI", detail: "Zapytania, raporty, skrypty, podsumowania i klasyfikacja." },
-      { label: "Kontrola", detail: "Role, uprawnienia, logi audytowe i granice organizacji." },
+      { label: "Model danych", detail: "Obiekty własne, pola, relacje, słowniki i listy." },
+      { label: "Procesy", detail: "Etapy, przejścia, zadania, akceptacje i historia." },
+      { label: "Automatyzacje", detail: "Reguły, skrypty, zapytania SQL i powiadomienia." },
+      { label: "Raporty", detail: "Agregacje, wykresy, dashboardy i drążenie szczegółów." },
+      { label: "Uprawnienia", detail: "Role, dostęp do pól, spółki, tokeny API i logi." },
     ],
   },
   contractorExample: {
     eyebrow: "Przykład",
-    title: "Operacje kontrahentów i partnerów.",
+    title: "Kontrahenci i partnerzy w jednym miejscu.",
     description:
-      "Firma może uporządkować relacje z zewnętrznymi podmiotami w Opero, zamiast rozpraszać dane kontrahentów po plikach, arkuszach, skrzynkach mailowych i osobnych narzędziach.",
+      "Zamiast trzymać dane kontrahentów w plikach, arkuszach i skrzynkach mailowych, prowadzisz je jako obiekt własny z pełnym kontekstem: dokumentami, obiegiem akceptacji i weryfikacją VAT.",
     needLabel: "Potrzeba",
-    supportLabel: "Jak wspiera to Opero",
+    supportLabel: "Jak działa to w Opero",
     rows: [
-      { need: "Przechowywanie rekordów partnerów", support: "Profile kontrahentów, kontakty, adresy i statusy." },
-      { need: "Śledzenie dodatkowych danych", support: "Własne pola, słowniki i atrybuty dopasowane do procesu." },
-      { need: "Zarządzanie dokumentami", support: "Powiązane pliki, notatki i kontekst rekordu w jednym miejscu." },
-      { need: "Przesuwanie pracy dalej", support: "Statusy, przekazania, akceptacje, powiadomienia i kolejne akcje." },
-      { need: "Utrzymanie kontroli", support: "Role, uprawnienia, granice organizacji i logi audytowe." },
+      { need: "Kartoteka kontrahenta", support: "Profile, kontakty, adresy, statusy i własne pola dopasowane do procesu." },
+      { need: "Sprawdzenie przed transakcją", support: "Weryfikacja numeru VAT na białej liście i w VIES wprost z kartoteki." },
+      { need: "Dokumenty przy sprawie", support: "Umowy i pisma powiązane z rekordem, wersjonowane i przeszukiwalne." },
+      { need: "Przesuwanie sprawy dalej", support: "Etapy, akceptacje, zadania, powiadomienia i kolejne kroki procesu." },
+      { need: "Kontrola dostępu", support: "Role, uprawnienia do pól, podział na spółki i rejestr zdarzeń." },
     ],
   },
   implementation: {
-    eyebrow: "Podejście do konfiguracji",
-    title: "Konfigurowane wokół modelu pracy firmy.",
+    eyebrow: "Jak powstaje konfiguracja",
+    title: "System budowany wokół Twojego sposobu pracy.",
     steps: [
       {
         title: "Mapowanie",
-        description: "Rozpoznajemy rekordy, role, przekazania, akceptacje, wyjątki i odpowiedzialność za dane, które kształtują proces.",
-        supports: ["Rekordy", "Role", "Przekazania"],
+        description: "Nazywamy rekordy, role, akceptacje, przekazania i wyjątki, które faktycznie kształtują proces w Twojej firmie.",
+        supports: ["Rekordy", "Role", "Akceptacje"],
       },
       {
         title: "Modelowanie",
-        description: "Przekładamy model operacyjny na obiekty, pola, formularze, relacje, układy, uprawnienia i dane możliwe do wyszukania.",
+        description: "Przekładamy to na obiekty własne, pola, formularze, układy, uprawnienia i dane, które da się przeszukiwać.",
         supports: ["Obiekty", "Formularze", "Uprawnienia"],
       },
       {
         title: "Automatyzacja",
-        description: "Dodajemy reguły, powiadomienia, kontrole cykliczne, aktualizacje rekordów, webhooki, skrypty i działania wspierane przez AI.",
-        supports: ["Reguły", "Powiadomienia", "Wsparcie AI"],
+        description: "Dodajemy reguły, powiadomienia, kontrole cykliczne, integracje, raporty i wsparcie AI tam, gdzie realnie oszczędzają czas.",
+        supports: ["Reguły", "Integracje", "Raporty"],
       },
       {
-        title: "Usprawnianie",
-        description: "Dostosowujemy pola, workflow, automatyzacje i widoki wraz ze zmianami w firmie, zamiast budować system od nowa.",
-        supports: ["Iteracja", "Widoczność", "Kontrola"],
+        title: "Rozwój",
+        description: "Konfigurację zmieniasz wraz z firmą: nowe pole, nowy etap procesu czy nowy raport nie wymagają projektu programistycznego.",
+        supports: ["Nowe pola", "Nowe etapy", "Nowe raporty"],
       },
     ],
   },
@@ -141,19 +147,19 @@ export const operoProductContent: OperoProductContent = {
     columns: [
       {
         label: "Standardowy ERP",
-        description: "Pomaga, gdy firma pasuje do gotowych modułów, ale trudno dopasować go do nietypowych rekordów, przekazań i wyjątków procesu.",
+        description: "Sprawdza się, gdy firma mieści się w gotowych modułach. Trudniej dopasować go do nietypowych rekordów, wyjątków i procesów specyficznych dla branży.",
       },
       {
         label: "Arkusze i osobne narzędzia",
-        description: "Na początku są elastyczne, ale wraz ze wzrostem złożoności trudno je kontrolować, przeszukiwać, automatyzować i audytować.",
+        description: "Na starcie elastyczne, ale wraz ze wzrostem złożoności trudno je kontrolować, przeszukiwać, automatyzować i audytować.",
       },
       {
-        label: "Jednorazowe oprogramowanie custom",
-        description: "Dopasowane do jednego momentu, ale często kosztowne w rozwoju, gdy zmieniają się workflow, role i potrzeby raportowania.",
+        label: "Oprogramowanie pisane od zera",
+        description: "Dopasowane do jednego momentu w czasie, ale każda zmiana workflow, roli czy raportu oznacza kolejny projekt programistyczny.",
       },
       {
         label: "Opero",
-        description: "Konfigurowalna warstwa operacyjna, która może pasować do własnej pracy firmy, zachowując połączenie danych, automatyzacji, kontroli i AI.",
+        description: "Konfigurowalna platforma, która dopasowuje się do Twojej pracy i utrzymuje dane, procesy, automatyzacje, raporty i kontrolę w jednym miejscu.",
       },
     ],
   },
@@ -161,7 +167,7 @@ export const operoProductContent: OperoProductContent = {
     eyebrow: "Umów demo",
     title: "Jeśli proces jest specyficzny, oprogramowanie powinno umieć go zrozumieć.",
     description:
-      "Pokaż KodaSoft, jak działa Twoja firma. Pokażemy, jak Opero może modelować dane, workflow, kontrolę i wsparcie AI wokół tego procesu.",
+      "Opowiedz nam, jak działa Twoja firma. Pokażemy na żywo, jak Opero modeluje te dane, procesy, dokumenty i uprawnienia.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
   },
