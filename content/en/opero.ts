@@ -3,15 +3,15 @@ import type { OperoProductContent } from "../types";
 
 export const operoProductContent: OperoProductContent = {
   seo: {
-    title: "Opero - BPM, no-code and document workflow",
+    title: "Opero - low-code BPM and document workflow",
     description:
-      "Opero combines processes and workflow, document management, a no-code platform, automation, reports, permissions, integrations and contextual AI in one system.",
+      "Opero combines processes and workflow, document management, no-code configuration, low-code automation, reports, permissions and contextual AI.",
   },
   hero: {
     eyebrow: "Opero product",
-    title: "A no-code BPM platform for companies with custom processes.",
+    title: "A low-code BPM platform for companies with custom processes.",
     description:
-      "Opero turns the way your company works into a working system: workflows, documents, automation, reports and permissions under one roof, with no code written.",
+      "Opero turns the way your company works into a working system: workflows, documents, automation, reports and permissions under one roof. You configure it visually, and reach for code only where it genuinely pays off.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore solutions",
     diagramItems: ["Custom objects", "Forms and layouts", "Processes", "Rules", "Reports", "Permissions"],
@@ -83,8 +83,8 @@ export const operoProductContent: OperoProductContent = {
   },
   featureLinks: {
     eyebrow: "System features",
-    title: "Every area has its own page.",
-    description: "Go deeper where you need the detail: exactly what you get and what it looks like inside the system.",
+    title: "Go deeper into the area that concerns you.",
+    description: "Every page shows the same thing from the inside: exactly what you get, how it looks in the system and the questions we answer most often.",
   },
   connectedModel: {
     eyebrow: "Connected model",

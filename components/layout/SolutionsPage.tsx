@@ -1,12 +1,13 @@
 import Link from "next/link";
-import Building2Icon from "lucide-react/dist/esm/icons/building-2.mjs";
+import BriefcaseIcon from "lucide-react/dist/esm/icons/briefcase.mjs";
 import FactoryIcon from "lucide-react/dist/esm/icons/factory.mjs";
+import GraduationCapIcon from "lucide-react/dist/esm/icons/graduation-cap.mjs";
 import HardHatIcon from "lucide-react/dist/esm/icons/hard-hat.mjs";
 import HeartPulseIcon from "lucide-react/dist/esm/icons/heart-pulse.mjs";
+import LandmarkIcon from "lucide-react/dist/esm/icons/landmark.mjs";
 import StoreIcon from "lucide-react/dist/esm/icons/store.mjs";
-import TruckIcon from "lucide-react/dist/esm/icons/truck.mjs";
 import WrenchIcon from "lucide-react/dist/esm/icons/wrench.mjs";
-import type { SolutionIndustry, SolutionsContent } from "@/content/types";
+import type { SolutionIndustry, SolutionIndustryIcon, SolutionsContent } from "@/content/types";
 
 type SolutionsPageProps = {
   content: SolutionsContent;
@@ -21,7 +22,17 @@ const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[
 const titleClass = "m-0 max-w-[900px] text-[2.55rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.85rem]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
-const industryIcons = [HeartPulseIcon, TruckIcon, FactoryIcon, WrenchIcon, HardHatIcon, StoreIcon];
+/** Keyed by the content's own icon field, so reordering industries cannot desync the icons. */
+const industryIcons: Record<SolutionIndustryIcon, typeof FactoryIcon> = {
+  manufacturing: FactoryIcon,
+  construction: HardHatIcon,
+  professionalServices: BriefcaseIcon,
+  fieldService: WrenchIcon,
+  healthcare: HeartPulseIcon,
+  retail: StoreIcon,
+  education: GraduationCapIcon,
+  publicSector: LandmarkIcon,
+};
 
 function CtaRow({
   invert = false,
@@ -66,7 +77,7 @@ function DetailList({ items }: { items: string[] }) {
 }
 
 function IndustrySection({ industry, index }: { industry: SolutionIndustry; index: number }) {
-  const IndustryIcon = industryIcons[index] ?? Building2Icon;
+  const IndustryIcon = industryIcons[industry.icon];
 
   return (
     <section className={`border-t border-[rgba(2,2,13,0.12)] ${index % 2 === 1 ? "bg-[var(--color-paper-soft)]" : "bg-[var(--color-paper)]"}`}>

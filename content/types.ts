@@ -310,7 +310,23 @@ export type FeaturePageContent = {
 
 export type FeaturePagesContent = Record<FeatureKey, FeaturePageContent>;
 
+/**
+ * Stable identifier picking the industry's icon. Keyed rather than positional
+ * so reordering the industries, or translating their titles, can never leave a
+ * card showing another industry's icon.
+ */
+export type SolutionIndustryIcon =
+  | "manufacturing"
+  | "construction"
+  | "professionalServices"
+  | "fieldService"
+  | "healthcare"
+  | "retail"
+  | "education"
+  | "publicSector";
+
 export type SolutionIndustry = {
+  icon: SolutionIndustryIcon;
   title: string;
   scenario: string[];
   useCasesLabel: string;

@@ -17,11 +17,11 @@ export const commonContent: ShellContent = {
     ],
   },
   footer: {
-    tagline: "A no-code BPM platform built around how companies actually work.",
+    tagline: "A low-code BPM platform built around how companies actually work.",
     description:
       "KodaSoft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
     languageLabel: "Language",
-    productLine: "No-code BPM by KodaSoft",
+    productLine: "Low-code BPM by KodaSoft",
   },
 };
 

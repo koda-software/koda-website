@@ -3,13 +3,13 @@ import type { SolutionsContent } from "../types";
 
 export const solutionsContent: SolutionsContent = {
   seo: {
-    title: "Rozwiązania branżowe: workflow i dokumenty",
+    title: "Rozwiązania branżowe: workflow i obieg dokumentów",
     description:
-      "Opero w medycynie, logistyce, produkcji, serwisie, budownictwie i retailu. System workflow i obieg dokumentów dopasowany do procesów Twojej branży.",
+      "Opero w produkcji, budownictwie, usługach profesjonalnych, serwisie, medycynie, handlu i sektorze publicznym. Procesy i obieg dokumentów dla Twojej branży.",
   },
   hero: {
     eyebrow: "Rozwiązania",
-    title: "BPM no-code dla procesów, których nie obsłuży system pudełkowy.",
+    title: "BPM low-code dla procesów, których nie obsłuży system pudełkowy.",
     description:
       "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. W Opero modelujesz ją bez utraty kontroli nad danymi.",
     supportLine: "Obiekty własne, procesy, obieg dokumentów, automatyzacje, uprawnienia i raporty na jednej platformie.",
@@ -23,52 +23,7 @@ export const solutionsContent: SolutionsContent = {
       "Opero jest najmocniejsze tam, gdzie proces jest specyficzny, model danych odbiega od standardu, a zespoły potrzebują jednocześnie elastyczności i śladu działania. Uzupełnia istniejące systemy zamiast zastępować każde narzędzie specjalistyczne.",
     items: [
       {
-        title: "Placówki medyczne i healthcare",
-        scenario: [
-          "Organizacje medyczne prowadzą wiele ważnych procesów poza systemem dokumentacji klinicznej: zgłoszenia infrastrukturalne, śledzenie sprzętu, koordynację dostawców, zbieranie dokumentów, wewnętrzne akceptacje, rutyny kontrolne i cykliczne raporty operacyjne.",
-          "W Opero układasz te niekliniczne obiegi wokół działów, sprzętu, kontrahentów, dokumentów i etapów akceptacji. Uprawnienia oraz rejestr zdarzeń trzymają dostęp pod kontrolą, a zespoły widzą, co jest otwarte, opóźnione, niekompletne albo gotowe do kolejnego kroku.",
-        ],
-        useCasesLabel: "Typowe zastosowania",
-        useCases: [
-          "Zgłoszenia sprzętowe, przeglądy techniczne i gotowość zasobów między działami.",
-          "Koordynacja dostawców, umów, dokumentów, akceptacji i terminów odnowień.",
-          "Niekliniczne zgłoszenia wewnętrzne: sprawy infrastrukturalne, dostępy, wyjątki operacyjne.",
-          "Cykliczne raporty operacyjne bez odtwarzania tego samego arkusza co tydzień.",
-        ],
-        helpfulFeaturesLabel: "Pomocne funkcje Opero",
-        helpfulFeatures: [
-          "Obiekty własne dla sprzętu, działów, zgłoszeń, dostawców i dokumentów.",
-          "Role, uprawnienia do pól i podział na jednostki dla kontrolowanego dostępu.",
-          "Rejestr zdarzeń dla akceptacji, zmian dokumentów i aktualizacji statusów.",
-          "Reguły automatyzacji dla przypomnień, brakujących dokumentów i raportów cyklicznych.",
-        ],
-        supportsLabel: "Opero obsługuje",
-        supports: ["Zgłoszenia sprzętowe i infrastrukturalne", "Obiegi dostawców i kontrahentów", "Zbieranie i przegląd dokumentów", "Wewnętrzne akceptacje i ślad audytowy"],
-      },
-      {
-        title: "Logistyka i transport",
-        scenario: [
-          "Zespoły logistyczne żyją wyjątkami: brakującymi dokumentami, problemami przewoźników, przekazaniami magazynowymi, reklamacjami, kontrolami pojazdów, opóźnionymi wysyłkami i koordynacją partnerów. Te procesy zmieniają się szybciej, niż da się przekonfigurować standardowy system.",
-          "W Opero modelujesz wyjątki transportowe, kartoteki przewoźników, statusy dokumentów, kontrole pojazdów i magazynów oraz ścieżki akceptacji. Zespół dostaje jedno miejsce, w którym widać, co się wydarzyło, kto ma następny krok i które sprawy nadal czekają.",
-        ],
-        useCasesLabel: "Typowe zastosowania",
-        useCases: [
-          "Wyjątki wysyłkowe, które potrzebują właściciela, statusu, dowodów i kolejnych działań.",
-          "Dokumenty transportowe, brakujące pliki, notatki przekazania i etapy akceptacji.",
-          "Kartoteki przewoźników i partnerów z własnymi polami, kontaktami i historią procesu.",
-          "Kontrole magazynowe, przeglądy pojazdów, reklamacje i cykliczne raporty operacyjne.",
-        ],
-        helpfulFeaturesLabel: "Pomocne funkcje Opero",
-        helpfulFeatures: [
-          "Obiekty własne dla wyjątków, ze statusami, właścicielami, terminami i dokumentami.",
-          "Wyszukiwanie po przewoźnikach, wysyłkach, reklamacjach, dokumentach i notatkach.",
-          "Powiadomienia i reguły eskalacji dla spraw opóźnionych lub niekompletnych.",
-          "Asystent AI przy podsumowaniach operacyjnych i analizie wyjątków.",
-        ],
-        supportsLabel: "Opero obsługuje",
-        supports: ["Obiegi wyjątków transportowych", "Kartoteki przewoźników i partnerów", "Statusy dokumentów transportowych", "Alerty operacyjne i kolejne działania"],
-      },
-      {
+        icon: "manufacturing",
         title: "Produkcja i operacje przemysłowe",
         scenario: [
           "Firmy produkcyjne mają wiele procesów specyficznych dla zakładu: zdarzenia jakościowe, utrzymanie maszyn, inspekcje, zgłoszenia wewnętrzne, dokumenty dostawców, niezgodności i wsparcie produkcji. Takie obiegi rzadko mieszczą się w ogólnych modułach ERP.",
@@ -92,29 +47,7 @@ export const solutionsContent: SolutionsContent = {
         supports: ["Sprawy maszyn i utrzymania ruchu", "Rekordy jakości i inspekcji", "Obiegi dokumentacji dostawców", "Zgłoszenia wewnętrzne i ścieżki akceptacji"],
       },
       {
-        title: "Serwis terenowy i utrzymanie",
-        scenario: [
-          "Praca serwisowa zależy od zasobów, lokalizacji, techników, części, terminów, raportów, zdjęć i notatek klienta. Gdy te informacje żyją w osobnych narzędziach, trudno stwierdzić, które sprawy czekają, które są zablokowane, a które gotowe do zamknięcia.",
-          "W Opero prowadzisz sprawy serwisowe, urządzenia, przypisania, etapy, checklisty, pliki i raporty w jednym rekordzie. Automatyzacja przejmuje przypomnienia, kontrole cykliczne, zmiany statusów i podsumowania operacyjne.",
-        ],
-        useCasesLabel: "Typowe zastosowania",
-        useCases: [
-          "Sprawy serwisowe od przyjęcia, przez diagnozę i naprawę, po informację dla klienta i zamknięcie.",
-          "Zasoby, urządzenia, lokalizacje, technicy, checklisty, zdjęcia, pliki i notatki napraw.",
-          "Cykliczne utrzymanie, inspekcje i raporty gotowości sprzętu.",
-          "Wspólny obraz pracy dla zespołów terenowych i back-office.",
-        ],
-        helpfulFeaturesLabel: "Pomocne funkcje Opero",
-        helpfulFeatures: [
-          "Widoki rekordów dla spraw serwisowych, zasobów, przypisań, checklist i plików.",
-          "Etapy procesu: przyjęcie, diagnoza, oczekiwanie na części, praca w toku, gotowe, zamknięte.",
-          "Reguły cykliczne dla kontroli, przypomnień o opóźnieniach i raportów dziennych.",
-          "Asystent AI przy podsumowaniu historii sprawy i raportowaniu operacyjnym.",
-        ],
-        supportsLabel: "Opero obsługuje",
-        supports: ["Sprawy serwisowe i kartoteki zasobów", "Przypisania techników i etapy", "Checklisty, pliki i notatki napraw", "Przypomnienia i raporty cykliczne"],
-      },
-      {
+        icon: "construction",
         title: "Budownictwo i nieruchomości",
         scenario: [
           "Operacje budowlane i nieruchomościowe obejmują zmieniające się lokalizacje, wielu kontrahentów, inspekcje, odbiory, obieg dokumentów, zgłoszenia usterek, akceptacje i koordynację wewnętrzną. Każdy projekt ma własną strukturę, a mimo to potrzebuje kontroli.",
@@ -138,27 +71,148 @@ export const solutionsContent: SolutionsContent = {
         supports: ["Projekty i sprawy na lokalizacjach", "Koordynację kontrahentów i partnerów", "Obiegi statusów dokumentów", "Inspekcje, odbiory i akceptacje"],
       },
       {
-        title: "Retail, franczyza i sieci wielooddziałowe",
+        icon: "professionalServices",
+        title: "Usługi profesjonalne, kancelarie i biura",
         scenario: [
-          "Organizacje retailowe i franczyzowe potrzebują spójnych procesów w wielu lokalizacjach, podczas gdy lokalne zespoły obsługują codzienną pracę: incydenty, zgłoszenia utrzymaniowe, dzienniki wizyt, problemy ze sprzętem, audyty, lokalne akceptacje i raporty oddziałowe.",
-          "W Opero modelujesz rekordy lokalizacji, uprawnienia, kontrole cykliczne, etapy i obiegi raportowania. Lokalne zespoły dostają prostą strukturę dla własnej pracy, a centrala zachowuje widoczność całej sieci.",
+          "Kancelarie, biura rachunkowe i firmy doradcze pracują na sprawach klientów: dokumentach z terminem, umowach, zleceniach i rozliczeniach. Każdy klient ma nieco inny tryb współpracy, a przekroczony termin kosztuje realne pieniądze i zaufanie.",
+          "W Opero prowadzisz sprawy klientów jako obiekty własne z kompletem dokumentów, etapami i osobą odpowiedzialną. Terminów pilnują reguły, a uprawnienia gwarantują, że każdy zespół widzi tylko przypisanych sobie klientów.",
         ],
         useCasesLabel: "Typowe zastosowania",
         useCases: [
-          "Incydenty, zgłoszenia utrzymaniowe, dzienniki wizyt, lokalne akceptacje i awarie sprzętu.",
-          "Cykliczne kontrole oddziałów, audyty, rutyny zgodności i raporty operacyjne.",
-          "Rekordy lokalne przy zachowaniu jednego, spójnego widoku dla centrali.",
-          "Działania naprawcze na poziomie franczyzy lub oddziału, z właścicielem i historią statusów.",
+          "Sprawy klientów z etapami, terminami i jasno przypisaną osobą odpowiedzialną.",
+          "Obieg umów i dokumentów z wersjonowaniem oraz pełną historią zmian.",
+          "Powtarzalne czynności cykliczne: rozliczenia, sprawozdania i odnowienia umów.",
+          "Rozliczenie zakresu prac na kliencie, projekcie lub sprawie.",
         ],
         helpfulFeaturesLabel: "Pomocne funkcje Opero",
         helpfulFeatures: [
-          "Rekordy, procesy, uprawnienia i listy operacyjne ograniczone do lokalizacji.",
-          "Automatyzacja cykliczna dla kontroli oddziałów, przypomnień i raportów statusu.",
-          "Wyszukiwanie i zapisane zapytania po lokalizacjach, incydentach, zgłoszeniach i dokumentach.",
-          "Role i podział na spółki dla zespołów lokalnych oraz centrali.",
+          "Obiekty własne dla klientów, spraw, umów i dokumentów.",
+          "Reguły przypominające o terminach, zanim staną się problemem.",
+          "Uprawnienia ograniczające dostęp do konkretnych klientów lub zespołów.",
+          "Szablony dokumentów generujące pisma i umowy wprost z danych sprawy.",
         ],
         supportsLabel: "Opero obsługuje",
-        supports: ["Incydenty i zgłoszenia oddziałowe", "Obiegi utrzymania i sprzętu", "Cykliczne kontrole lokalizacji", "Raportowanie centralne i lokalną odpowiedzialność"],
+        supports: ["Sprawy i teczki klientów", "Obieg umów i dokumentów", "Terminy i czynności cykliczne", "Rozliczenia i sprawozdania"],
+      },
+      {
+        icon: "fieldService",
+        title: "Serwis terenowy i utrzymanie",
+        scenario: [
+          "Praca serwisowa zależy od zasobów, lokalizacji, techników, części, terminów, raportów, zdjęć i notatek klienta. Gdy te informacje żyją w osobnych narzędziach, trudno stwierdzić, które sprawy czekają, które są zablokowane, a które gotowe do zamknięcia.",
+          "W Opero prowadzisz sprawy serwisowe, urządzenia, przypisania, etapy, checklisty, pliki i raporty w jednym rekordzie. Automatyzacja przejmuje przypomnienia, kontrole cykliczne, zmiany statusów i podsumowania operacyjne.",
+        ],
+        useCasesLabel: "Typowe zastosowania",
+        useCases: [
+          "Sprawy serwisowe od przyjęcia, przez diagnozę i naprawę, po informację dla klienta i zamknięcie.",
+          "Zasoby, urządzenia, lokalizacje, technicy, checklisty, zdjęcia, pliki i notatki napraw.",
+          "Cykliczne utrzymanie, inspekcje i raporty gotowości sprzętu.",
+          "Wspólny obraz pracy dla zespołów terenowych i back-office.",
+        ],
+        helpfulFeaturesLabel: "Pomocne funkcje Opero",
+        helpfulFeatures: [
+          "Widoki rekordów dla spraw serwisowych, zasobów, przypisań, checklist i plików.",
+          "Etapy procesu: przyjęcie, diagnoza, oczekiwanie na części, praca w toku, gotowe, zamknięte.",
+          "Reguły cykliczne dla kontroli, przypomnień o opóźnieniach i raportów dziennych.",
+          "Asystent AI przy podsumowaniu historii sprawy i raportowaniu operacyjnym.",
+        ],
+        supportsLabel: "Opero obsługuje",
+        supports: ["Sprawy serwisowe i kartoteki zasobów", "Przypisania techników i etapy", "Checklisty, pliki i notatki napraw", "Przypomnienia i raporty cykliczne"],
+      },
+      {
+        icon: "healthcare",
+        title: "Placówki medyczne i healthcare",
+        scenario: [
+          "Organizacje medyczne prowadzą wiele ważnych procesów poza systemem dokumentacji klinicznej: zgłoszenia infrastrukturalne, śledzenie sprzętu, koordynację dostawców, zbieranie dokumentów, wewnętrzne akceptacje, rutyny kontrolne i cykliczne raporty operacyjne.",
+          "W Opero układasz te niekliniczne obiegi wokół działów, sprzętu, kontrahentów, dokumentów i etapów akceptacji. Uprawnienia oraz rejestr zdarzeń trzymają dostęp pod kontrolą, a zespoły widzą, co jest otwarte, opóźnione, niekompletne albo gotowe do kolejnego kroku.",
+        ],
+        useCasesLabel: "Typowe zastosowania",
+        useCases: [
+          "Zgłoszenia sprzętowe, przeglądy techniczne i gotowość zasobów między działami.",
+          "Koordynacja dostawców, umów, dokumentów, akceptacji i terminów odnowień.",
+          "Niekliniczne zgłoszenia wewnętrzne: sprawy infrastrukturalne, dostępy, wyjątki operacyjne.",
+          "Cykliczne raporty operacyjne bez odtwarzania tego samego arkusza co tydzień.",
+        ],
+        helpfulFeaturesLabel: "Pomocne funkcje Opero",
+        helpfulFeatures: [
+          "Obiekty własne dla sprzętu, działów, zgłoszeń, dostawców i dokumentów.",
+          "Role, uprawnienia do pól i podział na jednostki dla kontrolowanego dostępu.",
+          "Rejestr zdarzeń dla akceptacji, zmian dokumentów i aktualizacji statusów.",
+          "Reguły automatyzacji dla przypomnień, brakujących dokumentów i raportów cyklicznych.",
+        ],
+        supportsLabel: "Opero obsługuje",
+        supports: ["Zgłoszenia sprzętowe i infrastrukturalne", "Obiegi dostawców i kontrahentów", "Zbieranie i przegląd dokumentów", "Wewnętrzne akceptacje i ślad audytowy"],
+      },
+      {
+        icon: "retail",
+        title: "Sieci usługowe, franczyza i handel",
+        scenario: [
+          "Salony beauty, kluby fitness, gastronomia, punkty handlowe i sieci franczyzowe potrzebują tego samego: jednakowego standardu w każdej lokalizacji i realnego wglądu w to, co dzieje się na miejscu. Lokalne zespoły obsługują incydenty, sprzęt, dostawy, audyty i zgłoszenia, każdy trochę po swojemu.",
+          "W Opero każda lokalizacja pracuje na tym samym, prostym formularzu, a centrala widzi całą sieć w jednym zestawieniu. Kontrole cykliczne, standardy sanitarne i przeglądy sprzętu pilnują się same, bo przypomina o nich reguła.",
+        ],
+        useCasesLabel: "Typowe zastosowania",
+        useCases: [
+          "Incydenty, awarie sprzętu i zgłoszenia utrzymaniowe zgłaszane przez lokal.",
+          "Cykliczne audyty, kontrole standardu oraz checklisty otwarcia i zamknięcia.",
+          "Dokumentacja lokalizacji: umowy najmu, przeglądy, certyfikaty i szkolenia personelu.",
+          "Raporty porównujące lokalizacje bez zbierania arkuszy z każdego punktu.",
+        ],
+        helpfulFeaturesLabel: "Pomocne funkcje Opero",
+        helpfulFeatures: [
+          "Rekordy, procesy i listy ograniczone do lokalizacji, z widokiem zbiorczym dla centrali.",
+          "Formularze zgłoszeń proste na tyle, żeby wypełnił je każdy pracownik lokalu.",
+          "Reguły cykliczne dla audytów, przeglądów i przypomnień o terminach.",
+          "Role i uprawnienia rozdzielające dostęp lokalu, regionu i centrali.",
+        ],
+        supportsLabel: "Opero obsługuje",
+        supports: ["Incydenty i zgłoszenia z lokali", "Audyty i kontrole standardu", "Dokumentację i przeglądy sprzętu", "Raporty porównawcze dla centrali"],
+      },
+      {
+        icon: "education",
+        title: "Uczelnie i instytucje edukacyjne",
+        scenario: [
+          "Uczelnie prowadzą równolegle procesy dydaktyczne, administracyjne i projektowe: wnioski studenckie i pracownicze, obieg umów, delegacje, projekty badawcze z własnymi budżetami i sprawozdaniami, zamówienia oraz dokumentację poszczególnych jednostek.",
+          "W Opero każda z tych spraw dostaje własny obiekt, formularz i ścieżkę akceptacji przechodzącą przez katedry, dziekanaty i kwesturę. Widać, na jakim etapie jest wniosek, kto go obecnie trzyma i ile czasu zostało do terminu.",
+        ],
+        useCasesLabel: "Typowe zastosowania",
+        useCases: [
+          "Wnioski studenckie i pracownicze prowadzone przez katedry, dziekanaty i administrację.",
+          "Obieg umów, delegacji i zamówień z akceptacją budżetową.",
+          "Projekty badawcze: dokumentacja, kamienie milowe, sprawozdania i rozliczenia.",
+          "Ewidencja sprzętu, laboratoriów i zasobów poszczególnych jednostek.",
+        ],
+        helpfulFeaturesLabel: "Pomocne funkcje Opero",
+        helpfulFeatures: [
+          "Obiekty własne dla wniosków, projektów, umów i zasobów jednostek.",
+          "Wieloetapowe ścieżki akceptacji przechodzące przez kilka jednostek organizacyjnych.",
+          "Uprawnienia i podział na jednostki, żeby każdy widział dokładnie swój zakres.",
+          "Raporty i sprawozdania na żywych danych, bez zbierania arkuszy z wydziałów.",
+        ],
+        supportsLabel: "Opero obsługuje",
+        supports: ["Wnioski studenckie i pracownicze", "Obieg umów i delegacji", "Projekty badawcze i rozliczenia", "Ewidencję zasobów jednostek"],
+      },
+      {
+        icon: "publicSector",
+        title: "Sektor publiczny i samorządy",
+        scenario: [
+          "Urzędy, jednostki organizacyjne i spółki komunalne pracują na dokumencie: pisma wpływające, wnioski mieszkańców, uchwały, zamówienia publiczne, umowy i sprawozdania. Wszystko z terminami ustawowymi, obowiązkiem dekretacji i koniecznością odtworzenia przebiegu sprawy na żądanie.",
+          "W Opero prowadzisz elektroniczny obieg dokumentów zgodny z tym, jak faktycznie działa jednostka: rejestracja i numeracja pism, dekretacja na komórki i osoby, ścieżki akceptacji, terminy oraz pełny rejestr zdarzeń. e-Doręczenia obsługujesz wprost z systemu, bez wychodzenia do zewnętrznych portali.",
+        ],
+        useCasesLabel: "Typowe zastosowania",
+        useCases: [
+          "Rejestracja pism wpływających i wychodzących, z numeracją i dekretacją na komórki organizacyjne.",
+          "Wnioski i sprawy mieszkańców z terminem ustawowym oraz widocznym etapem realizacji.",
+          "Obieg umów, zamówień publicznych i dokumentacji projektowej z akceptacjami.",
+          "Sprawozdawczość wewnętrzna i raporty dla kierownictwa bez ręcznego zbierania danych.",
+        ],
+        helpfulFeaturesLabel: "Pomocne funkcje Opero",
+        helpfulFeatures: [
+          "e-Doręczenia i elektroniczny obieg dokumentów obsługiwane wprost w systemie.",
+          "Obiekty własne dla pism, wniosków, umów, uchwał i zamówień.",
+          "Terminy, przypomnienia i eskalacje pilnujące spraw z ustawowym czasem odpowiedzi.",
+          "Rejestr zdarzeń i uprawnienia do pól na potrzeby kontroli oraz audytu.",
+        ],
+        supportsLabel: "Opero obsługuje",
+        supports: ["Pisma wpływające i wychodzące", "Wnioski i sprawy mieszkańców", "Umowy i zamówienia publiczne", "e-Doręczenia i rejestr zdarzeń"],
       },
     ],
   },
@@ -179,10 +233,10 @@ export const solutionsContent: SolutionsContent = {
   },
   fit: {
     eyebrow: "Dopasowanie",
-    title: "Kiedy Opero jest dobrym wyborem.",
+    title: "Sprawdź, czy to Twój przypadek.",
     description:
-      "Opero pasuje wtedy, gdy firma potrzebuje czegoś więcej niż arkusz, większej elastyczności niż gotowy moduł i większej kontroli niż luźne narzędzie wewnętrzne.",
-    goodFitTitle: "Dobry wybór",
+      "Opero pasuje wtedy, gdy firma potrzebuje czegoś więcej niż arkusz, większej elastyczności niż gotowy moduł i większej kontroli niż luźne narzędzie wewnętrzne. Świetnie współpracuje też z systemami, które już masz.",
+    goodFitTitle: "Opero sprawdzi się u Ciebie, gdy",
     goodFit: [
       "Proces ma własne rekordy i pola, których nie ma w gotowych modułach.",
       "Kilka zespołów pracuje na tym samym obiegu.",
@@ -190,11 +244,11 @@ export const solutionsContent: SolutionsContent = {
       "Firma potrzebuje uprawnień, zgodności i śladu zmian.",
       "Procesy zmieniają się na tyle często, że potrzebna jest konfiguracja, nie przepisywanie kodu.",
     ],
-    notBestFitTitle: "Nie najlepszy wybór",
+    notBestFitTitle: "Opero uzupełnia, nie zastępuje",
     notBestFit: [
-      "Potrzeba jest już w pełni pokryta przez system specjalistyczny.",
-      "Proces wymaga certyfikowanego oprogramowania branżowego, którego Opero nie zastępuje.",
-      "Firma potrzebuje tylko prostej strony statycznej albo jednorazowego formularza.",
+      "Masz system dziedzinowy, który dobrze robi swoje? Opero poprowadzi procesy wokół niego i połączy się z nim przez API.",
+      "Pracujesz na certyfikowanym oprogramowaniu branżowym? Zostaje na swoim miejscu, a Opero obejmuje obiegi, których ono nie pokrywa.",
+      "Nie musisz zaczynać od całej firmy. Wiele wdrożeń startuje od jednego procesu, na przykład obiegu faktur, i rozszerza się dopiero wtedy, gdy ten się sprawdzi.",
     ],
   },
   finalCta: {

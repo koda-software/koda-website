@@ -3,15 +3,15 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "No-Code BPM Platform for Processes and Documents",
+    title: "Low-Code BPM Platform for Processes and Documents",
     description:
-      "Opero is a no-code BPM platform: processes and workflow, document management, automation, reports and permissions. Build your system without a developer.",
+      "Opero is a low-code BPM platform: processes, document workflow, automation, reports and permissions. No-code configuration, code only where it pays off.",
   },
   hero: {
-    eyebrow: "No-code BPM by KodaSoft",
+    eyebrow: "Low-code BPM by KodaSoft",
     title: "Turn the way you work into software",
     description:
-      "Opero is a no-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. With no code written.",
+      "Opero is a low-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. No code required.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
     supportPoints: [
@@ -112,14 +112,14 @@ export const homeContent: HomeContent = {
   },
   problem: {
     label: "The problem",
-    title: "No two companies work the same way.",
+    title: "The work your system cannot see is the work that costs most.",
     description:
-      "When the system cannot keep up with real work, teams build workarounds: spreadsheets, approvals over email, scattered tools, duplicated records and handoffs that no process ever sees.",
+      "A spreadsheet next to the ERP, an approval over email, a file on someone's drive. Each looks like a small workaround. Together they form a second, undocumented flow through the company: uncounted, and impossible to reconstruct when somebody asks why a case stalled.",
     points: [
-      "Processes change faster than a standard ERP can be reconfigured.",
-      "Key data drifts apart across spreadsheets and separate tools.",
-      "Documents circulate over email, so nobody knows whose desk a case is on.",
-      "AI runs beside the system, with no access to real company context.",
+      "Changing a process takes a development project, so the team routes around the system with a spreadsheet.",
+      "The same record lives in three places and is authoritative in none of them.",
+      "An invoice waits a week in an inbox because nobody knew it was their step.",
+      "The board report is assembled by hand and is already out of date the day it is sent.",
     ],
   },
   solution: {
@@ -136,14 +136,14 @@ export const homeContent: HomeContent = {
   },
   pillars: {
     label: "What Opero can do",
-    title: "A no-code foundation for processes that keep changing.",
+    title: "A low-code foundation for processes that keep changing.",
     description:
       "Opero works as your company's operating layer: the data model, processes, document workflow, automation, reports and permissions stay connected instead of becoming more separate tools.",
     items: [
       {
         title: "Design without code",
         description:
-          "Create custom objects, fields, forms, layouts and menus shaped around how the company actually works.",
+          "No-code configuration: you assemble custom objects, fields, forms, layouts and menus visually, shaping them around how the company actually works.",
         capabilities: [
           "Custom objects and modules",
           "More than 20 field types",

@@ -3,15 +3,15 @@ import type { HomeContent } from "../types";
 
 export const homeContent: HomeContent = {
   seo: {
-    title: "Platforma BPM no-code do procesów i dokumentów",
+    title: "Platforma BPM low-code do procesów i dokumentów",
     description:
-      "Opero to platforma BPM no-code: procesy i workflow, elektroniczny obieg dokumentów, automatyzacja, raporty i uprawnienia. Zbuduj system bez programisty.",
+      "Opero to platforma BPM low-code: procesy, elektroniczny obieg dokumentów, automatyzacja, raporty i uprawnienia. Konfiguracja no-code, bez pisania kodu.",
   },
   hero: {
-    eyebrow: "BPM no-code od KodaSoft",
+    eyebrow: "BPM low-code od KodaSoft",
     title: "Zamień swój sposób działania w oprogramowanie",
     description:
-      "Opero to platforma BPM no-code, w której modelujesz własne procesy, prowadzisz obieg dokumentów, automatyzujesz powtarzalne kroki i trzymasz dane firmy pod kontrolą. Bez pisania kodu.",
+      "Opero to platforma BPM low-code, w której modelujesz własne procesy, prowadzisz obieg dokumentów, automatyzujesz powtarzalne kroki i trzymasz dane firmy pod kontrolą. Bez pisania kodu.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
     supportPoints: [
@@ -112,14 +112,14 @@ export const homeContent: HomeContent = {
   },
   problem: {
     label: "Problem",
-    title: "Żadne dwie firmy nie pracują tak samo.",
+    title: "Najwięcej kosztuje praca, której nie widać w systemie.",
     description:
-      "Gdy system nie nadąża za realną pracą, zespoły budują obejścia: arkusze, akceptacje w mailu, rozproszone narzędzia, zdublowane rekordy i przekazania, których nie widać w żadnym procesie.",
+      "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Każde z osobna wygląda na drobne obejście. Razem tworzą drugi obieg firmy: nieopisany, niepoliczony i niemożliwy do odtworzenia, gdy ktoś pyta, dlaczego sprawa stanęła.",
     points: [
-      "Procesy zmieniają się szybciej niż konfiguracja standardowego ERP.",
-      "Kluczowe dane rozjeżdżają się po arkuszach i osobnych narzędziach.",
-      "Dokumenty krążą po mailach, więc nie wiadomo, u kogo leży sprawa.",
-      "AI działa obok systemu, bez dostępu do realnego kontekstu firmy.",
+      "Zmiana procesu wymaga projektu wdrożeniowego, więc zespół omija system arkuszem.",
+      "Ten sam rekord żyje w trzech miejscach i w żadnym nie jest pewny.",
+      "Faktura czeka tydzień w skrzynce, bo nikt nie wiedział, że to jego krok.",
+      "Raport na zarząd powstaje ręcznie i jest nieaktualny w dniu wysłania.",
     ],
   },
   solution: {
@@ -136,14 +136,14 @@ export const homeContent: HomeContent = {
   },
   pillars: {
     label: "Możliwości Opero",
-    title: "Fundament no-code dla procesów, które się zmieniają.",
+    title: "Fundament low-code dla procesów, które się zmieniają.",
     description:
       "Opero działa jak warstwa operacyjna firmy: model danych, procesy, obieg dokumentów, automatyzacje, raporty i uprawnienia pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
     items: [
       {
         title: "Projektuj bez kodu",
         description:
-          "Twórz obiekty własne, pola, formularze, układy i menu dopasowane do tego, jak naprawdę pracuje firma.",
+          "Konfiguracja no-code: obiekty własne, pola, formularze, układy i menu składasz wizualnie, dopasowując je do tego, jak naprawdę pracuje firma.",
         capabilities: [
           "Obiekty i moduły własne",
           "Ponad 20 typów pól",

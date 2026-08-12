@@ -3,15 +3,15 @@ import type { OperoProductContent } from "../types";
 
 export const operoProductContent: OperoProductContent = {
   seo: {
-    title: "Opero - platforma BPM, no-code i obieg dokumentów",
+    title: "Opero - platforma BPM low-code i obieg dokumentów",
     description:
-      "Opero łączy procesy i workflow, elektroniczny obieg dokumentów, platformę no-code, automatyzacje, raporty, uprawnienia, integracje z KSeF i kontekstowe AI.",
+      "Opero łączy procesy i workflow, elektroniczny obieg dokumentów, konfigurację no-code, automatyzacje, raporty, uprawnienia i integracje z KSeF.",
   },
   hero: {
     eyebrow: "Produkt Opero",
-    title: "Platforma BPM no-code dla firm z własnymi procesami.",
+    title: "Platforma BPM low-code dla firm z własnymi procesami.",
     description:
-      "Opero zamienia sposób pracy Twojej firmy w działający system: obiegi pracy, dokumenty, automatyzacje, raporty i uprawnienia pod jednym dachem, bez pisania kodu.",
+      "Opero zamienia sposób pracy Twojej firmy w działający system: obiegi pracy, dokumenty, automatyzacje, raporty i uprawnienia pod jednym dachem. Konfigurujesz wizualnie, a po kod sięgasz tylko tam, gdzie faktycznie się opłaca.",
     primaryCta: "Umów demo",
     secondaryCta: "Zobacz rozwiązania",
     diagramItems: ["Obiekty własne", "Formularze i układy", "Procesy", "Reguły", "Raporty", "Uprawnienia"],
@@ -83,9 +83,9 @@ export const operoProductContent: OperoProductContent = {
   },
   featureLinks: {
     eyebrow: "Funkcje systemu",
-    title: "Każdy obszar ma własną stronę.",
+    title: "Wejdź głębiej w obszar, który Cię dotyczy.",
     description:
-      "Wejdź głębiej tam, gdzie potrzebujesz szczegółów: co dokładnie dostajesz i jak to wygląda w systemie.",
+      "Każda strona pokazuje to samo od środka: co dokładnie dostajesz, jak wygląda to w systemie i na jakie pytania najczęściej odpowiadamy.",
   },
   connectedModel: {
     eyebrow: "Połączony model",
