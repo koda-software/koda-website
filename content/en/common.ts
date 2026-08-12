@@ -13,6 +13,7 @@ export const commonContent: ShellContent = {
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },
       { page: "blog", label: "Blog" },
+      { page: "about", label: "About" },
       { page: "contact", label: "Book a demo" },
     ],
   },

@@ -59,6 +59,43 @@ export const landingShellClass = "mx-auto w-[min(100%,var(--shell-width))]";
 
 export const sectionTitleClass = "m-0 text-[clamp(2rem,3.6vw,2.85rem)] leading-[1.06] tracking-[-0.04em]";
 
+/**
+ * One type scale for every page banner, so the headline reads the same size on
+ * the home page as on Opero, Solutions, Contact and the feature pages. Sized so
+ * the longest words in both languages ("oprogramowanie", "Rozwiązania") stay
+ * whole inside the home hero's narrow text column, which is the tightest place
+ * a banner headline has to fit. `text-balance` evens out the line lengths, and
+ * `break-words` is a safety net for the smallest phones; nothing should reach
+ * it at these sizes. Render titles through `HeroTitle` rather than using this
+ * on a bare `h1`.
+ */
+export const heroTitleClass =
+  "m-0 text-balance break-words text-[clamp(2.6rem,5vw,3.5rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(2rem,10vw,2.6rem)]";
+
+/**
+ * The banner headline. Hyphenated terms carry the product's own vocabulary
+ * ("low-code", "no-code", "off-the-shelf"), and a line break inside one reads
+ * as a typo - browsers otherwise treat the hyphen as a break opportunity and
+ * split them whenever the line runs tight. Each hyphenated word therefore
+ * renders inside a nowrap span, which changes no text: the heading still reads
+ * as a plain ASCII-hyphenated string to search engines and screen readers.
+ */
+export function HeroTitle({ className = "", title }: { className?: string; title: string }) {
+  return (
+    <h1 className={`${heroTitleClass} ${className}`.trim()}>
+      {title.split(/(\s+)/).map((part, index) =>
+        part.includes("-") && part.trim().length > 1 ? (
+          <span className="whitespace-nowrap" key={index}>
+            {part}
+          </span>
+        ) : (
+          part
+        ),
+      )}
+    </h1>
+  );
+}
+
 export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] font-light leading-[1.62] text-[var(--color-muted)]";
 
 export const mutedCopyClass = "m-0 leading-[1.55] text-[var(--color-muted)]";
@@ -147,9 +184,7 @@ export function LandingHero({
       <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
           <Eyebrow invert>{eyebrow}</Eyebrow>
-          <h1 className="m-0 max-w-[880px] hyphens-auto break-words text-[clamp(3rem,6.4vw,4.85rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.4rem,12vw,3.85rem)]">
-            {title}
-          </h1>
+          <HeroTitle className="max-w-[880px]" title={title} />
           <p className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
           <CtaRow
             actions={[

@@ -1,22 +1,29 @@
 import { defaultLocale, type Locale, locales } from "./config";
 
-export type PageKey = "home" | "opero" | "solutions" | "blog" | "contact";
+export type PageKey = "home" | "opero" | "solutions" | "blog" | "about" | "contact";
 
-export const pageSlugs: Record<Exclude<PageKey, "home">, string> = {
-  opero: "opero",
-  solutions: "solutions",
-  blog: "blog",
-  contact: "contact",
+/**
+ * Slug per page and locale, mirroring how the feature pages are addressed. Most
+ * pages deliberately keep the same slug in both languages - the words are the
+ * product's own vocabulary and the URLs are already indexed - but a page whose
+ * name is ordinary language reads better translated, the way `/pl/o-nas` does.
+ */
+export const pageSlugs: Record<Exclude<PageKey, "home">, Record<Locale, string>> = {
+  opero: { en: "opero", pl: "opero" },
+  solutions: { en: "solutions", pl: "solutions" },
+  blog: { en: "blog", pl: "blog" },
+  about: { en: "about", pl: "o-nas" },
+  contact: { en: "contact", pl: "contact" },
 };
 
-export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "contact"];
+export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "about", "contact"];
 
 export function localizePath(locale: Locale, page: PageKey): string {
   if (page === "home") {
     return locale === defaultLocale ? "/" : `/${locale}`;
   }
 
-  return `/${locale}/${pageSlugs[page]}`;
+  return `/${locale}/${pageSlugs[page][locale]}`;
 }
 
 export function getAlternatePaths(page: PageKey): Record<Locale | "x-default", string> {

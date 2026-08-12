@@ -425,6 +425,92 @@ export type SolutionsContent = {
   };
 };
 
+export type AboutBelief = {
+  title: string;
+  description: string;
+};
+
+export type AboutBackgroundRow = {
+  /** The system class the lesson came from, e.g. "BPM i workflow". */
+  label: string;
+  lesson: string;
+};
+
+export type AboutPageContent = {
+  seo: SeoContent;
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+  };
+  identity: {
+    eyebrow: string;
+    title: string;
+    paragraphs: string[];
+  };
+  origin: {
+    eyebrow: string;
+    title: string;
+    paragraphs: string[];
+    /** Pulled out as a manifesto quote next to the narrative. */
+    manifesto: string;
+  };
+  mission: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
+  beliefs: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: AboutBelief[];
+  };
+  background: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    rows: AboutBackgroundRow[];
+  };
+  approach: {
+    eyebrow: string;
+    title: string;
+    items: AboutBelief[];
+  };
+  /**
+   * Company figures and team. Omitted until the team supplies real, verifiable
+   * numbers and photos - the section renders only when this is present, so the
+   * page never ships invented statistics or an empty frame.
+   */
+  facts?: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: Array<{ label: string; value: string }>;
+  };
+  finalCta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+  };
+  /** Longer-form SEO copy near the bottom, written for search intent. */
+  seoText: {
+    eyebrow: string;
+    title: string;
+    paragraphs: string[];
+  };
+  /** Long-tail Q&A, also emitted as FAQPage structured data. */
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ question: string; answer: string }>;
+  };
+};
+
 /**
  * Chrome and copy for the blog. Everything editorial comes from Opero; this
  * module only carries the surrounding UI strings, in both locales.

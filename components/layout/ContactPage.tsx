@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 import type { ContactPageContent } from "@/content/types";
+import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import { ContactForm } from "./ContactForm";
 
 type ContactPageProps = {
@@ -20,7 +21,7 @@ export function ContactPage({ locale, content }: ContactPageProps) {
         <div className="mx-auto w-[min(100%,var(--shell-width))]">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-            <h1 className="m-0 max-w-[940px] text-[4.2rem] leading-[1] max-[809px]:text-[2.6rem]">{content.hero.title}</h1>
+            <HeroTitle className="max-w-[940px]" title={content.hero.title} />
             <p className="mt-6 max-w-[760px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
               {content.hero.description}
             </p>

@@ -33,6 +33,7 @@ import UsersIcon from "lucide-react/dist/esm/icons/users.mjs";
 import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
 import ZapIcon from "lucide-react/dist/esm/icons/zap.mjs";
 import { IconTextGrid } from "@/components/landing/LandingCards";
+import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
@@ -304,7 +305,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
   const heroCopy = (
     <div>
       <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-      <h1 className="m-0 max-w-[900px] text-[3.9rem] leading-[1.02] max-[809px]:text-[2.5rem]">{content.hero.title}</h1>
+      <HeroTitle className="max-w-[900px]" title={content.hero.title} />
       <p className="mt-6 max-w-[720px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem]">
         {content.hero.description}
       </p>

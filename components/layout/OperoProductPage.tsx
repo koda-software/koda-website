@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import type { NavSubItem, OperoProductContent, ProductFeatureRow } from "@/content/types";
+import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import { ConfigDemo } from "./ConfigDemo";
 
 type OperoProductPageProps = {
@@ -78,7 +79,7 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(22rem,0.82fr)] items-center gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-            <h1 className="m-0 max-w-[900px] text-[4.4rem] leading-[0.98] max-[809px]:text-[2.85rem]">{content.hero.title}</h1>
+            <HeroTitle className="max-w-[900px]" title={content.hero.title} />
             <p className="mt-6 max-w-[760px] text-[1.25rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
               {content.hero.description}
             </p>

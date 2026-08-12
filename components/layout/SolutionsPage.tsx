@@ -7,6 +7,7 @@ import HeartPulseIcon from "lucide-react/dist/esm/icons/heart-pulse.mjs";
 import LandmarkIcon from "lucide-react/dist/esm/icons/landmark.mjs";
 import StoreIcon from "lucide-react/dist/esm/icons/store.mjs";
 import WrenchIcon from "lucide-react/dist/esm/icons/wrench.mjs";
+import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import type { SolutionIndustry, SolutionIndustryIcon, SolutionsContent } from "@/content/types";
 
 type SolutionsPageProps = {
@@ -136,7 +137,7 @@ export function SolutionsPage({ content, primaryHref, secondaryHref }: Solutions
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-            <h1 className="m-0 max-w-[980px] text-[4.25rem] leading-[0.99] max-[809px]:text-[2.65rem]">{content.hero.title}</h1>
+            <HeroTitle className="max-w-[980px]" title={content.hero.title} />
             <p className="mt-6 max-w-[760px] text-[1.22rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
               {content.hero.description}
             </p>

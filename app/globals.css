@@ -67,17 +67,19 @@ body {
   font-family: var(--font-sans-brand), "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
-h1,
-h2,
-h3,
-p {
-  text-wrap: pretty;
-}
-
 /* Must sit in `base`: unlayered rules outrank Tailwind's `utilities` layer, so an
    unlayered `color: inherit` here would silently beat every `text-*` class on a
-   link — e.g. white CTA labels falling back to the surrounding ink colour. */
+   link — e.g. white CTA labels falling back to the surrounding ink colour. The
+   same applies to `text-wrap` below: unlayered, it beat `text-balance` on the
+   hero headlines and let hyphenated terms like "low-code" split across lines. */
 @layer base {
+  h1,
+  h2,
+  h3,
+  p {
+    text-wrap: pretty;
+  }
+
   a {
     color: inherit;
     text-decoration: none;
