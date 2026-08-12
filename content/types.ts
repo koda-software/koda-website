@@ -70,15 +70,61 @@ export type HomeStep = {
   description: string;
 };
 
-export type HeroAssistantScenario = {
-  label: string;
-  dashboardTitle: string;
-  dashboardMetric: string;
-  dashboardDetail: string;
-  messages: Array<{
-    speaker: "assistant" | "user";
-    text: string;
-  }>;
+/**
+ * Copy for the animated record/process demo in the home banner. The animation
+ * shows a mocked-up Opero screen, so every visible string lives here and gets
+ * translated like any other page copy.
+ */
+export type RecordDemoContent = {
+  listTitle: string;
+  /** The row the animation opens; its priority and stage change as the demo runs. */
+  focusRow: { number: string; title: string };
+  /** Static rows filling out the list behind the focused one. */
+  otherRows: Array<{ number: string; title: string; priority: string; stage: string }>;
+  fields: { client: string; clientValue: string; priority: string; value: string; valueTyped: string };
+  priorityOptions: [string, string, string, string];
+  processLabel: string;
+  /** Four workflow stages, each with the label of the button that leaves it. */
+  stages: Array<{ name: string; transition: string }>;
+  doneLabel: string;
+  /** `<b>` is allowed for emphasis. */
+  captions: { list: string; form: string; process: string; result: string };
+};
+
+/**
+ * Copy for the three-act configuration demo in the Opero banner: rule, script,
+ * SQL query.
+ */
+export type ConfigDemoContent = {
+  rule: {
+    triggerLabel: string;
+    triggerTitle: string;
+    triggerChip: string;
+    stepsLabel: string;
+    steps: Array<{ title: string; detail: string }>;
+    addStep: string;
+  };
+  script: {
+    title: string;
+    chip: string;
+    run: string;
+    resultTime: string;
+    /** Identifiers shown in the mocked editor; localized like the rest of a real configuration. */
+    field: string;
+    values: [string, string];
+  };
+  query: {
+    title: string;
+    chip: string;
+    run: string;
+    paramValue: string;
+    /** Identifiers shown in the mocked SQL editor. */
+    sql: { columns: string; table: string; field: string; param: string };
+    columns: [string, string, string, string];
+    rows: Array<[string, string, string, string]>;
+  };
+  /** `<b>` is allowed for emphasis. */
+  captions: { rule: string; ruleDone: string; script: string; scriptDone: string; query: string; summary: string };
 };
 
 export type HomeContent = {
@@ -101,12 +147,7 @@ export type HomeContent = {
       mappingItems: string[];
       outcomeItems: string[];
     };
-    assistantDemo: {
-      buttonLabel: string;
-      popupTitle: string;
-      typingLabel: string;
-      scenarios: HeroAssistantScenario[];
-    };
+    recordDemo: RecordDemoContent;
   };
   problem: HomePointGroup;
   solution: HomePointGroup;
@@ -177,7 +218,7 @@ export type OperoProductContent = {
     description: string;
     primaryCta: string;
     secondaryCta: string;
-    diagramItems: string[];
+    configDemo: ConfigDemoContent;
   };
   overview: {
     eyebrow: string;

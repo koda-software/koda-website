@@ -14,13 +14,6 @@ export const noCodeFeature: FeaturePageContent = {
       "You design the data, the layouts and the navigation in visual configuration. Opero turns them into a working application, with no code written.",
     primaryCta: "Book a demo",
     secondaryCta: "See Opero in action",
-    shot: {
-      src: "/features/no-code-hero.png",
-      width: 1926,
-      height: 1082,
-      caption: "A form built without code",
-      alt: "A \"Create counterparty\" form in Opero with fields such as Acronym, Full name, Country and Tax ID, generated from an object's configuration",
-    },
   },
   intro: {
     eyebrow: "In short",
@@ -58,19 +51,6 @@ export const noCodeFeature: FeaturePageContent = {
       {
         title: "Processes on your data",
         description: "You can attach a workflow to any object, so the application handles flows from day one.",
-      },
-    ],
-  },
-  shots: {
-    eyebrow: "What it looks like",
-    title: "From data structure to a finished view.",
-    items: [
-      {
-        src: "/features/no-code-dashboard.webp",
-        width: 2000,
-        height: 986,
-        caption: "The end result: a working application",
-        alt: "Dashboard of a finished Opero application with modules such as Accounting, Counterparties, Service and HR",
       },
     ],
   },

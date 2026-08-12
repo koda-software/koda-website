@@ -20,8 +20,8 @@ import {
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
 import { AiChatMockup } from "./AiChatMockup";
-import { HeroAssistantDemo } from "./HeroAssistantDemo";
 import { OperoFlowVisual } from "./OperoFlowVisual";
+import { RecordDemo } from "./RecordDemo";
 
 type HomeScaffoldProps = {
   content: HomeContent;
@@ -46,7 +46,7 @@ export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffo
         secondaryHref={secondaryHref}
         scrollTarget="#problem"
       >
-        <HeroAssistantDemo demo={content.hero.assistantDemo} />
+        <RecordDemo content={content.hero.recordDemo} />
       </LandingHero>
 
       <LandingSection id="problem">

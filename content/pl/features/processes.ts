@@ -14,13 +14,6 @@ export const processesFeature: FeaturePageContent = {
       "Zaprojektuj każdy obieg pracy jako proces. Akceptacje, obiegi dokumentów i procedury przechodzą przez zdefiniowane etapy - nic nie ginie między działami.",
     primaryCta: "Umów prezentację",
     secondaryCta: "Zobacz Opero w akcji",
-    shot: {
-      src: "/features/procesy-workflow-hero.png",
-      width: 1968,
-      height: 1082,
-      caption: "Obieg akceptacji jako etapy i przejścia",
-      alt: "Diagram procesu w Opero z etapami Zbieranie wymagań, Do zrobienia, W trakcie, QA i Zrobione, połączonymi przejściami takimi jak „Rozpocznij pracę” i „Przekaż do review”",
-    },
   },
   intro: {
     eyebrow: "W skrócie",

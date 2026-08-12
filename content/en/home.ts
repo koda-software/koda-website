@@ -42,72 +42,36 @@ export const homeContent: HomeContent = {
       mappingItems: ["Data model", "Workflows", "Access rules", "Automation"],
       outcomeItems: ["Tailored workspace", "Clear ownership", "Governed process", "System that evolves"],
     },
-    assistantDemo: {
-      buttonLabel: "Open Opero assistant",
-      popupTitle: "Opero assistant",
-      typingLabel: "Typing",
-      scenarios: [
-        {
-          label: "Sales insight",
-          dashboardTitle: "Sales operations",
-          dashboardMetric: "45 sales",
-          dashboardDetail: "Top 3 team result",
-          messages: [
-            {
-              speaker: "assistant",
-              text: "Hello, how can I help you?",
-            },
-            {
-              speaker: "user",
-              text: "Hi, how many sales did Jack make last month, and how does he compare to other people?",
-            },
-            {
-              speaker: "assistant",
-              text: "Jack made 45 sales last month, which puts him in the top 3 across all employees.",
-            },
-          ],
-        },
-        {
-          label: "New module",
-          dashboardTitle: "Branch visitors",
-          dashboardMetric: "Visitors",
-          dashboardDetail: "New module draft",
-          messages: [
-            {
-              speaker: "user",
-              text: "I need a way to track a visitor list in all our branches.",
-            },
-            {
-              speaker: "assistant",
-              text: "Sure. I created a Visitors module with fields for name, surname, and signature. Want me to add anything else?",
-            },
-            {
-              speaker: "user",
-              text: "Yes, add a reason for visit.",
-            },
-            {
-              speaker: "assistant",
-              text: "You got it. Reason for visit has been added.",
-            },
-          ],
-        },
-        {
-          label: "Morning report",
-          dashboardTitle: "Service devices",
-          dashboardMetric: "Daily report",
-          dashboardDetail: "Email rule active",
-          messages: [
-            {
-              speaker: "user",
-              text: "I need to have a report of all devices ready for repair on my email every morning.",
-            },
-            {
-              speaker: "assistant",
-              text: "Sure. I set up a report and a rule that will send it to you every morning.",
-            },
-          ],
-        },
+    recordDemo: {
+      listTitle: "Service requests",
+      focusRow: { number: "SR/2026/019", title: "VoIP phone system outage" },
+      otherRows: [
+        { number: "SR/2026/018", title: "Workstation maintenance review", priority: "Low", stage: "Accepted" },
+        { number: "SR/2026/017", title: "CRM training session", priority: "Low", stage: "In progress" },
+        { number: "SR/2026/016", title: "Backup and data migration", priority: "High", stage: "Resolved" },
       ],
+      fields: {
+        client: "Client",
+        clientValue: "Panorama Hotel",
+        priority: "Priority",
+        value: "Estimated value",
+        valueTyped: "1,800.00 PLN",
+      },
+      priorityOptions: ["Low", "Medium", "High", "Critical"],
+      processLabel: "Process",
+      stages: [
+        { name: "New", transition: "Accept request" },
+        { name: "Accepted", transition: "Start work" },
+        { name: "In progress", transition: "Close request" },
+        { name: "Closed", transition: "" },
+      ],
+      doneLabel: "Request closed",
+      captions: {
+        list: "Every case in one place",
+        form: "You fill in <b>a plain form</b>",
+        process: "And <b>the process guides you</b>, step by step",
+        result: "Your list stays current <b>with no chasing</b>",
+      },
     },
   },
   problem: {

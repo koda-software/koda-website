@@ -14,13 +14,6 @@ export const processesFeature: FeaturePageContent = {
       "Design every flow of work as a process. Approvals, document routing and procedures move through defined stages, so nothing gets lost between departments.",
     primaryCta: "Book a demo",
     secondaryCta: "See Opero in action",
-    shot: {
-      src: "/features/procesy-workflow-hero.png",
-      width: 1968,
-      height: 1082,
-      caption: "An approval flow as stages and transitions",
-      alt: "Process diagram in Opero with stages Gathering requirements, To do, In progress, QA and Done, linked by transitions such as \"Start work\" and \"Send for review\"",
-    },
   },
   intro: {
     eyebrow: "In short",

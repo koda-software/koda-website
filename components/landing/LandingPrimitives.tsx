@@ -147,7 +147,7 @@ export function LandingHero({
       <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
           <Eyebrow invert>{eyebrow}</Eyebrow>
-          <h1 className="m-0 max-w-[880px] text-[clamp(3rem,6.4vw,4.85rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.85rem,14vw,3.85rem)]">
+          <h1 className="m-0 max-w-[880px] hyphens-auto break-words text-[clamp(3rem,6.4vw,4.85rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.4rem,12vw,3.85rem)]">
             {title}
           </h1>
           <p className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>

@@ -14,13 +14,6 @@ export const noCodeFeature: FeaturePageContent = {
       "Projektujesz dane, układy i nawigację w konfiguracji wizualnej. Opero zamienia je w działającą aplikację - bez pisania kodu.",
     primaryCta: "Umów prezentację",
     secondaryCta: "Zobacz Opero w akcji",
-    shot: {
-      src: "/features/no-code-hero.png",
-      width: 1926,
-      height: 1082,
-      caption: "Formularz zbudowany bez kodu",
-      alt: "Formularz „Utwórz kontrahenta” w Opero z polami Akronim, Pełna nazwa, Kraj, Status ryzyka, NIP, REGON i KRS, wygenerowany z konfiguracji obiektu",
-    },
   },
   intro: {
     eyebrow: "W skrócie",
@@ -58,19 +51,6 @@ export const noCodeFeature: FeaturePageContent = {
       {
         title: "Procesy na Twoich danych",
         description: "Do każdego obiektu przypniesz workflow, więc aplikacja od razu obsługuje obiegi.",
-      },
-    ],
-  },
-  shots: {
-    eyebrow: "Jak to wygląda",
-    title: "Od struktury danych do gotowego widoku.",
-    items: [
-      {
-        src: "/features/no-code-dashboard.webp",
-        width: 2000,
-        height: 986,
-        caption: "Efekt końcowy: działająca aplikacja",
-        alt: "Pulpit gotowej aplikacji Opero z modułami Księgowość, Kontrahenci, Serwis, Finansowe, Korespondencja i HR",
       },
     ],
   },

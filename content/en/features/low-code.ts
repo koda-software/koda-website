@@ -14,13 +14,6 @@ export const lowCodeFeature: FeaturePageContent = {
       "Where configuration is not enough, rules, scripts and SQL queries take over. You automate decisions and data processing without building a separate system.",
     primaryCta: "Book a demo",
     secondaryCta: "See Opero in action",
-    shot: {
-      src: "/features/low-code-automatyzacje-hero.webp",
-      width: 2000,
-      height: 861,
-      caption: "A rule: event, then action steps",
-      alt: "Rule editor in Opero: a \"Record created\" trigger at the top, a numbered list of action steps below",
-    },
   },
   intro: {
     eyebrow: "In short",
@@ -45,19 +38,6 @@ export const lowCodeFeature: FeaturePageContent = {
         title: "SQL queries",
         description:
           "Named, parameterised, reusable queries that feed rules, reports and choice fields.",
-      },
-    ],
-  },
-  shots: {
-    eyebrow: "What it looks like",
-    title: "Automation you verify before rollout.",
-    items: [
-      {
-        src: "/features/low-code-automatyzacje-sql.webp",
-        width: 2000,
-        height: 899,
-        caption: "A query with parameters and its result",
-        alt: "SQL query editor in Opero with the query on the left and a result table below",
       },
     ],
   },

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import type { NavSubItem, OperoProductContent, ProductFeatureRow } from "@/content/types";
+import { ConfigDemo } from "./ConfigDemo";
 
 type OperoProductPageProps = {
   content: OperoProductContent;
@@ -48,34 +49,6 @@ function CtaPair({
   );
 }
 
-function HeroDiagram({ items }: { items: string[] }) {
-  return (
-    <div className="relative min-h-[24rem] border-y border-white/[0.12] py-10 max-[809px]:min-h-0">
-      <div className="absolute inset-y-10 left-1/2 w-px bg-white/[0.08] max-[809px]:hidden" aria-hidden="true" />
-      <ol className="grid list-none gap-0 p-0">
-        {items.map((item, index) => (
-          <li
-            className={`grid grid-cols-[1fr_auto_1fr] items-center gap-5 border-b border-white/[0.08] py-4 last:border-b-0 max-[809px]:grid-cols-[auto_1fr] ${
-              index % 2 === 0 ? "" : "text-right max-[809px]:text-left"
-            }`}
-            key={item}
-          >
-            <span className={`${index % 2 === 0 ? "text-white/72" : "text-transparent"} text-[0.95rem] font-light max-[809px]:hidden`}>
-              {index % 2 === 0 ? item : ""}
-            </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.16] bg-white/[0.06] text-[0.78rem] font-semibold text-[var(--color-blue-soft)]">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className={`${index % 2 === 1 ? "text-white/72" : "text-transparent max-[809px]:text-white/72"} text-[0.95rem] font-light`}>
-              {item}
-            </span>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
 function SupportLines({ items }: { items: string[] }) {
   return (
     <ul className="m-0 grid list-none gap-2 p-0 text-[0.9rem] leading-[1.5] text-[var(--color-ink-soft)]">
@@ -117,7 +90,9 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
               secondaryLabel={content.hero.secondaryCta}
             />
           </div>
-          <HeroDiagram items={content.hero.diagramItems} />
+          <div className="min-w-0">
+            <ConfigDemo content={content.hero.configDemo} />
+          </div>
         </div>
       </section>
 

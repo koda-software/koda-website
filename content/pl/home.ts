@@ -42,72 +42,36 @@ export const homeContent: HomeContent = {
       mappingItems: ["Model danych", "Logika procesu", "Reguły dostępu", "Automatyzacja"],
       outcomeItems: ["Dopasowany panel pracy", "Jasna odpowiedzialność", "Proces pod kontrolą", "System, który się rozwija"],
     },
-    assistantDemo: {
-      buttonLabel: "Otwórz asystenta Opero",
-      popupTitle: "Asystent Opero",
-      typingLabel: "Pisze",
-      scenarios: [
-        {
-          label: "Wynik sprzedaży",
-          dashboardTitle: "Operacje sprzedaży",
-          dashboardMetric: "45 sprzedaży",
-          dashboardDetail: "Wynik top 3 w zespole",
-          messages: [
-            {
-              speaker: "assistant",
-              text: "Cześć, jak mogę pomóc?",
-            },
-            {
-              speaker: "user",
-              text: "Ile sprzedaży zrobił Jacek w zeszłym miesiącu i jak wypada na tle reszty zespołu?",
-            },
-            {
-              speaker: "assistant",
-              text: "Jacek zrobił 45 sprzedaży w zeszłym miesiącu, co daje mu miejsce w top 3 pracowników.",
-            },
-          ],
-        },
-        {
-          label: "Nowy moduł",
-          dashboardTitle: "Goście w oddziałach",
-          dashboardMetric: "Goście",
-          dashboardDetail: "Projekt nowego modułu",
-          messages: [
-            {
-              speaker: "user",
-              text: "Potrzebuję sposobu na prowadzenie listy gości we wszystkich naszych oddziałach.",
-            },
-            {
-              speaker: "assistant",
-              text: "Jasne. Utworzyłem moduł Goście z polami: imię, nazwisko i podpis. Dodać coś jeszcze?",
-            },
-            {
-              speaker: "user",
-              text: "Tak, dodaj powód wizyty.",
-            },
-            {
-              speaker: "assistant",
-              text: "Gotowe. Pole powód wizyty zostało dodane.",
-            },
-          ],
-        },
-        {
-          label: "Poranny raport",
-          dashboardTitle: "Urządzenia serwisowe",
-          dashboardMetric: "Raport dzienny",
-          dashboardDetail: "Reguła mailowa aktywna",
-          messages: [
-            {
-              speaker: "user",
-              text: "Chcę dostawać codziennie rano na maila raport urządzeń gotowych do naprawy.",
-            },
-            {
-              speaker: "assistant",
-              text: "Jasne. Ustawiłem raport i regułę, która będzie wysyłać go do Ciebie każdego ranka.",
-            },
-          ],
-        },
+    recordDemo: {
+      listTitle: "Zgłoszenia serwisowe",
+      focusRow: { number: "ZGL/2026/019", title: "Awaria centrali telefonicznej VoIP" },
+      otherRows: [
+        { number: "ZGL/2026/018", title: "Przegląd stacji roboczych", priority: "Niski", stage: "Przyjęte" },
+        { number: "ZGL/2026/017", title: "Szkolenie z obsługi CRM", priority: "Niski", stage: "W realizacji" },
+        { number: "ZGL/2026/016", title: "Backup i migracja danych", priority: "Wysoki", stage: "Rozwiązane" },
       ],
+      fields: {
+        client: "Klient",
+        clientValue: "Hotel Panorama",
+        priority: "Priorytet",
+        value: "Wartość szacowana",
+        valueTyped: "1 800,00 PLN",
+      },
+      priorityOptions: ["Niski", "Średni", "Wysoki", "Krytyczny"],
+      processLabel: "Proces",
+      stages: [
+        { name: "Nowe", transition: "Przyjmij zgłoszenie" },
+        { name: "Przyjęte", transition: "Rozpocznij realizację" },
+        { name: "W realizacji", transition: "Zamknij zgłoszenie" },
+        { name: "Zamknięte", transition: "" },
+      ],
+      doneLabel: "Zgłoszenie zamknięte",
+      captions: {
+        list: "Wszystkie sprawy w jednym miejscu",
+        form: "Uzupełniasz <b>zwykły formularz</b>",
+        process: "A <b>proces prowadzi za rękę</b>, krok po kroku",
+        result: "Lista jest aktualna <b>bez pilnowania</b>",
+      },
     },
   },
   problem: {

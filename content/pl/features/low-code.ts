@@ -14,13 +14,6 @@ export const lowCodeFeature: FeaturePageContent = {
       "Tam, gdzie konfiguracja to za mało, wchodzą reguły, skrypty i zapytania SQL. Automatyzujesz decyzje i przetwarzanie danych bez budowania osobnego systemu.",
     primaryCta: "Umów prezentację",
     secondaryCta: "Zobacz Opero w akcji",
-    shot: {
-      src: "/features/low-code-automatyzacje-hero.webp",
-      width: 2000,
-      height: 861,
-      caption: "Reguła: zdarzenie i kroki akcji",
-      alt: "Edytor reguły w Opero: wyzwalacz „Rekord utworzony” u góry, poniżej ponumerowana lista kroków akcji do wykonania",
-    },
   },
   intro: {
     eyebrow: "W skrócie",
@@ -45,19 +38,6 @@ export const lowCodeFeature: FeaturePageContent = {
         title: "Zapytania SQL",
         description:
           "Nazwane, parametryzowane zapytania wielokrotnego użytku jako źródło reguł, raportów i pól wyboru.",
-      },
-    ],
-  },
-  shots: {
-    eyebrow: "Jak to wygląda",
-    title: "Automatyzacja, którą sprawdzasz przed wdrożeniem.",
-    items: [
-      {
-        src: "/features/low-code-automatyzacje-sql.webp",
-        width: 2000,
-        height: 899,
-        caption: "Zapytanie z parametrami i wynikiem",
-        alt: "Edytor zapytania SQL w Opero z zapytaniem po lewej i tabelą wyników pod spodem",
       },
     ],
   },
