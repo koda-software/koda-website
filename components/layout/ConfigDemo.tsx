@@ -16,7 +16,7 @@ type ConfigDemoProps = {
  * straight off the scale factor and shrinks the demo.
  */
 const STAGE_WIDTH = 920;
-const STAGE_HEIGHT = 600;
+const STAGE_HEIGHT = 540;
 const CYCLE_MS = 35000;
 const CURSOR_HOME = { x: STAGE_WIDTH / 2, y: STAGE_HEIGHT / 2 };
 

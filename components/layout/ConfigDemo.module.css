@@ -31,7 +31,7 @@
 .frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 920 / 600;
+  aspect-ratio: 920 / 540;
 }
 .scaler {
   position: absolute;
@@ -48,17 +48,24 @@
   top: 0;
   left: 0;
   width: 920px;
-  height: 600px;
+  height: 540px;
   opacity: 0;
   transform-origin: 0 0;
   transition: opacity 0.3s ease;
 }
 
+/*
+ * Bottom-aligned, not centred: the three cards run 455-523px tall, so centring
+ * them in a stage sized for the tallest left the shorter views floating with
+ * dead space between them and the caption. Pinning every view to the stage
+ * floor puts all of the slack above the card, where the hero background already
+ * is, and keeps the caption the same distance from the card in every view.
+ */
 .view {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   opacity: 0;
   transform: translateY(16px) scale(0.985);
@@ -432,7 +439,7 @@
  */
 .caption {
   min-height: 1.5em;
-  margin-top: clamp(1rem, 2vw, 1.75rem);
+  margin-top: clamp(0.4rem, 0.9vw, 0.8rem);
   text-align: center;
   font-size: clamp(1.05rem, 1.5vw, 1.3rem);
   font-weight: 500;

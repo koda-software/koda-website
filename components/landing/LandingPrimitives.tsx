@@ -180,7 +180,7 @@ export function LandingHero({
   title,
 }: LandingHeroProps) {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
+    <section className="relative overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
       <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
           <Eyebrow invert>{eyebrow}</Eyebrow>

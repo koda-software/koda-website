@@ -44,7 +44,6 @@ export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffo
         primaryHref={primaryHref}
         secondaryCta={content.hero.secondaryCta}
         secondaryHref={secondaryHref}
-        scrollTarget="#problem"
       >
         <RecordDemo content={content.hero.recordDemo} />
       </LandingHero>

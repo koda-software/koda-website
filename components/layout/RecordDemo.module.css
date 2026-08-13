@@ -32,7 +32,7 @@
 .frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 840 / 480;
+  aspect-ratio: 840 / 420;
 }
 .scaler {
   position: absolute;
@@ -49,17 +49,25 @@
   top: 0;
   left: 0;
   width: 840px;
-  height: 480px;
+  height: 420px;
   opacity: 0;
   transform-origin: 0 0;
   transition: opacity 0.3s ease;
 }
 
+/*
+ * Bottom-aligned, not centred: the list card is 334px tall and the record card
+ * 406px, so centring them in a stage sized for the taller one left the shorter
+ * view floating with a pocket of dead space between it and the caption. Pinning
+ * every view to the stage floor puts all of the slack above the card, where the
+ * hero background already is, and keeps the caption the same distance from the
+ * card in every view.
+ */
 .view {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   opacity: 0;
   transform: translateY(14px) scale(0.985);
@@ -370,7 +378,7 @@
  */
 .caption {
   min-height: 1.5em;
-  margin-top: clamp(1rem, 2vw, 1.75rem);
+  margin-top: clamp(0.4rem, 0.9vw, 0.8rem);
   text-align: center;
   font-size: clamp(1.05rem, 1.5vw, 1.3rem);
   font-weight: 500;

@@ -16,7 +16,7 @@ type RecordDemoProps = {
  * comes straight off the scale factor and shrinks the demo.
  */
 const STAGE_WIDTH = 840;
-const STAGE_HEIGHT = 480;
+const STAGE_HEIGHT = 420;
 const CYCLE_MS = 25000;
 
 /** Decorative colours for the mock UI, matched to the meaning of each value. */
