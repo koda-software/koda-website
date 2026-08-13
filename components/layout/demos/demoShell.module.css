@@ -91,6 +91,14 @@
   opacity: 1;
   transform: none;
 }
+/*
+ * Views ignore the pointer so the decorative mock UI never intercepts clicks;
+ * the one control a manual demo asks the reader to press has to opt back in.
+ */
+.root [data-play] {
+  pointer-events: auto;
+  cursor: pointer;
+}
 
 .card {
   background: #fff;
@@ -232,8 +240,8 @@
 /*
  * Outside the scaled stage: the caption is prose for the reader, not part of
  * the mock UI, so it keeps its own type size instead of shrinking with the
- * demo. It sits on the dark hero, so it is written in white like the banner
- * copy beside it.
+ * demo. Its colours follow the surface the demo sits on - white on the dark
+ * banners, page ink in a light section.
  */
 .footer {
   display: grid;
@@ -248,7 +256,7 @@
   font-size: clamp(1.02rem, 1.4vw, 1.22rem);
   font-weight: 500;
   line-height: 1.5;
-  color: rgb(255 255 255 / 0.7);
+  color: var(--caption-color, rgb(255 255 255 / 0.7));
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.4s, transform 0.4s;
@@ -258,7 +266,7 @@
   transform: none;
 }
 .caption b {
-  color: #fff;
+  color: var(--caption-strong, #fff);
   font-weight: 650;
 }
 .dots {
@@ -270,7 +278,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.28);
+  background: var(--dot-color, rgb(255 255 255 / 0.28));
   transition: background 0.3s, width 0.3s;
 }
 .dots i.on {
@@ -297,4 +305,11 @@
   .root {
     display: none;
   }
+}
+
+/* For a demo placed in a light section rather than on a dark banner. */
+.toneLight {
+  --caption-color: var(--color-muted);
+  --caption-strong: var(--color-ink);
+  --dot-color: #cbd5e1;
 }

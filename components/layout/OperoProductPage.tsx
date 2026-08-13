@@ -75,7 +75,7 @@ function FeatureRow({ row }: { row: ProductFeatureRow }) {
 export function OperoProductPage({ content, featureLinks, primaryHref, secondaryHref }: OperoProductPageProps) {
   return (
     <>
-      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(22rem,0.82fr)] items-center gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
@@ -92,7 +92,7 @@ export function OperoProductPage({ content, featureLinks, primaryHref, secondary
             />
           </div>
           <div className="min-w-0">
-            <ConfigDemo content={content.hero.configDemo} />
+            <div className="hero-slide hero-d3"><ConfigDemo content={content.hero.configDemo} /></div>
           </div>
         </div>
       </section>

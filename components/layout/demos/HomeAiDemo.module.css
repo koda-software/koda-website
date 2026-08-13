@@ -1,0 +1,38 @@
+.wrap { width: 700px; display: flex; flex-direction: column; padding: 4px 0; }
+.head { display: flex; align-items: center; gap: 13px; margin-bottom: 14px; }
+.head b { font-size: 18px; font-weight: 750; }
+.thread { flex: 1; }
+.bubble { max-width: 560px; border-radius: 18px; padding: 12px 17px; font-size: 16px; line-height: 1.5; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; }
+.bubble.on { opacity: 1; transform: none; }
+.bubbleAi { background: #fff; border: 1.5px solid var(--line); border-bottom-left-radius: 6px; box-shadow: 0 8px 24px rgb(16 24 40 / 0.07); }
+.bubbleMe { margin-left: auto; background: var(--blue); color: #fff; border-bottom-right-radius: 6px; box-shadow: 0 8px 22px rgb(59 130 246 / 0.28); margin-top: 0; }
+.reply { margin-top: 10px; }
+
+/* Three dots while the assistant works, replaced by the reply. */
+.typing { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; background: #fff; border: 1.5px solid var(--line); border-radius: 18px; border-bottom-left-radius: 6px; padding: 15px 18px; opacity: 0; transition: opacity 0.3s; }
+.typing.on { opacity: 1; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: #c3cad6; animation: blink 1.3s ease-in-out infinite; }
+.typing i:nth-child(2) { animation-delay: 0.18s; }
+.typing i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes blink { 0%, 60%, 100% { opacity: 0.35; } 30% { opacity: 1; } }
+
+.report { margin-top: 12px; background: #fff; border: 1.5px solid #bae6fd; border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 32px rgb(56 182 255 / 0.14); opacity: 0; transform: translateY(10px); transition: opacity 0.45s, transform 0.45s; }
+.report.on { opacity: 1; transform: none; }
+.reportHead { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.reportHead b { font-size: 16px; font-weight: 750; flex: 1; }
+.pill { font-size: 12px; font-weight: 700; color: #0b7fbf; background: #eaf7ff; border-radius: 20px; padding: 4px 11px; }
+.pillMuted { color: #475569; background: #f1f5f9; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink3); padding: 0 0 7px; }
+.table th:not(:first-child), .table td:not(:first-child) { text-align: right; }
+.table td { font-size: 14.5px; padding: 8px 0; border-top: 1px solid #f1f4f9; font-variant-numeric: tabular-nums; }
+.table tr { opacity: 0; transition: opacity 0.35s; }
+.table tr.on { opacity: 1; }
+.table thead tr { opacity: 1; }
+
+.composer { display: flex; align-items: center; gap: 10px; margin-top: 12px; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 8px 8px 8px 16px; box-shadow: 0 8px 22px rgb(16 24 40 / 0.06); }
+.input { flex: 1; font-size: 15px; color: var(--ink); min-height: 22px; }
+/* Shown until the request has been typed in, then swapped for the text. */
+/* Dimmed once the question has been sent, the way a used composer reads. */
+.composer.sent .input { color: var(--ink3); }
+.composer.sent button { opacity: 0.5; }

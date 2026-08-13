@@ -133,11 +133,11 @@ function IndustrySection({ industry, index }: { industry: SolutionIndustry; inde
 export function SolutionsPage({ content, primaryHref, secondaryHref }: SolutionsPageProps) {
   return (
     <>
-      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-            <HeroTitle className="max-w-[980px]" title={content.hero.title} />
+            <div className="hero-rise hero-d1"><HeroTitle className="max-w-[980px]" title={content.hero.title} /></div>
             <p className="mt-6 max-w-[760px] text-[1.22rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
               {content.hero.description}
             </p>

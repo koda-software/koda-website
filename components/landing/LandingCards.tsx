@@ -3,8 +3,11 @@ import BoxesIcon from "lucide-react/dist/esm/icons/boxes.mjs";
 import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
 import type { FeaturePillar, HomeStep, UseCaseCard } from "@/content/types";
 import { mutedCopyClass } from "./LandingPrimitives";
+import { Reveal } from "./Reveal";
 
-type LandingIcon = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>;
+type LandingIcon = ComponentType<
+  SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }
+>;
 
 type NumberedPointGridProps = {
   points: string[];
@@ -54,6 +57,34 @@ export function NumberedPointGrid({ points }: NumberedPointGridProps) {
   );
 }
 
+/**
+ * The hexagon from the Opero mark, normalised to a 24x24 box and carrying the
+ * same softened corners: each edge is trimmed back and the vertex drawn as a
+ * curve, which is what stops it reading as a plain geometric polygon. Used
+ * instead of
+ * the decorative gradients these cards used to carry: the shape is the
+ * product's own, so it reads as brand rather than as generic ornament.
+ */
+function Hexagon({
+  className,
+  filled = false,
+}: {
+  className?: string;
+  filled?: boolean;
+}) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M 10.4 2.32 Q 12 1.4 13.6 2.32 L 19.6 5.78 Q 21.2 6.7 21.2 8.55 L 21.2 15.45 Q 21.2 17.3 19.6 18.22 L 13.6 21.68 Q 12 22.6 10.4 21.68 L 4.4 18.22 Q 2.8 17.3 2.8 15.45 L 2.8 8.55 Q 2.8 6.7 4.4 5.78 Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke={filled ? "none" : "currentColor"}
+        strokeWidth={filled ? 0 : 1.35}
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function PillarGrid({ icons, items }: PillarGridProps) {
   return (
     <div className="mt-[clamp(2rem,5vw,4rem)] grid grid-cols-2 gap-4 max-[809px]:grid-cols-1">
@@ -61,28 +92,48 @@ export function PillarGrid({ icons, items }: PillarGridProps) {
         const PillarIcon = iconAt(icons, index, BoxesIcon);
 
         return (
-          <article
-            className="group relative min-h-[21rem] overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.86)_56%,rgba(56, 182, 255,0.075))] p-[clamp(1.2rem,3vw,1.85rem)] transition-colors duration-200 before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan),transparent_76%)] hover:border-[rgba(56, 182, 255,0.18)] max-[809px]:min-h-0"
+          <Reveal
+            className="h-full"
+            from={index % 2 === 0 ? "left" : "right"}
             key={pillar.title}
           >
-            <div className="relative z-[1] flex min-h-full flex-col">
-              <div className="mb-10 flex items-start justify-between gap-4 max-[809px]:mb-8">
-                <span className="text-[var(--color-blue)]/[0.82] transition-colors duration-200 group-hover:text-[var(--color-blue)]" aria-hidden="true">
-                  <PillarIcon className="h-[clamp(4.2rem,6.8vw,6rem)] w-[clamp(4.2rem,6.8vw,6rem)]" strokeWidth={1.35} />
-                </span>
-                <span className="mt-1 h-2 w-2 rounded-full bg-[var(--color-blue)]/55" aria-hidden="true" />
+            <article className="group relative grid h-full min-h-[15rem] grid-cols-[auto_1fr] gap-5 overflow-hidden rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(249,249,249,0.86)_58%,rgba(56, 182, 255,0.045))] p-[clamp(1.1rem,2.6vw,1.6rem)] shadow-[0_18px_54px_rgba(2,2,13,0.055)] transition-[border-color,background] duration-200 before:pointer-events-none before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r-full before:bg-[linear-gradient(180deg,var(--color-blue),rgba(126,231,255,0.5))] hover:border-[rgba(56, 182, 255,0.18)] max-[520px]:grid-cols-1">
+              <span
+                className="relative z-[1] grid h-14 w-14 place-items-center self-start"
+                aria-hidden="true"
+              >
+                <Hexagon
+                  className="absolute inset-0 h-full w-full text-white"
+                  filled
+                />
+                <Hexagon className="absolute inset-0 h-full w-full text-[var(--color-blue)]/[0.22] transition-colors duration-200 group-hover:text-[var(--color-blue)]/[0.45]" />
+                <PillarIcon
+                  className="relative h-6 w-6 text-[var(--color-blue)]"
+                  strokeWidth={1.65}
+                />
+              </span>
+              <div className="relative z-[1] self-center">
+                <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-medium leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
+                  {pillar.title}
+                </h3>
+                <p
+                  className={`${mutedCopyClass} mt-3 max-w-[36rem] text-[0.96rem] leading-[1.62]`}
+                >
+                  {pillar.description}
+                </p>
+                <ul className="mt-5 flex list-none flex-wrap gap-2 p-0">
+                  {pillar.capabilities.map((capability) => (
+                    <li
+                      className="rounded-full border border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.84rem] font-normal leading-none text-[var(--color-ink-soft)]"
+                      key={capability}
+                    >
+                      {capability}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="m-0 max-w-[30rem] text-[clamp(1.45rem,2.35vw,2rem)] leading-[1.02] tracking-[-0.045em] text-[var(--color-ink)]">{pillar.title}</h3>
-              <p className={`${mutedCopyClass} mt-4 max-w-[34rem]`}>{pillar.description}</p>
-              <ul className="mt-auto flex list-none flex-wrap gap-2 p-0 pt-8">
-                {pillar.capabilities.map((capability) => (
-                  <li className="rounded-full bg-[var(--color-ink)]/[0.045] px-3 py-2 text-[0.84rem] font-normal leading-none text-[var(--color-ink-soft)]" key={capability}>
-                    {capability}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </article>
+            </article>
+          </Reveal>
         );
       })}
     </div>
@@ -96,25 +147,34 @@ export function DarkStepGrid({ icons, steps }: DarkStepGridProps) {
         const StepIcon = iconAt(icons, index, WorkflowIcon);
 
         return (
-          <article
-            className="group relative min-h-[21.5rem] overflow-hidden rounded-[calc(var(--radius-panel)-6px)] border border-white/[0.12] bg-white/[0.055] p-[clamp(1.35rem,2.6vw,2rem)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-[background,border-color] duration-200 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.48),transparent)] hover:border-white/[0.18] hover:bg-white/[0.075] max-[809px]:min-h-0"
-            key={step.label}
-          >
-            <div className="relative z-[1] flex min-h-full flex-col gap-12">
-              <div className="flex items-center justify-between gap-4">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.07] text-[var(--color-cyan)]/82 transition-colors duration-200 group-hover:text-[var(--color-cyan)]" aria-hidden="true">
-                  <StepIcon className="h-7 w-7" strokeWidth={1.6} />
-                </span>
-                <span className="font-sans text-[0.94rem] font-semibold text-white/38" aria-hidden="true">
-                  {step.label}
-                </span>
+          <Reveal className="h-full" delay={index * 90} key={step.title}>
+            <article className="group relative h-full min-h-[21.5rem] overflow-hidden rounded-[calc(var(--radius-panel)-6px)] border border-white/[0.12] bg-white/[0.055] p-[clamp(1.35rem,2.6vw,2rem)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-[background,border-color] duration-200 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.48),transparent)] hover:border-white/[0.18] hover:bg-white/[0.075] max-[809px]:min-h-0">
+              <div className="relative z-[1] flex min-h-full flex-col gap-12">
+                <div className="flex items-center justify-between gap-4">
+                  <span
+                    className="flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.07] text-[var(--color-cyan)]/82 transition-colors duration-200 group-hover:text-[var(--color-cyan)]"
+                    aria-hidden="true"
+                  >
+                    <StepIcon className="h-7 w-7" strokeWidth={1.6} />
+                  </span>
+                  <span
+                    className="font-sans text-[0.94rem] font-semibold text-white/38"
+                    aria-hidden="true"
+                  >
+                    {step.label}
+                  </span>
+                </div>
+                <div className="mt-auto">
+                  <h3 className="m-0 text-[clamp(1.4rem,1.9vw,1.72rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[var(--color-paper)]">
+                    {step.title}
+                  </h3>
+                  <p className="mt-5 max-w-[25rem] text-[1rem] font-light leading-[1.68] text-white/64">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              <div className="mt-auto">
-                <h3 className="m-0 text-[clamp(1.4rem,1.9vw,1.72rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[var(--color-paper)]">{step.title}</h3>
-                <p className="mt-5 max-w-[25rem] text-[1rem] font-light leading-[1.68] text-white/64">{step.description}</p>
-              </div>
-            </div>
-          </article>
+            </article>
+          </Reveal>
         );
       })}
     </div>
@@ -128,18 +188,30 @@ export function IconTextGrid({ icons, items }: IconTextGridProps) {
         const ItemIcon = iconAt(icons, index, BoxesIcon);
 
         return (
-          <article
-            className="group relative grid min-h-[13.5rem] grid-cols-[auto_1fr] gap-5 overflow-hidden rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(249,249,249,0.86)_58%,rgba(56, 182, 255,0.045))] p-[clamp(1.1rem,2.6vw,1.6rem)] shadow-[0_18px_54px_rgba(2,2,13,0.055)] transition-[border-color,background] duration-200 before:pointer-events-none before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r-full before:bg-[linear-gradient(180deg,var(--color-blue),rgba(126,231,255,0.5))] hover:border-[rgba(56, 182, 255,0.18)] max-[520px]:grid-cols-1"
+          <Reveal
+            className="h-full"
+            from={index % 2 === 0 ? "left" : "right"}
             key={item.title}
           >
-            <span className="relative z-[1] flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(2,2,13,0.08)] bg-white text-[var(--color-blue)] shadow-[0_10px_30px_rgba(56, 182, 255,0.08)] transition-colors duration-200 group-hover:bg-[var(--color-blue)] group-hover:text-white" aria-hidden="true">
-              <ItemIcon className="h-6 w-6" strokeWidth={1.65} />
-            </span>
-            <div className="relative z-[1] self-center">
-              <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-medium leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">{item.title}</h3>
-              <p className={`${mutedCopyClass} mt-3 max-w-[36rem] text-[0.96rem] leading-[1.62]`}>{item.description}</p>
-            </div>
-          </article>
+            <article className="group relative grid h-full min-h-[13.5rem] grid-cols-[auto_1fr] gap-5 overflow-hidden rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(249,249,249,0.86)_58%,rgba(56, 182, 255,0.045))] p-[clamp(1.1rem,2.6vw,1.6rem)] shadow-[0_18px_54px_rgba(2,2,13,0.055)] transition-[border-color,background] duration-200 before:pointer-events-none before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r-full before:bg-[linear-gradient(180deg,var(--color-blue),rgba(126,231,255,0.5))] hover:border-[rgba(56, 182, 255,0.18)] max-[520px]:grid-cols-1">
+              <span
+                className="relative z-[1] flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(2,2,13,0.08)] bg-white text-[var(--color-blue)] shadow-[0_10px_30px_rgba(56, 182, 255,0.08)] transition-colors duration-200 group-hover:bg-[var(--color-blue)] group-hover:text-white"
+                aria-hidden="true"
+              >
+                <ItemIcon className="h-6 w-6" strokeWidth={1.65} />
+              </span>
+              <div className="relative z-[1] self-center">
+                <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-medium leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
+                  {item.title}
+                </h3>
+                <p
+                  className={`${mutedCopyClass} mt-3 max-w-[36rem] text-[0.96rem] leading-[1.62]`}
+                >
+                  {item.description}
+                </p>
+              </div>
+            </article>
+          </Reveal>
         );
       })}
     </div>

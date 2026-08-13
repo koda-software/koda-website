@@ -20,14 +20,14 @@ const buttonClass =
 export function AboutPage({ content, ctas }: AboutPageProps) {
   return (
     <>
-      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto w-[min(100%,var(--shell-width))]">
-          <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-          <HeroTitle className="max-w-[940px]" title={content.hero.title} />
-          <p className="mt-6 max-w-[780px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
+          <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
+          <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>
+          <p className="hero-rise hero-d2 mt-6 max-w-[780px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
             {content.hero.description}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="hero-rise hero-d3 mt-8 flex flex-wrap gap-3">
             <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={ctas.primary}>
               {content.hero.primaryCta}
             </Link>

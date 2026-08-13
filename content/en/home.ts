@@ -201,14 +201,12 @@ export const homeContent: HomeContent = {
       "The user's permissions apply exactly as they do in normal work.",
     ],
     chat: {
-      assistantPrompt: "How can I help?",
+      assistantName: "Opero assistant",
       userRequest: "I need a report of the 5 best-selling products from last week.",
       assistantReply: "Sure. Here is the report built from your sales records.",
       reportTitle: "Top products - last week",
       statusLabel: "ready",
       scopeLabel: "governed",
-      footer: "Answers always stay tied to the records, rules and the user's own permissions.",
-      inputPlaceholder: "Ask about records, reports, rules...",
       sendLabel: "Send",
       tableHeaders: ["Product", "Units", "Revenue"],
       tableRows: [
@@ -218,6 +216,12 @@ export const homeContent: HomeContent = {
         ["Sensor bundle", "96", "19.6k"],
         ["Mounting frame", "81", "17.9k"],
       ],
+      captions: {
+        ask: "You ask about <b>your own data</b>, not general knowledge",
+        working: "The assistant reads <b>records and permissions</b>",
+        report: "The answer comes back as <b>a finished report</b>",
+        scope: "Always within <b>the user's permissions</b>",
+      },
     },
   },
   useCases: {

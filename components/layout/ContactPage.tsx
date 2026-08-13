@@ -17,12 +17,12 @@ const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color
 export function ContactPage({ locale, content }: ContactPageProps) {
   return (
     <>
-      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto w-[min(100%,var(--shell-width))]">
           <div>
-            <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-            <HeroTitle className="max-w-[940px]" title={content.hero.title} />
-            <p className="mt-6 max-w-[760px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
+            <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
+            <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>
+            <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
               {content.hero.description}
             </p>
           </div>

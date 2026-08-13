@@ -688,3 +688,57 @@ button:focus-visible {
     animation: none;
   }
 }
+
+/*
+ * Banner entrance. Every page banner runs the same staggered rise on load: the
+ * eyebrow, headline, copy and buttons arrive in reading order, and the product
+ * demo beside them follows last. Pure CSS on purpose - it runs on first paint
+ * with no hydration or observer involved, which is what keeps it reliable.
+ */
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heroSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(38px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-rise {
+  animation: heroRise 1.15s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.hero-slide {
+  animation: heroSlideIn 1.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.hero-d1 {
+  animation-delay: 0.14s;
+}
+.hero-d2 {
+  animation-delay: 0.32s;
+}
+.hero-d3 {
+  animation-delay: 0.5s;
+}
+.hero-d4 {
+  animation-delay: 0.68s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-slide {
+    animation: none;
+  }
+}

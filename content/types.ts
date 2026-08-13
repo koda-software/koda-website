@@ -165,17 +165,17 @@ export type HomeContent = {
   };
   ai: HomePointGroup & {
     chat: {
-      assistantPrompt: string;
+      assistantName: string;
       userRequest: string;
       assistantReply: string;
       reportTitle: string;
       statusLabel: string;
       scopeLabel: string;
-      footer: string;
-      inputPlaceholder: string;
       sendLabel: string;
       tableHeaders: [string, string, string];
       tableRows: Array<[string, string, string]>;
+      /** `<b>` is allowed for emphasis. */
+      captions: { ask: string; working: string; report: string; scope: string };
     };
   };
   useCases: {

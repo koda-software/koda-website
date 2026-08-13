@@ -58,13 +58,33 @@ type DemoStageProps = {
   glowX: string;
   /** How many progress dots to show under the demo. */
   dotCount: number;
+  /** Which surface the demo sits on, which decides the caption colours. */
+  tone?: "dark" | "light";
+  /**
+   * Tallest the mock UI may get. Defaults to the banner budget, which keeps a
+   * hero sized by its headline and buttons; a demo in an ordinary section has
+   * more room and can raise it.
+   */
+  maxHeight?: string;
+  /**
+   * Waits for the reader instead of playing on its own. The timeline runs once,
+   * when something inside the markup carrying `data-play` is clicked, and stops
+   * at its last beat rather than looping.
+   */
+  manual?: boolean;
+  /**
+   * Which view is on screen before the timeline runs. A manual demo needs this:
+   * its markup carries the control the reader has to press, so it has to be
+   * visible and clickable while the demo is still waiting to start.
+   */
+  initialView?: string;
   /** Length of one full pass, after which the markup remounts and the timeline replays. */
   cycleMs: number;
   timeline: (api: DemoApi) => void;
   children: ReactNode;
 };
 
-export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, cycleMs, timeline, children }: DemoStageProps) {
+export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, tone = "dark", maxHeight, manual = false, initialView, cycleMs, timeline, children }: DemoStageProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -78,8 +98,10 @@ export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, c
    * demo from burning timers.
    */
   const [visible, setVisible] = useState(true);
+  /** A manual demo sits idle until the reader starts it. */
+  const [started, setStarted] = useState(!manual);
   const [cycle, setCycle] = useState(0);
-  const [activeView, setActiveView] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<string | null>(initialView ?? null);
   const [activeDot, setActiveDot] = useState(0);
   const [caption, setCaption] = useState("");
 
@@ -97,7 +119,7 @@ export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, c
   useEffect(() => {
     const stage = stageRef.current;
     const cursor = cursorRef.current;
-    if (!visible || !stage || !cursor) return;
+    if (!visible || !started || !stage || !cursor) return;
 
     const timers: Array<ReturnType<typeof setTimeout>> = [];
     const at = (ms: number, run: () => void) => {
@@ -165,17 +187,19 @@ export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, c
     };
 
     timeline(api);
-    at(cycleMs, () => setCycle((current) => current + 1));
+    // Manual demos are a one-off: replaying under the reader would undo the
+    // result they just asked to see.
+    if (!manual) at(cycleMs, () => setCycle((current) => current + 1));
 
     return () => timers.forEach(clearTimeout);
-  }, [cycle, cycleMs, onClass, stageWidth, timeline, visible]);
+  }, [cycle, cycleMs, manual, onClass, stageWidth, started, timeline, visible]);
 
   return (
     <div
       aria-hidden="true"
-      className={styles.root}
+      className={`${styles.root} ${tone === "light" ? styles.toneLight : ""}`.trim()}
       ref={rootRef}
-      style={{ "--stage-w": stageWidth, "--stage-h": stageHeight, "--glow-x": glowX } as CSSProperties}
+      style={{ "--stage-w": stageWidth, "--stage-h": stageHeight, "--glow-x": glowX, ...(maxHeight ? { "--frame-max-h": maxHeight } : {}) } as CSSProperties}
     >
       <DemoIcons />
       <div className={styles.frame}>
@@ -186,12 +210,31 @@ export function DemoStage({ onClass, stageWidth, stageHeight, glowX, dotCount, c
             style={scale === null ? undefined : { opacity: 1, transform: `scale(${scale})` }}
           >
             {/*
-              Keyed by cycle: remounting is how a pass resets. The timelines set
-              text and toggle classes straight on the nodes, so rebuilding the
-              markup restores every one of those to its authored state at once.
+              Keyed by cycle and by playback: remounting is how a pass resets.
+              The timelines set text and toggle classes straight on the nodes, so
+              rebuilding the markup restores every one of those at once. The
+              visibility half matters for a demo below the fold: it starts
+              playing on load, gets paused part-way through by the observer, and
+              would otherwise be found mid-sentence when the reader finally
+              scrolls to it. Remounting on resume means it always starts over.
             */}
-            <DemoViewContext.Provider value={activeView} key={cycle}>
-              {children}
+            <DemoViewContext.Provider value={activeView} key={manual ? "manual" : `${cycle}-${visible}`}>
+              {/*
+                The click lands on whatever inside the markup carries
+                `data-play` - the demo's own send button - so the reader presses
+                the control the mock UI already shows rather than a separate one.
+              */}
+              <div
+                onClick={
+                  manual && !started
+                    ? (event) => {
+                        if ((event.target as HTMLElement).closest("[data-play]")) setStarted(true);
+                      }
+                    : undefined
+                }
+              >
+                {children}
+              </div>
             </DemoViewContext.Provider>
 
             <div className={styles.cursor} ref={cursorRef}>

@@ -19,7 +19,7 @@ import {
   LandingSection,
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
-import { AiChatMockup } from "./AiChatMockup";
+import { HomeAiDemo } from "./demos/HomeAiDemo";
 import { OperoFlowVisual } from "./OperoFlowVisual";
 import { RecordDemo } from "./RecordDemo";
 
@@ -77,7 +77,7 @@ export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffo
           <SectionIntro eyebrow={content.ai.label} title={content.ai.title} description={content.ai.description} />
         </div>
         <div className="relative" aria-label={content.ai.label}>
-          <AiChatMockup chat={content.ai.chat} />
+          <HomeAiDemo chat={content.ai.chat} />
         </div>
       </LandingSection>
 

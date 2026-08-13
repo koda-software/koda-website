@@ -305,12 +305,12 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   const heroCopy = (
     <div>
-      <p className={darkEyebrowClass}>{content.hero.eyebrow}</p>
-      <HeroTitle className="max-w-[900px]" title={content.hero.title} />
-      <p className="mt-6 max-w-[720px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem]">
+      <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
+      <div className="hero-rise hero-d1"><HeroTitle className="max-w-[900px]" title={content.hero.title} /></div>
+      <p className="hero-rise hero-d2 mt-6 max-w-[720px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem]">
         {content.hero.description}
       </p>
-      <div className="mt-8 flex flex-wrap gap-3">
+      <div className="hero-rise hero-d3 mt-8 flex flex-wrap gap-3">
         <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
           {content.hero.primaryCta}
         </Link>
@@ -326,7 +326,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   return (
     <>
-      <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         {content.demo ? (
           /*
            * The demo sits beside the headline, the way the home and Opero
@@ -339,7 +339,9 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
             className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-[clamp(2rem,4vw,4rem)] grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] max-[980px]:grid-cols-1`}
           >
             {heroCopy}
-            <FeatureDemo demo={content.demo} />
+            <div className="hero-slide hero-d3 min-w-0">
+              <FeatureDemo demo={content.demo} />
+            </div>
           </div>
         ) : content.hero.shot ? (
           <div

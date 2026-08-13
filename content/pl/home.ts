@@ -201,14 +201,12 @@ export const homeContent: HomeContent = {
       "Uprawnienia użytkownika obowiązują tak samo jak przy zwykłej pracy.",
     ],
     chat: {
-      assistantPrompt: "Jak mogę pomóc?",
+      assistantName: "Asystent Opero",
       userRequest: "Potrzebuję raportu 5 najlepiej sprzedających się produktów z ostatniego tygodnia.",
       assistantReply: "Jasne. Oto raport przygotowany na podstawie rekordów sprzedaży.",
       reportTitle: "Najlepsze produkty - ostatni tydzień",
       statusLabel: "gotowe",
       scopeLabel: "kontrolowane",
-      footer: "Odpowiedzi zawsze pozostają powiązane z rekordami, regułami i uprawnieniami użytkownika.",
-      inputPlaceholder: "Zapytaj o rekordy, raporty, reguły...",
       sendLabel: "Wyślij",
       tableHeaders: ["Produkt", "Szt.", "Przychód"],
       tableRows: [
@@ -218,6 +216,12 @@ export const homeContent: HomeContent = {
         ["Pakiet czujników", "96", "19,6 tys."],
         ["Rama montażowa", "81", "17,9 tys."],
       ],
+      captions: {
+        ask: "Pytasz <b>o własne dane</b>, nie o ogólną wiedzę",
+        working: "Asystent czyta <b>rekordy i uprawnienia</b>",
+        report: "Odpowiedź wraca jako <b>gotowy raport</b>",
+        scope: "Zawsze w granicach <b>uprawnień użytkownika</b>",
+      },
     },
   },
   useCases: {

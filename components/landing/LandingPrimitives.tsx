@@ -180,12 +180,13 @@ export function LandingHero({
   title,
 }: LandingHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
+    <section className="relative flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
       <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
-          <Eyebrow invert>{eyebrow}</Eyebrow>
-          <HeroTitle className="max-w-[880px]" title={title} />
-          <p className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
+          <div className="hero-rise"><Eyebrow invert>{eyebrow}</Eyebrow></div>
+          <div className="hero-rise hero-d1"><HeroTitle className="max-w-[880px]" title={title} /></div>
+          <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
+          <div className="hero-rise hero-d3">
           <CtaRow
             actions={[
               { href: primaryHref, label: primaryCta },
@@ -193,8 +194,9 @@ export function LandingHero({
             ]}
             label="Primary actions"
           />
+          </div>
         </div>
-        <div className="relative z-[1] min-w-0 max-[809px]:mt-6">{children}</div>
+        <div className="hero-slide hero-d3 relative z-[1] min-w-0 max-[809px]:mt-6">{children}</div>
       </div>
 
       {scrollTarget ? (
