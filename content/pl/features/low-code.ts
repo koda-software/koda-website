@@ -20,6 +20,17 @@ export const lowCodeFeature: FeaturePageContent = {
     paragraph:
       "Warstwa low-code Opero uruchamia logikę na zdarzeniach: silnik reguł reaguje według zasady „gdy warunek → wykonaj kroki”, silnik skryptów obsługuje nietypowe przetwarzanie, a zapytania SQL sięgają po dane dokładnie tak, jak potrzebujesz.",
   },
+  demo: {
+    kind: "lowCode",
+    conditionLabel: "Warunek reguły",
+    condition: ["Priorytet", "równa się", "Krytyczny"],
+    runLabel: "Zapisz i uruchom",
+    firedLabel: "Reguła zadziałała",
+    fieldEffect: { title: "Pole ustawia się samo", detail: "Pilne", from: "Nie", to: "Tak" },
+    notificationEffect: { title: "Powiadomienie wychodzi", detail: "do: Marek Wiśniewski · SMS + e-mail" },
+    blockEffect: { title: "Przejście zablokowane", detail: "Brak protokołu odbioru", transition: "Zamknij zgłoszenie" },
+    captions: { condition: "Warunek składasz <b>z gotowych klocków</b>", fired: "Reguła odpala się <b>przy każdym rekordzie</b>", summary: "Pole, powiadomienie, blokada przejścia — <b>bez pilnowania</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Trzy warstwy logiki na Twoich danych.",

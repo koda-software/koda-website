@@ -20,6 +20,34 @@ export const documentsFeature: FeaturePageContent = {
     paragraph:
       "Opero łączy obieg dokumentów (EOD) z zarządzaniem plikami (DMS): dokument ma swoją kartotekę, ścieżkę akceptacji i komplet plików z wersjami. Wszystko z pełną historią i kontrolą dostępu.",
   },
+  demo: {
+    kind: "documents",
+    inboxLabel: "Skrzynka",
+    mail: { file: "faktura-hotel-panorama.pdf", from: "od: biuro@panorama.pl" },
+    record: {
+      title: "Faktura kosztowa",
+      numberLabel: "Numer",
+      number: "FZ/2026/0142",
+      partyLabel: "Kontrahent",
+      party: "Hotel Panorama Sp. z o.o.",
+      amountLabel: "Kwota brutto",
+      amount: "24 800,00 PLN",
+    },
+    pathLabel: "Ścieżka akceptacji",
+    condition: "Kwota ≥ 10 000 PLN?",
+    branches: [
+      { title: "Akceptacja: Zarząd", detail: "wymagane 2 podpisy" },
+      { title: "Akceptacja: Kierownik", detail: "ścieżka pominięta" },
+    ],
+    versionsLabel: "Wersje pliku",
+    versions: [
+      { file: "faktura.pdf", detail: "skan z e-maila" },
+      { file: "faktura.pdf", detail: "korekta pozycji 3" },
+      { file: "faktura.pdf", detail: "zatwierdzona" },
+    ],
+    currentLabel: "aktualna",
+    captions: { intake: "Dokument wpada i <b>sam staje się rekordem</b>", numbering: "Numer nadaje się <b>automatycznie</b>", path: "Ścieżka akceptacji <b>zależy od kwoty</b>", versions: "Każdy plik ma wersje — <b>nic nie ginie</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Kartoteka, obieg i pliki jako jedna całość.",

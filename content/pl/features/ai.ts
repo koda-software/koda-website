@@ -20,6 +20,23 @@ export const aiFeature: FeaturePageContent = {
     paragraph:
       "Asystent AI w Opero zna kontekst Twojej instancji: strukturę danych, konfigurację i bieżące rekordy. Dzięki temu odpowiada konkretami zamiast ogólników, a ten sam mechanizm służy dwóm grupom: konsultantom przy konfiguracji i użytkownikom końcowym w codziennej pracy.",
   },
+  demo: {
+    kind: "ai",
+    assistantName: "Asystent Opero",
+    contextLabel: "kontekst: ZGL/2026/019",
+    question: "Podsumuj to zgłoszenie i zaproponuj termin realizacji.",
+    readingLabel: "Czytam kontekst",
+    contextItems: ["Zgłoszenie ZGL/2026/019", "Historia obiegu", "Załączniki (2)"],
+    answer: "Awaria centrali VoIP w Hotelu Panorama, priorytet krytyczny, technik na miejscu od wczoraj. Podobne awarie zamykaliście średnio w 2 dni — proponuję termin 14.08.2026.",
+    proposalLabel: "Proponowana zmiana",
+    proposalField: "Termin realizacji",
+    proposalValue: "2026-08-14",
+    applyLabel: "Zastosuj",
+    dismissLabel: "Odrzuć",
+    savedLabel: "Zapisano w rekordzie",
+    appliedLabel: "ZGL/2026/019 · Termin realizacji",
+    captions: { ask: "Pytasz <b>w kontekście rekordu</b>", reading: "AI czyta <b>rekord, historię i załączniki</b>", answer: "Odpowiada i proponuje <b>konkretną zmianę</b>", applied: "Zatwierdzasz — zmiana <b>ląduje w rekordzie</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Jeden asystent, dwie grupy odbiorców.",

@@ -20,6 +20,24 @@ export const noCodeFeature: FeaturePageContent = {
     paragraph:
       "No-code in Opero is a set of building blocks you assemble an application from: custom objects and fields describe the data, forms and layouts build the views, menus and custom pages build the navigation, and dictionaries and custom lists keep everything consistent.",
   },
+  demo: {
+    kind: "noCode",
+    paletteLabel: "Fields",
+    paletteItems: ["Text", "Select list", "Date", "Number", "File"],
+    formTitle: "Request form",
+    formFields: ["Title", "Category", "Due date"],
+    previewLabel: "Preview",
+    record: {
+      title: "New request",
+      rows: [
+        { label: "Title", value: "VoIP system outage" },
+        { label: "Category", value: "Outage" },
+        { label: "Due date", value: "2026-08-14" },
+      ],
+      saveLabel: "Save",
+    },
+    captions: { drag: "You drag a field <b>onto the form</b>", second: "You pick the field type <b>from a list, not in code</b>", preview: "And the form <b>works right away</b>" },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "The blocks an application is made of.",

@@ -20,6 +20,24 @@ export const securityFeature: FeaturePageContent = {
     paragraph:
       "Dostęp w Opero układasz od organizacji i jej spółek, przez role i członków, aż po precyzyjne uprawnienia do modułów, obiektów i pól. Integracje zabezpieczasz tokenami API, a konta - uwierzytelnianiem wieloskładnikowym.",
   },
+  demo: {
+    kind: "security",
+    roles: ["Serwisant", "Kierownik", "Księgowość"],
+    recordTitle: "ZGL/2026/019 · Awaria centrali VoIP",
+    fields: [
+      { label: "Klient", value: "Hotel Panorama" },
+      { label: "Wartość szacowana", value: "1 800,00 PLN" },
+      { label: "Koszt wewnętrzny", value: "940,00 PLN" },
+      { label: "Notatka poufna", value: "Klient negocjuje stawkę ramową" },
+    ],
+    buttons: ["Edytuj", "Zatwierdź", "Usuń"],
+    readOnlyLabel: "Tylko podgląd",
+    captions: {
+      technician: "Ten sam rekord, <b>trzy role</b>",
+      manager: "Pola poufne <b>maskują się same</b>",
+      finance: "Przyciski znikają <b>razem z uprawnieniem</b>",
+    },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Kontrola dostępu od organizacji po pojedyncze pole.",

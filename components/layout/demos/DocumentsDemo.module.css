@@ -1,0 +1,41 @@
+.flow { display: flex; align-items: center; gap: 26px; width: 880px; }
+.mailCard { width: 280px; flex: none; background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px rgb(16 24 40 / 0.08); }
+.mailHead { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); margin-bottom: 14px; }
+.doc { display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 13px; background: #fcfdff; transition: transform 0.9s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.5s; }
+/* Flies across the arrow into the record card. */
+.doc.gone { transform: translateX(330px) scale(0.9); opacity: 0; }
+.doc b { display: block; font-size: 13.5px; font-weight: 650; word-break: break-all; }
+.doc span { font-size: 12px; color: var(--ink3); }
+.arrow { flex: 1; height: 2px; background: repeating-linear-gradient(90deg, #c7d3e6 0 8px, transparent 8px 16px); position: relative; }
+.arrow::after { content: ""; position: absolute; right: -2px; top: -4px; border: 5px solid transparent; border-left-color: #c7d3e6; }
+.recordCard { width: 400px; flex: none; background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 20px 22px; box-shadow: 0 14px 40px rgb(16 24 40 / 0.1); opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; }
+.recordCard.on { opacity: 1; transform: none; }
+.recordHead { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; }
+.recordHead b { font-size: 18px; font-weight: 750; }
+.kv { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid #f1f4f9; font-size: 15px; }
+.kv span { color: var(--ink3); }
+.kv b { font-weight: 650; }
+.kvAmount b { color: #b45309; }
+
+.path { width: 760px; }
+.condition { display: flex; align-items: center; gap: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: 0 10px 30px rgb(16 24 40 / 0.07); margin-bottom: 8px; }
+.condition b { font-size: 17px; font-weight: 700; }
+.amountChip { margin-left: auto; font-size: 15px; font-weight: 700; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 20px; padding: 5px 14px; }
+.branches { display: flex; flex-direction: column; gap: 12px; padding-left: 36px; position: relative; }
+.branches::before { content: ""; position: absolute; left: 14px; top: -8px; bottom: 34px; width: 2px; background: #dce3ef; }
+.branch { display: flex; align-items: center; gap: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 15px 18px; position: relative; opacity: 0.45; transition: opacity 0.45s, border-color 0.45s, box-shadow 0.45s; }
+.branch::before { content: ""; position: absolute; left: -22px; top: 50%; width: 22px; height: 2px; background: #dce3ef; }
+.branch b { font-size: 16px; font-weight: 650; }
+.branch span { font-size: 13.5px; color: var(--ink3); margin-left: auto; }
+.live { opacity: 1; border-color: #a7f3d0; box-shadow: 0 8px 24px rgb(16 185 129 / 0.14); }
+.dead { opacity: 0.4; }
+.dead b { text-decoration: line-through; color: var(--ink3); }
+
+.versions { width: 620px; }
+.version { display: flex; align-items: center; gap: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 15px 18px; margin-bottom: 10px; box-shadow: 0 8px 22px rgb(16 24 40 / 0.06); opacity: 0; transform: translateY(-8px) scale(0.99); transition: opacity 0.4s, transform 0.4s; }
+.version.on { opacity: 1; transform: none; }
+.versionNumber { font-size: 13px; font-weight: 750; color: #475569; background: #f1f5f9; border-radius: 8px; padding: 4px 10px; flex: none; }
+.version b { font-size: 15.5px; font-weight: 650; }
+.version span { font-size: 13.5px; color: var(--ink3); margin-left: auto; }
+.current { border-color: #bae6fd; background: #f8fdff; }
+.currentPill { font-size: 12px; font-weight: 700; color: #0b7fbf; background: #eaf7ff; border-radius: 20px; padding: 3px 11px; margin-left: 0 !important; }

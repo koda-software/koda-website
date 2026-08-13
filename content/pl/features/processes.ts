@@ -20,6 +20,27 @@ export const processesFeature: FeaturePageContent = {
     paragraph:
       "Opero to silnik procesów, w którym rekord przechodzi przez etapy i przejścia (np. Nowe → W realizacji → Zaakceptowane → Zamknięte). Proces pilnuje kolejności, uprawnień i terminów, a każdy przebieg zostaje w historii.",
   },
+  demo: {
+    kind: "processes",
+    columns: ["Nowe", "W realizacji", "Do akceptacji", "Zamknięte"],
+    focusCard: { number: "ZGL/2026/019", title: "Awaria centrali VoIP" },
+    otherCards: [
+      { number: "ZGL/2026/017", title: "Szkolenie z obsługi CRM" },
+      { number: "ZGL/2026/016", title: "Backup i migracja danych" },
+      { number: "ZGL/2026/013", title: "Wymiana baterii w laptopach" },
+    ],
+    tasksLabel: "Moja praca",
+    task: { title: "Wykonaj zgłoszenie", meta: "Marek Wiśniewski · dziś" },
+    approvalLabel: "Do akceptacji",
+    approveLabel: "Zatwierdź",
+    rejectLabel: "Odrzuć",
+    captions: {
+      board: "Rekord wędruje po <b>etapach procesu</b>",
+      task: "Zadanie trafia <b>do właściwej osoby</b>",
+      approval: "Akceptacja przenosi go <b>do kolejnej kolumny</b>",
+      done: "Proces pilnuje się <b>sam</b>",
+    },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Proces, który pilnuje kolejności, uprawnień i terminów.",

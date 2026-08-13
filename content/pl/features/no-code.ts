@@ -20,6 +20,24 @@ export const noCodeFeature: FeaturePageContent = {
     paragraph:
       "No-code w Opero to komplet klocków, z których składasz aplikację: obiekty własne i pola opisują dane, formularze i układy budują widoki, menu i strony własne - nawigację, a słowniki i listy własne pilnują spójności.",
   },
+  demo: {
+    kind: "noCode",
+    paletteLabel: "Pola",
+    paletteItems: ["Tekst", "Lista wyboru", "Data", "Liczba", "Plik"],
+    formTitle: "Formularz zgłoszenia",
+    formFields: ["Tytuł", "Kategoria", "Termin realizacji"],
+    previewLabel: "Podgląd",
+    record: {
+      title: "Nowe zgłoszenie",
+      rows: [
+        { label: "Tytuł", value: "Awaria centrali VoIP" },
+        { label: "Kategoria", value: "Awaria" },
+        { label: "Termin realizacji", value: "2026-08-14" },
+      ],
+      saveLabel: "Zapisz",
+    },
+    captions: { drag: "Przeciągasz pole <b>na formularz</b>", second: "Typ pola wybierasz <b>z listy, nie w kodzie</b>", preview: "I formularz <b>od razu działa</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Klocki, z których powstaje aplikacja.",

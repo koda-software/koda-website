@@ -1,0 +1,29 @@
+.wrap { width: 940px; position: relative; }
+.row { display: flex; align-items: center; }
+.side { width: 250px; flex: none; text-align: center; }
+.cloud { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 18px 26px; box-shadow: 0 10px 28px rgb(16 24 40 / 0.08); }
+.cloud b { font-size: 19px; font-weight: 750; }
+.cloud span { font-size: 12.5px; color: var(--ink3); }
+.gap { flex: 1; position: relative; height: 180px; }
+/* The system boundary the document crosses. */
+.boundary { position: absolute; left: 50%; top: -20px; bottom: -20px; width: 2px; background: repeating-linear-gradient(180deg, #c7d3e6 0 7px, transparent 7px 14px); }
+.travel { position: absolute; left: 0; top: 62px; display: flex; align-items: center; gap: 11px; background: #fff; border: 1.5px solid var(--brand); border-radius: 14px; padding: 11px 14px; box-shadow: 0 12px 28px rgb(16 24 40 / 0.16); opacity: 0; transition: transform 0.95s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.4s; }
+.travel.on { opacity: 1; }
+.travel b { display: block; font-size: 14px; font-weight: 700; }
+.travel span { font-size: 12px; color: var(--ink3); }
+.record { width: 360px; flex: none; background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 20px 22px; box-shadow: 0 14px 40px rgb(16 24 40 / 0.1); opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; }
+.record.on { opacity: 1; transform: none; }
+.recordHead { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+.recordHead b { font-size: 17px; font-weight: 750; }
+.kv { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid #f1f4f9; font-size: 15px; }
+.kv span { color: var(--ink3); }
+.kv b { font-weight: 650; opacity: 0; transition: opacity 0.35s; }
+.kv b.on { opacity: 1; }
+
+.apis { display: flex; flex-direction: column; gap: 12px; margin-top: 34px; }
+.api { display: flex; align-items: center; gap: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 14px 18px; box-shadow: 0 8px 22px rgb(16 24 40 / 0.06); opacity: 0; transform: translateY(-8px); transition: opacity 0.4s, transform 0.4s; }
+.api.on { opacity: 1; transform: none; }
+.api code { font-family: ui-monospace, Menlo, monospace; font-size: 15px; font-weight: 600; color: #0e7490; background: #ecfeff; border-radius: 9px; padding: 6px 12px; }
+.api span { font-size: 14px; color: var(--ink3); }
+.direction { margin-left: auto; color: var(--brand); }
+.direction svg { width: 22px; height: 22px; }

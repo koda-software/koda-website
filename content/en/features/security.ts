@@ -20,6 +20,24 @@ export const securityFeature: FeaturePageContent = {
     paragraph:
       "Access in Opero is arranged from the organisation and its companies, through roles and members, down to precise permissions on modules, objects and fields. Integrations are secured with API tokens, and accounts with multi-factor authentication.",
   },
+  demo: {
+    kind: "security",
+    roles: ["Technician", "Manager", "Accounting"],
+    recordTitle: "SR/2026/019 · VoIP system outage",
+    fields: [
+      { label: "Client", value: "Panorama Hotel" },
+      { label: "Estimated value", value: "1,800.00 PLN" },
+      { label: "Internal cost", value: "940.00 PLN" },
+      { label: "Confidential note", value: "Client is negotiating a framework rate" },
+    ],
+    buttons: ["Edit", "Approve", "Delete"],
+    readOnlyLabel: "View only",
+    captions: {
+      technician: "One record, <b>three roles</b>",
+      manager: "Confidential fields <b>mask themselves</b>",
+      finance: "Buttons disappear <b>along with the permission</b>",
+    },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "Access control from the organisation down to a single field.",

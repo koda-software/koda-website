@@ -318,6 +318,8 @@ export type FeaturePageContent = {
     title: string;
     items: FeatureBlock[];
   };
+  /** Animated walkthrough shown as a full-width band under the hero. */
+  demo?: FeatureDemoContent;
   /** Omit the whole band when the page has no reviewed screenshots yet. */
   shots?: {
     eyebrow: string;
@@ -350,6 +352,145 @@ export type FeaturePageContent = {
 };
 
 export type FeaturePagesContent = Record<FeatureKey, FeaturePageContent>;
+
+/**
+ * Copy for the animated demo on each feature page. Every demo is decorative and
+ * `aria-hidden`, but the strings are still content: they carry the product's
+ * vocabulary and have to read naturally in both languages, so they live here
+ * rather than being baked into the components. `<b>` is allowed in captions.
+ */
+export type ProcessesDemoContent = {
+  /** The four board columns, in the order a record moves through them. */
+  columns: [string, string, string, string];
+  /** The card that travels across the board. */
+  focusCard: { number: string; title: string };
+  /** Cards standing still in the first, second and fourth column. */
+  otherCards: [DemoCard, DemoCard, DemoCard];
+  tasksLabel: string;
+  task: { title: string; meta: string };
+  approvalLabel: string;
+  approveLabel: string;
+  rejectLabel: string;
+  captions: { board: string; task: string; approval: string; done: string };
+};
+
+export type DemoCard = { number: string; title: string };
+
+/**
+ * The demo a feature page shows, tagged so the page can pick the matching
+ * component. Optional on the page: a feature without a demo simply renders no
+ * band, which is how the pages looked before the animations existed.
+ */
+export type SecurityDemoContent = {
+  /** Three roles looking at the same record, in the order the demo cycles them. */
+  roles: [string, string, string];
+  recordTitle: string;
+  /** Four record fields; the later ones are masked for roles that may not see them. */
+  fields: Array<{ label: string; value: string }>;
+  /** Edit, approve and delete, in that order. */
+  buttons: [string, string, string];
+  readOnlyLabel: string;
+  captions: { technician: string; manager: string; finance: string };
+};
+
+export type NoCodeDemoContent = {
+  paletteLabel: string;
+  /** Five field types in the palette; the demo drags the second and third. */
+  paletteItems: [string, string, string, string, string];
+  formTitle: string;
+  /** The three form fields, in the order they land on the canvas. */
+  formFields: [string, string, string];
+  previewLabel: string;
+  record: { title: string; rows: Array<{ label: string; value: string }>; saveLabel: string };
+  captions: { drag: string; second: string; preview: string };
+};
+
+export type LowCodeDemoContent = {
+  conditionLabel: string;
+  /** Field, operator and value, assembled left to right. */
+  condition: [string, string, string];
+  runLabel: string;
+  firedLabel: string;
+  fieldEffect: { title: string; detail: string; from: string; to: string };
+  notificationEffect: { title: string; detail: string };
+  blockEffect: { title: string; detail: string; transition: string };
+  captions: { condition: string; fired: string; summary: string };
+};
+
+export type ReportsDemoContent = {
+  tableTitle: string;
+  /** Category, count and value column headers. */
+  columns: [string, string, string];
+  /** Four category rows, which become the four bars and then the drill-down. */
+  rows: Array<{ category: string; count: string; value: string }>;
+  chartTitle: string;
+  drillTitle: string;
+  /** The records behind the first bar. */
+  drillRows: Array<{ number: string; title: string; value: string }>;
+  captions: { table: string; chart: string; drill: string };
+};
+
+export type DocumentsDemoContent = {
+  inboxLabel: string;
+  mail: { file: string; from: string };
+  record: {
+    title: string;
+    numberLabel: string;
+    /** Typed out character by character, to show the numbering being assigned. */
+    number: string;
+    partyLabel: string;
+    party: string;
+    amountLabel: string;
+    amount: string;
+  };
+  pathLabel: string;
+  condition: string;
+  /** The branch that runs, then the one the amount skips. */
+  branches: [{ title: string; detail: string }, { title: string; detail: string }];
+  versionsLabel: string;
+  versions: Array<{ file: string; detail: string }>;
+  currentLabel: string;
+  captions: { intake: string; numbering: string; path: string; versions: string };
+};
+
+export type IntegrationsDemoContent = {
+  source: { name: string; subtitle: string };
+  document: { number: string; kind: string };
+  recordTitle: string;
+  fields: Array<{ label: string; value: string }>;
+  /** Inbound call first, outbound webhook second. */
+  apis: [{ endpoint: string; direction: string }, { endpoint: string; direction: string }];
+  captions: { arrives: string; fields: string; api: string };
+};
+
+export type AiDemoContent = {
+  assistantName: string;
+  contextLabel: string;
+  question: string;
+  readingLabel: string;
+  /** The record, its history and its attachments. */
+  contextItems: [string, string, string];
+  answer: string;
+  proposalLabel: string;
+  proposalField: string;
+  proposalValue: string;
+  applyLabel: string;
+  dismissLabel: string;
+  savedLabel: string;
+  /** Replaces the proposal label once the change is written to the record. */
+  appliedLabel: string;
+  captions: { ask: string; reading: string; answer: string; applied: string };
+};
+
+export type FeatureDemoContent =
+  | ({ kind: "processes" } & ProcessesDemoContent)
+  | ({ kind: "noCode" } & NoCodeDemoContent)
+  | ({ kind: "lowCode" } & LowCodeDemoContent)
+  | ({ kind: "reports" } & ReportsDemoContent)
+  | ({ kind: "documents" } & DocumentsDemoContent)
+  | ({ kind: "integrations" } & IntegrationsDemoContent)
+  | ({ kind: "ai" } & AiDemoContent)
+  | ({ kind: "security" } & SecurityDemoContent);
 
 /**
  * Stable identifier picking the industry's icon. Keyed rather than positional

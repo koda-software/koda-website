@@ -33,6 +33,7 @@ import UsersIcon from "lucide-react/dist/esm/icons/users.mjs";
 import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
 import ZapIcon from "lucide-react/dist/esm/icons/zap.mjs";
 import { IconTextGrid } from "@/components/landing/LandingCards";
+import { FeatureDemo } from "./demos/FeatureDemo";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
@@ -326,7 +327,21 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
   return (
     <>
       <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        {content.hero.shot ? (
+        {content.demo ? (
+          /*
+           * The demo sits beside the headline, the way the home and Opero
+           * banners do. It takes the larger column because it is a fixed-pixel
+           * canvas scaled to fit: any width the copy does not need goes
+           * straight into how legible the mock UI is. Below 810px the demo
+           * hides itself and the grid collapses to the copy alone.
+           */
+          <div
+            className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-[clamp(2rem,4vw,4rem)] grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] max-[980px]:grid-cols-1`}
+          >
+            {heroCopy}
+            <FeatureDemo demo={content.demo} />
+          </div>
+        ) : content.hero.shot ? (
           <div
             className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-16 max-[980px]:grid-cols-1 ${
               layout.heroImageColumn === "wide"

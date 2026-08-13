@@ -20,6 +20,25 @@ export const reportsFeature: FeaturePageContent = {
     paragraph:
       "Opero reports aggregate and group object data, present it in tables and charts, and through drill-down lead from a metric to the source records. Dashboards collect the numbers that matter most, and SQL queries cover the unusual cuts of data.",
   },
+  demo: {
+    kind: "reports",
+    tableTitle: "Requests by category",
+    columns: ["Category", "Count", "Value"],
+    rows: [
+      { category: "Outage", count: "7", value: "18,400.00" },
+      { category: "Installation", count: "5", value: "12,100.00" },
+      { category: "Maintenance", count: "4", value: "6,900.00" },
+      { category: "Complaint", count: "2", value: "2,300.00" },
+    ],
+    chartTitle: "Request value by category",
+    drillTitle: "Outage — records behind the bar",
+    drillRows: [
+      { number: "SR/2026/019", title: "VoIP system outage", value: "1,800.00" },
+      { number: "SR/2026/013", title: "File server outage", value: "9,400.00" },
+      { number: "SR/2026/007", title: "UPS power outage", value: "7,200.00" },
+    ],
+    captions: { table: "A plain table of data", chart: "The same report <b>as a chart</b>", drill: "Click a bar — and see <b>the records behind it</b>" },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "From a metric down to a single record.",

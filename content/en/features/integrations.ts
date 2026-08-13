@@ -20,6 +20,22 @@ export const integrationsFeature: FeaturePageContent = {
     paragraph:
       "Opero meets Polish regulatory requirements (e-invoicing, official correspondence) and exchanges data with the outside world without separate software.",
   },
+  demo: {
+    kind: "integrations",
+    source: { name: "KSeF", subtitle: "National e-Invoice System" },
+    document: { number: "FA/2026/8841", kind: "e-invoice XML" },
+    recordTitle: "Cost invoice",
+    fields: [
+      { label: "Number", value: "CI/2026/0143" },
+      { label: "Supplier", value: "Panorama Hotel Ltd." },
+      { label: "Amount", value: "24,800.00 PLN" },
+    ],
+    apis: [
+      { endpoint: "POST /api/records", direction: "external system → Opero" },
+      { endpoint: "webhook: status.changed", direction: "Opero → external system" },
+    ],
+    captions: { arrives: "A KSeF document <b>becomes a record</b>", fields: "Fields fill in <b>with no re-typing</b>", api: "The API works <b>both ways</b>" },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "Requirements and data exchange handled inside the system.",

@@ -20,6 +20,27 @@ export const processesFeature: FeaturePageContent = {
     paragraph:
       "Opero is a process engine in which a record moves through stages and transitions (for example New → In progress → Approved → Closed). The process enforces order, permissions and deadlines, and every run stays in the history.",
   },
+  demo: {
+    kind: "processes",
+    columns: ["New", "In progress", "For approval", "Closed"],
+    focusCard: { number: "SR/2026/019", title: "VoIP system outage" },
+    otherCards: [
+      { number: "SR/2026/017", title: "CRM training session" },
+      { number: "SR/2026/016", title: "Backup and data migration" },
+      { number: "SR/2026/013", title: "Laptop battery replacement" },
+    ],
+    tasksLabel: "My work",
+    task: { title: "Complete the request", meta: "Mark Wilson · today" },
+    approvalLabel: "Awaiting approval",
+    approveLabel: "Approve",
+    rejectLabel: "Reject",
+    captions: {
+      board: "A record travels <b>through process stages</b>",
+      task: "A task lands <b>on the right person’s list</b>",
+      approval: "Approval moves it <b>to the next column</b>",
+      done: "The process <b>runs itself</b>",
+    },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "A process that enforces order, permissions and deadlines.",

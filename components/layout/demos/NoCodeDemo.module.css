@@ -1,0 +1,169 @@
+.build {
+  display: flex;
+  gap: 22px;
+  width: 900px;
+  position: relative;
+}
+.palette {
+  width: 250px;
+  flex: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgb(16 24 40 / 0.07);
+}
+.paletteLabel {
+  margin-bottom: 12px;
+}
+.paletteItem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1.5px solid var(--line);
+  border-radius: 13px;
+  padding: 11px 13px;
+  margin-bottom: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink2);
+  background: #fcfdff;
+  transition: border-color 0.25s, color 0.25s, transform 0.2s;
+}
+.paletteItem svg {
+  width: 17px;
+  height: 17px;
+  color: var(--ink3);
+}
+.paletteItem.hot {
+  border-color: var(--brand);
+  color: var(--ink);
+  transform: scale(1.02);
+}
+.canvas {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: 0 14px 40px rgb(16 24 40 / 0.09);
+  min-height: 330px;
+}
+.canvasHead {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.field {
+  margin-bottom: 14px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+.field.on {
+  opacity: 1;
+  transform: none;
+}
+.field label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+.box {
+  height: 46px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fcfdff;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--ink3);
+  gap: 9px;
+}
+.box svg {
+  width: 16px;
+  height: 16px;
+}
+.drop {
+  height: 56px;
+  border: 1.5px dashed #c7d0e0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--ink3);
+  transition: border-color 0.3s, background 0.3s;
+}
+.drop.hot {
+  border-color: var(--brand);
+  background: #f5fbff;
+}
+/* Follows the pointer from the palette to the drop zone. */
+.ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1.5px solid var(--brand);
+  border-radius: 13px;
+  padding: 11px 13px;
+  font-size: 15px;
+  font-weight: 600;
+  background: #fff;
+  box-shadow: 0 14px 30px rgb(16 24 40 / 0.18);
+  opacity: 0;
+  z-index: 30;
+  transition: transform 0.75s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.3s;
+  pointer-events: none;
+}
+.ghost.on {
+  opacity: 1;
+}
+.previewButton {
+  margin-top: 16px;
+}
+.result {
+  width: 520px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px 26px;
+  box-shadow: 0 18px 50px rgb(16 24 40 / 0.12);
+}
+.result h3 {
+  margin: 0 0 18px;
+  font-size: 19px;
+  font-weight: 750;
+}
+.resultField {
+  margin-bottom: 15px;
+}
+.resultField label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+.resultField > div {
+  height: 48px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 16px;
+  gap: 9px;
+}
+.resultField i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ef4444;
+}

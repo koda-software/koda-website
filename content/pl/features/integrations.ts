@@ -20,6 +20,22 @@ export const integrationsFeature: FeaturePageContent = {
     paragraph:
       "Opero spełnia polskie wymogi (e-fakturowanie, korespondencja urzędowa) i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania.",
   },
+  demo: {
+    kind: "integrations",
+    source: { name: "KSeF", subtitle: "Krajowy System e-Faktur" },
+    document: { number: "FA/2026/8841", kind: "XML e-faktury" },
+    recordTitle: "Faktura kosztowa",
+    fields: [
+      { label: "Numer", value: "FZ/2026/0143" },
+      { label: "Kontrahent", value: "Hotel Panorama Sp. z o.o." },
+      { label: "Kwota", value: "24 800,00 PLN" },
+    ],
+    apis: [
+      { endpoint: "POST /api/records", direction: "system zewnętrzny → Opero" },
+      { endpoint: "webhook: status.changed", direction: "Opero → system zewnętrzny" },
+    ],
+    captions: { arrives: "Dokument z KSeF <b>staje się rekordem</b>", fields: "Pola wypełniają się <b>bez przepisywania</b>", api: "API działa <b>w obie strony</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Wymogi i wymiana danych obsłużone w systemie.",

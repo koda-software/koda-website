@@ -20,6 +20,25 @@ export const reportsFeature: FeaturePageContent = {
     paragraph:
       "Raporty Opero agregują i grupują dane obiektów, prezentują je w tabelach i na wykresach, a przez drill-down prowadzą od wskaźnika do źródłowych rekordów. Najważniejsze liczby zbierają dashboardy, a nietypowe cięcia danych - zapytania SQL.",
   },
+  demo: {
+    kind: "reports",
+    tableTitle: "Zgłoszenia wg kategorii",
+    columns: ["Kategoria", "Liczba", "Wartość"],
+    rows: [
+      { category: "Awaria", count: "7", value: "18 400,00" },
+      { category: "Instalacja", count: "5", value: "12 100,00" },
+      { category: "Konserwacja", count: "4", value: "6 900,00" },
+      { category: "Reklamacja", count: "2", value: "2 300,00" },
+    ],
+    chartTitle: "Wartość zgłoszeń wg kategorii",
+    drillTitle: "Awaria — rekordy w słupku",
+    drillRows: [
+      { number: "ZGL/2026/019", title: "Awaria centrali VoIP", value: "1 800,00" },
+      { number: "ZGL/2026/013", title: "Awaria serwera plików", value: "9 400,00" },
+      { number: "ZGL/2026/007", title: "Awaria zasilania UPS", value: "7 200,00" },
+    ],
+    captions: { table: "Zwykła tabela z danymi", chart: "Ten sam raport <b>jako wykres</b>", drill: "Klikasz słupek — i widzisz <b>rekordy, które go tworzą</b>" },
+  },
   blocks: {
     eyebrow: "Co dostajesz",
     title: "Od wskaźnika do pojedynczego rekordu.",

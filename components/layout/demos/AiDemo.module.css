@@ -1,0 +1,28 @@
+.wrap { width: 820px; }
+.head { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; }
+.head b { font-size: 19px; font-weight: 750; }
+.thread { min-height: 330px; }
+.bubble { max-width: 600px; border-radius: 18px; padding: 15px 19px; font-size: 16.5px; line-height: 1.55; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; }
+.bubble.on { opacity: 1; transform: none; }
+.bubbleMe { margin-left: auto; background: var(--blue); color: #fff; border-bottom-right-radius: 6px; box-shadow: 0 8px 22px rgb(59 130 246 / 0.28); }
+.bubbleAi { background: #fff; border: 1.5px solid var(--line); border-bottom-left-radius: 6px; box-shadow: 0 8px 24px rgb(16 24 40 / 0.07); margin-top: 14px; }
+.reading { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; font-size: 14px; color: var(--ink3); opacity: 0; transition: opacity 0.35s; }
+.reading.on { opacity: 1; }
+.reading.fadeout { opacity: 0; }
+.reading svg { width: 16px; height: 16px; color: #7c3aed; animation: spin 2.6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.contextRow { display: flex; gap: 9px; margin-top: 11px; flex-wrap: wrap; }
+.contextRow.fadeout { opacity: 0.35; transition: opacity 0.4s; }
+.context { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #5b21b6; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 20px; padding: 7px 14px; opacity: 0; transform: scale(0.9); transition: opacity 0.3s, transform 0.3s cubic-bezier(0.2, 1.4, 0.4, 1); }
+.context.on { opacity: 1; transform: none; }
+.context svg { width: 14px; height: 14px; }
+.action { display: flex; align-items: center; gap: 16px; margin-top: 16px; background: #fff; border: 1.5px solid #ddd6fe; border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 30px rgb(124 58 237 / 0.12); opacity: 0; transform: translateY(10px); position: relative; transition: opacity 0.45s, transform 0.45s, border-color 0.4s, box-shadow 0.4s; }
+.action.on { opacity: 1; transform: none; }
+.action.applied { border-color: #a7f3d0; box-shadow: 0 12px 30px rgb(16 185 129 / 0.14); }
+.actionText { flex: 1; }
+.actionLabel { font-size: 11.5px; margin-bottom: 5px; }
+.actionText b { font-size: 16.5px; font-weight: 700; }
+.actionButtons { display: flex; gap: 9px; transition: opacity 0.3s; }
+.actionButtons.gone { opacity: 0; }
+.saved { position: absolute; right: 18px; display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; color: #047857; opacity: 0; transform: scale(0.9); transition: opacity 0.35s, transform 0.35s cubic-bezier(0.2, 1.4, 0.4, 1); }
+.saved.on { opacity: 1; transform: none; }

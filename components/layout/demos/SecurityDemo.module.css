@@ -1,0 +1,114 @@
+.wrap {
+  width: 720px;
+}
+.roles {
+  display: flex;
+  gap: 6px;
+  background: #eef1f7;
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 22px;
+}
+.role {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--ink2);
+  padding: 10px 0;
+  border-radius: 10px;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.role.on {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgb(16 24 40 / 0.12);
+}
+.record {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px 26px;
+  box-shadow: 0 16px 44px rgb(16 24 40 / 0.1);
+}
+.record h3 {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 750;
+}
+.field {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f1f4f9;
+}
+.field label {
+  width: 190px;
+  flex: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink2);
+}
+.value {
+  flex: 1;
+  font-size: 16px;
+  position: relative;
+  transition: color 0.35s, filter 0.35s;
+}
+.value > span {
+  transition: opacity 0.3s;
+}
+/* Sits over the value and takes its place when the role may not see it. */
+.mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  color: var(--ink3);
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+.mask svg {
+  width: 16px;
+  height: 16px;
+}
+.field.hidden .value > span {
+  opacity: 0;
+}
+.field.hidden .mask {
+  opacity: 1;
+}
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  min-height: 44px;
+  position: relative;
+}
+.buttons button {
+  transition: opacity 0.35s, transform 0.35s;
+}
+/* Taken out of flow as well as faded, so the remaining buttons close the gap. */
+.buttons button.off {
+  opacity: 0;
+  transform: scale(0.9);
+  position: absolute;
+  pointer-events: none;
+}
+.readOnly {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink3);
+  background: #f3f5f9;
+  border-radius: 12px;
+  padding: 11px 16px;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+.readOnly.on {
+  opacity: 1;
+}

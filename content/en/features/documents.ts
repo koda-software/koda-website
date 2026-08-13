@@ -20,6 +20,34 @@ export const documentsFeature: FeaturePageContent = {
     paragraph:
       "Opero combines document workflow with file management: a document has its own record, an approval path and a complete set of versioned files. All of it with a full history and access control.",
   },
+  demo: {
+    kind: "documents",
+    inboxLabel: "Inbox",
+    mail: { file: "invoice-panorama-hotel.pdf", from: "from: office@panorama.com" },
+    record: {
+      title: "Cost invoice",
+      numberLabel: "Number",
+      number: "CI/2026/0142",
+      partyLabel: "Supplier",
+      party: "Panorama Hotel Ltd.",
+      amountLabel: "Gross amount",
+      amount: "24,800.00 PLN",
+    },
+    pathLabel: "Approval path",
+    condition: "Amount ≥ 10,000 PLN?",
+    branches: [
+      { title: "Approval: Board", detail: "2 signatures required" },
+      { title: "Approval: Manager", detail: "path skipped" },
+    ],
+    versionsLabel: "File versions",
+    versions: [
+      { file: "invoice.pdf", detail: "scan from e-mail" },
+      { file: "invoice.pdf", detail: "line 3 corrected" },
+      { file: "invoice.pdf", detail: "approved" },
+    ],
+    currentLabel: "current",
+    captions: { intake: "A document arrives and <b>becomes a record by itself</b>", numbering: "The number is assigned <b>automatically</b>", path: "The approval path <b>depends on the amount</b>", versions: "Every file is versioned — <b>nothing gets lost</b>" },
+  },
   blocks: {
     eyebrow: "What you get",
     title: "Record, approval path and files as one whole.",
