@@ -361,21 +361,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       {layout.shotsFirst ? [shotsSection, blocksSection] : [blocksSection, shotsSection]}
 
       <section className={`${sectionClass} pt-0`}>
-        <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
-          <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
-          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
-            {content.finalCta.title}
-          </h2>
-          <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>
-          <div className="mt-8 flex justify-center">
-            <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
-              {content.finalCta.primaryCta}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className={`${sectionClass} pt-0`}>
         <p className={eyebrowClass}>{content.seoText.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.seoText.title}</h2>
         <div className="mt-6 grid max-w-[62rem] gap-5">
@@ -431,6 +416,21 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
               <span className="text-[0.94rem] font-light leading-[1.6] text-[var(--color-muted)]">{item.description}</span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className={`${sectionClass} pt-0`}>
+        <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
+          <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
+          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
+            {content.finalCta.title}
+          </h2>
+          <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>
+          <div className="mt-8 flex justify-center">
+            <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
+              {content.finalCta.primaryCta}
+            </Link>
+          </div>
         </div>
       </section>
     </>

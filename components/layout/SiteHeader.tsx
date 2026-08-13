@@ -158,7 +158,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
         key={item.page}
       >
         <button
-          className={`inline-flex items-center gap-1.5 ${isActive ? "rounded-full py-2.5 pl-3.5 pr-3" : `${linkClass(false, false)} gap-1.5`}`}
+          className={`inline-flex cursor-pointer items-center gap-1.5 ${isActive ? "rounded-full py-2.5 pl-3.5 pr-3" : `${linkClass(false, false)} gap-1.5`}`}
           type="button"
           aria-haspopup="true"
           aria-expanded={isSubmenuOpen}
@@ -281,7 +281,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
         </div>
         <button
           ref={mobileMenuButtonRef}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-button)] border border-white/[0.18] bg-white/[0.08] text-white transition-colors hover:bg-white/[0.14] min-[810px]:hidden"
+          className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-[var(--radius-button)] border border-white/[0.18] bg-white/[0.08] text-white transition-colors hover:bg-white/[0.14] min-[810px]:hidden"
           type="button"
           aria-label={isMobileMenuOpen ? content.nav.closeMenu : content.nav.openMenu}
           aria-expanded={isMobileMenuOpen}
@@ -330,7 +330,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
             return (
               <div key={item.page}>
                 <button
-                  className={`${rowClass} flex w-full items-center justify-between gap-1 text-left`}
+                  className={`${rowClass} flex w-full cursor-pointer items-center justify-between gap-1 text-left`}
                   type="button"
                   aria-expanded={isMobileSubmenuOpen}
                   aria-controls={`${submenuId}-mobile`}
