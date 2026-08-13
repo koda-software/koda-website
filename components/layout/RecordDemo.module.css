@@ -1,5 +1,5 @@
 .root {
-  max-width: 1200px;
+  max-width: 840px;
   margin: 0 auto;
   --ink: #101828;
   --ink2: #5a6373;
@@ -7,7 +7,6 @@
   --line: #e4e8f0;
   --blue: #3b82f6;
   --brand: #38b6ff;
-  --bg: #f2f5fc;
   color: var(--ink);
   font-feature-settings: "zero" 1;
 }
@@ -25,13 +24,15 @@
   stroke-linejoin: round;
 }
 
+/*
+ * No panel of its own: the cards sit directly on the hero background, so the
+ * whole column width belongs to the demo. Overflow stays visible because the
+ * card shadows fall outside the stage box once nothing clips them.
+ */
 .frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1200 / 620;
-  overflow: hidden;
-  border-radius: 20px;
-  background: radial-gradient(120% 140% at 15% 0%, #ffffff 0%, var(--bg) 55%, #e7edfa 100%);
+  aspect-ratio: 840 / 480;
 }
 .scaler {
   position: absolute;
@@ -41,9 +42,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 1200px;
-  height: 620px;
-  overflow: hidden;
+  width: 840px;
+  height: 480px;
   transform-origin: 0 0;
 }
 
@@ -356,15 +356,18 @@
   box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
 }
 
+/*
+ * Sits on the dark hero rather than on a light panel, so it is typed in the
+ * banner's own muted white instead of the mock UI's ink.
+ */
 .caption {
-  position: absolute;
-  bottom: 34px;
-  left: 0;
-  right: 0;
+  min-height: 1.5em;
+  margin-top: clamp(1rem, 2vw, 1.75rem);
   text-align: center;
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--ink2);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.7);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.4s, transform 0.4s;
@@ -374,8 +377,8 @@
   transform: none;
 }
 .caption b {
-  color: var(--ink);
-  font-weight: 750;
+  color: #fff;
+  font-weight: 650;
 }
 
 .cursor {
@@ -384,21 +387,27 @@
   left: 0;
   z-index: 40;
   pointer-events: none;
-  filter: drop-shadow(0 4px 6px rgba(2, 8, 23, 0.3));
-  transform: translate(600px, 320px);
+  filter: drop-shadow(0 6px 10px rgba(2, 8, 23, 0.38));
+  transform: translate(420px, 240px);
   opacity: 0;
   transition: transform 0.6s cubic-bezier(0.4, 0.05, 0.2, 1);
 }
 .cursor.on {
   opacity: 1;
 }
+/* Beats the blanket 18px `.root svg` icon sizing above. */
+.cursor svg {
+  width: 46px;
+  height: 46px;
+}
+/* Sized and offset so the ripple radiates from the pointer tip, not the body. */
 .click {
   position: absolute;
-  top: -11px;
-  left: -11px;
-  width: 42px;
-  height: 42px;
-  border: 2.5px solid var(--brand);
+  top: -30px;
+  left: -25px;
+  width: 70px;
+  height: 70px;
+  border: 3.5px solid var(--brand);
   border-radius: 50%;
   opacity: 0;
 }
@@ -426,7 +435,7 @@
 }
 
 /*
- * The demo is a fixed 1200px stage scaled to fit. Below this breakpoint it
+ * The demo is a fixed 840px stage scaled to fit. Below this breakpoint it
  * scales past readability (body text under 6px), so the banner drops it rather
  * than showing an illegible smudge; the hero copy carries the message there.
  */

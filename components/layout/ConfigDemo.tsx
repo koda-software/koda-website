@@ -8,9 +8,16 @@ type ConfigDemoProps = {
   content: ConfigDemoContent;
 };
 
-const STAGE_WIDTH = 1200;
+/**
+ * The stage is a fixed pixel canvas scaled to whatever width the hero column
+ * gives it. It is sized snugly around the 840px card so almost all of the
+ * available width goes to the mock UI itself - every pixel of slack here comes
+ * straight off the scale factor and shrinks the demo.
+ */
+const STAGE_WIDTH = 920;
+const STAGE_HEIGHT = 600;
 const CYCLE_MS = 35000;
-const CURSOR_HOME = { x: 600, y: 340 };
+const CURSOR_HOME = { x: STAGE_WIDTH / 2, y: STAGE_HEIGHT / 2 };
 
 function BoltIcon() {
   return (
@@ -398,23 +405,13 @@ export function ConfigDemo({ content }: ConfigDemoProps) {
             </section>
 
             <div
-              className={`${styles.caption} ${caption ? styles.on : ""}`}
-              dangerouslySetInnerHTML={{ __html: caption }}
-            />
-            <div className={styles.dots}>
-              {[0, 1, 2].map((index) => (
-                <i className={index === dotIndex ? styles.on : ""} key={index} />
-              ))}
-            </div>
-
-            <div
               className={`${styles.cursor} ${cursorVisible ? styles.on : ""} ${cursorClicking ? styles.clicking : ""}`}
               style={{
                 transform: `translate(${cursorPos.x}px, ${cursorPos.y}px)`,
                 transition: instantCursor ? "none" : undefined,
               }}
             >
-              <svg height="26" viewBox="0 0 24 24" width="26">
+              <svg height="46" viewBox="0 0 24 24" width="46">
                 <path
                   d="M5 2.5 18.5 12l-5.6 1.1 3 5.9-2.6 1.3-3-6L6 18z"
                   fill="#0F172A"
@@ -427,6 +424,21 @@ export function ConfigDemo({ content }: ConfigDemoProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/*
+        Outside the scaled stage: the caption and the view dots address the
+        reader rather than being part of the mock UI, so they keep their own
+        type size instead of shrinking with the demo.
+      */}
+      <div
+        className={`${styles.caption} ${caption ? styles.on : ""}`}
+        dangerouslySetInnerHTML={{ __html: caption }}
+      />
+      <div className={styles.dots}>
+        {[0, 1, 2].map((index) => (
+          <i className={index === dotIndex ? styles.on : ""} key={index} />
+        ))}
       </div>
     </div>
   );

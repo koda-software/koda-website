@@ -8,7 +8,14 @@ type RecordDemoProps = {
   content: RecordDemoContent;
 };
 
-const STAGE_WIDTH = 1200;
+/**
+ * The stage is a fixed pixel canvas scaled to whatever width the hero column
+ * gives it. It is sized snugly around the widest card (760px) so almost all of
+ * the available width goes to the mock UI itself - every pixel of slack here
+ * comes straight off the scale factor and shrinks the demo.
+ */
+const STAGE_WIDTH = 840;
+const STAGE_HEIGHT = 480;
 const CYCLE_MS = 25000;
 
 /** Decorative colours for the mock UI, matched to the meaning of each value. */
@@ -17,7 +24,7 @@ const stageColors = ["#38B6FF", "#6366F1", "#F59E0B", "#64748B"];
 const fillerPriorityColors = ["#94A3B8", "#94A3B8", "#F59E0B"];
 const fillerStageColors = ["#6366F1", "#F59E0B", "#10B981"];
 
-const CURSOR_HOME = { x: 600, y: 320 };
+const CURSOR_HOME = { x: STAGE_WIDTH / 2, y: STAGE_HEIGHT / 2 };
 
 function UpDownIcon() {
   return (
@@ -346,18 +353,13 @@ export function RecordDemo({ content }: RecordDemoProps) {
             </section>
 
             <div
-              className={`${styles.caption} ${caption ? styles.on : ""}`}
-              dangerouslySetInnerHTML={{ __html: caption }}
-            />
-
-            <div
               className={`${styles.cursor} ${cursorVisible ? styles.on : ""} ${cursorClicking ? styles.clicking : ""}`}
               style={{
                 transform: `translate(${cursorPos.x}px, ${cursorPos.y}px)`,
                 transition: instantCursor ? "none" : undefined,
               }}
             >
-              <svg height="26" viewBox="0 0 24 24" width="26">
+              <svg height="46" viewBox="0 0 24 24" width="46">
                 <path
                   d="M5 2.5 18.5 12l-5.6 1.1 3 5.9-2.6 1.3-3-6L6 18z"
                   fill="#0F172A"
@@ -371,6 +373,16 @@ export function RecordDemo({ content }: RecordDemoProps) {
           </div>
         </div>
       </div>
+
+      {/*
+        Outside the scaled stage: the caption is prose for the reader, not part
+        of the mock UI, so it keeps its own type size instead of shrinking with
+        the demo.
+      */}
+      <div
+        className={`${styles.caption} ${caption ? styles.on : ""}`}
+        dangerouslySetInnerHTML={{ __html: caption }}
+      />
     </div>
   );
 }
