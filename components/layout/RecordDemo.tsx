@@ -3,6 +3,7 @@
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import type { RecordDemoContent } from "@/content/types";
 import styles from "./RecordDemo.module.css";
+import { useStageScale } from "./useStageScale";
 
 type RecordDemoProps = {
   content: RecordDemoContent;
@@ -52,7 +53,6 @@ function CheckIcon() {
 
 export function RecordDemo({ content }: RecordDemoProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const scalerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
   const priorityRef = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ export function RecordDemo({ content }: RecordDemoProps) {
   const valueRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const [scale, setScale] = useState(1);
+  const { scale, scalerRef } = useStageScale(STAGE_WIDTH);
   /** Seeded true so the banner plays on load; the observer only pauses it once scrolled away. */
   const [visible, setVisible] = useState(true);
   const [cycle, setCycle] = useState(0);
@@ -82,16 +82,6 @@ export function RecordDemo({ content }: RecordDemoProps) {
   const [cursorClicking, setCursorClicking] = useState(false);
   const [cursorPos, setCursorPos] = useState(CURSOR_HOME);
   const [instantCursor, setInstantCursor] = useState(true);
-
-  useEffect(() => {
-    const scaler = scalerRef.current;
-    if (!scaler) return;
-    const fit = () => setScale(scaler.clientWidth / STAGE_WIDTH);
-    fit();
-    const observer = new ResizeObserver(fit);
-    observer.observe(scaler);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -223,7 +213,11 @@ export function RecordDemo({ content }: RecordDemoProps) {
     <div aria-hidden="true" className={styles.root} ref={rootRef}>
       <div className={styles.frame}>
         <div className={styles.scaler} ref={scalerRef}>
-          <div className={styles.stage} ref={stageRef} style={{ transform: `scale(${scale})` }}>
+          <div
+            className={styles.stage}
+            ref={stageRef}
+            style={scale === null ? undefined : { opacity: 1, transform: `scale(${scale})` }}
+          >
             <section className={`${styles.view} ${view === "list" ? styles.on : ""}`}>
               <div className={`${styles.card} ${styles.cardList}`}>
                 <div className={styles.cardHead}>{content.listTitle}</div>

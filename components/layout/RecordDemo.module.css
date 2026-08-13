@@ -38,13 +38,21 @@
   position: absolute;
   inset: 0;
 }
+/*
+ * Hidden until `useStageScale` reports a scale, so the 840px canvas is never
+ * painted at 1:1 inside a column half that wide and then snapped down. The
+ * stage is absolutely positioned inside a box that reserves its space with
+ * `aspect-ratio`, so this costs no layout shift either way.
+ */
 .stage {
   position: absolute;
   top: 0;
   left: 0;
   width: 840px;
   height: 480px;
+  opacity: 0;
   transform-origin: 0 0;
+  transition: opacity 0.3s ease;
 }
 
 .view {
