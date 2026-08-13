@@ -11,7 +11,12 @@ import ShieldCheckIcon from "lucide-react/dist/esm/icons/shield-check.mjs";
 import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
 import ZapIcon from "lucide-react/dist/esm/icons/zap.mjs";
 import type { HomeContent } from "@/content/types";
-import { DarkStepGrid, IconTextGrid, NumberedPointGrid, PillarGrid } from "@/components/landing/LandingCards";
+import {
+  DarkStepGrid,
+  IconTextGrid,
+  NumberedPointGrid,
+  PillarGrid,
+} from "@/components/landing/LandingCards";
 import {
   DarkPanel,
   FinalCtaPanel,
@@ -19,6 +24,7 @@ import {
   LandingSection,
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
+import { Reveal } from "@/components/landing/Reveal";
 import { HomeAiDemo } from "./demos/HomeAiDemo";
 import { OperoFlowVisual } from "./OperoFlowVisual";
 import { RecordDemo } from "./RecordDemo";
@@ -29,11 +35,31 @@ type HomeScaffoldProps = {
   secondaryHref: string;
 };
 
-const pillarIcons = [BoxesIcon, WorkflowIcon, BrainCircuitIcon, ShieldCheckIcon];
-const workflowIcons = [MapIcon, LayersIcon, ZapIcon, ShieldCheckIcon, RefreshCwIcon];
-const useCaseIcons = [HandshakeIcon, DatabaseIcon, ClipboardCheckIcon, SearchIcon];
+const pillarIcons = [
+  BoxesIcon,
+  WorkflowIcon,
+  BrainCircuitIcon,
+  ShieldCheckIcon,
+];
+const workflowIcons = [
+  MapIcon,
+  LayersIcon,
+  ZapIcon,
+  ShieldCheckIcon,
+  RefreshCwIcon,
+];
+const useCaseIcons = [
+  HandshakeIcon,
+  DatabaseIcon,
+  ClipboardCheckIcon,
+  SearchIcon,
+];
 
-export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffoldProps) {
+export function HomeScaffold({
+  content,
+  primaryHref,
+  secondaryHref,
+}: HomeScaffoldProps) {
   return (
     <>
       <LandingHero
@@ -49,53 +75,97 @@ export function HomeScaffold({ content, primaryHref, secondaryHref }: HomeScaffo
       </LandingHero>
 
       <LandingSection id="problem">
-        <SectionIntro eyebrow={content.problem.label} title={content.problem.title} description={content.problem.description} split />
+        <Reveal>
+          <SectionIntro
+            eyebrow={content.problem.label}
+            title={content.problem.title}
+            description={content.problem.description}
+            split
+          />
+        </Reveal>
         <NumberedPointGrid points={content.problem.points} />
       </LandingSection>
 
       <LandingSection>
         <DarkPanel>
-          <SectionIntro eyebrow={content.solution.label} title={content.solution.title} description={content.solution.description} invert />
+          <Reveal>
+            <SectionIntro
+              eyebrow={content.solution.label}
+              title={content.solution.title}
+              description={content.solution.description}
+              invert
+            />
+          </Reveal>
           <OperoFlowVisual content={content.hero.visual} />
         </DarkPanel>
       </LandingSection>
 
       <LandingSection>
-        <SectionIntro eyebrow={content.pillars.label} title={content.pillars.title} description={content.pillars.description} />
+        <Reveal>
+          <SectionIntro
+            eyebrow={content.pillars.label}
+            title={content.pillars.title}
+            description={content.pillars.description}
+          />
+        </Reveal>
         <PillarGrid icons={pillarIcons} items={content.pillars.items} />
       </LandingSection>
 
       <LandingSection>
         <DarkPanel>
-          <SectionIntro eyebrow={content.workflow.label} title={content.workflow.title} description={content.workflow.description} invert split />
+          <Reveal>
+            <SectionIntro
+              eyebrow={content.workflow.label}
+              title={content.workflow.title}
+              description={content.workflow.description}
+              invert
+              split
+            />
+          </Reveal>
           <DarkStepGrid icons={workflowIcons} steps={content.workflow.steps} />
         </DarkPanel>
       </LandingSection>
 
       <LandingSection className="grid items-start gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,0.78fr)_minmax(20rem,1fr)] max-[809px]:grid-cols-1">
         <div>
-          <SectionIntro eyebrow={content.ai.label} title={content.ai.title} description={content.ai.description} />
+          <Reveal>
+            <SectionIntro
+              eyebrow={content.ai.label}
+              title={content.ai.title}
+              description={content.ai.description}
+            />
+          </Reveal>
         </div>
         <div className="relative" aria-label={content.ai.label}>
-          <HomeAiDemo chat={content.ai.chat} />
+          <Reveal from="right">
+            <HomeAiDemo chat={content.ai.chat} />
+          </Reveal>
         </div>
       </LandingSection>
 
       <LandingSection>
-        <SectionIntro eyebrow={content.useCases.label} title={content.useCases.title} description={content.useCases.description} />
+        <Reveal>
+          <SectionIntro
+            eyebrow={content.useCases.label}
+            title={content.useCases.title}
+            description={content.useCases.description}
+          />
+        </Reveal>
         <IconTextGrid icons={useCaseIcons} items={content.useCases.items} />
       </LandingSection>
 
       <LandingSection className="pt-0">
-        <FinalCtaPanel
-          eyebrow={content.finalCta.eyebrow}
-          title={content.finalCta.title}
-          description={content.finalCta.description}
-          primaryCta={content.finalCta.primaryCta}
-          primaryHref={primaryHref}
-          secondaryCta={content.finalCta.secondaryCta}
-          secondaryHref={secondaryHref}
-        />
+        <Reveal>
+          <FinalCtaPanel
+            eyebrow={content.finalCta.eyebrow}
+            title={content.finalCta.title}
+            description={content.finalCta.description}
+            primaryCta={content.finalCta.primaryCta}
+            primaryHref={primaryHref}
+            secondaryCta={content.finalCta.secondaryCta}
+            secondaryHref={secondaryHref}
+          />
+        </Reveal>
       </LandingSection>
     </>
   );

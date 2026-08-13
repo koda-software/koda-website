@@ -36,22 +36,21 @@ export function NumberedPointGrid({ points }: NumberedPointGridProps) {
   return (
     <div className="relative mt-[clamp(2.4rem,5vw,4.8rem)] grid grid-cols-4 gap-4 max-[809px]:grid-cols-1">
       {points.map((point, index) => (
-        <article
-          className="group relative min-h-[18rem] overflow-hidden rounded-[var(--radius-card)] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(249,249,249,0.82)_58%,rgba(56, 182, 255,0.06))] px-[clamp(1.05rem,2vw,1.55rem)] py-[clamp(1.4rem,3vw,2rem)] ring-1 ring-black/[0.055] transition-colors duration-200 hover:bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_58%,rgba(56, 182, 255,0.085))] even:translate-y-8 max-[809px]:min-h-0 max-[809px]:translate-y-0 max-[809px]:py-7"
-          key={point}
-        >
-          <span
-            className="pointer-events-none absolute -right-3 -top-3 font-sans text-[clamp(5.8rem,9vw,8.8rem)] font-semibold leading-none tracking-[-0.13em] text-[var(--color-blue)]/[0.11] transition-colors duration-200 group-hover:text-[var(--color-blue)]/[0.17] max-[809px]:text-[6rem]"
-            aria-hidden="true"
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <div className="relative z-[1] flex min-h-full flex-col justify-end">
-            <p className="m-0 max-w-[19rem] text-[clamp(1.06rem,1.45vw,1.26rem)] font-normal leading-[1.42] tracking-[-0.025em] text-[var(--color-ink-soft)]">
-              {point}
-            </p>
-          </div>
-        </article>
+        <Reveal className="h-full" delay={index * 110} key={point}>
+          <article className="group relative min-h-[18rem] overflow-hidden rounded-[var(--radius-card)] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(249,249,249,0.82)_58%,rgba(56, 182, 255,0.06))] px-[clamp(1.05rem,2vw,1.55rem)] py-[clamp(1.4rem,3vw,2rem)] ring-1 ring-black/[0.055] transition-colors duration-200 hover:bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_58%,rgba(56, 182, 255,0.085))] even:translate-y-8 max-[809px]:min-h-0 max-[809px]:translate-y-0 max-[809px]:py-7">
+            <span
+              className="pointer-events-none absolute -right-3 -top-3 font-sans text-[clamp(5.8rem,9vw,8.8rem)] font-semibold leading-none tracking-[-0.13em] text-[var(--color-blue)]/[0.11] transition-colors duration-200 group-hover:text-[var(--color-blue)]/[0.17] max-[809px]:text-[6rem]"
+              aria-hidden="true"
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="relative z-[1] flex min-h-full flex-col justify-end">
+              <p className="m-0 max-w-[19rem] text-[clamp(1.06rem,1.45vw,1.26rem)] font-normal leading-[1.42] tracking-[-0.025em] text-[var(--color-ink-soft)]">
+                {point}
+              </p>
+            </div>
+          </article>
+        </Reveal>
       ))}
     </div>
   );

@@ -95,6 +95,7 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
         <div className="mt-10 grid grid-cols-3 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
           {content.beliefs.items.map((item) => (
             <article
+              data-reveal
               className="grid content-start gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-6"
               key={item.title}
             >
@@ -129,7 +130,7 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
         <h2 className={sectionTitleClass}>{content.approach.title}</h2>
         <div className="mt-9 grid grid-cols-4 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
           {content.approach.items.map((item, index) => (
-            <article className="grid content-start gap-3 border-t border-[rgba(2,2,13,0.14)] pt-5" key={item.title}>
+            <article data-reveal className="grid content-start gap-3 border-t border-[rgba(2,2,13,0.14)] pt-5" key={item.title}>
               <span className="text-[0.82rem] font-semibold tracking-[0.08em] text-[var(--color-blue)]">
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -202,6 +203,7 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
         <div className="mt-8 grid max-w-[52rem] gap-3">
           {content.faq.items.map((item) => (
             <details
+              data-reveal
               className="group rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 open:pb-5"
               key={item.question}
             >

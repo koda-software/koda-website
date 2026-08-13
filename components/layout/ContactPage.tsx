@@ -45,7 +45,7 @@ export function ContactPage({ locale, content }: ContactPageProps) {
             <h3 className="m-0 text-[1.3rem] font-medium text-[var(--color-ink)]">{content.topics.title}</h3>
             <div className="mt-6 grid gap-5">
               {content.topics.items.map((item) => (
-                <article className="grid grid-cols-[minmax(10rem,0.38fr)_minmax(0,1fr)] gap-6 border-t border-[rgba(2,2,13,0.08)] pt-5 first:border-t-0 first:pt-0 max-[809px]:grid-cols-1 max-[809px]:gap-2" key={item.title}>
+                <article data-reveal className="grid grid-cols-[minmax(10rem,0.38fr)_minmax(0,1fr)] gap-6 border-t border-[rgba(2,2,13,0.08)] pt-5 first:border-t-0 first:pt-0 max-[809px]:grid-cols-1 max-[809px]:gap-2" key={item.title}>
                   <h4 className="m-0 text-[1rem] font-medium leading-[1.45] text-[var(--color-ink)]">{item.title}</h4>
                   <p className={`${bodyClass} text-[0.96rem]`}>{item.description}</p>
                 </article>

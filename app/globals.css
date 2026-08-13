@@ -19,7 +19,6 @@
   --color-blue-soft: #38b6ff;
   --color-blue-deep: #1f26aa;
   --color-cyan: #7ee7ff;
-  --color-signal: #9ee37d;
   --color-border-light: rgba(2, 2, 13, 0.12);
   --color-border-dark: rgba(255, 255, 255, 0.12);
 
@@ -53,10 +52,15 @@
   box-sizing: border-box;
 }
 
+/*
+ * No smooth scrolling on the document. Changing page while scrolled down made
+ * the browser animate its way back to the top, and that sweep crossed every
+ * section on the way - firing all their scroll animations before the reader
+ * ever saw them, so scrolling down again showed nothing moving.
+ */
 html {
   background: var(--color-paper);
   color: var(--color-ink);
-  scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
 }
 
@@ -668,10 +672,6 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .ai-chat-message,
   .ai-typing-indicator span,
   .ai-send-button,

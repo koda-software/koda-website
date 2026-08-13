@@ -114,6 +114,7 @@ function StepBlocks({ items }: { items: FeatureBlock[] }) {
     <ol className="mt-10 grid list-none gap-0 border-b border-[rgba(2,2,13,0.12)] p-0">
       {items.map((item, index) => (
         <li
+          data-reveal
           className="grid grid-cols-[4rem_minmax(0,0.45fr)_minmax(0,1fr)] gap-8 border-t border-[rgba(2,2,13,0.12)] py-8 max-[900px]:grid-cols-1 max-[900px]:gap-3"
           key={item.title}
         >
@@ -135,6 +136,7 @@ function TileBlocks({ icons, items }: { icons: LandingIcon[]; items: FeatureBloc
 
         return (
           <article
+            data-reveal
             className="flex flex-col gap-4 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_60%,rgba(56, 182, 255,0.05))] p-6 transition-colors duration-200 hover:border-[rgba(56, 182, 255,0.18)]"
             key={item.title}
           >
@@ -380,6 +382,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
         <div className="mt-8 grid max-w-[52rem] gap-3">
           {content.faq.items.map((item) => (
             <details
+              data-reveal
               className="group rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-5 open:pb-5"
               key={item.question}
             >
@@ -403,6 +406,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
         <div className="mt-8 grid grid-cols-3 gap-4 max-[809px]:grid-cols-1">
           {related.map((item) => (
             <Link
+              data-reveal
               className="group grid gap-3 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-6 transition-colors hover:border-[rgba(56, 182, 255,0.24)]"
               href={item.href}
               key={item.key}

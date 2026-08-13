@@ -29,7 +29,12 @@ type RevealProps = {
  * empty first. Classes are toggled on the node rather than held in state: this
  * is presentational only, and nothing else in the tree needs to re-render.
  */
-export function Reveal({ children, from = "up", delay = 0, className = "" }: RevealProps) {
+export function Reveal({
+  children,
+  from = "up",
+  delay = 0,
+  className = "",
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,29 +46,45 @@ export function Reveal({ children, from = "up", delay = 0, className = "" }: Rev
     element.style.opacity = "0";
     element.style.transform = OFFSETS[from];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          element.style.opacity = "";
-          element.style.transform = "";
-          observer.disconnect();
-        });
-      },
-      // Held back from the bottom edge so a card animates as it properly
-      // enters the viewport, not the instant it clips the fold.
-      { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
-    );
-    observer.observe(element);
+    const reveal = () => {
+      element.style.opacity = "";
+      element.style.transform = "";
+      main.disconnect();
+      settled.disconnect();
+    };
 
-    return () => observer.disconnect();
+    /*
+     * The block has to break a tenth of the screen into view before it moves,
+     * rather than firing on a sliver at the bottom edge. A bare
+     * threshold would not work: it is a share of the element, so a tall card
+     * would trigger on a fraction of itself.
+     */
+    const main = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && reveal()),
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
+    );
+    /* Safety net for blocks near the end of the page, where the scroll runs
+       out before their top ever reaches that line. */
+    const settled = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && reveal()),
+      { threshold: 0.9 },
+    );
+    main.observe(element);
+    settled.observe(element);
+
+    return () => {
+      main.disconnect();
+      settled.disconnect();
+    };
   }, [from]);
 
   return (
     <div
       className={`${styles.reveal} ${className}`.trim()}
       ref={ref}
-      style={delay ? ({ transitionDelay: `${delay}ms` } as CSSProperties) : undefined}
+      style={
+        delay ? ({ transitionDelay: `${delay}ms` } as CSSProperties) : undefined
+      }
     >
       {children}
     </div>
