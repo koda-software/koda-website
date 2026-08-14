@@ -20,6 +20,12 @@ export function OrganizationJsonLd() {
         "@type": "Organization",
         name: siteConfig.name,
         url: siteConfig.url,
+        description: siteConfig.description,
+        logo: {
+          "@type": "ImageObject",
+          url: absoluteUrl(siteConfig.logo),
+        },
+        ...(siteConfig.sameAs.length ? { sameAs: siteConfig.sameAs } : {}),
       }}
     />
   );
@@ -147,9 +153,12 @@ export function ArticleJsonLd({
 
 export function SoftwareApplicationJsonLd({
   description,
+  featureList,
   locale,
 }: {
   description: string;
+  /** What the product does, one entry per capability, in the page's language. */
+  featureList: string[];
   locale: Locale;
 }) {
   return (
@@ -160,9 +169,12 @@ export function SoftwareApplicationJsonLd({
         name: siteConfig.productName,
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
+        applicationSubCategory: "Business Process Management",
         inLanguage: locale,
         url: absoluteUrl(localizePath(locale, "opero")),
         description,
+        featureList,
+        screenshot: absoluteUrl(siteConfig.defaultOgImage),
         provider: {
           "@type": "Organization",
           name: siteConfig.name,

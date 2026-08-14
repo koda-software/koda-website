@@ -5,6 +5,8 @@ import { operoProductContent, operoProductCtas } from "@/content/en/opero";
 import { OperoProductPage } from "@/components/layout/OperoProductPage";
 import { PageShell } from "@/components/layout/PageShell";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { featurePages } from "@/content/en/features";
+import { featureKeys } from "@/lib/i18n/features";
 import { SoftwareApplicationJsonLd } from "@/lib/seo/json-ld";
 
 export const metadata: Metadata = createPageMetadata({
@@ -16,7 +18,11 @@ export const metadata: Metadata = createPageMetadata({
 export default function EnOperoPage() {
   return (
     <>
-      <SoftwareApplicationJsonLd locale="en" description={operoProductContent.seo.description} />
+      <SoftwareApplicationJsonLd
+        description={operoProductContent.seo.description}
+        featureList={featureKeys.map((key) => featurePages[key].navLabel)}
+        locale="en"
+      />
       <PageShell locale="en" page="opero" shell={commonContent} navItems={navItems}>
         <OperoProductPage
           content={operoProductContent}

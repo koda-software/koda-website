@@ -6,6 +6,21 @@ export const siteConfig = {
   productName: "Opero",
   url: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl"),
   defaultOgImage: "/og-image.png",
+  logo: "/branding/kodasoft-logo.svg",
+  /**
+   * One plain sentence about what the company makes. Assistants answering
+   * "who builds Opero" quote the Organization record, so it says the thing
+   * outright rather than leaving it to be inferred from the pages.
+   */
+  description:
+    "KodaSoft builds Opero, a low-code BPM platform for modelling business processes, document workflow, automation, reporting and permissions on one data model.",
+  /**
+   * Profiles that confirm the company is the same entity across the web. Add
+   * the real URLs (LinkedIn, GitHub, company registers) as they exist: this is
+   * what lets a search or answer engine connect the site to everything else
+   * written about KodaSoft. Empty entries are dropped.
+   */
+  sameAs: [] as string[],
 };
 
 export const routeMap = pageKeys.map((page) => ({
