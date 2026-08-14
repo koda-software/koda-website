@@ -3,9 +3,9 @@ import type { BlogUiContent } from "../types";
 
 export const blogContent: BlogUiContent = {
   seo: {
-    title: "Blog - Notes on BPM, No-Code, Automation, and Practical AI",
+    title: "Blog - notes on BPM, low-code and automation",
     description:
-      "Field notes from the team building Opero: BPM implementations, no-code process design, workflow automation, data modelling, governance, and where AI genuinely helps operations.",
+      "Field notes from the team building Opero: BPM rollouts, process design, workflow automation, data modelling, governance, and where AI genuinely helps.",
   },
   index: {
     eyebrow: "Blog",

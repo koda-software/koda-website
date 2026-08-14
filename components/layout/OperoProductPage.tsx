@@ -202,6 +202,7 @@ export function OperoProductPage({
             <ol className="m-0 grid list-none gap-0 p-0">
               {content.connectedModel.layers.map((layer, index) => (
                 <li
+                  data-reveal
                   className="grid grid-cols-[3rem_1fr] gap-4 border-t border-white/[0.12] py-5 first:border-t-0"
                   key={layer.label}
                 >
@@ -244,6 +245,7 @@ export function OperoProductPage({
             <tbody>
               {content.workflowExample.rows.map((row) => (
                 <tr
+                  data-reveal
                   className="border-t border-[rgba(2,2,13,0.08)]"
                   key={row.need}
                 >
@@ -295,6 +297,7 @@ export function OperoProductPage({
             <tbody>
               {content.comparison.columns.map((column) => (
                 <tr
+                  data-reveal
                   className="border-t border-[rgba(2,2,13,0.08)] first:border-t-0"
                   key={column.label}
                 >

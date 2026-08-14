@@ -164,6 +164,7 @@ function SplitBlocks({ icons, items }: { icons: LandingIcon[]; items: FeatureBlo
 
         return (
           <article
+            data-reveal
             className="grid grid-cols-[auto_minmax(0,0.5fr)_minmax(0,1fr)] items-start gap-8 border-t border-[rgba(2,2,13,0.12)] py-9 max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-x-5 max-[900px]:gap-y-4"
             key={item.title}
           >

@@ -114,6 +114,7 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
           <dl className="mt-9 grid max-w-[62rem] gap-0">
             {content.background.rows.map((row) => (
               <div
+                data-reveal
                 className="grid grid-cols-[minmax(9rem,0.26fr)_minmax(0,1fr)] gap-6 border-t border-[rgba(2,2,13,0.08)] py-5 first:border-t-0 max-[809px]:grid-cols-1 max-[809px]:gap-2"
                 key={row.label}
               >

@@ -254,6 +254,7 @@ export function SolutionsPage({
                 <tbody>
                   {content.pattern.rows.map((row) => (
                     <tr
+                      data-reveal
                       className="border-b border-white/[0.08] last:border-b-0"
                       key={row.problem}
                     >
@@ -290,6 +291,7 @@ export function SolutionsPage({
             <ul className="mt-5 grid list-none gap-3 p-0 text-[0.98rem] font-light leading-[1.6] text-[var(--color-muted)]">
               {content.fit.goodFit.map((item) => (
                 <li
+                  data-reveal
                   className="border-t border-[rgba(2,2,13,0.08)] pt-3 first:border-t-0 first:pt-0"
                   key={item}
                 >
@@ -305,6 +307,7 @@ export function SolutionsPage({
             <ul className="mt-5 grid list-none gap-3 p-0 text-[0.98rem] font-light leading-[1.6] text-[var(--color-muted)]">
               {content.fit.notBestFit.map((item) => (
                 <li
+                  data-reveal
                   className="border-t border-[rgba(2,2,13,0.08)] pt-3 first:border-t-0 first:pt-0"
                   key={item}
                 >

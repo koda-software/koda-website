@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
-  description: "KodaSoft tworzy Opero, platformę BPM no-code do procesów firmowych.",
+  description: "KodaSoft tworzy Opero, platformę BPM low-code do procesów, dokumentów i danych firmy.",
   applicationName: siteConfig.name,
   icons: {
     icon: [
