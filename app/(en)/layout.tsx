@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   other: {
-    "apple-mobile-web-app-title": "MyWebSite",
+    "apple-mobile-web-app-title": siteConfig.name,
   },
   robots: {
     index: true,
