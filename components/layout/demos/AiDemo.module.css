@@ -1,12 +1,13 @@
 .wrap { width: 820px; }
-.head { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; }
+/* Heading row sits on the banner, not on a bubble. */
+.head { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; color: var(--on-surface); }
 .head b { font-size: 19px; font-weight: 750; }
 .thread { min-height: 330px; }
 .bubble { max-width: 600px; border-radius: 18px; padding: 15px 19px; font-size: 16.5px; line-height: 1.55; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; }
 .bubble.on { opacity: 1; transform: none; }
 .bubbleMe { margin-left: auto; background: var(--blue); color: #fff; border-bottom-right-radius: 6px; box-shadow: 0 8px 22px rgb(59 130 246 / 0.28); }
 .bubbleAi { background: #fff; border: 1.5px solid var(--line); border-bottom-left-radius: 6px; box-shadow: 0 8px 24px rgb(16 24 40 / 0.07); margin-top: 14px; }
-.reading { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; font-size: 14px; color: var(--ink3); opacity: 0; transition: opacity 0.35s; }
+.reading { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; font-size: 14px; color: var(--on-surface-muted); opacity: 0; transition: opacity 0.35s; }
 .reading.on { opacity: 1; }
 .reading.fadeout { opacity: 0; }
 .reading svg { width: 16px; height: 16px; color: #7c3aed; animation: spin 2.6s linear infinite; }

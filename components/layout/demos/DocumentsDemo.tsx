@@ -105,7 +105,7 @@ export function DocumentsDemo({ content }: { content: DocumentsDemoContent }) {
 
       <DemoView name="path">
         <div className={styles.path}>
-          <div className={shell.lab} style={{ marginBottom: 12 }}>
+          <div className={`${shell.lab} ${shell.labOnSurface}`} style={{ marginBottom: 12 }}>
             {content.pathLabel}
           </div>
           <div className={styles.condition}>
@@ -135,7 +135,7 @@ export function DocumentsDemo({ content }: { content: DocumentsDemoContent }) {
 
       <DemoView name="versions">
         <div className={styles.versions}>
-          <div className={shell.lab} style={{ marginBottom: 14 }}>
+          <div className={`${shell.lab} ${shell.labOnSurface}`} style={{ marginBottom: 14 }}>
             {content.versionsLabel}
           </div>
           {content.versions.map((version, index) => {

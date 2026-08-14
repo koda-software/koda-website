@@ -48,7 +48,7 @@ export function LowCodeDemo({ content }: { content: LowCodeDemoContent }) {
     <DemoStage onClass={styles.on} stageWidth={STAGE_WIDTH} cycleMs={CYCLE_MS} dotCount={2} glowX="80%" stageHeight={STAGE_HEIGHT} timeline={timeline}>
       <DemoView name="build">
         <div className={styles.builder}>
-          <div className={shell.lab}>{content.conditionLabel}</div>
+          <div className={`${shell.lab} ${shell.labOnSurface}`}>{content.conditionLabel}</div>
           <div className={styles.condition}>
             <span className={styles.block} data-el="block-0">
               {fieldBlock}
@@ -69,7 +69,7 @@ export function LowCodeDemo({ content }: { content: LowCodeDemoContent }) {
 
       <DemoView name="fire">
         <div className={styles.effects}>
-          <div className={shell.lab} style={{ marginBottom: 16 }}>
+          <div className={`${shell.lab} ${shell.labOnSurface}`} style={{ marginBottom: 16 }}>
             {content.firedLabel}
           </div>
 

@@ -23,6 +23,14 @@
    * makes the hero taller; past this height it gives up width instead.
    */
   --frame-max-h: 20.5rem;
+  /*
+   * Colours for the few bits of a demo that sit directly on the page behind it
+   * rather than inside one of the white cards - section labels, chart axis
+   * labels, a view heading. With no panel under the mock UI these land on the
+   * dark banner, so they default to light and flip to ink under `toneLight`.
+   */
+  --on-surface: rgb(255 255 255 / 0.92);
+  --on-surface-muted: rgb(255 255 255 / 0.62);
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -51,6 +59,14 @@
   max-width: calc(var(--frame-max-h) * var(--stage-w) / var(--stage-h));
   margin-inline: auto;
   aspect-ratio: var(--stage-w) / var(--stage-h);
+}
+/*
+ * No panel of its own on a dark banner: the mock UI's white cards sit straight
+ * on the hero, so the whole column belongs to the demo instead of to a grey box
+ * around it. A demo in a light section still gets the panel, because there its
+ * white cards would otherwise have nothing to separate them from the page.
+ */
+.toneLight .frame {
   border-radius: 20px;
   overflow: hidden;
   background: radial-gradient(120% 140% at var(--glow-x) 0%, #ffffff 0%, var(--bg) 55%, #e7edfa 100%);
@@ -112,6 +128,13 @@
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink3);
+}
+/*
+ * For a `lab` that labels the mock UI from outside it rather than sitting on a
+ * card - those read against the banner, not against white.
+ */
+.labOnSurface {
+  color: var(--on-surface-muted);
 }
 .tile {
   width: 40px;
@@ -312,4 +335,6 @@
   --caption-color: var(--color-muted);
   --caption-strong: var(--color-ink);
   --dot-color: #cbd5e1;
+  --on-surface: var(--ink);
+  --on-surface-muted: var(--ink2);
 }
