@@ -20,7 +20,7 @@ export const siteConfig = {
    * what lets a search or answer engine connect the site to everything else
    * written about KodaSoft. Empty entries are dropped.
    */
-  sameAs: [] as string[],
+  sameAs: ["https://www.linkedin.com/company/kodasoftpl/"],
 };
 
 export const routeMap = pageKeys.map((page) => ({
