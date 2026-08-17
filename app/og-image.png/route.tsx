@@ -63,5 +63,3 @@ export function GET() {
     SIZE,
   );
 }
-
-export const alt = `${siteConfig.name} - ${siteConfig.productName}`;
