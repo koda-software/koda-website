@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { siteConfig } from "@/lib/seo/site";
 
 /**
  * The link preview card, generated from code rather than kept as a picture in
