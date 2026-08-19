@@ -36,7 +36,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
         label: content.nav.home,
         href: localizePath(locale, "home"),
       },
-      ...navItems,
+      ...navItems.filter((item) => item.page !== "solutions"),
     ],
     [content.nav.home, locale, navItems],
   );

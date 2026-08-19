@@ -38,6 +38,7 @@ export type ShellContent = {
   footer: {
     tagline: string;
     description: string;
+    links: Array<{ label: string; href: string }>;
     languageLabel: string;
     productLine: string;
   };

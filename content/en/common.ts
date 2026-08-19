@@ -21,6 +21,7 @@ export const commonContent: ShellContent = {
     tagline: "A low-code BPM platform built around how companies actually work.",
     description:
       "KodaSoft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",
+    links: [{ label: "Documentation", href: "/docs/en" }],
     languageLabel: "Language",
     productLine: "Low-code BPM by KodaSoft",
   },

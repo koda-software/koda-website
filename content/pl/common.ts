@@ -21,6 +21,7 @@ export const commonContent: ShellContent = {
     tagline: "Platforma BPM low-code dopasowana do tego, jak firmy naprawdę pracują.",
     description:
       "KodaSoft tworzy Opero dla firm, które potrzebują stabilnego oprogramowania dopasowanego do realnych operacji, kontroli, automatyzacji i praktycznego AI.",
+    links: [{ label: "Dokumentacja", href: "/docs/pl" }],
     languageLabel: "Język",
     productLine: "BPM low-code od KodaSoft",
   },

@@ -46,6 +46,11 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
                 {item.label}
               </Link>
             ))}
+            {content.footer.links.map((item) => (
+              <Link className="text-white/66 transition-colors hover:text-white" key={item.href} href={item.href}>
+                {item.label}
+              </Link>
+            ))}
           </div>
           <div className="border-t border-white/[0.12] pt-6 text-white/66 transition-colors hover:text-white">
             <LanguageSwitcher alternatePaths={alternatePaths} locale={locale} page={page} label={content.footer.languageLabel} />
