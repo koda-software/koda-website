@@ -29,6 +29,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/docs",
+        destination: "https://docs.kodasoft.pl/docs",
+      },
+      {
+        source: "/docs/:path*",
+        destination: "https://docs.kodasoft.pl/docs/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
