@@ -16,8 +16,9 @@ import {
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
 import { HexIndex } from "@/components/landing/BrandMark";
-import { LazyHeroVideo } from "@/components/landing/LazyHeroVideo";
+import { HeroDashboardMock } from "@/components/landing/HeroDashboardMock";
 import { Reveal } from "@/components/landing/Reveal";
+import { SolutionScreenshotMock } from "@/components/landing/SolutionScreenshotMock";
 import { WorkflowTimeline } from "@/components/landing/WorkflowTimeline";
 
 type HomeScaffoldProps = {
@@ -45,16 +46,8 @@ export function HomeScaffold({
         secondaryHref={secondaryHref}
         visualMode="edge"
       >
-        <div className="pointer-events-none absolute bottom-0 right-[100px] z-0 w-[clamp(44rem,66vw,77rem)] translate-x-[31%] translate-y-[22%] rotate-[-3deg] opacity-95 max-[1200px]:opacity-55 max-[809px]:right-[100px] max-[809px]:w-[min(51rem,112vw)] max-[809px]:translate-x-[30%] max-[809px]:translate-y-[28%] max-[809px]:opacity-40">
-          <LazyHeroVideo
-            ariaLabel="Opero executive dashboard in the product interface"
-            className="h-auto w-full select-none"
-            feather="top-left"
-            height={1080}
-            poster="/hero/opero-dashboard-hero-poster.webp"
-            src="/hero/opero-dashboard-hero.webm"
-            width={1440}
-          />
+        <div className="pointer-events-none absolute left-[calc(clamp(34rem,58vw,64rem)-100px)] top-[calc(clamp(12.5rem,23vw,18rem)-170px)] z-0 w-[clamp(50rem,72vw,83rem)] opacity-95 max-[1200px]:left-[calc(clamp(23rem,44vw,36rem)-100px)] max-[1200px]:top-[calc(clamp(15rem,28vw,20rem)-170px)] max-[1200px]:w-[clamp(48rem,88vw,74rem)] max-[1200px]:opacity-40 max-[809px]:left-[calc(52vw-100px)] max-[809px]:top-[calc(19rem-170px)] max-[809px]:w-[min(54rem,124vw)] max-[809px]:opacity-24">
+          <HeroDashboardMock className="h-auto w-full select-none" />
         </div>
       </LandingHero>
 
@@ -107,14 +100,7 @@ export function HomeScaffold({
               inside the text shell.
             */}
             <div className="relative ml-[calc(min(0px,(var(--shell-width)-100vw)/2)-var(--page-gutter)-clamp(1rem,2vw,2rem))] max-[1200px]:ml-[calc(var(--page-gutter)*-1)] max-[1200px]:w-[calc(100%+(var(--page-gutter)*2))]">
-              <LazyHeroVideo
-                ariaLabel="Opero product screenshot"
-                className="relative h-auto w-full select-none max-[980px]:w-[112%] max-[980px]:max-w-none max-[980px]:origin-bottom-left"
-                height={1080}
-                poster="/hero/opero-solution-screenshot-poster.webp"
-                src="/hero/opero-solution-screenshot.webm"
-                width={1440}
-              />
+              <SolutionScreenshotMock className="relative left-[50px] h-auto w-full max-w-[64rem] select-none max-[1200px]:left-0 max-[1200px]:max-w-none max-[980px]:w-[112%] max-[980px]:origin-bottom-left" />
             </div>
           </Reveal>
 

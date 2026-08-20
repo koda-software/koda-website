@@ -21,6 +21,7 @@ type SnapCarouselProps = {
 const defaultPauseMs = 1000;
 const defaultScrollDurationMs = 620;
 const defaultSettleMs = 180;
+const loopCopies = 7;
 
 export function SnapCarousel({
   ariaLabel,
@@ -45,8 +46,12 @@ export function SnapCarousel({
   const userScrollRef = useRef(false);
   const slides = useMemo(() => Children.toArray(children), [children]);
   const itemCount = slides.length;
-  const loopSlides = useMemo(() => (itemCount > 1 ? [...slides, ...slides, ...slides] : slides), [itemCount, slides]);
-  const middleStartIndex = itemCount > 1 ? itemCount : 0;
+  const loopSlides = useMemo(
+    () => (itemCount > 1 ? Array.from({ length: loopCopies }, () => slides).flat() : slides),
+    [itemCount, slides],
+  );
+  const middleCopy = Math.floor(loopCopies / 2);
+  const middleStartIndex = itemCount > 1 ? itemCount * middleCopy : 0;
   const [activeLoopIndex, setActiveLoopIndexState] = useState(middleStartIndex);
   const activeLoopIndexRef = useRef(middleStartIndex);
   const [isDragging, setIsDragging] = useState(false);
@@ -101,16 +106,16 @@ export function SnapCarousel({
       }
 
       if (index < itemCount) {
-        return index + itemCount;
+        return index + itemCount * middleCopy;
       }
 
-      if (index >= itemCount * 2) {
-        return index - itemCount;
+      if (index >= itemCount * (loopCopies - 1)) {
+        return index - itemCount * middleCopy;
       }
 
       return index;
     },
-    [itemCount],
+    [itemCount, middleCopy],
   );
 
   const findNearestLoopIndex = useCallback(() => {
@@ -308,12 +313,14 @@ export function SnapCarousel({
       >
         <div className={`${styles.track} ${trackClassName}`.trim()} ref={trackRef}>
           {loopSlides.map((slide, index) => {
-            const isActive = index === activeLoopIndex;
-            const isClone = itemCount > 1 && (index < itemCount || index >= itemCount * 2);
+            const isActive = itemCount > 1
+              ? index % itemCount === activeLoopIndex % itemCount
+              : index === activeLoopIndex;
+            const isClone = itemCount > 1 && Math.floor(index / itemCount) !== middleCopy;
 
             return (
               <div
-                aria-hidden={isClone}
+                aria-hidden={isClone && !isActive}
                 className={`${styles.item} ${isActive ? styles.itemActive : ""} ${itemClassName}`.trim()}
                 data-snap-carousel-item
                 key={`${index}-${index % Math.max(itemCount, 1)}`}

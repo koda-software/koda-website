@@ -50,6 +50,7 @@ export type FeaturePillar = {
   capabilities: string[];
   link?: CtaContent;
   animation?: {
+    tryLabel: string;
     dashboard: {
       blocks: [string, string, string];
       metrics: [string, string, string];

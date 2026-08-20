@@ -128,6 +128,7 @@ export const homeContent: HomeContent = {
           href: localizeFeaturePath("en", "noCode"),
         },
         animation: {
+          tryLabel: "Try it!",
           dashboard: {
             blocks: ["Counter", "Report", "Table"],
             metrics: ["Open value", "Weighted", "Deals"],

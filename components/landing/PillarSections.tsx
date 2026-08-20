@@ -43,7 +43,7 @@ type MotionPathModule = {
   MotionPathPlugin: typeof MotionPathPluginInstance;
 };
 
-const ruleNodeShadow = "0 22px 54px -34px rgba(2,2,13,0.52)";
+const ruleNodeShadow = "0 8px 16px -12px rgba(2,2,13,0.62), 0 12px 24px -20px rgba(2,2,13,0.6)";
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
@@ -53,6 +53,74 @@ const pageClass =
   "relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] pt-3";
 const dropSlotClass =
   "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
+const dashboardMetrics = [
+  { caption: "Open", tone: "bg-[rgba(56,182,255,0.16)] text-[var(--color-blue)]", value: "€18.4k" },
+  { caption: "Weighted", tone: "bg-[rgba(16,185,129,0.14)] text-[#0f8b5d]", value: "€12.1k" },
+  { caption: "Deals", tone: "bg-[rgba(99,102,241,0.14)] text-[#5b5fc7]", value: "27" },
+] as const;
+const dashboardBars = [
+  { label: "New", value: 58 },
+  { label: "Won", value: 82 },
+  { label: "Risk", value: 36 },
+  { label: "Soon", value: 68 },
+  { label: "VIP", value: 92 },
+] as const;
+const dashboardRows = [
+  ["Laptop docks", "12", "Ready"],
+  ["Coffee beans", "4", "Low"],
+  ["NDA pack", "8", "Review"],
+] as const;
+const processRecords = [
+  {
+    calendarClass: "col-start-2 row-start-1 bg-[rgba(56,182,255,0.34)] text-[#075985]",
+    date: "2",
+    owner: "Marta",
+    status: "Intake",
+    title: "Invoice #1042",
+  },
+  {
+    calendarClass: "col-start-5 row-start-2 bg-[rgba(16,185,129,0.28)] text-[#047857]",
+    date: "12",
+    owner: "Tomek",
+    status: "Doing",
+    title: "Onboarding kit",
+  },
+  {
+    calendarClass: "col-start-3 row-start-3 bg-[rgba(99,102,241,0.26)] text-[#4338ca]",
+    date: "17",
+    owner: "Ania",
+    status: "Done",
+    title: "Coffee budget",
+  },
+  {
+    calendarClass: "col-start-6 row-start-4 bg-[rgba(16,185,129,0.28)] text-[#047857]",
+    date: "27",
+    owner: "Piotr",
+    status: "Doing",
+    title: "Vendor NDA",
+  },
+  {
+    calendarClass: "col-start-3 row-start-5 bg-[rgba(56,182,255,0.34)] text-[#075985]",
+    date: "31",
+    owner: "Marta",
+    status: "Intake",
+    title: "Office plants",
+  },
+] as const;
+const kanbanColumns = [
+  {
+    color: "bg-[rgba(56,182,255,0.26)] text-[#075985]",
+    status: "Intake",
+  },
+  {
+    color: "bg-[rgba(16,185,129,0.24)] text-[#047857]",
+    status: "Doing",
+  },
+  {
+    color: "bg-[rgba(99,102,241,0.24)] text-[#4338ca]",
+    status: "Done",
+  },
+] as const;
 
 async function animateDemoIn(root: HTMLElement | null, selector: string, y = 10) {
   if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -134,29 +202,38 @@ function BlockPalette({
   icons,
   className,
   onSelect,
-  pulseFirst = false,
+  pulseIndex,
   selected,
+  showTryMe = false,
+  tryLabel,
 }: {
   blocks: [string, string, string];
   icons: readonly [BlockIcon, BlockIcon, BlockIcon];
   className: string;
   onSelect?: (index: number) => void;
-  pulseFirst?: boolean;
+  pulseIndex?: number;
   selected?: boolean[];
+  showTryMe?: boolean;
+  tryLabel: string;
 }) {
   return (
     <div className={className}>
       {blocks.map((block, index) => (
         <button
           aria-pressed={selected?.[index]}
-          className={`rounded-[calc(var(--radius-button)+2px)] text-left transition-[filter,opacity] duration-150 hover:brightness-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue)] ${
-            pulseFirst && index === 0 && !selected?.[0] ? styles.pulseHint : ""
+          className={`relative rounded-[calc(var(--radius-button)+2px)] text-left transition-[filter,opacity] duration-150 hover:brightness-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue)] ${
+            pulseIndex === index && !selected?.[index] ? styles.pulseHint : ""
           } ${selected?.[index] ? "cursor-default opacity-[0.42] grayscale" : "cursor-pointer"}`}
           disabled={selected?.[index]}
           key={block}
           onClick={() => onSelect?.(index)}
           type="button"
         >
+          {showTryMe && index === 0 && !selected?.[0] ? (
+            <span className={`${styles.tryMePopover} pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.24)] bg-white px-2.5 py-1.5 text-[0.72rem] font-semibold text-[var(--color-blue)] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
+              {tryLabel}
+            </span>
+          ) : null}
           <BlockLabel icon={icons[index]}>{block}</BlockLabel>
         </button>
       ))}
@@ -177,24 +254,23 @@ function DashboardPage({
 }) {
   return (
     <div className="grid h-full min-h-[15.5rem] grid-rows-[auto_1fr] gap-3">
-      <div className={`${dropSlotClass} min-h-[4.625rem] p-2 ${styles.interactiveDropZone}`}>
+      <div className={visibleBlocks[0] ? "min-h-[4.625rem]" : `${dropSlotClass} min-h-[4.625rem] p-2 ${styles.interactiveDropZone}`}>
         {visibleBlocks[0] ? (
-          <div className={`${styles.componentPop} grid grid-cols-3 gap-2`} data-build-component="0">
+          <div className={`${styles.componentPop} grid min-h-[4.625rem] grid-cols-3 gap-2`} data-build-component="0">
             {animation.metrics.map((metric, index) => (
               <span
-                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.08)] bg-white p-2"
+                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.08)] bg-white p-2 shadow-[0_12px_26px_-22px_rgba(2,2,13,0.4)]"
                 key={metric}
               >
-                <span className="block h-2 w-1/2 rounded-full bg-[rgba(11,17,22,0.14)]" />
-                <span
-                  className={`mt-2 block h-4 rounded-full ${
-                    index === 0
-                      ? "w-2/3 bg-[rgba(56,182,255,0.24)]"
-                      : index === 1
-                        ? "w-3/5 bg-[rgba(16,185,129,0.2)]"
-                        : "w-1/2 bg-[rgba(99,102,241,0.18)]"
-                  }`}
-                />
+                <span className="block truncate text-[0.5rem] font-semibold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.46)]">
+                  {metric}
+                </span>
+                <span className="mt-1 block truncate text-[0.95rem] font-semibold leading-none text-[var(--color-ink)]">
+                  {dashboardMetrics[index].value}
+                </span>
+                <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[0.48rem] font-semibold ${dashboardMetrics[index].tone}`}>
+                  {dashboardMetrics[index].caption}
+                </span>
               </span>
             ))}
           </div>
@@ -203,17 +279,29 @@ function DashboardPage({
         )}
       </div>
       <div className="grid grid-cols-[1fr_0.76fr] gap-3">
-        <div className={`${dropSlotClass} p-3 ${styles.interactiveDropZone}`}>
+        <div className={visibleBlocks[1] ? "min-h-full" : `${dropSlotClass} p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[1] ? (
-          <div className={styles.componentPop} data-build-component="1">
-            <span className="mb-2 block h-2 w-1/2 rounded-full bg-[rgba(11,17,22,0.12)]" />
-            <div className="flex h-20 items-end gap-2">
-              {[54, 78, 42, 68, 88].map((height, index) => (
-                <span
-                  className="flex-1 rounded-t-sm bg-[rgba(56,182,255,0.48)]"
-                  key={index}
-                  style={{ height: `${height}%` }}
-                />
+          <div className={`${styles.componentPop} h-full`} data-build-component="1">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[0.58rem] font-semibold text-[var(--color-ink)]">
+                {animation.chartTitle}
+              </span>
+              <span className="rounded-full bg-[rgba(56,182,255,0.12)] px-2 py-0.5 text-[0.48rem] font-semibold text-[var(--color-blue)]">
+                live
+              </span>
+            </div>
+            <div className="relative flex h-20 items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.12)] bg-[linear-gradient(180deg,rgba(56,182,255,0.06),rgba(255,255,255,0.54))] px-2 pb-4 pt-2">
+              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.1)]" aria-hidden="true" />
+              {dashboardBars.map((bar) => (
+                <span className="relative z-[1] grid h-full flex-1 content-end gap-1" key={bar.label}>
+                  <span
+                    className="min-h-3 rounded-t-sm bg-[linear-gradient(180deg,rgba(56,182,255,0.82),rgba(20,112,184,0.58))] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.7)]"
+                    style={{ height: `${bar.value}%` }}
+                  />
+                  <span className="truncate text-center text-[0.45rem] font-medium text-[rgba(11,17,22,0.48)]">
+                    {bar.label}
+                  </span>
+                </span>
               ))}
             </div>
           </div>
@@ -221,13 +309,19 @@ function DashboardPage({
             <EmptySlot label={animation.chartTitle} />
           )}
         </div>
-        <div className={`${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
+        <div className={visibleBlocks[2] ? "grid min-h-full" : `${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[2] ? (
-          <div className={`${styles.componentPop} grid gap-2`} data-build-component="2">
-            <span className="h-2 w-2/3 rounded-full bg-[rgba(11,17,22,0.12)]" />
-            <span className="h-2 w-full rounded-full bg-[rgba(11,17,22,0.08)]" />
-            <span className="h-2 w-5/6 rounded-full bg-[rgba(11,17,22,0.08)]" />
-            <span className="h-2 w-3/4 rounded-full bg-[rgba(11,17,22,0.08)]" />
+          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.07)] bg-white shadow-[0_12px_26px_-22px_rgba(2,2,13,0.4)]`} data-build-component="2">
+            <div className="border-b border-[rgba(2,2,13,0.06)] px-2 py-1.5 text-[0.54rem] font-semibold text-[var(--color-ink)]">
+              {animation.tableTitle}
+            </div>
+            {dashboardRows.map((row) => (
+              <div className="grid grid-cols-[1fr_1.8rem_2.7rem] border-b border-[rgba(2,2,13,0.05)] text-[0.48rem] last:border-b-0" key={row[0]}>
+                <span className="truncate px-2 py-1.5 font-medium text-[var(--color-ink-soft)]">{row[0]}</span>
+                <span className="px-1 py-1.5 text-right text-[rgba(11,17,22,0.48)]">{row[1]}</span>
+                <span className="truncate px-1.5 py-1.5 text-[rgba(11,17,22,0.5)]">{row[2]}</span>
+              </div>
+            ))}
           </div>
           ) : (
             <EmptySlot label={animation.tableTitle} />
@@ -242,6 +336,7 @@ function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
   const [visibleBlocks, setVisibleBlocks] = useState([false, false, false]);
   const rootRef = useRef<HTMLDivElement>(null);
   const complete = visibleBlocks.every(Boolean);
+  const pulseIndex = visibleBlocks.findIndex((visible) => !visible);
 
   const addBlock = (index: number) => {
     setVisibleBlocks((current) => current.map((visible, blockIndex) => visible || blockIndex === index));
@@ -261,15 +356,17 @@ function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
               className={paletteClass}
               icons={dashboardBlockIcons}
               onSelect={addBlock}
-              pulseFirst
+              pulseIndex={pulseIndex === -1 ? undefined : pulseIndex}
               selected={visibleBlocks}
+              showTryMe={!visibleBlocks.some(Boolean)}
+              tryLabel={animation.tryLabel}
             />
           </div>
 
           <div className={pageClass}>
             <DashboardPage animation={animation.dashboard} visibleBlocks={visibleBlocks} />
             {complete ? (
-              <span className={`${styles.componentPop} absolute bottom-0 right-0 grid h-8 w-8 translate-x-1/2 translate-y-1/2 place-items-center rounded-full border border-[rgba(16,185,129,0.24)] bg-[rgba(236,253,245,0.96)] text-[#0f8b5d] shadow-[0_16px_34px_-18px_rgba(2,2,13,0.38)]`} data-build-complete>
+              <span className={`${styles.componentPop} absolute bottom-[-0.75rem] right-[-0.75rem] grid h-8 w-8 place-items-center rounded-full border border-[rgba(16,185,129,0.24)] bg-[rgba(236,253,245,0.96)] text-[#0f8b5d] shadow-[0_16px_34px_-18px_rgba(2,2,13,0.38)]`} data-build-complete>
                 <CheckIcon className="h-4 w-4" strokeWidth={2} />
               </span>
             ) : null}
@@ -307,25 +404,29 @@ function ViewModeButton({
 function TableView({ active }: { active: boolean }) {
   return (
     <div className={`absolute inset-0 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="table">
-      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.09)] bg-white">
-        <div className="grid grid-cols-[1.12fr_0.78fr_0.65fr] bg-[rgba(246,250,253,0.92)] text-[0.54rem] font-semibold uppercase text-[rgba(11,17,22,0.46)]">
-          <span className="border-r border-[rgba(2,2,13,0.08)] px-3 py-2">Case</span>
-          <span className="border-r border-[rgba(2,2,13,0.08)] px-3 py-2">Owner</span>
-          <span className="px-3 py-2">Status</span>
+      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-white shadow-[0_18px_44px_-34px_rgba(2,2,13,0.42)]">
+        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(232,241,248,0.96)] text-[0.54rem] font-bold uppercase text-[rgba(11,17,22,0.62)]">
+          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Case</span>
+          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Owner</span>
+          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Status</span>
+          <span className="px-3 py-2">Day</span>
         </div>
-        {[0, 1, 2, 3, 4, 5].map((row) => (
+        {processRecords.map((record) => (
           <div
-            className="grid grid-cols-[1.12fr_0.78fr_0.65fr] border-t border-[rgba(2,2,13,0.07)]"
-            key={row}
+            className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] border-t border-[rgba(2,2,13,0.09)]"
+            key={record.title}
           >
-            <span className="border-r border-[rgba(2,2,13,0.06)] px-3 py-2">
-              <span className={`block h-2 rounded-full ${row % 2 === 0 ? "w-4/5 bg-[rgba(56,182,255,0.22)]" : "w-2/3 bg-[rgba(11,17,22,0.11)]"}`} />
+            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.64rem] font-semibold text-[var(--color-ink)]">
+              {record.title}
             </span>
-            <span className="border-r border-[rgba(2,2,13,0.06)] px-3 py-2">
-              <span className={`block h-2 rounded-full ${row % 3 === 0 ? "w-3/5 bg-[rgba(16,185,129,0.2)]" : "w-1/2 bg-[rgba(11,17,22,0.1)]"}`} />
+            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.64rem] text-[var(--color-ink-soft)]">
+              {record.owner}
             </span>
-            <span className="px-3 py-2">
-              <span className={`block h-2 rounded-full ${row % 2 === 1 ? "w-2/3 bg-[rgba(99,102,241,0.18)]" : "w-1/2 bg-[rgba(11,17,22,0.1)]"}`} />
+            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.62rem] font-medium text-[rgba(11,17,22,0.72)]">
+              {record.status}
+            </span>
+            <span className="px-3 py-2 text-[0.62rem] font-medium text-[rgba(11,17,22,0.66)]">
+              {record.date}
             </span>
           </div>
         ))}
@@ -335,21 +436,21 @@ function TableView({ active }: { active: boolean }) {
 }
 
 function KanbanView({ active }: { active: boolean }) {
-  const columns = [
-    ["bg-[rgba(56,182,255,0.2)]", "bg-[rgba(56,182,255,0.12)]"],
-    ["bg-[rgba(16,185,129,0.18)]", "bg-[rgba(16,185,129,0.1)]"],
-    ["bg-[rgba(99,102,241,0.16)]", "bg-[rgba(99,102,241,0.09)]"],
-  ];
-
   return (
     <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="kanban">
-      {columns.map((column, columnIndex) => (
-        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.1)] bg-[rgba(246,250,253,0.82)] p-2 shadow-[0_14px_34px_-30px_rgba(2,2,13,0.38)]" key={columnIndex}>
-          <span className={`mb-1 h-2 w-2/3 rounded-full ${column[0]}`} />
-          {[0, 1, 2].map((card) => (
-            <span className="grid gap-2 rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.09)] bg-white p-2 shadow-[0_10px_24px_-20px_rgba(2,2,13,0.34)]" key={card}>
-              <span className={`h-2 rounded-full ${card === 1 ? "w-2/3" : "w-4/5"} ${column[0]}`} />
-              <span className={`h-2 rounded-full ${card === 2 ? "w-1/2" : "w-3/5"} ${column[1]}`} />
+      {kanbanColumns.map((column) => (
+        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.13)] bg-white p-2 shadow-[0_16px_38px_-30px_rgba(2,2,13,0.46)]" key={column.status}>
+          <span className={`mb-1 rounded-full px-2 py-1 text-[0.58rem] font-bold ${column.color}`}>
+            {column.status}
+          </span>
+          {processRecords
+            .filter((record) => record.status === column.status)
+            .map((record) => (
+            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.13)] bg-[rgba(250,252,254,0.98)] p-2 text-[0.6rem] font-semibold leading-[1.25] text-[var(--color-ink)] shadow-[0_12px_28px_-21px_rgba(2,2,13,0.44)]" key={record.title}>
+              {record.title}
+              <span className="mt-1 block text-[0.48rem] font-medium text-[rgba(11,17,22,0.54)]">
+                {record.owner} · day {record.date}
+              </span>
             </span>
           ))}
         </div>
@@ -359,24 +460,20 @@ function KanbanView({ active }: { active: boolean }) {
 }
 
 function CalendarView({ active }: { active: boolean }) {
-  const events = [
-    "col-start-2 row-start-2 bg-[rgba(56,182,255,0.18)]",
-    "col-start-5 row-start-3 bg-[rgba(16,185,129,0.16)]",
-    "col-start-3 row-start-5 bg-[rgba(99,102,241,0.14)]",
-  ];
-
   return (
-    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
+    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] bg-white p-4 shadow-[0_18px_46px_-34px_rgba(2,2,13,0.46)] transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
       {Array.from({ length: 35 }, (_, index) => (
         <span
-          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.05)] bg-white/72 p-1 text-[0.5rem] text-[rgba(11,17,22,0.38)]"
+          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.12)] bg-[rgba(241,246,250,0.96)] p-1 text-[0.5rem] font-semibold text-[rgba(11,17,22,0.58)]"
           key={index}
         >
           {index + 1}
         </span>
       ))}
-      {events.map((event, index) => (
-        <span className={`${event} z-10 mt-5 h-4 rounded-full border border-white/80 shadow-[0_10px_24px_-18px_rgba(2,2,13,0.24)]`} key={index} />
+      {processRecords.map((record) => (
+        <span className={`${record.calendarClass} z-10 mt-4 truncate rounded-full border border-white px-2 py-1 text-[0.54rem] font-bold shadow-[0_14px_30px_-18px_rgba(2,2,13,0.42)] ring-1 ring-white/90`} key={record.title}>
+          {record.title.replace(/^(.+?)(\s|#).*$/, "$1")}
+        </span>
       ))}
     </div>
   );
@@ -418,7 +515,7 @@ function ProcessViewInteractive() {
               onClick={() => setActiveView("calendar")}
             />
           </div>
-          <div className="relative h-[16.5rem] overflow-hidden rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.07)] bg-[rgba(246,250,253,0.78)]">
+          <div className="relative h-[16.5rem] overflow-hidden">
             <TableView active={activeView === "table"} />
             <KanbanView active={activeView === "kanban"} />
             <CalendarView active={activeView === "calendar"} />
@@ -456,7 +553,7 @@ function RuleNode({
         : "border-[rgba(56,182,255,0.2)] bg-[rgba(56,182,255,0.08)] text-[var(--color-blue)]";
 
   return (
-    <div className={`absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_22px_54px_-34px_rgba(2,2,13,0.52)] ${className}`} data-rule-node={nodeId}>
+    <div className={`${styles.ruleNode} absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_8px_16px_-12px_rgba(2,2,13,0.62),0_12px_24px_-20px_rgba(2,2,13,0.6)] ${className}`} data-rule-node={nodeId}>
       <div className="flex items-start gap-2.5">
         <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border ${toneClass}`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
@@ -472,7 +569,7 @@ function RuleNode({
       </div>
       {children}
       {finalSuccess ? (
-        <span className="absolute bottom-0 left-0 grid h-6 w-6 -translate-x-1/3 translate-y-1/3 place-items-center rounded-full border border-[rgba(16,185,129,0.28)] bg-[rgba(236,253,245,0.98)] text-[#0f8b5d] shadow-[0_12px_24px_-16px_rgba(2,2,13,0.38)]">
+        <span className={`${styles.ruleCheckBadge} absolute bottom-0 left-0 grid h-6 w-6 place-items-center rounded-full border border-[rgba(16,185,129,0.28)] bg-[rgba(236,253,245,0.98)] text-[#0f8b5d] shadow-[0_12px_24px_-16px_rgba(2,2,13,0.38)]`}>
           <CheckIcon className="h-3.5 w-3.5" strokeWidth={2.2} />
         </span>
       ) : null}
@@ -552,15 +649,18 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     const startNode = root.querySelector<HTMLElement>('[data-rule-node="start"]');
     const conditionNode = root.querySelector<HTMLElement>('[data-rule-node="condition"]');
     const resultNode = root.querySelector<HTMLElement>(`[data-rule-node="${route}"]`);
+    const ruleNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-rule-node]"));
     const activeLabel = route === "positive" ? positiveLabelRef.current : negativeLabelRef.current;
     const inactiveLabel = route === "positive" ? negativeLabelRef.current : positiveLabelRef.current;
+    if (!startNode || !conditionNode || !resultNode || !activeLabel || !inactiveLabel) {
+      setIsRunning(false);
+      return;
+    }
+
     const activeColor = route === "positive" ? "#10b981" : "#f87171";
     const activeSoftColor = route === "positive" ? "rgba(16,185,129,0.78)" : "rgba(248,113,113,0.82)";
+    const activeDecisionBorder = route === "positive" ? "rgba(16,185,129,0.42)" : "rgba(248,113,113,0.5)";
     const amount = route === "positive" ? "€499" : "€2400";
-    const decisionShadow =
-      route === "positive"
-        ? `0 0 0 4px rgba(16,185,129,0.13), ${ruleNodeShadow}`
-        : `0 0 0 4px rgba(248,113,113,0.14), ${ruleNodeShadow}`;
     const branchPathD =
       route === "positive"
         ? "M 252 246 C 252 306 132 306 132 342"
@@ -583,9 +683,13 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     preparePath(middlePath, "rgba(56,182,255,0.76)");
     preparePath(branchPath, activeSoftColor);
 
-    gsap.set([startNode, conditionNode, resultNode], {
+    gsap.set(ruleNodes, {
+      borderColor: "rgba(2,2,13,0.08)",
+      borderWidth: 1,
       boxShadow: ruleNodeShadow,
+      opacity: 0.5,
       scale: 1,
+      y: 0,
     });
     gsap.set([positiveLabelRef.current, negativeLabelRef.current], {
       backgroundColor: "rgba(255,255,255,0.86)",
@@ -614,7 +718,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     });
     gsap.set(tokenAmount, { autoAlpha: 1, x: 0 });
 
-    const pulseNode = (node: HTMLElement | null, color = "rgba(56,182,255,0.18)", shadow?: string) => {
+    const pulseNode = (node: HTMLElement | null) => {
       if (!node) {
         return;
       }
@@ -622,16 +726,17 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
       timeline.to(
         node,
         {
-          boxShadow: shadow ?? `0 0 0 5px ${color}, ${ruleNodeShadow}`,
-          duration: 0.1,
+          boxShadow: "0 10px 18px -14px rgba(2,2,13,0.58), 0 14px 24px -22px rgba(2,2,13,0.45)",
+          duration: 0.16,
           ease: "power2.out",
+          opacity: 1,
           scale: 1.018,
         },
       ).to(
         node,
         {
           boxShadow: ruleNodeShadow,
-          duration: 0.16,
+          duration: 0.3,
           ease: "power3.out",
           scale: 1,
         },
@@ -639,7 +744,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     };
 
     const absorbAt = (node: HTMLElement | null, color = "rgba(56,182,255,0.18)") => {
-      pulseNode(node, color);
+      pulseNode(node);
       timeline
         .to(tokenCore, {
           boxShadow: `0 0 0 7px ${color}`,
@@ -670,7 +775,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
           boxShadow: "0 0 0 0 rgba(56,182,255,0)",
           scale: 0.34,
         })
-        .set(tokenAmount, { x: -2 })
+        .set(tokenAmount, { autoAlpha: 0, x: -2 })
         .to(tokenCore, {
           duration: 0.12,
           ease: "back.out(2.2)",
@@ -705,7 +810,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
           motionPath: { path: "M 252 54 V 95", autoRotate: false },
         },
         "<",
-      );
+    );
 
     absorbAt(startNode);
     emitFrom(252, 151);
@@ -756,10 +861,10 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         ease: "power2.out",
       }, "+=0.16")
       .to(conditionNode, {
-        boxShadow: decisionShadow,
-        duration: 0.1,
+        borderColor: activeDecisionBorder,
+        borderWidth: 2,
+        duration: 0.22,
         ease: "power2.out",
-        scale: 1.014,
       }, "<")
       .to(tokenCore, {
         backgroundColor: activeColor,
@@ -773,7 +878,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         boxShadow: ruleNodeShadow,
         duration: 0.16,
         ease: "power3.out",
-        scale: 1,
       })
       .to(activeLabel, {
         backgroundColor: route === "positive" ? "rgba(236,253,245,0.96)" : "rgba(254,242,242,0.96)",
@@ -824,7 +928,11 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   return (
     <div className="relative min-h-[29rem] overflow-visible pt-12" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[26.25rem] w-[31.5rem] ${styles.stageScale} ${styles.ruleStage}`}>
-        <div className="relative h-[26.25rem] overflow-visible rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.1)_1px,transparent_1.2px)] [background-size:18px_18px]">
+        <div className="relative h-[26.25rem] overflow-visible rounded-[calc(var(--radius-panel)-14px)]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.15)_1px,transparent_1.25px),linear-gradient(rgba(241,244,247,0.82),rgba(241,244,247,0.82))] [background-size:18px_18px,100%_100%] [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
+          />
           <button
             className={`absolute left-1/2 top-[0.625rem] z-20 inline-flex -translate-x-1/2 cursor-pointer items-center gap-2.5 rounded-[calc(var(--radius-button)+4px)] border border-[rgba(56,182,255,0.3)] bg-white px-4 py-2.5 text-[0.78rem] font-semibold text-[var(--color-ink-soft)] shadow-[0_16px_34px_-22px_rgba(2,2,13,0.38)] transition-[filter] duration-150 hover:brightness-[0.96] disabled:cursor-default ${!isRunning ? styles.pulseHint : ""}`}
             disabled={isRunning}
@@ -914,7 +1022,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
     window.requestAnimationFrame(() => {
       void animateDemoIn(rootRef.current, "[data-permission-field]", 6);
     });
-  }, [role]);
+  }, []);
 
   return (
     <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
@@ -927,23 +1035,18 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                   ["hr", animation.hrRoleLabel],
                   ["employee", animation.employeeRoleLabel],
                 ] as const).map(([value, label]) => (
-                  <button
-                    className={`min-h-8 cursor-pointer rounded-[var(--radius-button)] px-3 text-[0.68rem] font-semibold transition-colors ${
-                      role === value
-                        ? "bg-[rgba(56,182,255,0.12)] text-[var(--color-blue)]"
-                        : "text-[var(--color-muted)] hover:text-[var(--color-ink-soft)]"
-                    } ${value === "employee" && !hasViewedEmployee && role !== "employee" ? styles.pulseHint : ""}`}
+                  <ViewModeButton
+                    active={role === value}
                     key={value}
+                    label={label}
                     onClick={() => {
                       setRole(value);
                       if (value === "employee") {
                         setHasViewedEmployee(true);
                       }
                     }}
-                    type="button"
-                  >
-                    {label}
-                  </button>
+                    pulse={value === "employee" && !hasViewedEmployee && role !== "employee"}
+                  />
                 ))}
               </div>
             </div>
@@ -961,12 +1064,14 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                 return (
                   <div
                     className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.08)] bg-[rgba(246,250,253,0.72)] p-3 ${
+                      protectedField ? styles.permissionProtectedField : ""
+                    } ${
                       protectedField && protectedHidden ? styles.permissionProtectedFieldHidden : ""
                     }`}
                     data-permission-field={protectedField ? "protected" : "open"}
                     key={field.label}
                   >
-                    <div className={`grid gap-2 ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>
+                    <div className={`grid gap-2 ${protectedField ? styles.permissionFieldContent : ""} ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>
                       <span className="text-[0.58rem] font-medium text-[var(--color-ink-soft)]">
                         {field.label}
                       </span>
@@ -974,8 +1079,8 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                         {field.value}
                       </span>
                     </div>
-                    {protectedField && protectedHidden ? (
-                      <div className={`${styles.permissionLockOverlayVisible} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.78)] backdrop-blur-[2px]`}>
+                    {protectedField ? (
+                      <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.78)] backdrop-blur-[2px]`}>
                         <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.26)] bg-white px-3 py-2 text-[0.68rem] font-semibold text-[var(--color-ink-soft)] shadow-[0_14px_28px_-22px_rgba(2,2,13,0.35)]">
                           <LockKeyholeIcon className="h-4 w-4 text-[var(--color-blue)]" strokeWidth={1.7} />
                           {animation.lockedLabel}

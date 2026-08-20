@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { PhotoBackdrop, type PhotoName } from "@/components/layout/PhotoBackdrop";
 import { GsapRevealRoot } from "./GsapRevealRoot";
@@ -130,6 +131,34 @@ export function HeroTitle({ className = "", title }: { className?: string; title
   );
 }
 
+function HeroDescription({ description }: { description?: string }) {
+  if (!description) {
+    return null;
+  }
+
+  const match = description.match(/^Opero(\s+)(.*)$/);
+
+  if (!match) {
+    return description;
+  }
+
+  return (
+    <>
+      <span className="inline-flex align-[-0.4em]">
+        <Image
+          alt="opero"
+          className="h-[1.38em] w-auto opacity-95"
+          height={153}
+          src="/branding/opero-logo-white.svg"
+          width={490}
+        />
+      </span>
+      {match[1]}
+      {match[2]}
+    </>
+  );
+}
+
 export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] font-light leading-[1.62] text-[var(--color-muted)]";
 
 export const mutedCopyClass = "m-0 leading-[1.55] text-[var(--color-muted)]";
@@ -244,7 +273,9 @@ export function LandingHero({
         <div className="relative z-[1]">
           <div data-gsap-reveal><Eyebrow invert>{eyebrow}</Eyebrow></div>
           <div data-gsap-reveal><HeroTitle className="max-w-[880px]" title={title} /></div>
-          <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
+          <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">
+            <HeroDescription description={description} />
+          </p>
           <div data-gsap-reveal>
           <CtaRow
             actions={[
@@ -415,20 +446,24 @@ function BrandMarkMotif() {
 
 export function FinalCtaPanel({ description, eyebrow, primaryCta, primaryHref, secondaryCta, secondaryHref, title }: FinalCtaPanelProps) {
   return (
-    <DarkPanel className="relative overflow-hidden [background:var(--gradient-final-cta)]">
+    <DarkPanel className="relative overflow-hidden [background:var(--gradient-final-cta)] max-[520px]:rounded-[1.25rem] max-[520px]:p-[1.35rem]">
       <BrandMarkMotif />
       <div className="relative z-[1]">
         <p className={darkEyebrowClass}>{eyebrow}</p>
-        <h2 className="m-0 max-w-[900px] text-[clamp(2.65rem,5.6vw,4.25rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.45rem,12vw,3.35rem)]">
+        <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.65rem,5.6vw,4.25rem)] leading-[1.01] tracking-[-0.055em] max-[809px]:text-[clamp(2rem,9vw,2.75rem)] max-[520px]:leading-[1.04]">
           {title}
         </h2>
-        <p className={`${sectionDescriptionClass} max-w-[680px] text-white/70`}>{description}</p>
-        <CtaRow
-          actions={[
-            { href: primaryHref, label: primaryCta },
-            { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
-          ]}
-        />
+        <p className={`${sectionDescriptionClass} max-w-[680px] text-white/70 max-[520px]:mt-3 max-[520px]:text-[1rem]`}>
+          {description}
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3 max-[520px]:mt-6 max-[520px]:grid max-[520px]:grid-cols-1">
+          <Link className={`${buttonClasses.primary} max-[520px]:w-full`} href={primaryHref}>
+            {primaryCta}
+          </Link>
+          <Link className={`${buttonClasses.darkGhost} max-[520px]:w-full`} href={secondaryHref}>
+            {secondaryCta}
+          </Link>
+        </div>
       </div>
     </DarkPanel>
   );
