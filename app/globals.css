@@ -70,6 +70,19 @@
   --font-mono: var(--font-sans-brand), "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

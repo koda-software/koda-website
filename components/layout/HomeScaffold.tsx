@@ -94,7 +94,7 @@ export function HomeScaffold({
 
       <section className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:radial-gradient(circle_at_16%_22%,rgba(56,182,255,0.2),transparent_34%),linear-gradient(135deg,#0b1116_0%,#0d1e2e_48%,#164363_100%)] px-[var(--page-gutter)] pt-[clamp(3rem,6vw,5rem)] text-white">
         <div className={`${landingShellClass} grid items-end gap-[clamp(2rem,4vw,4.75rem)] grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.74fr)] max-[1200px]:grid-cols-1`}>
-          <Reveal className="max-[1200px]:order-2" from="left">
+          <Reveal className="max-[1200px]:order-2 max-[809px]:hidden" from="left">
             {/*
               The width used to be set explicitly (min(73vw, 65rem)), which at
               common desktop sizes came out wider than the column this sits in
@@ -118,7 +118,7 @@ export function HomeScaffold({
             </div>
           </Reveal>
 
-          <div className="relative z-[1] pb-[var(--section-y)] max-[1200px]:order-1 max-[1200px]:pb-0">
+          <div className="relative z-[1] pb-[var(--section-y)] max-[1200px]:order-1 max-[1200px]:pb-0 max-[809px]:pb-[var(--section-y)]">
             <Reveal>
               <Image
                 alt="Opero"

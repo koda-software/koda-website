@@ -42,9 +42,11 @@ export function Reveal({
     if (!element) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    const offset = window.matchMedia("(max-width: 809px)").matches && from !== "up" ? OFFSETS.up : OFFSETS[from];
+
     // Inline, so the hidden state cannot be beaten by anything in the cascade.
     element.style.opacity = "0";
-    element.style.transform = OFFSETS[from];
+    element.style.transform = offset;
 
     const reveal = () => {
       element.style.opacity = "";
