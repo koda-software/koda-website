@@ -23,6 +23,7 @@ import { Reveal } from "./Reveal";
 
 type NumberedPointGridProps = {
   points: string[];
+  showSeparator?: boolean;
 };
 
 type PillarGridProps = {
@@ -61,9 +62,9 @@ export function CardHead({ index, invert = false }: { index: number; invert?: bo
   );
 }
 
-export function NumberedPointGrid({ points }: NumberedPointGridProps) {
+export function NumberedPointGrid({ points, showSeparator = true }: NumberedPointGridProps) {
   return (
-    <div className="relative mt-[clamp(2.1rem,4vw,3.5rem)] grid grid-cols-4 gap-x-8 gap-y-6 border-t border-[rgba(11,17,22,0.09)] pt-[clamp(1.2rem,2.5vw,1.8rem)] max-[980px]:grid-cols-2 max-[809px]:grid-cols-1">
+    <div className={`relative mt-[clamp(2.1rem,4vw,3.5rem)] grid grid-cols-4 gap-x-8 gap-y-6 pt-[clamp(1.2rem,2.5vw,1.8rem)] max-[980px]:grid-cols-2 max-[809px]:grid-cols-1 ${showSeparator ? "border-t border-[rgba(11,17,22,0.09)]" : ""}`.trim()}>
       {points.map((point, index) => (
         <Reveal className="h-full" delay={index * 110} key={point}>
           <article className="relative h-full min-h-[9.5rem] pr-2 max-[809px]:min-h-0">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
+import { PageHero } from "@/components/landing/LandingPrimitives";
 
 /**
  * Shared class idioms for the blog, mirroring the homepage and solutions pages:
@@ -29,19 +29,19 @@ type BlogHeroProps = {
  */
 export function BlogHero({ eyebrow, title, description, aside }: BlogHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[3.75rem] pt-[9rem] text-white max-[809px]:pt-28">
-      <PhotoBackdrop photo="workspace" opacity={0.22} />
-      <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(16rem,0.46fr)] items-end gap-12 max-[980px]:grid-cols-1 max-[980px]:gap-8">
-        <div>
-          <p className={`${blogDarkEyebrowClass} mb-4`}>{eyebrow}</p>
-          <h1 className="m-0 max-w-[900px] text-[3.5rem] leading-[1.02] tracking-[-0.04em] max-[809px]:text-[2.35rem]">{title}</h1>
-          {description ? (
-            <p className="mt-6 max-w-[680px] text-[1.12rem] font-light leading-[1.6] text-white/72 max-[809px]:text-[1rem]">{description}</p>
-          ) : null}
-        </div>
-        {aside ? <div className="border-y border-white/[0.12] py-6">{aside}</div> : null}
-      </div>
-    </section>
+    <PageHero
+      description={description}
+      descriptionClassName="max-w-[680px] text-[1.12rem] max-[809px]:text-[1rem]"
+      eyebrow={eyebrow}
+      photo="workspace"
+      photoOpacity={0.22}
+      sectionClassName="pb-[4.75rem] pt-[10rem] max-[809px]:pt-[8rem]"
+      shellClassName="grid-cols-[minmax(0,1fr)_minmax(16rem,0.46fr)] items-end gap-12 max-[980px]:gap-8"
+      title={title}
+      titleClassName="max-w-[900px]"
+    >
+      {aside ? <div className="border-y border-white/[0.12] py-6">{aside}</div> : null}
+    </PageHero>
   );
 }
 

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import { HeroTitle } from "@/components/landing/LandingPrimitives";
+import { PageHero } from "@/components/landing/LandingPrimitives";
 import type { AboutPageContent } from "@/content/types";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type AboutPageProps = {
   content: AboutPageContent;
@@ -21,27 +20,17 @@ const buttonClass =
 export function AboutPage({ content, ctas }: AboutPageProps) {
   return (
     <>
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <PhotoBackdrop photo="workspace" priority />
-        <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">
-          <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
-          <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>
-          <p className="hero-rise hero-d2 mt-6 max-w-[780px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">
-            {content.hero.description}
-          </p>
-          <div className="hero-rise hero-d3 mt-8 flex flex-wrap gap-3">
-            <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={ctas.primary}>
-              {content.hero.primaryCta}
-            </Link>
-            <Link
-              className={`${buttonClass} border border-white/[0.18] bg-white/[0.08] text-white hover:bg-white/[0.12]`}
-              href={ctas.secondary}
-            >
-              {content.hero.secondaryCta}
-            </Link>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        description={content.hero.description}
+        eyebrow={content.hero.eyebrow}
+        photo="workspace"
+        primaryCta={content.hero.primaryCta}
+        primaryHref={ctas.primary}
+        secondaryCta={content.hero.secondaryCta}
+        secondaryHref={ctas.secondary}
+        title={content.hero.title}
+        titleClassName="max-w-[940px]"
+      />
 
       <section className={`${sectionClass} grid grid-cols-[minmax(0,1fr)_minmax(20rem,0.82fr)] items-start gap-[clamp(2rem,5vw,4.5rem)] max-[980px]:grid-cols-1`}>
         <div>

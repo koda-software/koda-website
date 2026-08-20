@@ -49,7 +49,18 @@
   --gradient-technical: linear-gradient(165deg, #16222e 0%, #101a23 55%, #0b1116 100%);
   /* One clean diagonal sweep from graphite to brand blue - matches the
      KodaSoft business card, not a hazy multi-stop glow. */
-  --gradient-hero: linear-gradient(135deg, #0b1116 0%, #0f2437 38%, #12456f 68%, #1c6cb5 100%);
+  --gradient-hero:
+    radial-gradient(circle at 82% 16%, rgba(56, 182, 255, 0.24), transparent 31%),
+    radial-gradient(circle at 18% 86%, rgba(27, 113, 180, 0.34), transparent 36%),
+    linear-gradient(135deg, #08131d 0%, #0b2842 40%, #104b7a 72%, #1670b5 100%);
+  --gradient-footer:
+    radial-gradient(circle at 84% 8%, rgba(56, 182, 255, 0.14), transparent 32%),
+    radial-gradient(circle at 16% 92%, rgba(20, 88, 142, 0.24), transparent 34%),
+    linear-gradient(150deg, #081018 0%, #0b1a28 52%, #0d263a 100%);
+  --gradient-final-cta:
+    radial-gradient(circle at 86% 20%, rgba(56, 182, 255, 0.26), transparent 33%),
+    radial-gradient(circle at 18% 92%, rgba(20, 112, 184, 0.24), transparent 36%),
+    linear-gradient(145deg, #101d2a 0%, #0d2740 50%, #09131d 100%);
 }
 
 @theme inline {
@@ -163,35 +174,11 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 58%);
 }
 
-/* ============================================================
-   ETYKIETA SEKCJI - the Opero hexagon as the node in front of every
-   section label.
-
-   Done as a mask rather than a background image so the shape takes
-   `currentColor`, which is what lets the same rule serve the blue label on a
-   white section and the light-blue one on a dark banner without a second
-   definition. Sits in `components` so Tailwind utilities on the element still
-   win, per the note at the top of this file.
-
-   The mark replaced 41 assorted icons that used to open these sections and
-   cards. One shape, two roles: this node, and the numbered badge in
-   components/landing/BrandMark.tsx.
-   ============================================================ */
+/* Section eyebrow labels share a class so page-specific utilities can keep
+   the same typography without repeating global selectors. */
 @layer components {
   .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .eyebrow::before {
-    content: "";
-    width: 0.62rem;
-    height: 0.62rem;
-    flex: none;
-    background-color: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20d%3D%27M%2010.4%202.32%20Q%2012%201.4%2013.6%202.32%20L%2019.6%205.78%20Q%2021.2%206.7%2021.2%208.55%20L%2021.2%2015.45%20Q%2021.2%2017.3%2019.6%2018.22%20L%2013.6%2021.68%20Q%2012%2022.6%2010.4%2021.68%20L%204.4%2018.22%20Q%202.8%2017.3%202.8%2015.45%20L%202.8%208.55%20Q%202.8%206.7%204.4%205.78%20Z%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20d%3D%27M%2010.4%202.32%20Q%2012%201.4%2013.6%202.32%20L%2019.6%205.78%20Q%2021.2%206.7%2021.2%208.55%20L%2021.2%2015.45%20Q%2021.2%2017.3%2019.6%2018.22%20L%2013.6%2021.68%20Q%2012%2022.6%2010.4%2021.68%20L%204.4%2018.22%20Q%202.8%2017.3%202.8%2015.45%20L%202.8%208.55%20Q%202.8%206.7%204.4%205.78%20Z%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+    display: block;
   }
 }
 

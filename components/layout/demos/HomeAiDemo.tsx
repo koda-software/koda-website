@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import type { HomeContent } from "@/content/types";
+import type { AiSectionContent } from "@/content/types";
 import { DemoStage, type DemoApi } from "./DemoStage";
 import { DemoView } from "./DemoView";
 import shell from "./demoShell.module.css";
@@ -11,13 +11,13 @@ const STAGE_WIDTH = 800;
 const STAGE_HEIGHT = 670;
 
 /**
- * The assistant conversation on the home page, told the way the contextual-AI
+ * The assistant conversation, told the way the contextual-AI
  * banner tells it: the question is typed into the composer and sent, the
  * assistant works, answers, and the answer arrives as a real report rather than
  * a paragraph. Replaces the click-to-play mock-up that used to sit here, so the
  * section shows its point without the reader having to press anything.
  */
-export function HomeAiDemo({ chat }: { chat: HomeContent["ai"]["chat"] }) {
+export function HomeAiDemo({ chat }: { chat: AiSectionContent["chat"] }) {
   const timeline = useCallback(
     ({ at, show, hide, type, caption, dot }: DemoApi) => {
       // The view is already on screen - the reader just pressed its send

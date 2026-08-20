@@ -25,7 +25,6 @@ type CtaAction = {
 type CtaRowProps = {
   actions: CtaAction[];
   align?: "left" | "center";
-  label: string;
 };
 
 type DarkPanelProps = {
@@ -35,7 +34,7 @@ type DarkPanelProps = {
 
 type LandingHeroProps = {
   children: ReactNode;
-  description: string;
+  description?: string;
   eyebrow: string;
   /** Photograph behind the banner. Omitted, the banner stays gradient-only. */
   photo?: PhotoName;
@@ -47,6 +46,35 @@ type LandingHeroProps = {
   secondaryHref: string;
   title: string;
   visualMode?: "column" | "edge";
+};
+
+type PageHeroProps = {
+  backgroundVisual?: ReactNode;
+  children?: ReactNode;
+  description?: string;
+  descriptionClassName?: string;
+  eyebrow: string;
+  photo?: PhotoName;
+  photoOpacity?: number;
+  photoPosition?: string;
+  primaryCta?: string;
+  primaryHref?: string;
+  secondaryCta?: string;
+  secondaryHref?: string;
+  sectionClassName?: string;
+  shellClassName?: string;
+  title: string;
+  titleClassName?: string;
+  visualClassName?: string;
+};
+
+type HeroShellProps = {
+  as?: "header" | "section";
+  children: ReactNode;
+  className?: string;
+  photo?: PhotoName;
+  photoOpacity?: number;
+  photoPosition?: string;
 };
 
 type FinalCtaPanelProps = {
@@ -147,9 +175,9 @@ export function SectionIntro({ description, eyebrow, invert = false, split = fal
   );
 }
 
-export function CtaRow({ actions, align = "left", label }: CtaRowProps) {
+export function CtaRow({ actions, align = "left" }: CtaRowProps) {
   return (
-    <div className={`mt-8 flex flex-wrap gap-3 ${align === "center" ? "justify-center" : ""}`} aria-label={label}>
+    <div className={`mt-8 flex flex-wrap gap-3 ${align === "center" ? "justify-center" : ""}`}>
       {actions.map((action) => (
         <Link className={buttonClasses[action.variant ?? "primary"]} href={action.href} key={`${action.href}-${action.label}`}>
           {action.label}
@@ -195,20 +223,11 @@ export function LandingHero({
   const edgeVisual = visualMode === "edge";
 
   return (
-    <section className={`relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28 ${edgeVisual ? "max-[809px]:pb-[min(45vw,13rem)]" : ""}`.trim()}>
+    <section className={`relative flex items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(5rem,9vw,8rem)] pt-[clamp(9rem,14vw,13rem)] text-[var(--color-paper)] max-[809px]:pt-[8rem] ${edgeVisual ? "max-[809px]:pb-[min(48vw,14rem)]" : ""}`.trim()}>
       {photo ? <PhotoBackdrop photo={photo} priority /> : null}
       {edgeVisual ? children : null}
       <div className={`relative z-[1] ${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}>
-        {/*
-          Where a visual bleeds in from the right, the headline's last line runs
-          across it at around 1280px, and white type over a bright product
-          screenshot loses its contrast. This used to be handled with a scrim
-          across the whole banner - which also dimmed the left edge of the
-          screenshot by 60%, veiling the one thing the banner exists to show.
-          A shadow on the type does the same job for the words alone: invisible
-          against the dark part of the banner, and the picture stays untouched.
-        */}
-        <div className="relative z-[1]" style={edgeVisual ? { textShadow: "0 1px 14px rgba(11,17,22,0.9), 0 0 3px rgba(11,17,22,0.7)" } : undefined}>
+        <div className="relative z-[1]">
           <div className="hero-rise"><Eyebrow invert>{eyebrow}</Eyebrow></div>
           <div className="hero-rise hero-d1"><HeroTitle className="max-w-[880px]" title={title} /></div>
           <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
@@ -218,7 +237,6 @@ export function LandingHero({
               { href: primaryHref, label: primaryCta },
               { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
             ]}
-            label="Primary actions"
           />
           </div>
         </div>
@@ -241,6 +259,103 @@ export function LandingHero({
         </a>
       ) : null}
     </section>
+  );
+}
+
+export function HeroShell({
+  as: Component = "section",
+  children,
+  className = "",
+  photo,
+  photoOpacity,
+  photoPosition,
+}: HeroShellProps) {
+  return (
+    <Component
+      className={`relative isolate flex min-h-[min(760px,82svh)] items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4.5rem,8vw,6.5rem)] pt-[clamp(8rem,12vw,11rem)] text-white max-[809px]:min-h-0 max-[809px]:pt-[8rem] ${className}`.trim()}
+    >
+      {photo ? (
+        <PhotoBackdrop
+          opacity={photoOpacity}
+          photo={photo}
+          position={photoPosition}
+          priority
+        />
+      ) : null}
+      {children}
+    </Component>
+  );
+}
+
+export function PageHero({
+  backgroundVisual,
+  children,
+  description,
+  descriptionClassName = "",
+  eyebrow,
+  photo,
+  photoOpacity,
+  photoPosition,
+  primaryCta,
+  primaryHref,
+  secondaryCta,
+  secondaryHref,
+  sectionClassName = "",
+  shellClassName = "",
+  title,
+  titleClassName = "",
+  visualClassName = "",
+}: PageHeroProps) {
+  const hasActions = primaryCta && primaryHref && secondaryCta && secondaryHref;
+  const hasVisual = Boolean(children);
+
+  return (
+    <HeroShell
+      className={sectionClassName}
+      photo={photo}
+      photoOpacity={photoOpacity}
+      photoPosition={photoPosition}
+    >
+      {backgroundVisual}
+      <div
+        className={`relative z-[1] mx-auto w-[min(100%,var(--shell-width))] ${
+          hasVisual
+            ? "grid grid-cols-[minmax(0,1fr)_minmax(18rem,0.58fr)] items-center gap-16 max-[980px]:grid-cols-1"
+            : ""
+        } ${shellClassName}`.trim()}
+      >
+        <div>
+          <div className="hero-rise">
+            <Eyebrow invert>{eyebrow}</Eyebrow>
+          </div>
+          <div className="hero-rise hero-d1">
+            <HeroTitle className={titleClassName} title={title} />
+          </div>
+          {description ? (
+            <p
+              className={`hero-rise hero-d2 mt-6 max-w-[760px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem] ${descriptionClassName}`.trim()}
+            >
+              {description}
+            </p>
+          ) : null}
+          {hasActions ? (
+            <div className="hero-rise hero-d3">
+              <CtaRow
+                actions={[
+                  { href: primaryHref, label: primaryCta },
+                  { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
+                ]}
+              />
+            </div>
+          ) : null}
+        </div>
+        {hasVisual ? (
+          <div className={`hero-slide hero-d3 relative z-[1] min-w-0 ${visualClassName}`.trim()}>
+            {children}
+          </div>
+        ) : null}
+      </div>
+    </HeroShell>
   );
 }
 
@@ -281,22 +396,20 @@ function BrandMarkMotif() {
 
 export function FinalCtaPanel({ description, eyebrow, primaryCta, primaryHref, secondaryCta, secondaryHref, title }: FinalCtaPanelProps) {
   return (
-    <DarkPanel className="relative overflow-hidden text-center">
+    <DarkPanel className="relative overflow-hidden [background:var(--gradient-final-cta)]">
       <BrandMarkMotif />
       <div className="relative z-[1]">
-      <Eyebrow invert>{eyebrow}</Eyebrow>
-      <h2 className="mx-auto m-0 max-w-[900px] text-[clamp(2.65rem,5.6vw,4.25rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.45rem,12vw,3.35rem)]">
-        {title}
-      </h2>
-      <p className={`${sectionDescriptionClass} mx-auto max-w-[680px] text-white/70`}>{description}</p>
-      <CtaRow
-        actions={[
-          { href: primaryHref, label: primaryCta },
-          { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
-        ]}
-        align="center"
-        label="Final actions"
-      />
+        <p className={darkEyebrowClass}>{eyebrow}</p>
+        <h2 className="m-0 max-w-[900px] text-[clamp(2.65rem,5.6vw,4.25rem)] leading-none tracking-[-0.055em] max-[809px]:text-[clamp(2.45rem,12vw,3.35rem)]">
+          {title}
+        </h2>
+        <p className={`${sectionDescriptionClass} max-w-[680px] text-white/70`}>{description}</p>
+        <CtaRow
+          actions={[
+            { href: primaryHref, label: primaryCta },
+            { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
+          ]}
+        />
       </div>
     </DarkPanel>
   );

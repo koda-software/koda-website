@@ -48,6 +48,42 @@ export type FeaturePillar = {
   title: string;
   description: string;
   capabilities: string[];
+  animation?: {
+    dashboard: {
+      blocks: [string, string, string];
+      metrics: [string, string, string];
+      chartTitle: string;
+      tableTitle: string;
+    };
+    form: {
+      blocks: [string, string, string];
+      fields: [string, string, string];
+      actionLabel: string;
+    };
+  };
+  ruleAnimation?: {
+    actionLabel: string;
+    start: { title: string; meta: string };
+    condition: { title: string; meta: string };
+    positive: { title: string; meta: string; outcome: string };
+    negative: { title: string; meta: string; outcome: string };
+    positiveLabel: string;
+    negativeLabel: string;
+  };
+  permissionAnimation?: {
+    title: string;
+    viewAsLabel: string;
+    employeeRoleLabel: string;
+    hrRoleLabel: string;
+    fields: [
+      { label: string; value: string },
+      { label: string; value: string },
+      { label: string; value: string },
+    ];
+    lockedLabel: string;
+    roleBeforeLabel: string;
+    roleAfterLabel: string;
+  };
 };
 
 export type UseCaseCard = {
@@ -150,7 +186,16 @@ export type HomeContent = {
     };
     recordDemo: RecordDemoContent;
   };
-  problem: HomePointGroup;
+  problem: HomePointGroup & {
+    comparison: {
+      title: string;
+      ariaLabel: string;
+      beforeLabel: string;
+      beforeAlt: string;
+      afterLabel: string;
+      afterAlt: string;
+    };
+  };
   solution: HomePointGroup & {
     cta: string;
   };
@@ -166,27 +211,6 @@ export type HomeContent = {
     description: string;
     steps: HomeStep[];
   };
-  ai: HomePointGroup & {
-    chat: {
-      assistantName: string;
-      userRequest: string;
-      assistantReply: string;
-      reportTitle: string;
-      statusLabel: string;
-      scopeLabel: string;
-      sendLabel: string;
-      tableHeaders: [string, string, string];
-      tableRows: Array<[string, string, string]>;
-      /** `<b>` is allowed for emphasis. */
-      captions: { ask: string; working: string; report: string; scope: string };
-    };
-  };
-  useCases: {
-    label: string;
-    title: string;
-    description: string;
-    items: UseCaseCard[];
-  };
   trust: HomePointGroup;
   finalCta: {
     eyebrow: string;
@@ -195,6 +219,29 @@ export type HomeContent = {
     primaryCta: string;
     secondaryCta: string;
   };
+};
+
+export type AiSectionContent = HomePointGroup & {
+  chat: {
+    assistantName: string;
+    userRequest: string;
+    assistantReply: string;
+    reportTitle: string;
+    statusLabel: string;
+    scopeLabel: string;
+    sendLabel: string;
+    tableHeaders: [string, string, string];
+    tableRows: Array<[string, string, string]>;
+    /** `<b>` is allowed for emphasis. */
+    captions: { ask: string; working: string; report: string; scope: string };
+  };
+};
+
+export type UseCasesSectionContent = {
+  label: string;
+  title: string;
+  description: string;
+  items: UseCaseCard[];
 };
 
 export type ProductFeatureRow = {
@@ -249,6 +296,8 @@ export type OperoProductContent = {
       detail: string;
     }>;
   };
+  ai: AiSectionContent;
+  useCases: UseCasesSectionContent;
   /** One end-to-end process walked step by step, to make the abstract capabilities concrete. */
   workflowExample: {
     eyebrow: string;

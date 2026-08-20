@@ -1,0 +1,1341 @@
+.buildStage {
+  --cycle: 14200ms;
+}
+
+.processStage {
+  --process-cycle: 9000ms;
+}
+
+.ruleStage {
+  --rule-cycle: 7600ms;
+  --rule-run: 3400ms;
+}
+
+.permissionStage {
+  --permission-cycle: 5200ms;
+}
+
+.pulseHint {
+  animation: pulseHint 1600ms ease-in-out infinite;
+}
+
+.interactiveDropZone {
+  background: rgba(56, 182, 255, 0.04);
+  border-color: rgba(56, 182, 255, 0.22);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.interactiveDropZone:has(.componentPop) {
+  background: rgba(56, 182, 255, 0.07);
+  border-color: rgba(56, 182, 255, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(56, 182, 255, 0.08);
+}
+
+.componentPop {
+  animation: componentPop 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.modeButtonActive {
+  color: var(--color-blue);
+  background: rgba(56, 182, 255, 0.12);
+  border-color: rgba(56, 182, 255, 0.36);
+  box-shadow: 0 14px 34px -20px rgba(56, 182, 255, 0.5);
+}
+
+.permissionProtectedFieldHidden {
+  border-color: rgba(56, 182, 255, 0.3);
+  background: rgba(56, 182, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(56, 182, 255, 0.12);
+  transform: translateY(-0.15rem) scale(0.985);
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.permissionFieldContentHidden {
+  opacity: 0;
+  filter: blur(3px);
+  transform: scale(0.96);
+  transition: opacity 220ms ease, filter 220ms ease, transform 220ms ease;
+}
+
+.permissionLockOverlayVisible {
+  animation: componentPop 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.stageScale {
+  transform: translateX(-50%);
+  transform-origin: top center;
+}
+
+@keyframes pulseHint {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(8, 112, 180, 0), 0 0 0 1px rgba(56, 182, 255, 0.18);
+  }
+  48% {
+    box-shadow: 0 0 0 9px rgba(8, 112, 180, 0.2), 0 0 0 1px rgba(8, 112, 180, 0.36);
+  }
+}
+
+@keyframes componentPop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
+  .stageScale {
+    transform: translateX(-50%) scale(0.88);
+  }
+}
+
+@media (max-width: 460px) {
+  .stageScale {
+    transform: translateX(-50%) scale(0.78);
+  }
+}
+
+@media (max-width: 400px) {
+  .stageScale {
+    transform: translateX(-50%) scale(0.68);
+  }
+}
+
+.dashboardScene,
+.formScene {
+  animation-duration: var(--cycle);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+}
+
+.dashboardScene {
+  animation-name: showDashboardScene;
+}
+
+.formScene {
+  animation-name: showFormScene;
+}
+
+.dropZone {
+  animation: slotGlow var(--cycle) ease-in-out 1 both;
+  animation-fill-mode: both;
+  background: rgba(56, 182, 255, 0.04);
+  border-color: rgba(56, 182, 255, 0.22);
+}
+
+.slotCounter {
+  animation-delay: 0ms;
+}
+
+.slotReport {
+  animation-delay: 1600ms;
+}
+
+.slotTable {
+  animation-delay: 3200ms;
+}
+
+.slotFormTitle {
+  animation-delay: 9400ms;
+}
+
+.slotFormSelect {
+  animation-delay: 11200ms;
+}
+
+.slotFormDescription {
+  animation-delay: 13000ms;
+}
+
+.dragBlock {
+  animation-duration: var(--cycle);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(0.98);
+}
+
+.dragCounter {
+  animation-name: dragCounter;
+}
+
+.dragReport {
+  animation-name: dragReport;
+}
+
+.dragTable {
+  animation-name: dragTable;
+}
+
+.dragFormTitle {
+  animation-name: dragFormTitle;
+}
+
+.dragFormSelect {
+  animation-name: dragFormSelect;
+}
+
+.dragFormDescription {
+  animation-name: dragFormDescription;
+}
+
+.cursor {
+  animation: cursorMove var(--cycle) cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+
+.componentCounter,
+.componentReport,
+.componentTable,
+.componentFormTitle,
+.componentFormSelect,
+.componentFormDescription,
+.componentFormAction {
+  animation-duration: var(--cycle);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: cubic-bezier(0.2, 0.9, 0.2, 1);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+.componentCounter {
+  animation-name: revealCounter;
+}
+
+.componentReport {
+  animation-name: revealReport;
+}
+
+.componentTable {
+  animation-name: revealTable;
+}
+
+.componentFormTitle {
+  animation-name: revealFormTitle;
+}
+
+.componentFormSelect {
+  animation-name: revealFormSelect;
+}
+
+.componentFormDescription {
+  animation-name: revealFormDescription;
+}
+
+.componentFormAction {
+  animation-name: revealFormAction;
+}
+
+.modeButton {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  cursor: pointer;
+  color: var(--color-muted);
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(2, 2, 13, 0.08);
+  border-radius: calc(var(--radius-button) - 2px);
+  box-shadow: 0 10px 28px -24px rgba(2, 2, 13, 0.32);
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, filter 160ms ease;
+  animation-duration: var(--process-cycle);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+}
+
+.modeButton:hover {
+  color: var(--color-ink-soft);
+  background: rgba(56, 182, 255, 0.08);
+  border-color: rgba(56, 182, 255, 0.24);
+  filter: brightness(0.98);
+}
+
+.modeButton.pulseHint {
+  animation: pulseHint 1600ms ease-in-out infinite;
+}
+
+.tableModeButton {
+  animation-name: activateTableButton;
+}
+
+.kanbanModeButton {
+  animation-name: activateKanbanButton;
+}
+
+.calendarModeButton {
+  animation-name: activateCalendarButton;
+}
+
+.processView {
+  animation-duration: var(--process-cycle);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: cubic-bezier(0.2, 0.9, 0.2, 1);
+  opacity: 0;
+  transform: translateY(8px) scale(0.985);
+}
+
+.tableView {
+  animation-name: showTableView;
+}
+
+.kanbanView {
+  animation-name: showKanbanView;
+}
+
+.calendarView {
+  animation-name: showCalendarView;
+}
+
+.processCursor {
+  animation: processCursorMove var(--process-cycle) cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+
+.ruleBasePath,
+.ruleActivePath {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.ruleBasePath {
+  stroke: rgba(11, 17, 22, 0.18);
+}
+
+.ruleActivePath {
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation-duration: var(--rule-cycle);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+.ruleSinglePath {
+  fill: none;
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  animation-duration: var(--rule-run);
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+.ruleSingleStartPath {
+  stroke: rgba(56, 182, 255, 0.72);
+  animation-name: drawRuleSingleStart;
+}
+
+.ruleSinglePositivePath {
+  stroke: rgba(16, 185, 129, 0.72);
+  animation-name: drawRuleSingleBranch;
+}
+
+.ruleSingleNegativePath {
+  stroke: rgba(248, 113, 113, 0.75);
+  animation-name: drawRuleSingleBranch;
+}
+
+.rulePositivePathOne,
+.ruleNegativePathOne {
+  stroke: rgba(56, 182, 255, 0.7);
+}
+
+.rulePositivePathTwo {
+  stroke: rgba(16, 185, 129, 0.72);
+}
+
+.ruleNegativePathTwo {
+  stroke: rgba(248, 113, 113, 0.75);
+}
+
+.rulePositivePathOne {
+  animation-name: drawRulePositiveOne;
+}
+
+.rulePositivePathTwo {
+  animation-name: drawRulePositiveTwo;
+}
+
+.ruleNegativePathOne {
+  animation-name: drawRuleNegativeOne;
+}
+
+.ruleNegativePathTwo {
+  animation-name: drawRuleNegativeTwo;
+}
+
+.ruleBranchLabel {
+  position: absolute;
+  color: rgba(11, 17, 22, 0.42);
+  background: rgba(255, 255, 255, 0.86);
+  border-color: rgba(11, 17, 22, 0.1);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: calc(var(--radius-button) + 2px);
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 12px 28px -24px rgba(2, 2, 13, 0.28);
+}
+
+.ruleBranchLabel {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.62rem;
+}
+
+.rulePositiveLabel {
+  animation: pulseRulePositive var(--rule-run) ease 1 forwards;
+}
+
+.ruleNegativeLabel {
+  animation: pulseRuleNegative var(--rule-run) ease 1 forwards;
+}
+
+.ruleSvgToken {
+  opacity: 0;
+  filter: drop-shadow(0 7px 7px rgba(2, 2, 13, 0.16));
+}
+
+.ruleSvgToken circle:first-child {
+  fill: var(--color-blue);
+  stroke: white;
+  stroke-width: 2;
+}
+
+.ruleTokenDot {
+  fill: white;
+}
+
+.ruleTokenAmountPill {
+  filter: drop-shadow(0 8px 10px rgba(2, 2, 13, 0.14));
+}
+
+.ruleTokenAmountPill rect {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: rgba(11, 17, 22, 0.12);
+  stroke-width: 1;
+}
+
+.ruleTokenAmountPill text {
+  fill: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.rulePositiveToken {
+  animation: showRulePositiveToken var(--rule-cycle) linear 1 forwards;
+}
+
+.rulePositiveToken circle:first-child {
+  animation: colorRulePositiveToken var(--rule-cycle) linear 1 forwards;
+}
+
+.ruleNegativeToken {
+  animation: showRuleNegativeToken var(--rule-cycle) linear 1 forwards;
+}
+
+.ruleNegativeToken circle:first-child {
+  animation: colorRuleNegativeToken var(--rule-cycle) linear 1 forwards;
+}
+
+.ruleSingleToken {
+  animation: showRuleSingleToken var(--rule-run) linear 1 forwards;
+}
+
+.ruleSinglePositiveToken circle:first-child {
+  animation: colorRuleSinglePositiveToken var(--rule-run) linear 1 forwards;
+}
+
+.ruleSingleNegativeToken circle:first-child {
+  animation: colorRuleSingleNegativeToken var(--rule-run) linear 1 forwards;
+}
+
+.ruleStartNodePulse {
+  animation: ruleStartNodePulse var(--rule-run) ease 1 forwards;
+}
+
+.ruleConditionNodePulse {
+  animation: ruleConditionNodePulse var(--rule-run) ease 1 forwards;
+}
+
+.ruleResultNodePulse {
+  animation: ruleResultNodePulse var(--rule-run) ease 1 forwards;
+}
+
+.permissionStatus {
+  animation: permissionStatusPulse var(--permission-cycle) ease infinite;
+}
+
+.permissionRoleBefore {
+  animation: permissionRoleBefore var(--permission-cycle) ease infinite;
+  color: var(--color-blue);
+}
+
+.permissionRoleAfter {
+  opacity: 0;
+  transform: translateY(0.35rem);
+  animation: permissionRoleAfter var(--permission-cycle) ease infinite;
+  color: var(--color-ink-soft);
+}
+
+.permissionProtectedField {
+  animation: permissionFieldFrame var(--permission-cycle) ease infinite;
+}
+
+.permissionFieldContent {
+  animation: permissionFieldContent var(--permission-cycle) ease infinite;
+}
+
+.permissionLockOverlay {
+  opacity: 0;
+  transform: scale(0.98);
+  animation: permissionLockReveal var(--permission-cycle) cubic-bezier(0.2, 0.9, 0.2, 1) infinite;
+}
+
+@keyframes permissionFieldFrame {
+  0%, 48%, 96%, 100% {
+    border-color: rgba(2, 2, 13, 0.08);
+    background: rgba(246, 250, 253, 0.72);
+    box-shadow: none;
+    transform: translateY(0) scale(1);
+  }
+  60%, 86% {
+    border-color: rgba(56, 182, 255, 0.3);
+    background: rgba(56, 182, 255, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(56, 182, 255, 0.12);
+    transform: translateY(-0.25rem) scale(0.985);
+  }
+}
+
+@keyframes permissionFieldContent {
+  0%, 48%, 96%, 100% {
+    opacity: 1;
+    filter: none;
+    transform: scale(1);
+  }
+  60%, 86% {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.96);
+  }
+}
+
+@keyframes permissionLockReveal {
+  0%, 56%, 96%, 100% {
+    opacity: 0;
+    transform: translateY(0.35rem) scale(0.96);
+  }
+  66%, 86% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes permissionStatusPulse {
+  0%, 42%, 96%, 100% {
+    background: rgba(56, 182, 255, 0.08);
+    border-color: rgba(56, 182, 255, 0.22);
+    transform: translateY(0) scale(1);
+  }
+  50%, 86% {
+    background: rgba(11, 17, 22, 0.06);
+    border-color: rgba(11, 17, 22, 0.14);
+    transform: translateY(-1px) scale(1.03);
+  }
+}
+
+@keyframes permissionRoleBefore {
+  0%, 42%, 96%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  52%, 86% {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+}
+
+@keyframes permissionRoleAfter {
+  0%, 42%, 96%, 100% {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  52%, 86% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawRuleSingleStart {
+  0%, 5% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  8% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  24%, 36% {
+    opacity: 1;
+    stroke-dashoffset: 0.66;
+  }
+  56%, 92% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawRuleSingleBranch {
+  0%, 66% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  68% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  88%, 92% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes showRuleSingleToken {
+  0%, 5%, 94%, 100% {
+    opacity: 0;
+  }
+  8%, 90% {
+    opacity: 1;
+  }
+}
+
+@keyframes colorRuleSinglePositiveToken {
+  0%, 67% {
+    fill: var(--color-blue);
+  }
+  68%, 100% {
+    fill: #10b981;
+  }
+}
+
+@keyframes colorRuleSingleNegativeToken {
+  0%, 67% {
+    fill: var(--color-blue);
+  }
+  68%, 100% {
+    fill: #f87171;
+  }
+}
+
+@keyframes ruleStartNodePulse {
+  0%, 18%, 40%, 100% {
+    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+  24%, 34% {
+    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.14), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+}
+
+@keyframes ruleConditionNodePulse {
+  0%, 50%, 72%, 100% {
+    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+  56%, 68% {
+    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.14), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+}
+
+@keyframes ruleResultNodePulse {
+  0%, 80%, 100% {
+    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+  88%, 96% {
+    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.12), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
+  }
+}
+
+@keyframes drawRulePositiveOne {
+  0%, 7% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  8% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  23%, 43% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  49%, 100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawRulePositiveTwo {
+  0%, 22% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  23% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  39%, 43% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  49%, 100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawRuleNegativeOne {
+  0%, 52% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  55% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  70%, 91% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  97%, 100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawRuleNegativeTwo {
+  0%, 69% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  70% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  86%, 91% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  97%, 100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulseRulePositive {
+  0%, 66%, 94%, 100% {
+    color: rgba(11, 17, 22, 0.42);
+    background: rgba(255, 255, 255, 0.86);
+    border-color: rgba(11, 17, 22, 0.1);
+    opacity: 0.58;
+    transform: translateY(0) scale(1);
+  }
+  72%, 90% {
+    color: #0f8b5d;
+    background: rgba(236, 253, 245, 0.9);
+    border-color: rgba(16, 185, 129, 0.18);
+    opacity: 1;
+    transform: translateY(-1px) scale(1.02);
+  }
+}
+
+@keyframes pulseRuleNegative {
+  0%, 66%, 94%, 100% {
+    color: rgba(11, 17, 22, 0.42);
+    background: rgba(255, 255, 255, 0.86);
+    border-color: rgba(11, 17, 22, 0.1);
+    opacity: 0.58;
+    transform: translateY(0) scale(1);
+  }
+  72%, 90% {
+    color: #c2413b;
+    background: rgba(254, 242, 242, 0.92);
+    border-color: rgba(248, 113, 113, 0.22);
+    opacity: 1;
+    transform: translateY(-1px) scale(1.02);
+  }
+}
+
+@keyframes showRulePositiveToken {
+  0%, 6%, 48%, 100% {
+    opacity: 0;
+  }
+  8%, 43% {
+    opacity: 1;
+  }
+}
+
+@keyframes showRuleNegativeToken {
+  0%, 52%, 96%, 100% {
+    opacity: 0;
+  }
+  55%, 91% {
+    opacity: 1;
+  }
+}
+
+@keyframes colorRulePositiveToken {
+  0%, 22% {
+    fill: var(--color-blue);
+  }
+  23%, 100% {
+    fill: #10b981;
+  }
+}
+
+@keyframes colorRuleNegativeToken {
+  0%, 69% {
+    fill: var(--color-blue);
+  }
+  70%, 100% {
+    fill: #f87171;
+  }
+}
+
+@keyframes activateTableButton {
+  0%, 20%, 94%, 100% {
+    color: var(--color-blue);
+    background: rgba(56, 182, 255, 0.12);
+    border-color: rgba(56, 182, 255, 0.36);
+    box-shadow: 0 14px 34px -20px rgba(56, 182, 255, 0.5);
+  }
+  28%, 88% {
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.74);
+    border-color: rgba(2, 2, 13, 0.08);
+    box-shadow: 0 10px 28px -24px rgba(2, 2, 13, 0.32);
+  }
+}
+
+@keyframes activateKanbanButton {
+  0%, 23%, 60%, 100% {
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.74);
+    border-color: rgba(2, 2, 13, 0.08);
+    box-shadow: 0 10px 28px -24px rgba(2, 2, 13, 0.32);
+  }
+  30%, 54% {
+    color: var(--color-blue);
+    background: rgba(56, 182, 255, 0.12);
+    border-color: rgba(56, 182, 255, 0.36);
+    box-shadow: 0 14px 34px -20px rgba(56, 182, 255, 0.5);
+  }
+}
+
+@keyframes activateCalendarButton {
+  0%, 57%, 94%, 100% {
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.74);
+    border-color: rgba(2, 2, 13, 0.08);
+    box-shadow: 0 10px 28px -24px rgba(2, 2, 13, 0.32);
+  }
+  64%, 88% {
+    color: var(--color-blue);
+    background: rgba(56, 182, 255, 0.12);
+    border-color: rgba(56, 182, 255, 0.36);
+    box-shadow: 0 14px 34px -20px rgba(56, 182, 255, 0.5);
+  }
+}
+
+@keyframes showTableView {
+  0%, 22% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  28%, 92% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  96%, 100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes showKanbanView {
+  0%, 26% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  32%, 56% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  62%, 100% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes showCalendarView {
+  0%, 60% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  66%, 90% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  96%, 100% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes processCursorMove {
+  0%, 8% {
+    opacity: 0;
+    transform: translate3d(1.35rem, 1.48rem, 0) scale(1);
+  }
+  14% {
+    opacity: 1;
+    transform: translate3d(1.35rem, 1.48rem, 0) scale(1);
+  }
+  22% {
+    opacity: 1;
+    transform: translate3d(4.35rem, 1.48rem, 0) scale(1);
+  }
+  24% {
+    opacity: 1;
+    transform: translate3d(4.35rem, 1.48rem, 0) scale(0.9);
+  }
+  29% {
+    opacity: 1;
+    transform: translate3d(4.35rem, 1.48rem, 0) scale(1);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(4.35rem, 1.48rem, 0) scale(1);
+  }
+  62% {
+    opacity: 1;
+    transform: translate3d(7.35rem, 1.48rem, 0) scale(1);
+  }
+  64% {
+    opacity: 1;
+    transform: translate3d(7.35rem, 1.48rem, 0) scale(0.9);
+  }
+  69% {
+    opacity: 1;
+    transform: translate3d(7.35rem, 1.48rem, 0) scale(1);
+  }
+  88% {
+    opacity: 1;
+    transform: translate3d(7.35rem, 1.48rem, 0) scale(1);
+  }
+  94% {
+    opacity: 1;
+    transform: translate3d(1.35rem, 1.48rem, 0) scale(0.9);
+  }
+  98%, 100% {
+    opacity: 0;
+    transform: translate3d(1.35rem, 1.48rem, 0) scale(1);
+  }
+}
+
+@keyframes showDashboardScene {
+  0%, 47% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes showFormScene {
+  0%, 49% {
+    opacity: 0;
+  }
+  52%, 100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dragCounter {
+  0%, 4% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.98);
+  }
+  5.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  11% {
+    opacity: 1;
+    transform: translate3d(154%, 2.7rem, 0) scale(1);
+  }
+  12.5%, 100% {
+    opacity: 0;
+    transform: translate3d(154%, 2.7rem, 0) scale(0.96);
+  }
+}
+
+@keyframes dragReport {
+  0%, 14% {
+    opacity: 0;
+    transform: translate3d(0, 3.6rem, 0) scale(0.98);
+  }
+  16% {
+    opacity: 1;
+    transform: translate3d(0, 3.6rem, 0) scale(1);
+  }
+  24% {
+    opacity: 1;
+    transform: translate3d(160%, 7.75rem, 0) scale(1);
+  }
+  25.5%, 100% {
+    opacity: 0;
+    transform: translate3d(160%, 7.75rem, 0) scale(0.96);
+  }
+}
+
+@keyframes dragTable {
+  0%, 28% {
+    opacity: 0;
+    transform: translate3d(0, 7.2rem, 0) scale(0.98);
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(0, 7.2rem, 0) scale(1);
+  }
+  39% {
+    opacity: 1;
+    transform: translate3d(270%, 12.85rem, 0) scale(1);
+  }
+  40.5%, 100% {
+    opacity: 0;
+    transform: translate3d(270%, 12.85rem, 0) scale(0.96);
+  }
+}
+
+@keyframes dragFormTitle {
+  0%, 53% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.98);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  63% {
+    opacity: 1;
+    transform: translate3d(154%, 0.1rem, 0) scale(1);
+  }
+  64.5%, 100% {
+    opacity: 0;
+    transform: translate3d(154%, 0.1rem, 0) scale(0.96);
+  }
+}
+
+@keyframes dragFormSelect {
+  0%, 67% {
+    opacity: 0;
+    transform: translate3d(0, 3.6rem, 0) scale(0.98);
+  }
+  69% {
+    opacity: 1;
+    transform: translate3d(0, 3.6rem, 0) scale(1);
+  }
+  76.5% {
+    opacity: 1;
+    transform: translate3d(154%, 5.9rem, 0) scale(1);
+  }
+  78%, 100% {
+    opacity: 0;
+    transform: translate3d(154%, 5.9rem, 0) scale(0.96);
+  }
+}
+
+@keyframes dragFormDescription {
+  0%, 80% {
+    opacity: 0;
+    transform: translate3d(0, 7.2rem, 0) scale(0.98);
+  }
+  82% {
+    opacity: 1;
+    transform: translate3d(0, 7.2rem, 0) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(154%, 11.75rem, 0) scale(1);
+  }
+  91.5%, 100% {
+    opacity: 0;
+    transform: translate3d(154%, 11.75rem, 0) scale(0.96);
+  }
+}
+
+@keyframes cursorMove {
+  0%, 5% {
+    opacity: 0;
+    transform: translate3d(1.1rem, 1.4rem, 0);
+  }
+  5.5% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 1.4rem, 0);
+  }
+  11% {
+    opacity: 1;
+    transform: translate3d(15.8rem, 4.05rem, 0);
+  }
+  16% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 5rem, 0);
+  }
+  24% {
+    opacity: 1;
+    transform: translate3d(16.35rem, 9.35rem, 0);
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 8.6rem, 0);
+  }
+  39% {
+    opacity: 1;
+    transform: translate3d(27.35rem, 14.35rem, 0);
+  }
+  48% {
+    opacity: 0;
+    transform: translate3d(27.35rem, 14.35rem, 0);
+  }
+  53% {
+    opacity: 0;
+    transform: translate3d(1.1rem, 1.4rem, 0);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 1.4rem, 0);
+  }
+  63% {
+    opacity: 1;
+    transform: translate3d(15.8rem, 1.45rem, 0);
+  }
+  69% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 5rem, 0);
+  }
+  76.5% {
+    opacity: 1;
+    transform: translate3d(15.8rem, 7.25rem, 0);
+  }
+  82% {
+    opacity: 1;
+    transform: translate3d(1.1rem, 8.6rem, 0);
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(15.8rem, 13.15rem, 0);
+  }
+  96%, 100% {
+    opacity: 0;
+    transform: translate3d(15.8rem, 13.15rem, 0);
+  }
+}
+
+@keyframes revealCounter {
+  0%, 12.5% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  12.8%, 46% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  49%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealReport {
+  0%, 25.5% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  26.3%, 46% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  49%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealTable {
+  0%, 40.5% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  41.3%, 46% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  49%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealFormTitle {
+  0%, 63% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  65%, 100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealFormSelect {
+  0%, 77% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  79%, 100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealFormDescription {
+  0%, 90.5% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  92%, 100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes revealFormAction {
+  0%, 91% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  93%, 100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slotGlow {
+  0%, 100% {
+    background: rgba(56, 182, 255, 0.04);
+    border-color: rgba(56, 182, 255, 0.22);
+  }
+  45%, 55% {
+    background: rgba(56, 182, 255, 0.08);
+    border-color: rgba(56, 182, 255, 0.46);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dragBlock,
+  .cursor,
+  .dropZone,
+  .componentCounter,
+  .componentReport,
+  .componentTable,
+  .componentFormTitle,
+  .componentFormSelect,
+  .componentFormDescription,
+  .componentFormAction,
+  .dashboardScene,
+  .formScene,
+  .modeButton,
+  .processView,
+  .processCursor,
+  .ruleActivePath,
+  .ruleSinglePath,
+  .ruleBranchLabel,
+  .ruleSvgToken,
+  .ruleSingleToken,
+  .ruleSvgToken circle:first-child,
+  .ruleStartNodePulse,
+  .ruleConditionNodePulse,
+  .ruleResultNodePulse,
+  .permissionStatus,
+  .permissionRoleBefore,
+  .permissionRoleAfter,
+  .permissionProtectedField,
+  .permissionFieldContent,
+  .permissionLockOverlay {
+    animation: none;
+  }
+
+  .dragBlock,
+  .cursor,
+  .processCursor,
+  .ruleSvgToken,
+  .ruleSingleToken {
+    opacity: 0;
+  }
+
+  .dashboardScene {
+    opacity: 1;
+  }
+
+  .formScene {
+    opacity: 0;
+  }
+
+  .componentCounter,
+  .componentReport,
+  .componentTable,
+  .tableView {
+    opacity: 1;
+    transform: none;
+  }
+
+  .kanbanView,
+  .calendarView {
+    opacity: 0;
+  }
+
+  .permissionLockOverlay {
+    opacity: 1;
+    transform: none;
+  }
+
+  .permissionRoleBefore {
+    opacity: 0;
+  }
+
+  .permissionRoleAfter {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -141,6 +141,70 @@ export const operoProductContent: OperoProductContent = {
       { label: "Permissions", detail: "Roles, field access, companies, API tokens and logs." },
     ],
   },
+  ai: {
+    label: "Practical AI",
+    title: "AI should work inside the process, not next to it.",
+    description:
+      "The Opero assistant knows the structure, configuration and data of your instance, so it answers with specifics rather than generalities. Consultants use it to build configuration, and users ask about data in natural language, within their own permissions.",
+    points: [
+      "Building objects, forms and rules in a dialogue with the assistant.",
+      "Questions about data in natural language, without clicking through views.",
+      "Summaries of record context in the middle of a process.",
+      "Classifying and transforming data during a rule execution.",
+      "The user's permissions apply exactly as they do in normal work.",
+    ],
+    chat: {
+      assistantName: "Opero assistant",
+      userRequest: "I need a report of the 5 best-selling products from last week.",
+      assistantReply: "Sure. Here is the report built from your sales records.",
+      reportTitle: "Top products - last week",
+      statusLabel: "ready",
+      scopeLabel: "governed",
+      sendLabel: "Send",
+      tableHeaders: ["Product", "Units", "Revenue"],
+      tableRows: [
+        ["Hydraulic kit A", "184", "42.8k"],
+        ["Service pack Pro", "139", "31.4k"],
+        ["Control module X2", "112", "28.1k"],
+        ["Sensor bundle", "96", "19.6k"],
+        ["Mounting frame", "81", "17.9k"],
+      ],
+      captions: {
+        ask: "You ask about <b>your own data</b>, not general knowledge",
+        working: "The assistant reads <b>records and permissions</b>",
+        report: "The answer comes back as <b>a finished report</b>",
+        scope: "Always within <b>the user's permissions</b>",
+      },
+    },
+  },
+  useCases: {
+    label: "Where it fits",
+    title: "For processes that have outgrown off-the-shelf systems.",
+    description:
+      "Opero works best where the process is specific to your company yet still has to be governed, searchable and ready for an audit.",
+    items: [
+      {
+        title: "Document workflow and approvals",
+        description:
+          "Route letters, invoices and requests through assignment, review and approval, with file versions and a full history on the case.",
+      },
+      {
+        title: "Custom operational records",
+        description:
+          "Build objects and forms for orders, tickets, equipment or contracts when standard ERP modules do not match the process.",
+      },
+      {
+        title: "Automating repetitive work",
+        description:
+          "Move manual steps into rules: numbering, notifications, deadline checks and recurring reports.",
+      },
+      {
+        title: "Reporting without exports",
+        description:
+          "Collect metrics on live data and go from an aggregate number down to the individual records behind it.",
+      },
+    ],
+  },
   workflowExample: {
     eyebrow: "Example",
     title: "A cost invoice: from arrival to report.",

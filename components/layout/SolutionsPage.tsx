@@ -7,13 +7,12 @@ import HeartPulseIcon from "lucide-react/dist/esm/icons/heart-pulse.mjs";
 import LandmarkIcon from "lucide-react/dist/esm/icons/landmark.mjs";
 import StoreIcon from "lucide-react/dist/esm/icons/store.mjs";
 import WrenchIcon from "lucide-react/dist/esm/icons/wrench.mjs";
-import { HeroTitle } from "@/components/landing/LandingPrimitives";
+import { PageHero } from "@/components/landing/LandingPrimitives";
 import type {
   SolutionIndustry,
   SolutionIndustryIcon,
   SolutionsContent,
 } from "@/content/types";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type SolutionsPageProps = {
   content: SolutionsContent;
@@ -182,36 +181,26 @@ export function SolutionsPage({
 }: SolutionsPageProps) {
   return (
     <>
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <PhotoBackdrop photo="documents" opacity={0.26} position="74% center" priority />
-        <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
-          <div>
-            <p className={`${darkEyebrowClass} hero-rise`}>
-              {content.hero.eyebrow}
-            </p>
-            <div className="hero-rise hero-d1">
-              <HeroTitle className="max-w-[980px]" title={content.hero.title} />
-            </div>
-            <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[1.22rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
-              {content.hero.description}
-            </p>
-            <div className="hero-rise hero-d3">
-              <CtaRow
-                invert
-                primaryHref={primaryHref}
-                primaryLabel={content.hero.primaryCta}
-                secondaryHref={secondaryHref}
-                secondaryLabel={content.hero.secondaryCta}
-              />
-            </div>
-          </div>
-          <div className="hero-slide hero-d3 border-y border-white/[0.12] py-8">
-            <p className="m-0 text-[1.08rem] font-light leading-[1.65] text-white/68">
-              {content.hero.supportLine}
-            </p>
-          </div>
+      <PageHero
+        description={content.hero.description}
+        eyebrow={content.hero.eyebrow}
+        photo="documents"
+        photoOpacity={0.26}
+        photoPosition="74% center"
+        primaryCta={content.hero.primaryCta}
+        primaryHref={primaryHref}
+        secondaryCta={content.hero.secondaryCta}
+        secondaryHref={secondaryHref}
+        shellClassName="grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end"
+        title={content.hero.title}
+        titleClassName="max-w-[980px]"
+      >
+        <div className="border-y border-white/[0.12] py-8">
+          <p className="m-0 text-[1.08rem] font-light leading-[1.65] text-white/68">
+            {content.hero.supportLine}
+          </p>
         </div>
-      </section>
+      </PageHero>
 
       <section className={sectionClass}>
         <p className={eyebrowClass}>{content.industries.eyebrow}</p>

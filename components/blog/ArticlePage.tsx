@@ -9,7 +9,7 @@ import { AuthorAvatar, AuthorBox, type BlogAuthor } from "./AuthorBox";
 import { RelatedList } from "./RelatedList";
 import { TagChips } from "./TagChips";
 import { BlogFinalCta, blogMetaClass } from "./primitives";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
+import { HeroShell } from "@/components/landing/LandingPrimitives";
 
 type ArticlePageProps = {
   article: ArticleFullRow;
@@ -43,8 +43,12 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
 
   return (
     <>
-      <header className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
-      <PhotoBackdrop photo="workspace" opacity={0.18} />
+      <HeroShell
+        as="header"
+        className="pb-[3.25rem] pt-[10rem] max-[809px]:pt-[8rem]"
+        photo="workspace"
+        photoOpacity={0.18}
+      >
         {/* The <header> already owns the page gutter; the column only sets the measure. */}
         <div className={`relative z-[1] ${proseColumnClass}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.78rem] font-semibold uppercase tracking-[0.08em]">
@@ -95,7 +99,7 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
             ) : null}
           </div>
         </div>
-      </header>
+      </HeroShell>
 
       <div className={`${columnClass} py-[clamp(3rem,6vw,5rem)]`}>
         <div className={proseColumnClass}>

@@ -5,26 +5,7 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 type LazyHeroVideoProps = {
   ariaLabel: string;
   className?: string;
-  /**
-   * Dissolves the clip's edges instead of ending them on a hard line.
-   *
-   * Two of these recordings are composed on a black field. That black used to
-   * be invisible only because the surface behind it was near-black too, so the
-   * moment the palette moved to graphite each clip started reading as a black
-   * slab pasted onto the page. Feathering fixes it at the seam rather than by
-   * dragging the whole palette back to black, and unlike a `screen` blend it
-   * leaves the interface itself fully opaque and crisp.
-   *
-   * "top-left" is for a clip that bleeds off the bottom-right corner of its
-   * banner, so only those two edges are ever on screen. The fade has to end
-   * exactly where the recording's content begins: any further and it veils the
-   * product interface itself, which is the thing the banner exists to show.
-   * `cropdetect` puts that boundary at 16% from the left and 8% from the top of
-   * the dashboard clip, so the stops sit just past those. "all" is for a clip
-   * that sits fully inside the page, where the window is rotated and leaves
-   * black in every corner.
-   */
-  feather?: "top-left" | "all";
+  feather?: "top-left";
   height: number;
   loop?: boolean;
   /**
@@ -51,8 +32,6 @@ function scheduleIdleLoad(callback: () => void) {
 const featherMasks = {
   "top-left":
     "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 4%, #000 9%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 7%, #000 16%)",
-  all:
-    "linear-gradient(to bottom, transparent 0%, #000 9%, #000 91%, transparent 100%), linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%)",
 } as const;
 
 export function LazyHeroVideo({
@@ -68,7 +47,6 @@ export function LazyHeroVideo({
 }: LazyHeroVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
-
   const maskStyle: CSSProperties | undefined = feather
     ? {
         maskImage: featherMasks[feather],

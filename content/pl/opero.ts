@@ -142,6 +142,70 @@ export const operoProductContent: OperoProductContent = {
       { label: "Uprawnienia", detail: "Role, dostęp do pól, spółki, tokeny API i logi." },
     ],
   },
+  ai: {
+    label: "Praktyczne AI",
+    title: "AI powinno pracować w procesie, nie obok niego.",
+    description:
+      "Asystent Opero zna strukturę, konfigurację i dane Twojej instancji, więc odpowiada konkretami zamiast ogólników. Konsultant buduje nim konfigurację, a użytkownik pyta o dane w języku naturalnym, w granicach swoich uprawnień.",
+    points: [
+      "Budowa obiektów, formularzy i reguł w dialogu z asystentem.",
+      "Pytania o dane w języku naturalnym, bez klikania po widokach.",
+      "Podsumowania kontekstu rekordu w trakcie procesu.",
+      "Klasyfikacja i przekształcanie danych podczas wykonania reguły.",
+      "Uprawnienia użytkownika obowiązują tak samo jak przy zwykłej pracy.",
+    ],
+    chat: {
+      assistantName: "Asystent Opero",
+      userRequest: "Potrzebuję raportu 5 najlepiej sprzedających się produktów z ostatniego tygodnia.",
+      assistantReply: "Jasne. Oto raport przygotowany na podstawie rekordów sprzedaży.",
+      reportTitle: "Najlepsze produkty - ostatni tydzień",
+      statusLabel: "gotowe",
+      scopeLabel: "kontrolowane",
+      sendLabel: "Wyślij",
+      tableHeaders: ["Produkt", "Szt.", "Przychód"],
+      tableRows: [
+        ["Zestaw hydrauliczny A", "184", "42,8 tys."],
+        ["Pakiet serwisowy Pro", "139", "31,4 tys."],
+        ["Moduł sterujący X2", "112", "28,1 tys."],
+        ["Pakiet czujników", "96", "19,6 tys."],
+        ["Rama montażowa", "81", "17,9 tys."],
+      ],
+      captions: {
+        ask: "Pytasz <b>o własne dane</b>, nie o ogólną wiedzę",
+        working: "Asystent czyta <b>rekordy i uprawnienia</b>",
+        report: "Odpowiedź wraca jako <b>gotowy raport</b>",
+        scope: "Zawsze w granicach <b>uprawnień użytkownika</b>",
+      },
+    },
+  },
+  useCases: {
+    label: "Gdzie pasuje",
+    title: "Dla procesów, które wyrosły z gotowych systemów.",
+    description:
+      "Opero sprawdza się tam, gdzie proces jest specyficzny dla firmy, a mimo to musi być kontrolowany, przeszukiwalny i gotowy na audyt.",
+    items: [
+      {
+        title: "Obieg dokumentów i akceptacje",
+        description:
+          "Prowadź pisma, faktury i wnioski przez dekretację, opinie i zatwierdzenie, z wersjami plików i pełną historią przy sprawie.",
+      },
+      {
+        title: "Własne rekordy operacyjne",
+        description:
+          "Buduj obiekty i formularze dla zleceń, zgłoszeń, sprzętu czy umów, gdy standardowe moduły ERP nie odpowiadają procesowi.",
+      },
+      {
+        title: "Automatyzacja powtarzalnej pracy",
+        description:
+          "Przenieś ręczne kroki do reguł: nadawanie numerów, powiadomienia, kontrole terminów i cykliczne raporty.",
+      },
+      {
+        title: "Raportowanie bez eksportów",
+        description:
+          "Zbieraj wskaźniki na żywych danych i schodź od liczby zbiorczej do pojedynczych rekordów, które ją tworzą.",
+      },
+    ],
+  },
   workflowExample: {
     eyebrow: "Przykład",
     title: "Faktura kosztowa: od wpływu do raportu.",

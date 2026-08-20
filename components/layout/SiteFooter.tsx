@@ -15,16 +15,11 @@ type SiteFooterProps = {
 
 export function SiteFooter({ locale, page, content, navItems, alternatePaths }: SiteFooterProps) {
   return (
-    <footer className="relative overflow-hidden bg-[var(--color-surface-dark)] px-[var(--page-gutter)] py-[clamp(4rem,8vw,6.5rem)] text-[var(--color-paper)]">
+    <footer className="relative isolate overflow-hidden bg-[#081018] [background:var(--gradient-footer)] px-[var(--page-gutter)] py-[clamp(4rem,8vw,6.5rem)] text-[var(--color-paper)]">
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.45),rgba(56, 182, 255,0.42),transparent)]"
         aria-hidden="true"
       />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(56, 182, 255,0.12),transparent_32%),linear-gradient(225deg,rgba(126,231,255,0.08),transparent_34%)]"
-        aria-hidden="true"
-      />
-
       <div className="relative mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_auto] gap-[clamp(2.5rem,6vw,6rem)] max-[809px]:grid-cols-1">
         <div className="max-w-[44rem]">
           <Link className="mb-6 inline-block" href={localizePath(locale, "home")} aria-label={content.brand}>

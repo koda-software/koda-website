@@ -79,6 +79,14 @@ export const homeContent: HomeContent = {
     title: "The work your system cannot see is the work that costs most.",
     description:
       "A spreadsheet beside the ERP, an approval in email, a file on someone's drive. Small workarounds become a second, undocumented flow: uncounted, invisible, and hard to reconstruct when a case stalls.",
+    comparison: {
+      title: "Revenue Risk Matrix",
+      ariaLabel: "Compare Sheets and Opero",
+      beforeLabel: "Sheets",
+      beforeAlt: "Spreadsheet showing revenue risk matrix source rows",
+      afterLabel: "Opero",
+      afterAlt: "Opero report interface showing a revenue risk matrix",
+    },
     points: [
       "Changing a process takes a development project, so the team routes around the system with a spreadsheet.",
       "The same record lives in three places and is authoritative in none of them.",
@@ -114,28 +122,64 @@ export const homeContent: HomeContent = {
           "Forms and layouts",
           "Dictionaries and custom lists",
         ],
+        animation: {
+          dashboard: {
+            blocks: ["Counter", "Report", "Table"],
+            metrics: ["Open value", "Weighted", "Deals"],
+            chartTitle: "Pipeline health",
+            tableTitle: "Deals by stage",
+          },
+          form: {
+            blocks: ["Text field", "Select", "Rich text"],
+            fields: ["Task title", "Priority", "Description"],
+            actionLabel: "Create task",
+          },
+        },
       },
       {
-        title: "Run processes and documents",
+        title: "Same data, different angles",
         description:
-          "Model flows of work as stages and transitions, route documents through approval and keep file versions with the case.",
+          "Everyone works from the same records, but each role needs a different lens. Shape tables, boards and timelines around the workflow instead of forcing one view on every team.",
         capabilities: [
-          "Stages, transitions and tasks",
-          "Kanban boards",
-          "Document workflow and assignment",
-          "Document templates",
+          "Customisable tables with advanced grouping and formatting",
+          "Flexible kanban boards",
+          "Convenient calendars and Gantt charts",
+          "Role-specific views, filters and layouts",
         ],
       },
       {
-        title: "Automate and analyse",
+        title: "Automate anything",
         description:
-          "Rules take over the repetitive steps, while reports and dashboards show the current state with no export to spreadsheets.",
+          "Build rules around the way your company actually works: approvals, notifications, integrations and edge-case logic. Opero handles simple handoffs and complex exceptions in one governed system.",
         capabilities: [
-          "Rule engine and scripts",
-          "SQL queries",
-          "Reports and dashboards",
-          "AI assistant on your data",
+          "Flexible rules engine for virtually any automation",
+          "Workflow system that keeps processes under control",
+          "Integrations with the tools your teams already use",
+          "AI assistant and API for custom operations",
         ],
+        ruleAnimation: {
+          actionLabel: "Send invoice",
+          start: {
+            title: "Invoice received",
+            meta: "New record",
+          },
+          condition: {
+            title: "Check amount",
+            meta: "Less than €1000?",
+          },
+          positive: {
+            title: "Auto approve",
+            meta: "Under limit",
+            outcome: "Ready to pay",
+          },
+          negative: {
+            title: "Manager review",
+            meta: "Over limit",
+            outcome: "Needs attention",
+          },
+          positiveLabel: "Approve",
+          negativeLabel: "Escalate",
+        },
       },
       {
         title: "Stay in control",
@@ -147,108 +191,52 @@ export const homeContent: HomeContent = {
           "KSeF and e-Delivery",
           "API tokens, MFA and logs",
         ],
+        permissionAnimation: {
+          title: "Employee profile",
+          viewAsLabel: "View as:",
+          employeeRoleLabel: "Employee",
+          hrRoleLabel: "HR",
+          fields: [
+            { label: "Employee", value: "Marta Kowalska" },
+            { label: "Compensation", value: "EUR 92,000" },
+            { label: "Contract type", value: "Full time" },
+          ],
+          lockedLabel: "Field hidden",
+          roleBeforeLabel: "Role: Finance",
+          roleAfterLabel: "Role: Employee",
+        },
       },
     ],
   },
   workflow: {
     label: "How it works",
-    title: "From scattered operations to a system you can govern.",
+    title: "How KodaSoft turns your process into Opero.",
     description:
-      "KodaSoft approaches Opero as a product-grade layer: first we get a clear picture of how the company works, then we turn it into dependable, governed processes.",
+      "Every cooperation starts with understanding the company, not with switching on software. We analyse the real workflow, configure Opero around it, bring the team into the system and keep improving it with live feedback.",
     steps: [
       {
         label: "01",
-        title: "Identify",
+        title: "Analyse",
         description:
-          "Name the records, processes, roles, approvals and handoffs that actually run the company.",
+          "Gather requirements, map the process, name the pain points and see where data, documents and decisions currently break down.",
       },
       {
         label: "02",
-        title: "Model",
+        title: "Model the solution",
         description:
-          "Turn them into custom objects, fields, forms, relations and operational views.",
+          "Translate that analysis into Opero: custom objects, fields, views, workflows, permissions, reports and integrations.",
       },
       {
         label: "03",
-        title: "Automate",
+        title: "Onboard the team",
         description:
-          "Add rules, notifications, scheduled checks, integrations and AI support where they save real time.",
+          "Launch the first working process, train the people who use it and make sure each role sees the views and tasks they need.",
       },
       {
         label: "04",
-        title: "Govern",
+        title: "Iterate and improve",
         description:
-          "Set roles and permissions, keep a trail of changes and surface the state of operations in reports and search.",
-      },
-      {
-        label: "05",
-        title: "Evolve",
-        description:
-          "Change the configuration as the company changes, instead of commissioning the next system from scratch.",
-      },
-    ],
-  },
-  ai: {
-    label: "Practical AI",
-    title: "AI should work inside the process, not next to it.",
-    description:
-      "The Opero assistant knows the structure, configuration and data of your instance, so it answers with specifics rather than generalities. Consultants use it to build configuration, and users ask about data in natural language, within their own permissions.",
-    points: [
-      "Building objects, forms and rules in a dialogue with the assistant.",
-      "Questions about data in natural language, without clicking through views.",
-      "Summaries of record context in the middle of a process.",
-      "Classifying and transforming data during a rule execution.",
-      "The user's permissions apply exactly as they do in normal work.",
-    ],
-    chat: {
-      assistantName: "Opero assistant",
-      userRequest: "I need a report of the 5 best-selling products from last week.",
-      assistantReply: "Sure. Here is the report built from your sales records.",
-      reportTitle: "Top products - last week",
-      statusLabel: "ready",
-      scopeLabel: "governed",
-      sendLabel: "Send",
-      tableHeaders: ["Product", "Units", "Revenue"],
-      tableRows: [
-        ["Hydraulic kit A", "184", "42.8k"],
-        ["Service pack Pro", "139", "31.4k"],
-        ["Control module X2", "112", "28.1k"],
-        ["Sensor bundle", "96", "19.6k"],
-        ["Mounting frame", "81", "17.9k"],
-      ],
-      captions: {
-        ask: "You ask about <b>your own data</b>, not general knowledge",
-        working: "The assistant reads <b>records and permissions</b>",
-        report: "The answer comes back as <b>a finished report</b>",
-        scope: "Always within <b>the user's permissions</b>",
-      },
-    },
-  },
-  useCases: {
-    label: "Where it fits",
-    title: "For processes that have outgrown off-the-shelf systems.",
-    description:
-      "Opero works best where the process is specific to your company yet still has to be governed, searchable and ready for an audit.",
-    items: [
-      {
-        title: "Document workflow and approvals",
-        description:
-          "Route letters, invoices and requests through assignment, review and approval, with file versions and a full history on the case.",
-      },
-      {
-        title: "Custom operational records",
-        description:
-          "Build objects and forms for orders, tickets, equipment or contracts when standard ERP modules do not match the process.",
-      },
-      {
-        title: "Automating repetitive work",
-        description:
-          "Move manual steps into rules: numbering, notifications, deadline checks and recurring reports.",
-      },
-      {
-        title: "Reporting without exports",
-        description:
-          "Collect metrics on live data and go from an aggregate number down to the individual records behind it.",
+          "Use real work to refine the configuration, add automation, adjust reports and expand Opero into the next process.",
       },
     ],
   },

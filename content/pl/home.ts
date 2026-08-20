@@ -79,6 +79,14 @@ export const homeContent: HomeContent = {
     title: "Najwięcej kosztuje praca, której nie widać w systemie.",
     description:
       "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Drobne obejścia tworzą drugi obieg firmy: nieopisany, niewidoczny i trudny do odtworzenia, gdy sprawa staje.",
+    comparison: {
+      title: "Macierz ryzyka przychodów",
+      ariaLabel: "Porównaj Arkusze i Opero",
+      beforeLabel: "Arkusze",
+      beforeAlt: "Arkusz z danymi źródłowymi macierzy ryzyka przychodów",
+      afterLabel: "Opero",
+      afterAlt: "Raport Opero przedstawiający macierz ryzyka przychodów",
+    },
     points: [
       "Zmiana procesu wymaga projektu wdrożeniowego, więc zespół omija system arkuszem.",
       "Ten sam rekord żyje w trzech miejscach i w żadnym nie jest pewny.",
@@ -114,28 +122,64 @@ export const homeContent: HomeContent = {
           "Formularze i układy",
           "Słowniki i listy własne",
         ],
+        animation: {
+          dashboard: {
+            blocks: ["Licznik", "Raport", "Tabela"],
+            metrics: ["Otwarta wartość", "Ważona", "Sprawy"],
+            chartTitle: "Zdrowie pipeline'u",
+            tableTitle: "Sprawy wg etapu",
+          },
+          form: {
+            blocks: ["Pole tekstowe", "Wybór", "Tekst długi"],
+            fields: ["Tytuł zadania", "Priorytet", "Opis"],
+            actionLabel: "Utwórz zadanie",
+          },
+        },
       },
       {
-        title: "Prowadź procesy i dokumenty",
+        title: "Te same dane, różne perspektywy",
         description:
-          "Modeluj obiegi pracy jako etapy i przejścia, prowadź dokumenty przez akceptacje i trzymaj wersje plików przy sprawie.",
+          "Wszyscy pracują na tych samych rekordach, ale każda rola potrzebuje innego widoku. Układaj tabele, tablice i harmonogramy pod przebieg pracy, zamiast narzucać jeden sposób patrzenia całemu zespołowi.",
         capabilities: [
-          "Etapy, przejścia i zadania",
-          "Tablice kanban",
-          "Obieg dokumentów i dekretacja",
-          "Szablony dokumentów",
+          "Konfigurowalne tabele z grupowaniem i formatowaniem",
+          "Elastyczne tablice kanban",
+          "Wygodne kalendarze i wykresy Gantta",
+          "Widoki, filtry i układy dopasowane do ról",
         ],
       },
       {
-        title: "Automatyzuj i analizuj",
+        title: "Automatyzuj wszystko",
         description:
-          "Reguły przejmują powtarzalne kroki, a raporty i dashboardy pokazują bieżący stan bez eksportu do arkuszy.",
+          "Twórz reguły wokół tego, jak naprawdę działa firma: akceptacje, powiadomienia, integracje i logikę wyjątków. Opero obsługuje proste przekazania i złożone przypadki w jednym kontrolowanym systemie.",
         capabilities: [
-          "Silnik reguł i skrypty",
-          "Zapytania SQL",
-          "Raporty i dashboardy",
-          "Asystent AI na Twoich danych",
+          "Elastyczny silnik reguł do niemal każdej automatyzacji",
+          "System workflow, który pilnuje procesów",
+          "Integracje z narzędziami używanymi przez zespoły",
+          "Asystent AI i API do własnych operacji",
         ],
+        ruleAnimation: {
+          actionLabel: "Wyślij fakturę",
+          start: {
+            title: "Faktura wpływa",
+            meta: "Nowy rekord",
+          },
+          condition: {
+            title: "Sprawdź kwotę",
+            meta: "Poniżej €1000?",
+          },
+          positive: {
+            title: "Autoakceptacja",
+            meta: "Poniżej limitu",
+            outcome: "Gotowa do płatności",
+          },
+          negative: {
+            title: "Akceptacja menedżera",
+            meta: "Powyżej limitu",
+            outcome: "Wymaga uwagi",
+          },
+          positiveLabel: "Akceptuj",
+          negativeLabel: "Eskaluj",
+        },
       },
       {
         title: "Zachowaj kontrolę",
@@ -147,108 +191,52 @@ export const homeContent: HomeContent = {
           "KSeF i e-Doręczenia",
           "Tokeny API, MFA i logi",
         ],
+        permissionAnimation: {
+          title: "Profil pracownika",
+          viewAsLabel: "Widok jako:",
+          employeeRoleLabel: "Pracownik",
+          hrRoleLabel: "HR",
+          fields: [
+            { label: "Pracownik", value: "Marta Kowalska" },
+            { label: "Wynagrodzenie", value: "92 000 EUR" },
+            { label: "Typ umowy", value: "Pełny etat" },
+          ],
+          lockedLabel: "Pole ukryte",
+          roleBeforeLabel: "Rola: Finance",
+          roleAfterLabel: "Rola: Pracownik",
+        },
       },
     ],
   },
   workflow: {
     label: "Jak to działa",
-    title: "Od rozproszonych operacji do uporządkowanego systemu.",
+    title: "Jak KodaSoft przekłada proces na Opero.",
     description:
-      "KodaSoft traktuje Opero jak solidną warstwę produktową: najpierw porządkujemy obraz pracy firmy, a potem przekładamy go na stabilne, kontrolowane procesy.",
+      "Każdą współpracę zaczynamy od zrozumienia firmy, a nie od uruchomienia narzędzia. Analizujemy realny przebieg pracy, konfigurujemy Opero pod ten proces, wdrażamy zespół i rozwijamy rozwiązanie na podstawie pracy w systemie.",
     steps: [
       {
         label: "01",
-        title: "Rozpoznaj",
+        title: "Analiza",
         description:
-          "Nazwij rekordy, procesy, role, akceptacje i przekazania, które faktycznie prowadzą firmę.",
+          "Zbieramy wymagania, mapujemy proces, nazywamy problemy i sprawdzamy, gdzie dziś rozchodzą się dane, dokumenty oraz decyzje.",
       },
       {
         label: "02",
-        title: "Zamodeluj",
+        title: "Model rozwiązania",
         description:
-          "Przełóż je na obiekty własne, pola, formularze, relacje i widoki operacyjne.",
+          "Przekładamy analizę na Opero: obiekty, pola, widoki, workflow, uprawnienia, raporty i potrzebne integracje.",
       },
       {
         label: "03",
-        title: "Automatyzuj",
+        title: "Wdrożenie zespołu",
         description:
-          "Dodaj reguły, powiadomienia, kontrole cykliczne, integracje i wsparcie AI tam, gdzie oszczędzają czas.",
+          "Uruchamiamy pierwszy działający proces, szkolimy użytkowników i dbamy o to, żeby każda rola widziała właściwe zadania oraz widoki.",
       },
       {
         label: "04",
-        title: "Kontroluj",
+        title: "Iteracja i rozwój",
         description:
-          "Ustaw role i uprawnienia, utrzymaj ślad zmian i pokaż stan operacji w raportach oraz wyszukiwaniu.",
-      },
-      {
-        label: "05",
-        title: "Rozwijaj",
-        description:
-          "Zmieniaj konfigurację wraz z firmą, zamiast zamawiać kolejne rozwiązanie od zera.",
-      },
-    ],
-  },
-  ai: {
-    label: "Praktyczne AI",
-    title: "AI powinno pracować w procesie, nie obok niego.",
-    description:
-      "Asystent Opero zna strukturę, konfigurację i dane Twojej instancji, więc odpowiada konkretami zamiast ogólników. Konsultant buduje nim konfigurację, a użytkownik pyta o dane w języku naturalnym, w granicach swoich uprawnień.",
-    points: [
-      "Budowa obiektów, formularzy i reguł w dialogu z asystentem.",
-      "Pytania o dane w języku naturalnym, bez klikania po widokach.",
-      "Podsumowania kontekstu rekordu w trakcie procesu.",
-      "Klasyfikacja i przekształcanie danych podczas wykonania reguły.",
-      "Uprawnienia użytkownika obowiązują tak samo jak przy zwykłej pracy.",
-    ],
-    chat: {
-      assistantName: "Asystent Opero",
-      userRequest: "Potrzebuję raportu 5 najlepiej sprzedających się produktów z ostatniego tygodnia.",
-      assistantReply: "Jasne. Oto raport przygotowany na podstawie rekordów sprzedaży.",
-      reportTitle: "Najlepsze produkty - ostatni tydzień",
-      statusLabel: "gotowe",
-      scopeLabel: "kontrolowane",
-      sendLabel: "Wyślij",
-      tableHeaders: ["Produkt", "Szt.", "Przychód"],
-      tableRows: [
-        ["Zestaw hydrauliczny A", "184", "42,8 tys."],
-        ["Pakiet serwisowy Pro", "139", "31,4 tys."],
-        ["Moduł sterujący X2", "112", "28,1 tys."],
-        ["Pakiet czujników", "96", "19,6 tys."],
-        ["Rama montażowa", "81", "17,9 tys."],
-      ],
-      captions: {
-        ask: "Pytasz <b>o własne dane</b>, nie o ogólną wiedzę",
-        working: "Asystent czyta <b>rekordy i uprawnienia</b>",
-        report: "Odpowiedź wraca jako <b>gotowy raport</b>",
-        scope: "Zawsze w granicach <b>uprawnień użytkownika</b>",
-      },
-    },
-  },
-  useCases: {
-    label: "Gdzie pasuje",
-    title: "Dla procesów, które wyrosły z gotowych systemów.",
-    description:
-      "Opero sprawdza się tam, gdzie proces jest specyficzny dla firmy, a mimo to musi być kontrolowany, przeszukiwalny i gotowy na audyt.",
-    items: [
-      {
-        title: "Obieg dokumentów i akceptacje",
-        description:
-          "Prowadź pisma, faktury i wnioski przez dekretację, opinie i zatwierdzenie, z wersjami plików i pełną historią przy sprawie.",
-      },
-      {
-        title: "Własne rekordy operacyjne",
-        description:
-          "Buduj obiekty i formularze dla zleceń, zgłoszeń, sprzętu czy umów, gdy standardowe moduły ERP nie odpowiadają procesowi.",
-      },
-      {
-        title: "Automatyzacja powtarzalnej pracy",
-        description:
-          "Przenieś ręczne kroki do reguł: nadawanie numerów, powiadomienia, kontrole terminów i cykliczne raporty.",
-      },
-      {
-        title: "Raportowanie bez eksportów",
-        description:
-          "Zbieraj wskaźniki na żywych danych i schodź od liczby zbiorczej do pojedynczych rekordów, które ją tworzą.",
+          "Na podstawie realnej pracy dopracowujemy konfigurację, dodajemy automatyzacje, poprawiamy raporty i rozszerzamy Opero na kolejne procesy.",
       },
     ],
   },

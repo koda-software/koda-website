@@ -4,11 +4,10 @@ import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import { HexIndex } from "@/components/landing/BrandMark";
 import { CardHead, IconTextGrid } from "@/components/landing/LandingCards";
 import { FeatureDemo } from "./demos/FeatureDemo";
-import { HeroTitle } from "@/components/landing/LandingPrimitives";
+import { PageHero } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type FeaturePageProps = {
   feature: FeatureKey;
@@ -240,62 +239,36 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
     </section>
   ) : null;
 
-  const heroCopy = (
-    <div>
-      <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
-      <div className="hero-rise hero-d1"><HeroTitle className="max-w-[900px]" title={content.hero.title} /></div>
-      <p className="hero-rise hero-d2 mt-6 max-w-[720px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem]">
-        {content.hero.description}
-      </p>
-      <div className="hero-rise hero-d3 mt-8 flex flex-wrap gap-3">
-        <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
-          {content.hero.primaryCta}
-        </Link>
-        <Link
-          className={`${buttonClass} border border-white/[0.18] bg-white/[0.08] text-white hover:bg-white/[0.12]`}
-          href={secondaryHref}
-        >
-          {content.hero.secondaryCta}
-        </Link>
-      </div>
-    </div>
-  );
+  const heroVisual = content.demo ? (
+    <FeatureDemo demo={content.demo} />
+  ) : content.hero.shot ? (
+    <ShotFrame invert priority shot={content.hero.shot} />
+  ) : null;
+  const heroShellClassName = content.demo
+    ? "grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] gap-[clamp(2rem,4vw,4rem)]"
+    : content.hero.shot
+      ? layout.heroImageColumn === "wide"
+        ? "grid-cols-[minmax(0,0.8fr)_minmax(26rem,1.2fr)]"
+        : "grid-cols-[minmax(0,1fr)_minmax(22rem,0.86fr)]"
+      : "";
 
   return (
     <>
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <PhotoBackdrop photo="operations" priority />
-        {content.demo ? (
-          /*
-           * The demo sits beside the headline, the way the home and Opero
-           * banners do. It takes the larger column because it is a fixed-pixel
-           * canvas scaled to fit: any width the copy does not need goes
-           * straight into how legible the mock UI is. Below 810px the demo
-           * hides itself and the grid collapses to the copy alone.
-           */
-          <div
-            className={`relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-[clamp(2rem,4vw,4rem)] grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] max-[980px]:grid-cols-1`}
-          >
-            {heroCopy}
-            <div className="hero-slide hero-d3 min-w-0">
-              <FeatureDemo demo={content.demo} />
-            </div>
-          </div>
-        ) : content.hero.shot ? (
-          <div
-            className={`relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-16 max-[980px]:grid-cols-1 ${
-              layout.heroImageColumn === "wide"
-                ? "grid-cols-[minmax(0,0.8fr)_minmax(26rem,1.2fr)]"
-                : "grid-cols-[minmax(0,1fr)_minmax(22rem,0.86fr)]"
-            }`}
-          >
-            {heroCopy}
-            <ShotFrame invert priority shot={content.hero.shot} />
-          </div>
-        ) : (
-          <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">{heroCopy}</div>
-        )}
-      </section>
+      <PageHero
+        description={content.hero.description}
+        descriptionClassName="max-w-[720px]"
+        eyebrow={content.hero.eyebrow}
+        photo="operations"
+        primaryCta={content.hero.primaryCta}
+        primaryHref={primaryHref}
+        secondaryCta={content.hero.secondaryCta}
+        secondaryHref={secondaryHref}
+        shellClassName={heroShellClassName}
+        title={content.hero.title}
+        titleClassName="max-w-[900px]"
+      >
+        {heroVisual}
+      </PageHero>
 
       {introSection}
       {layout.shotsFirst ? [shotsSection, blocksSection] : [blocksSection, shotsSection]}

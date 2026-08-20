@@ -5,9 +5,10 @@ import type {
   OperoProductContent,
   ProductFeatureRow,
 } from "@/content/types";
+import { IconTextGrid } from "@/components/landing/LandingCards";
 import { LazyHeroVideo } from "@/components/landing/LazyHeroVideo";
-import { HeroTitle } from "@/components/landing/LandingPrimitives";
-import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
+import { PageHero } from "@/components/landing/LandingPrimitives";
+import { HomeAiDemo } from "./demos/HomeAiDemo";
 
 type OperoProductPageProps = {
   content: OperoProductContent;
@@ -101,43 +102,34 @@ export function OperoProductPage({
 }: OperoProductPageProps) {
   return (
     <>
-      <section className="relative isolate flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[980px]:pb-[min(44vw,15rem)] max-[809px]:pt-28">
-        <PhotoBackdrop photo="operations" priority />
-        <div className="pointer-events-none absolute bottom-0 right-[100px] z-0 w-[clamp(48rem,72vw,84rem)] translate-x-[31%] translate-y-[22%] rotate-[-3deg] opacity-95 max-[1200px]:opacity-55 max-[980px]:right-[100px] max-[980px]:w-[min(56rem,118vw)] max-[980px]:translate-x-[30%] max-[980px]:translate-y-[28%] max-[809px]:opacity-40">
-          <LazyHeroVideo
-            ariaLabel="Opero executive dashboard in the product interface"
-            className="h-auto w-full select-none"
-            feather="top-left"
-            height={1080}
-            poster="/hero/opero-dashboard-hero-poster.webp"
-            src="/hero/opero-dashboard-hero.webm"
-            width={1440}
-          />
-        </div>
-        <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,0.72fr)_minmax(22rem,0.48fr)] items-center gap-16 max-[980px]:grid-cols-1">
-          <div>
-            <p className={`${darkEyebrowClass} hero-rise`}>
-              {content.hero.eyebrow}
-            </p>
-            <div className="hero-rise hero-d1">
-              <HeroTitle className="max-w-[900px]" title={content.hero.title} />
-            </div>
-            <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[1.25rem] font-light leading-[1.58] text-white/74 max-[809px]:text-[1.05rem]">
-              {content.hero.description}
-            </p>
-            <div className="hero-rise hero-d3">
-              <CtaPair
-                invert
-                primaryHref={primaryHref}
-                primaryLabel={content.hero.primaryCta}
-                secondaryHref={secondaryHref}
-                secondaryLabel={content.hero.secondaryCta}
-              />
-            </div>
+      <PageHero
+        backgroundVisual={
+          <div className="pointer-events-none absolute bottom-0 right-[100px] z-0 w-[clamp(44rem,66vw,77rem)] translate-x-[31%] translate-y-[22%] rotate-[-3deg] opacity-95 max-[1200px]:opacity-55 max-[980px]:right-[100px] max-[980px]:w-[min(51rem,108vw)] max-[980px]:translate-x-[30%] max-[980px]:translate-y-[28%] max-[809px]:opacity-40">
+            <LazyHeroVideo
+              ariaLabel="Opero executive dashboard in the product interface"
+              className="h-auto w-full select-none"
+              feather="top-left"
+              height={1080}
+              poster="/hero/opero-dashboard-hero-poster.webp"
+              src="/hero/opero-dashboard-hero.webm"
+              width={1440}
+            />
           </div>
-          <div aria-hidden="true" />
-        </div>
-      </section>
+        }
+        description={content.hero.description}
+        eyebrow={content.hero.eyebrow}
+        photo="operations"
+        primaryCta={content.hero.primaryCta}
+        primaryHref={primaryHref}
+        secondaryCta={content.hero.secondaryCta}
+        secondaryHref={secondaryHref}
+        sectionClassName="max-[980px]:pb-[min(48vw,16rem)]"
+        shellClassName="grid-cols-[minmax(0,0.72fr)_minmax(22rem,0.48fr)]"
+        title={content.hero.title}
+        titleClassName="max-w-[900px]"
+      >
+        <div aria-hidden="true" />
+      </PageHero>
 
       <section
         className={`${sectionClass} grid grid-cols-[minmax(0,0.65fr)_minmax(0,1fr)] gap-16 max-[980px]:grid-cols-1`}
@@ -233,6 +225,22 @@ export function OperoProductPage({
         </div>
       </section>
 
+      <section className={`${sectionClass} grid items-start gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,0.78fr)_minmax(20rem,1fr)] max-[809px]:grid-cols-1`}>
+        <div data-reveal>
+          <p className={eyebrowClass}>{content.ai.label}</p>
+          <h2 className={sectionTitleClass}>{content.ai.title}</h2>
+          <p className={`${bodyClass} mt-5 max-w-[680px]`}>
+            {content.ai.description}
+          </p>
+          <div className="mt-7">
+            <SupportLines items={content.ai.points} />
+          </div>
+        </div>
+        <div data-reveal className="relative" aria-label={content.ai.label}>
+          <HomeAiDemo chat={content.ai.chat} />
+        </div>
+      </section>
+
       <section className={sectionClass}>
         <p className={eyebrowClass}>{content.workflowExample.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.workflowExample.title}</h2>
@@ -296,6 +304,15 @@ export function OperoProductPage({
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className={sectionClass}>
+        <p className={eyebrowClass}>{content.useCases.label}</p>
+        <h2 className={sectionTitleClass}>{content.useCases.title}</h2>
+        <p className={`${bodyClass} mt-5 max-w-[760px]`}>
+          {content.useCases.description}
+        </p>
+        <IconTextGrid items={content.useCases.items} />
       </section>
 
       <section className={sectionClass}>
