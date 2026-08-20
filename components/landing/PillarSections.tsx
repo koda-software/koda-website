@@ -54,9 +54,9 @@ const pageClass =
 const dropSlotClass =
   "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
 const dashboardMetrics = [
-  { caption: "Open", tone: "bg-[rgba(56,182,255,0.22)] text-[#075985]", value: "€18.4k" },
-  { caption: "Weighted", tone: "bg-[rgba(16,185,129,0.2)] text-[#047857]", value: "€12.1k" },
-  { caption: "Deals", tone: "bg-[rgba(99,102,241,0.2)] text-[#4338ca]", value: "27" },
+  { caption: "Open pipeline", value: "€18.4k" },
+  { caption: "Weighted value", value: "€12.1k" },
+  { caption: "Active deals", value: "27" },
 ] as const;
 const dashboardBars = [
   { label: "New", value: 42 },
@@ -109,15 +109,15 @@ const processRecords = [
 ] as const;
 const kanbanColumns = [
   {
-    color: "bg-[#d9f4ff] text-[#075985] ring-1 ring-[#8fdcff]",
+    color: "text-[#075985]",
     status: "Intake",
   },
   {
-    color: "bg-[#dff8eb] text-[#047857] ring-1 ring-[#9be5c1]",
+    color: "text-[#047857]",
     status: "Doing",
   },
   {
-    color: "bg-[#e3e4ff] text-[#4338ca] ring-1 ring-[#b6b8ff]",
+    color: "text-[#4338ca]",
     status: "Done",
   },
 ] as const;
@@ -189,7 +189,7 @@ function BlockLabel({
 }) {
   return (
     <div className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.14)] bg-white px-3 py-2 text-[0.78rem] font-semibold text-[var(--color-ink)]">
-      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border border-[rgba(56,182,255,0.28)] bg-[rgba(56,182,255,0.11)] text-[var(--color-blue)]">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(2,2,13,0.045)] text-[rgba(11,17,22,0.68)]">
         <Icon className="h-4 w-4" strokeWidth={1.6} />
       </span>
       <span className="truncate">{children}</span>
@@ -259,16 +259,16 @@ function DashboardPage({
           <div className={`${styles.componentPop} grid min-h-[4.625rem] grid-cols-3 gap-2`} data-build-component="0">
             {animation.metrics.map((metric, index) => (
               <span
-                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.14)] bg-white p-2 shadow-[0_14px_28px_-22px_rgba(2,2,13,0.42)]"
+                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] p-2 shadow-[0_1px_1px_rgba(50,70,88,0.18)]"
                 key={metric}
               >
-                <span className="block truncate text-[0.5rem] font-bold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.62)]">
+                <span className="block truncate text-[0.5rem] font-semibold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.58)]">
                   {metric}
                 </span>
-                <span className="mt-1 block truncate text-[0.98rem] font-bold leading-none text-[var(--color-ink)]">
+                <span className="mt-1.5 block truncate text-[1.02rem] font-bold leading-none text-[var(--color-ink)]">
                   {dashboardMetrics[index].value}
                 </span>
-                <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[0.48rem] font-semibold ${dashboardMetrics[index].tone}`}>
+                <span className="mt-1.5 block truncate text-[0.5rem] font-medium text-[rgba(11,17,22,0.58)]">
                   {dashboardMetrics[index].caption}
                 </span>
               </span>
@@ -286,17 +286,20 @@ function DashboardPage({
               <span className="text-[0.58rem] font-semibold text-[var(--color-ink)]">
                 {animation.chartTitle}
               </span>
-              <span className="rounded-full bg-[rgba(56,182,255,0.18)] px-2 py-0.5 text-[0.48rem] font-bold text-[#0870b4]">
-                live
+              <span className="text-[0.48rem] font-semibold uppercase tracking-[0.08em] text-[rgba(11,17,22,0.5)]">
+                Current
               </span>
             </div>
-            <div className="relative flex h-full min-h-[10.5rem] items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.22)] bg-[linear-gradient(180deg,rgba(56,182,255,0.1),rgba(255,255,255,0.7))] px-2 pb-4 pt-2 shadow-[inset_0_0_0_1px_rgba(56,182,255,0.08)]">
-              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.18)]" aria-hidden="true" />
+            <div className="relative flex h-full min-h-[10.5rem] items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] px-2 pb-4 pt-2 shadow-[0_1px_1px_rgba(50,70,88,0.14)]">
+              <span className="absolute inset-x-2 top-1/4 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
+              <span className="absolute inset-x-2 top-1/2 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
+              <span className="absolute inset-x-2 top-3/4 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
+              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.16)]" aria-hidden="true" />
               {dashboardBars.map((bar) => (
                 <span className="relative z-[1] flex h-full flex-1 flex-col justify-end gap-1" key={bar.label}>
                   <span className="flex min-h-0 flex-1 items-end">
                     <span
-                      className="block min-h-3 w-full rounded-t-sm bg-[linear-gradient(180deg,#38b6ff,#1470b8)] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.85)]"
+                      className="block min-h-3 w-full rounded-t-sm bg-[#2f78a8] shadow-[0_1px_1px_rgba(47,120,168,0.28)]"
                       style={{ height: `${bar.value}%` }}
                     />
                   </span>
@@ -313,12 +316,12 @@ function DashboardPage({
         </div>
         <div className={visibleBlocks[2] ? "grid min-h-full" : `${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[2] ? (
-          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.13)] bg-white shadow-[0_14px_28px_-22px_rgba(2,2,13,0.42)]`} data-build-component="2">
-            <div className="border-b border-[rgba(2,2,13,0.12)] bg-[rgba(232,241,248,0.72)] px-2 py-1.5 text-[0.54rem] font-bold text-[var(--color-ink)]">
+          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] shadow-[0_1px_1px_rgba(50,70,88,0.14)]`} data-build-component="2">
+            <div className="border-b border-[rgba(47,120,168,0.16)] bg-[rgba(47,120,168,0.1)] px-2 py-1.5 text-[0.54rem] font-semibold text-[var(--color-ink)]">
               {animation.tableTitle}
             </div>
             {dashboardRows.map((row) => (
-              <div className="grid grid-cols-[1fr_1.8rem_2.7rem] border-b border-[rgba(2,2,13,0.05)] text-[0.48rem] last:border-b-0" key={row[0]}>
+              <div className="grid grid-cols-[1fr_1.8rem_2.7rem] border-b border-[rgba(2,2,13,0.08)] text-[0.48rem] last:border-b-0" key={row[0]}>
                 <span className="truncate px-2 py-1.5 font-semibold text-[var(--color-ink)]">{row[0]}</span>
                 <span className="px-1 py-1.5 text-right font-semibold text-[rgba(11,17,22,0.66)]">{row[1]}</span>
                 <span className="truncate px-1.5 py-1.5 font-medium text-[rgba(11,17,22,0.64)]">{row[2]}</span>
@@ -405,9 +408,9 @@ function ViewModeButton({
 
 function TableView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="table">
-      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.18)] bg-white">
-        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(220,235,246,0.98)] text-[0.54rem] font-bold uppercase text-[rgba(11,17,22,0.72)]">
+    <div className={`absolute inset-0 p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="table">
+      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.18)] bg-[rgba(250,251,252,0.98)]">
+        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(47,120,168,0.1)] text-[0.54rem] font-semibold uppercase text-[rgba(11,17,22,0.68)]">
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Case</span>
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Owner</span>
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Status</span>
@@ -439,16 +442,16 @@ function TableView({ active }: { active: boolean }) {
 
 function KanbanView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="kanban">
+    <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="kanban">
       {kanbanColumns.map((column) => (
-        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(248,249,250,0.94)] p-2" key={column.status}>
-          <span className={`mb-1 rounded-full px-2 py-1 text-[0.58rem] font-bold ${column.color}`}>
+        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(247,248,249,0.98)] p-2" key={column.status}>
+          <span className={`mb-1 px-0.5 py-0.5 text-[0.58rem] font-semibold ${column.color}`}>
             {column.status}
           </span>
           {processRecords
             .filter((record) => record.status === column.status)
             .map((record) => (
-            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(250,252,254,1)] p-2 text-[0.6rem] font-bold leading-[1.25] text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.24)]" key={record.title}>
+            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-white p-2 text-[0.6rem] font-semibold leading-[1.25] text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.24)]" key={record.title}>
               {record.title}
               <span className="mt-1 block text-[0.48rem] font-semibold text-[rgba(11,17,22,0.62)]">
                 {record.owner} · day {record.date}
@@ -463,10 +466,10 @@ function KanbanView({ active }: { active: boolean }) {
 
 function CalendarView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(248,249,250,0.94)] p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
+    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(247,248,249,0.98)] p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="calendar">
       {Array.from({ length: 35 }, (_, index) => (
         <span
-          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(235,242,248,0.98)] p-1 text-[0.5rem] font-bold text-[rgba(11,17,22,0.66)]"
+          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 text-[0.5rem] font-semibold text-[rgba(11,17,22,0.58)]"
           key={index}
         >
           {index + 1}
@@ -484,16 +487,9 @@ function CalendarView({ active }: { active: boolean }) {
 function ProcessViewInteractive() {
   const [activeView, setActiveView] = useState<ProcessViewMode>("table");
   const [hasOpenedKanban, setHasOpenedKanban] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.requestAnimationFrame(() => {
-      void animateDemoIn(rootRef.current, `[data-process-view="${activeView}"] > *`, 8);
-    });
-  }, [activeView]);
 
   return (
-    <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`} ref={rootRef}>
+    <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`}>
       <div className={`relative left-1/2 min-h-[22rem] w-full min-[1440px]:pl-8 ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.processStage}`}>
         <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] p-4">
           <div className="mb-3 ml-4 flex w-[calc(100%-1rem)]">
@@ -996,7 +992,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
   return (
     <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`} ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] max-[1200px]:w-full ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.permissionStage}`}>
-        <div className="relative h-[22rem] overflow-hidden rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.08)_1px,transparent_1.2px)] [background-size:18px_18px]">
+        <div className="relative h-[22rem] overflow-hidden">
           <div className="absolute left-1/2 top-5 grid w-[24rem] -translate-x-1/2 gap-3">
             <div className="flex justify-end">
               <div className="flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
@@ -1020,7 +1016,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
               </div>
             </div>
 
-            <div className="rounded-[calc(var(--radius-panel)-12px)] border border-[rgba(2,2,13,0.14)] bg-white p-4 shadow-[0_18px_46px_-34px_rgba(2,2,13,0.46)]">
+            <div className="rounded-[calc(var(--radius-panel)-12px)] border border-[rgba(2,2,13,0.14)] bg-white p-4 shadow-[0_1px_1px_rgba(50,70,88,0.16)]">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-[0.82rem] font-semibold text-[var(--color-ink)]">
                 {animation.title}
@@ -1032,7 +1028,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
 
                 return (
                   <div
-                    className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(241,246,250,0.92)] p-3 ${
+                    className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] p-3 ${
                       protectedField ? styles.permissionProtectedField : ""
                     } ${
                       protectedField && protectedHidden ? styles.permissionProtectedFieldHidden : ""
@@ -1050,7 +1046,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                     </div>
                     {protectedField ? (
                       <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.84)] backdrop-blur-[2px]`}>
-                        <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.18)] bg-white px-3 py-2 text-[0.68rem] font-bold text-[var(--color-ink)] shadow-[0_14px_28px_-20px_rgba(2,2,13,0.42)]">
+                        <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.18)] bg-white px-3 py-2 text-[0.68rem] font-semibold text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.2)]">
                           <LockKeyholeIcon className="h-4 w-4 text-[rgba(11,17,22,0.62)]" strokeWidth={1.9} />
                           {animation.lockedLabel}
                         </span>
