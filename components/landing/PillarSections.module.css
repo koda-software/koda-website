@@ -461,24 +461,6 @@
   text-align: center;
 }
 
-.ruleBranchLabel {
-  position: absolute;
-  color: rgba(11, 17, 22, 0.42);
-  background: rgba(255, 255, 255, 0.86);
-  border-color: rgba(11, 17, 22, 0.1);
-  border-width: 1px;
-  border-style: solid;
-  border-radius: calc(var(--radius-button) + 2px);
-  font-weight: 600;
-  line-height: 1;
-  box-shadow: 0 12px 28px -24px rgba(2, 2, 13, 0.28);
-}
-
-.ruleBranchLabel {
-  padding: 0.45rem 0.65rem;
-  font-size: 0.62rem;
-}
-
 @keyframes showTableView {
   0%, 22% {
     opacity: 1;
@@ -890,7 +872,6 @@
   .modeButton,
   .processView,
   .processCursor,
-  .ruleBranchLabel,
   .ruleGsapPath,
   .ruleMotionToken,
   .permissionProtectedField,

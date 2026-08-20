@@ -593,8 +593,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   const conditionAmountRef = useRef<HTMLSpanElement>(null);
   const conditionOperatorRef = useRef<HTMLSpanElement>(null);
   const conditionLimitRef = useRef<HTMLSpanElement>(null);
-  const positiveLabelRef = useRef<HTMLSpanElement>(null);
-  const negativeLabelRef = useRef<HTMLSpanElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
@@ -650,9 +648,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     const conditionNode = root.querySelector<HTMLElement>('[data-rule-node="condition"]');
     const resultNode = root.querySelector<HTMLElement>(`[data-rule-node="${route}"]`);
     const ruleNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-rule-node]"));
-    const activeLabel = route === "positive" ? positiveLabelRef.current : negativeLabelRef.current;
-    const inactiveLabel = route === "positive" ? negativeLabelRef.current : positiveLabelRef.current;
-    if (!startNode || !conditionNode || !resultNode || !activeLabel || !inactiveLabel) {
+    if (!startNode || !conditionNode || !resultNode) {
       setIsRunning(false);
       return;
     }
@@ -689,13 +685,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
       opacity: 0.62,
       scale: 1,
       y: 0,
-    });
-    gsap.set([positiveLabelRef.current, negativeLabelRef.current], {
-      backgroundColor: "rgba(255,255,255,0.86)",
-      borderColor: "rgba(11,17,22,0.1)",
-      color: "rgba(11,17,22,0.42)",
-      opacity: 0.58,
-      scale: 1,
     });
     gsap.set(conditionLogic, {
       autoAlpha: 0,
@@ -872,17 +861,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     emitFrom(252, 246, activeColor);
 
     timeline
-      .to(activeLabel, {
-        backgroundColor: route === "positive" ? "rgba(236,253,245,0.96)" : "rgba(254,242,242,0.96)",
-        borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
-        color: route === "positive" ? "#0f8b5d" : "#c2413b",
-        duration: 0.18,
-        ease: "power2.out",
-        opacity: 1,
-        scale: 1.04,
-      }, "<0.08")
-      .to(inactiveLabel, { duration: 0.2, opacity: 0.32 }, "<")
-      .to(branchPath, { opacity: 1, duration: 0.06 }, ">")
+      .to(branchPath, { opacity: 1, duration: 0.06 }, "<0.08")
       .to(branchPath, { duration: 0.68, ease: "power1.inOut", strokeDashoffset: 0 }, "<")
       .to(
         token,
@@ -904,8 +883,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         duration: 0.24,
         ease: "power2.out",
       }, "+=0.02")
-      .to([inputPath, middlePath, branchPath], { opacity: 0.28, duration: 0.35, ease: "power2.out" }, "+=0.25")
-      .to(activeLabel, { opacity: 0.72, scale: 1, duration: 0.28, ease: "power2.out" }, "<");
+      .to([inputPath, middlePath, branchPath], { opacity: 0.28, duration: 0.35, ease: "power2.out" }, "+=0.25");
   };
 
   const startFlow = () => {
@@ -975,9 +953,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
               <span ref={conditionLimitRef}>€1000</span>
             </span>
           </RuleNode>
-          <span className={`${styles.ruleBranchLabel} left-[4rem] top-[19.1rem]`} ref={positiveLabelRef}>
-            {animation.positiveLabel}
-          </span>
           <RuleNode
             className="left-0 top-[21.4rem] w-[14.725rem]"
             icon={BadgeCheckIcon}
@@ -987,9 +962,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
             finalSuccess={completedRoute === "positive"}
             tone="green"
           />
-          <span className={`${styles.ruleBranchLabel} right-[4rem] top-[19.1rem]`} ref={negativeLabelRef}>
-            {animation.negativeLabel}
-          </span>
           <RuleNode
             className="right-0 top-[21.4rem] w-[14.725rem]"
             icon={BadgeAlertIcon}
