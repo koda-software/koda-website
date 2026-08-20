@@ -10,7 +10,7 @@ import { blogDarkEyebrowClass, blogPrimaryButtonClass } from "./primitives";
  */
 export function BlogNotFound({ locale, ui }: { locale: BlogLocale; ui: BlogUiContent }) {
   return (
-    <section className="flex min-h-[86vh] items-center bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[6rem] pt-[9rem] text-white max-[809px]:pt-28">
+    <section className="flex items-center bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[6rem] pt-[9rem] text-white max-[809px]:pt-28">
       <div className="mx-auto w-[min(100%,var(--shell-width))] max-w-[760px]">
         <p className={`${blogDarkEyebrowClass} mb-4`}>404</p>
         <h1 className="m-0 text-[3.2rem] leading-[1.05] tracking-[-0.04em] max-[809px]:text-[2.1rem]">{ui.notFound.title}</h1>

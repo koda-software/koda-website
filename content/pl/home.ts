@@ -78,7 +78,7 @@ export const homeContent: HomeContent = {
     label: "Problem",
     title: "Najwięcej kosztuje praca, której nie widać w systemie.",
     description:
-      "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Każde z osobna wygląda na drobne obejście. Razem tworzą drugi obieg firmy: nieopisany, niepoliczony i niemożliwy do odtworzenia, gdy ktoś pyta, dlaczego sprawa stanęła.",
+      "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Drobne obejścia tworzą drugi obieg firmy: nieopisany, niewidoczny i trudny do odtworzenia, gdy sprawa staje.",
     points: [
       "Zmiana procesu wymaga projektu wdrożeniowego, więc zespół omija system arkuszem.",
       "Ten sam rekord żyje w trzech miejscach i w żadnym nie jest pewny.",
@@ -94,9 +94,9 @@ export const homeContent: HomeContent = {
     points: [
       "Modelujesz własne dane obiektami, polami, relacjami i formularzami.",
       "Prowadzisz dokumenty przez obieg akceptacji, z wersjami plików przy sprawie.",
-      "Automatyzujesz powtarzalne kroki regułami, skryptami i zapytaniami SQL.",
-      "Kontrolujesz dostęp rolami, uprawnieniami do pól i rejestrem zdarzeń.",
+      "Automatyzujesz powtarzalne kroki, a role, uprawnienia i rejestr zdarzeń trzymają kontrolę.",
     ],
+    cta: "Poznaj Opero",
   },
   pillars: {
     label: "Możliwości Opero",

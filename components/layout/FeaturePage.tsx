@@ -329,7 +329,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   return (
     <>
-      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         {content.demo ? (
           /*
            * The demo sits beside the headline, the way the home and Opero

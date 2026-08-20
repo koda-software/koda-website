@@ -78,7 +78,7 @@ export const homeContent: HomeContent = {
     label: "The problem",
     title: "The work your system cannot see is the work that costs most.",
     description:
-      "A spreadsheet next to the ERP, an approval over email, a file on someone's drive. Each looks like a small workaround. Together they form a second, undocumented flow through the company: uncounted, and impossible to reconstruct when somebody asks why a case stalled.",
+      "A spreadsheet beside the ERP, an approval in email, a file on someone's drive. Small workarounds become a second, undocumented flow: uncounted, invisible, and hard to reconstruct when a case stalls.",
     points: [
       "Changing a process takes a development project, so the team routes around the system with a spreadsheet.",
       "The same record lives in three places and is authoritative in none of them.",
@@ -94,9 +94,9 @@ export const homeContent: HomeContent = {
     points: [
       "Model your own data with objects, fields, relations and forms.",
       "Route documents through approval, with file versions kept on the case.",
-      "Automate repetitive steps with rules, scripts and SQL queries.",
-      "Control access with roles, field-level permissions and an event log.",
+      "Automate repetitive steps while roles, permissions and the event log keep control in place.",
     ],
+    cta: "Learn about Opero",
   },
   pillars: {
     label: "What Opero can do",

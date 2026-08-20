@@ -151,7 +151,9 @@ export type HomeContent = {
     recordDemo: RecordDemoContent;
   };
   problem: HomePointGroup;
-  solution: HomePointGroup;
+  solution: HomePointGroup & {
+    cta: string;
+  };
   pillars: {
     label: string;
     title: string;

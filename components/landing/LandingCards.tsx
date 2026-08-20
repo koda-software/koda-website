@@ -34,18 +34,18 @@ function iconAt(icons: LandingIcon[], index: number, fallback: LandingIcon) {
 
 export function NumberedPointGrid({ points }: NumberedPointGridProps) {
   return (
-    <div className="relative mt-[clamp(2.4rem,5vw,4.8rem)] grid grid-cols-4 gap-4 max-[809px]:grid-cols-1">
+    <div className="relative mt-[clamp(2.1rem,4vw,3.5rem)] grid grid-cols-4 gap-x-8 gap-y-6 border-t border-[rgba(2,2,13,0.09)] pt-[clamp(1.2rem,2.5vw,1.8rem)] max-[980px]:grid-cols-2 max-[809px]:grid-cols-1">
       {points.map((point, index) => (
         <Reveal className="h-full" delay={index * 110} key={point}>
-          <article className="group relative min-h-[18rem] overflow-hidden rounded-[var(--radius-card)] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(249,249,249,0.82)_58%,rgba(56, 182, 255,0.06))] px-[clamp(1.05rem,2vw,1.55rem)] py-[clamp(1.4rem,3vw,2rem)] ring-1 ring-black/[0.055] transition-colors duration-200 hover:bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_58%,rgba(56, 182, 255,0.085))] even:translate-y-8 max-[809px]:min-h-0 max-[809px]:translate-y-0 max-[809px]:py-7">
-            <span
-              className="pointer-events-none absolute -right-3 -top-3 font-sans text-[clamp(5.8rem,9vw,8.8rem)] font-semibold leading-none tracking-[-0.13em] text-[var(--color-blue)]/[0.11] transition-colors duration-200 group-hover:text-[var(--color-blue)]/[0.17] max-[809px]:text-[6rem]"
-              aria-hidden="true"
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <div className="relative z-[1] flex min-h-full flex-col justify-end">
-              <p className="m-0 max-w-[19rem] text-[clamp(1.06rem,1.45vw,1.26rem)] font-normal leading-[1.42] tracking-[-0.025em] text-[var(--color-ink-soft)]">
+          <article className="group relative h-full min-h-[9.5rem] pr-2 transition-colors duration-200 max-[809px]:min-h-0">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[rgba(56,182,255,0.24)] bg-[rgba(56,182,255,0.07)] font-sans text-[0.86rem] font-semibold text-[var(--color-blue)] transition-colors duration-200 group-hover:border-[rgba(56,182,255,0.4)] group-hover:bg-[rgba(56,182,255,0.1)]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(56,182,255,0.35),rgba(2,2,13,0.08),transparent)]" />
+            </div>
+            <div>
+              <p className="m-0 max-w-[20rem] text-[clamp(1rem,1.24vw,1.13rem)] font-normal leading-[1.5] tracking-[-0.02em] text-[var(--color-ink-soft)]">
                 {point}
               </p>
             </div>

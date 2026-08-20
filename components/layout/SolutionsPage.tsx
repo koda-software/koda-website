@@ -181,7 +181,7 @@ export function SolutionsPage({
 }: SolutionsPageProps) {
   return (
     <>
-      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={`${darkEyebrowClass} hero-rise`}>

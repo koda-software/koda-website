@@ -5,8 +5,8 @@ import type {
   OperoProductContent,
   ProductFeatureRow,
 } from "@/content/types";
+import { LazyHeroVideo } from "@/components/landing/LazyHeroVideo";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
-import { ConfigDemo } from "./ConfigDemo";
 
 type OperoProductPageProps = {
   content: OperoProductContent;
@@ -100,8 +100,17 @@ export function OperoProductPage({
 }: OperoProductPageProps) {
   return (
     <>
-      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(22rem,0.82fr)] items-center gap-16 max-[980px]:grid-cols-1">
+      <section className="relative isolate flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[980px]:pb-[min(44vw,15rem)] max-[809px]:pt-28">
+        <div className="pointer-events-none absolute bottom-0 right-[100px] z-0 w-[clamp(48rem,72vw,84rem)] translate-x-[31%] translate-y-[22%] rotate-[-3deg] opacity-95 max-[1200px]:opacity-55 max-[980px]:right-[100px] max-[980px]:w-[min(56rem,118vw)] max-[980px]:translate-x-[30%] max-[980px]:translate-y-[28%] max-[809px]:opacity-40">
+          <LazyHeroVideo
+            ariaLabel="Opero executive dashboard in the product interface"
+            className="h-auto w-full select-none"
+            height={1080}
+            src="/hero/opero-dashboard-hero.webm"
+            width={1440}
+          />
+        </div>
+        <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,0.72fr)_minmax(22rem,0.48fr)] items-center gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={`${darkEyebrowClass} hero-rise`}>
               {content.hero.eyebrow}
@@ -122,11 +131,7 @@ export function OperoProductPage({
               />
             </div>
           </div>
-          <div className="min-w-0">
-            <div className="hero-slide hero-d3">
-              <ConfigDemo content={content.hero.configDemo} />
-            </div>
-          </div>
+          <div aria-hidden="true" />
         </div>
       </section>
 

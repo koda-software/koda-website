@@ -43,6 +43,7 @@ type LandingHeroProps = {
   secondaryCta: string;
   secondaryHref: string;
   title: string;
+  visualMode?: "column" | "edge";
 };
 
 type FinalCtaPanelProps = {
@@ -178,10 +179,14 @@ export function LandingHero({
   secondaryCta,
   secondaryHref,
   title,
+  visualMode = "column",
 }: LandingHeroProps) {
+  const edgeVisual = visualMode === "edge";
+
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28">
-      <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] max-[809px]:grid-cols-1`}>
+    <section className={`relative flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28 ${edgeVisual ? "max-[809px]:pb-[min(45vw,13rem)]" : ""}`.trim()}>
+      {edgeVisual ? children : null}
+      <div className={`${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}>
         <div className="relative z-[1]">
           <div className="hero-rise"><Eyebrow invert>{eyebrow}</Eyebrow></div>
           <div className="hero-rise hero-d1"><HeroTitle className="max-w-[880px]" title={title} /></div>
@@ -196,7 +201,11 @@ export function LandingHero({
           />
           </div>
         </div>
-        <div className="hero-slide hero-d3 relative z-[1] min-w-0 max-[809px]:mt-6">{children}</div>
+        {edgeVisual ? (
+          <div aria-hidden="true" />
+        ) : (
+          <div className="hero-slide hero-d3 relative z-[1] min-w-0 max-[809px]:mt-6">{children}</div>
+        )}
       </div>
 
       {scrollTarget ? (

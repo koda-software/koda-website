@@ -20,7 +20,7 @@ const buttonClass =
 export function AboutPage({ content, ctas }: AboutPageProps) {
   return (
     <>
-      <section className="flex min-h-screen items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
         <div className="mx-auto w-[min(100%,var(--shell-width))]">
           <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
           <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>
