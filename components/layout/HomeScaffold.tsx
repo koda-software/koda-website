@@ -141,6 +141,7 @@ export function HomeScaffold({
       <LandingSection>
         <Reveal>
           <SectionIntro
+            align="center"
             eyebrow={content.pillars.label}
             title={content.pillars.title}
             description={content.pillars.description}

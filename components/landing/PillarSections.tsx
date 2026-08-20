@@ -1103,7 +1103,7 @@ function PlaceholderAnimation({ index, pillar }: { index: number; pillar: Featur
 
 export function PillarSections({ items }: PillarSectionsProps) {
   return (
-    <div className="mt-[clamp(2.6rem,5vw,4.5rem)] grid gap-[clamp(7rem,12vw,11rem)]">
+    <div className="mt-[clamp(4rem,7vw,6.5rem)] grid gap-[clamp(7rem,12vw,11rem)]">
       {items.map((pillar, index) => {
         const visualFirst = index % 2 === 1;
         const wideVisualLead = index === 0 || index === 2;

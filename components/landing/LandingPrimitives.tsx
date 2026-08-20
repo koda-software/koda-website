@@ -12,6 +12,7 @@ type LandingSectionProps = {
 
 type SectionIntroProps = {
   action?: ReactNode;
+  align?: "left" | "center";
   description?: string;
   eyebrow: string;
   invert?: boolean;
@@ -182,7 +183,7 @@ export function LandingSection({ children, className = "", id }: LandingSectionP
   );
 }
 
-export function SectionIntro({ action, description, eyebrow, invert = false, split = false, title }: SectionIntroProps) {
+export function SectionIntro({ action, align = "left", description, eyebrow, invert = false, split = false, title }: SectionIntroProps) {
   const descriptionClass = invert ? `${sectionDescriptionClass} text-white/70` : sectionDescriptionClass;
 
   if (split) {
@@ -202,11 +203,13 @@ export function SectionIntro({ action, description, eyebrow, invert = false, spl
     );
   }
 
+  const centered = align === "center";
+
   return (
-    <div className={sectionHeadingClass}>
+    <div className={`${sectionHeadingClass} ${centered ? "mx-auto text-center" : ""}`.trim()}>
       <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
       <h2 className={sectionTitleClass}>{title}</h2>
-      {description ? <p className={descriptionClass}>{description}</p> : null}
+      {description ? <p className={`${descriptionClass} ${centered ? "mx-auto max-w-[760px]" : ""}`.trim()}>{description}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
   );
