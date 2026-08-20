@@ -55,9 +55,9 @@
     linear-gradient(135deg, #08131d 0%, #0b2842 40%, #104b7a 72%, #1670b5 100%);
   /* The footer used to top out at #0d263a while the banner reached #1670b5,
      which left the two ends of the page reading as different palettes. It now
-     follows the banner's family but runs the other way: brightest at the top,
-     where the invitation to make contact sits, settling to near-graphite by
-     the legal line. A closing band should quieten as it goes.
+     follows the banner's family but runs the other way: brightest where the
+     footer begins, settling to near-graphite by the legal line. A closing band
+     should quieten as it goes.
 
      The peak stops at #12497c rather than the banner's #1670b5, because every
      step brighter costs contrast against the small text on it. At this peak
@@ -208,118 +208,6 @@ button:focus-visible {
 @layer components {
   .eyebrow {
     display: block;
-  }
-}
-
-/* ============================================================
-   PRZEPŁYW DO KONTAKTU - the process that ends at the email card.
-   Component: components/layout/SiteFooter.tsx
-
-   This began as a decorative SVG behind the whole footer. It had to stop being
-   one: a background cannot actually reach the email card, so the connector
-   pointed vaguely rightwards while the card lit up on its own timer, and the
-   two read as separate animations rather than one process arriving somewhere.
-   Built from real elements in the normal flow, the connector ends on the card
-   because it is physically attached to it.
-
-   One loop is 6s. The step chips light in order, a dot travels each connector
-   between them, and the card's ring fires as the dot arrives. Only `opacity`
-   and `transform` animate, so none of it leaves the compositor.
-   ============================================================ */
-/* A stage the pulse has not reached yet. The lit state is a pseudo-element
-   laid over it rather than a change to its own border and background: only the
-   overlay's opacity animates, so nothing repaints the box itself. */
-.flow-step {
-  opacity: 0.62;
-}
-
-.flow-step::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  border: 1px solid rgba(56, 182, 255, 0.75);
-  background: rgba(56, 182, 255, 0.09);
-  box-shadow: 0 0 22px rgba(56, 182, 255, 0.18);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* The elbow carries the pulse between the last stage and the card. */
-.flow-elbow {
-  opacity: 0.55;
-}
-
-/* The email card is the last step of the process. The ring is a pseudo-element
-   so only its opacity animates - pulsing the card's own border would repaint
-   the whole card on every frame. */
-.process-endpoint {
-  position: relative;
-}
-
-.process-endpoint::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  border: 1px solid var(--color-cyan);
-  box-shadow: 0 0 0 1px rgba(126, 231, 255, 0.14), 0 0 26px rgba(126, 231, 255, 0.2);
-  opacity: 0;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .flow-step {
-    animation: flow-step 6s ease-in-out infinite;
-  }
-
-  .flow-step::after {
-    animation: flow-lit 6s ease-in-out infinite;
-    animation-delay: inherit;
-  }
-
-  .flow-elbow {
-    animation: flow-step 6s ease-in-out infinite;
-  }
-
-  .process-endpoint::after {
-    animation: flow-arrive 6s ease-out infinite;
-    animation-delay: 3.4s;
-  }
-}
-
-@keyframes flow-step {
-  0%,
-  22%,
-  100% {
-    opacity: 0.62;
-  }
-  6%,
-  14% {
-    opacity: 1;
-  }
-}
-
-@keyframes flow-lit {
-  0%,
-  22%,
-  100% {
-    opacity: 0;
-  }
-  6%,
-  14% {
-    opacity: 1;
-  }
-}
-
-@keyframes flow-arrive {
-  0%,
-  26%,
-  100% {
-    opacity: 0;
-  }
-  5% {
-    opacity: 1;
   }
 }
 

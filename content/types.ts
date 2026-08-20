@@ -41,29 +41,16 @@ export type ShellContent = {
     links: Array<{ label: string; href: string }>;
     languageLabel: string;
     productLine: string;
-    /** Opening band: the invitation to get in touch. */
+    /**
+     * Ways to reach the company, rendered in the closing column. Each entry is
+     * optional because the company is pre-incorporation: a line only appears
+     * once there is a real value for it, rather than a placeholder standing in.
+     */
     contact: {
-      eyebrow: string;
-      title: string;
-      description: string;
-      /**
-       * Ways to reach the company, rendered as cards. Each entry is optional
-       * because the company is pre-incorporation: a card only appears once
-       * there is a real value for it, rather than a placeholder standing in.
-       */
-      emailLabel: string;
       email?: string;
-      phoneLabel: string;
       phone?: string;
-      /** Falls back to the demo form when neither address nor number exists. */
+      /** Label on the button through to the demo form. */
       formLabel: string;
-      formHint: string;
-      /**
-       * The two stages leading into the email card. They are the reader's own
-       * story, not the product's: the problem they arrived with, and finding
-       * out there is an answer. The card is the third stage.
-       */
-      flowSteps: [string, string];
     };
     /** Column headings for the link groups. */
     productHeading: string;

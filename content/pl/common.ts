@@ -25,17 +25,9 @@ export const commonContent: ShellContent = {
     languageLabel: "Język",
     productLine: "BPM low-code od KodaSoft",
     contact: {
-      eyebrow: "Kontakt",
-      title: "Porozmawiajmy o jednym Waszym procesie.",
-      description:
-        "Wystarczy jeden proces, który dziś żyje w arkuszu albo w mailach. Pokażemy, jak wygląda w Opero, i powiemy wprost, czy to dobry kierunek.",
-      emailLabel: "Napisz",
       email: "kontakt@kodasoft.pl",
-      phoneLabel: "Zadzwoń",
       phone: "+48 666 618 026",
       formLabel: "Umów demo",
-      formHint: "Odpowiadamy w ciągu jednego dnia roboczego",
-      flowSteps: ["Brak wydajności procesów firmowych", "Dowiadujesz się o Opero"],
     },
     productHeading: "Produkt",
     companyHeading: "Firma",
