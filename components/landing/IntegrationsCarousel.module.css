@@ -1,0 +1,66 @@
+.carouselMask {
+  position: relative;
+  overflow: hidden;
+}
+
+.carouselMask::before,
+.carouselMask::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  width: clamp(2.5rem, 10vw, 8rem);
+  pointer-events: none;
+  content: "";
+}
+
+.carouselMask::before {
+  left: 0;
+  background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.carouselMask::after {
+  right: 0;
+  background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.carouselTrack {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: integrationsCarousel 34s linear infinite;
+}
+
+.carouselMask:hover .carouselTrack {
+  animation-play-state: paused;
+}
+
+.integrationCard {
+  width: clamp(14rem, 20vw, 18rem);
+  min-height: 8.5rem;
+}
+
+@keyframes integrationsCarousel {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carouselMask {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .carouselMask::before,
+  .carouselMask::after {
+    display: none;
+  }
+
+  .carouselTrack {
+    animation: none;
+  }
+}

@@ -107,6 +107,14 @@ export type HomeStep = {
   description: string;
 };
 
+export type HomeIntegrationItem = {
+  name: string;
+  description: string;
+  icon: "invoice" | "delivery" | "registry" | "sms" | "email" | "signature";
+  tone: "sky" | "violet" | "green" | "amber" | "rose" | "slate";
+  logoSrc?: string;
+};
+
 /**
  * Copy for the animated record/process demo in the home banner. The animation
  * shows a mocked-up Opero screen, so every visible string lives here and gets
@@ -210,6 +218,9 @@ export type HomeContent = {
     title: string;
     description: string;
     steps: HomeStep[];
+  };
+  integrations: HomeSection & {
+    items: HomeIntegrationItem[];
   };
   trust: HomePointGroup;
   finalCta: {

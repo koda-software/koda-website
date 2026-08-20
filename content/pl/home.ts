@@ -240,6 +240,68 @@ export const homeContent: HomeContent = {
       },
     ],
   },
+  integrations: {
+    label: "Integracje",
+    title: "Połącz Opero z usługami wokół Twojego procesu.",
+    description:
+      "Opero może wymieniać dane z rejestrami publicznymi, kanałami doręczeń, podpisami i narzędziami, z których zespół już korzysta. Zacznij od integracji potrzebnych dziś i dodawaj kolejne, gdy proces się rozwija.",
+    items: [
+      {
+        name: "KSeF",
+        description: "Obsługa faktur ustrukturyzowanych w procesach finansowych.",
+        icon: "invoice",
+        logoSrc: "/integrations/ksef.png",
+        tone: "sky",
+      },
+      {
+        name: "e-Doręczenia",
+        description: "Oficjalne doręczenia elektroniczne połączone z obiegiem dokumentów.",
+        icon: "delivery",
+        logoSrc: "/integrations/e-doreczenia.png",
+        tone: "violet",
+      },
+      {
+        name: "GUS",
+        description: "Sprawdzanie danych firm tam, gdzie powstają rekordy w systemie.",
+        icon: "registry",
+        logoSrc: "/integrations/gus.png",
+        tone: "green",
+      },
+      {
+        name: "VIES",
+        description: "Weryfikacja VAT UE w procesach klientów, faktur i akceptacji.",
+        icon: "registry",
+        logoSrc: "/integrations/eu-flag.svg",
+        tone: "sky",
+      },
+      {
+        name: "Bramki SMS",
+        description: "Powiadomienia i potwierdzenia procesowe wysyłane przez dostawców SMS.",
+        icon: "sms",
+        logoSrc: "/integrations/sms.png",
+        tone: "amber",
+      },
+      {
+        name: "MFA",
+        description: "Uwierzytelnianie wieloskładnikowe z popularnymi aplikacjami, YubiKey i innymi bezpiecznymi metodami logowania.",
+        icon: "signature",
+        logoSrc: "/integrations/mfa.png",
+        tone: "rose",
+      },
+      {
+        name: "Własne e-maile",
+        description: "Szablony, przypisania i automatyczne wiadomości powiązane ze zdarzeniami.",
+        icon: "email",
+        tone: "rose",
+      },
+      {
+        name: "Podpis kwalifikowany",
+        description: "Kroki podpisu osadzone w tej samej sprawie, akceptacji i historii plików.",
+        icon: "signature",
+        tone: "slate",
+      },
+    ],
+  },
   trust: {
     label: "Tworzone przez KodaSoft",
     title: "Doświadczenie software house’u, wykonanie na poziomie produktu.",

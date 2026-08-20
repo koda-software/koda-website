@@ -240,6 +240,68 @@ export const homeContent: HomeContent = {
       },
     ],
   },
+  integrations: {
+    label: "Integrations",
+    title: "Connect Opero with the services around your process.",
+    description:
+      "Opero can exchange data with public registries, delivery channels, signatures and the tools your team already uses. Start with the integrations you need today and add more as the process grows.",
+    items: [
+      {
+        name: "KSeF",
+        description: "Structured invoice exchange prepared for Polish financial workflows.",
+        icon: "invoice",
+        logoSrc: "/integrations/ksef.png",
+        tone: "sky",
+      },
+      {
+        name: "e-Doręczenia",
+        description: "Official electronic delivery connected with your document process.",
+        icon: "delivery",
+        logoSrc: "/integrations/e-doreczenia.png",
+        tone: "violet",
+      },
+      {
+        name: "GUS",
+        description: "Company registry checks available where business data is created.",
+        icon: "registry",
+        logoSrc: "/integrations/gus.png",
+        tone: "green",
+      },
+      {
+        name: "VIES",
+        description: "EU VAT validation built into customer, invoice and approval workflows.",
+        icon: "registry",
+        logoSrc: "/integrations/eu-flag.svg",
+        tone: "sky",
+      },
+      {
+        name: "SMS Gateways",
+        description: "Process notifications and confirmations sent through SMS providers.",
+        icon: "sms",
+        logoSrc: "/integrations/sms.png",
+        tone: "amber",
+      },
+      {
+        name: "MFA",
+        description: "Multi-factor authentication with popular authenticator apps, YubiKey and other secure login methods.",
+        icon: "signature",
+        logoSrc: "/integrations/mfa.png",
+        tone: "rose",
+      },
+      {
+        name: "Custom e-mails",
+        description: "Templates, assignments and automatic messages tied to business events.",
+        icon: "email",
+        tone: "rose",
+      },
+      {
+        name: "Qualified signatures",
+        description: "Signing steps placed inside the same case, approval and file history.",
+        icon: "signature",
+        tone: "slate",
+      },
+    ],
+  },
   trust: {
     label: "Built by KodaSoft",
     title: "Software house experience, product-grade delivery.",

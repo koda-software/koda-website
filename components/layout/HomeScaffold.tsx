@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { HomeContent } from "@/content/types";
 import { NumberedPointGrid } from "@/components/landing/LandingCards";
 import { ComparisonSlider } from "@/components/landing/ComparisonSlider";
+import { IntegrationsCarousel } from "@/components/landing/IntegrationsCarousel";
 import { PillarSections } from "@/components/landing/PillarSections";
 import {
   FinalCtaPanel,
@@ -74,7 +75,7 @@ export function HomeScaffold({
             </div>
           </Reveal>
           <Reveal className="mt-[clamp(2rem,4vw,3.2rem)]">
-            <div className="mx-auto w-full max-w-[89.75rem]">
+            <div className="mx-auto w-full max-w-[82rem] px-[clamp(0.75rem,2.5vw,2.25rem)]">
               <ComparisonSlider
                 afterAlt={content.problem.comparison.afterAlt}
                 afterLabel={content.problem.comparison.afterLabel}
@@ -195,6 +196,23 @@ export function HomeScaffold({
           </div>
 
           <WorkflowTimeline steps={content.workflow.steps} />
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-white px-[var(--page-gutter)] py-[clamp(4.5rem,8vw,7rem)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(56,182,255,0.08),transparent_30%),radial-gradient(circle_at_86%_72%,rgba(99,102,241,0.06),transparent_32%)]" aria-hidden="true" />
+        <div className={`${landingShellClass} relative z-[1]`}>
+          <Reveal>
+            <SectionIntro
+              eyebrow={content.integrations.label}
+              title={content.integrations.title}
+              description={content.integrations.description}
+              split
+            />
+          </Reveal>
+          <Reveal className="mt-[clamp(2rem,4vw,3.25rem)]">
+            <IntegrationsCarousel items={content.integrations.items} />
+          </Reveal>
         </div>
       </section>
 
