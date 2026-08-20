@@ -16,9 +16,11 @@ type LazyHeroVideoProps = {
    * leaves the interface itself fully opaque and crisp.
    *
    * "top-left" is for a clip that bleeds off the bottom-right corner of its
-   * banner, so only those two edges are ever on screen; the fade stops where
-   * the browser window in the recording begins, far enough to cover the black
-   * margin and not far enough to eat into the product UI. "all" is for a clip
+   * banner, so only those two edges are ever on screen. The fade has to end
+   * exactly where the recording's content begins: any further and it veils the
+   * product interface itself, which is the thing the banner exists to show.
+   * `cropdetect` puts that boundary at 16% from the left and 8% from the top of
+   * the dashboard clip, so the stops sit just past those. "all" is for a clip
    * that sits fully inside the page, where the window is rotated and leaves
    * black in every corner.
    */
@@ -48,7 +50,7 @@ function scheduleIdleLoad(callback: () => void) {
 
 const featherMasks = {
   "top-left":
-    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 8%, #000 20%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 9%, #000 21%)",
+    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 4%, #000 9%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 7%, #000 16%)",
   all:
     "linear-gradient(to bottom, transparent 0%, #000 9%, #000 91%, transparent 100%), linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%)",
 } as const;

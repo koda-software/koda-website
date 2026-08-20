@@ -198,26 +198,17 @@ export function LandingHero({
     <section className={`relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(4rem,8vw,7rem)] pt-[clamp(8rem,13vw,12rem)] text-[var(--color-paper)] max-[809px]:pt-28 ${edgeVisual ? "max-[809px]:pb-[min(45vw,13rem)]" : ""}`.trim()}>
       {photo ? <PhotoBackdrop photo={photo} priority /> : null}
       {edgeVisual ? children : null}
-      {/*
-        The edge visual bleeds in from the right far enough that around 1280px
-        the headline's last line runs across it. The copy is white and the
-        visual is a bright product screenshot, so those few words lose their
-        contrast entirely. This scrim sits above the visual and below the copy,
-        dark where the text is and clear by the time it reaches the part of the
-        visual anyone is meant to look at.
-      */}
-      {edgeVisual ? (
-        <div
-          className="pointer-events-none absolute inset-0 z-0"
-          aria-hidden="true"
-          style={{
-            background:
-              "linear-gradient(95deg, rgba(11,17,22,0.9) 0%, rgba(11,17,22,0.78) 34%, rgba(11,17,22,0.24) 56%, rgba(11,17,22,0) 68%)",
-          }}
-        />
-      ) : null}
       <div className={`relative z-[1] ${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}>
-        <div className="relative z-[1]">
+        {/*
+          Where a visual bleeds in from the right, the headline's last line runs
+          across it at around 1280px, and white type over a bright product
+          screenshot loses its contrast. This used to be handled with a scrim
+          across the whole banner - which also dimmed the left edge of the
+          screenshot by 60%, veiling the one thing the banner exists to show.
+          A shadow on the type does the same job for the words alone: invisible
+          against the dark part of the banner, and the picture stays untouched.
+        */}
+        <div className="relative z-[1]" style={edgeVisual ? { textShadow: "0 1px 14px rgba(11,17,22,0.9), 0 0 3px rgba(11,17,22,0.7)" } : undefined}>
           <div className="hero-rise"><Eyebrow invert>{eyebrow}</Eyebrow></div>
           <div className="hero-rise hero-d1"><HeroTitle className="max-w-[880px]" title={title} /></div>
           <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
