@@ -48,6 +48,7 @@ export type FeaturePillar = {
   title: string;
   description: string;
   capabilities: string[];
+  link?: CtaContent;
   animation?: {
     dashboard: {
       blocks: [string, string, string];
@@ -220,6 +221,7 @@ export type HomeContent = {
     steps: HomeStep[];
   };
   integrations: HomeSection & {
+    link: CtaContent;
     items: HomeIntegrationItem[];
   };
   trust: HomePointGroup;

@@ -9,6 +9,7 @@ type LandingSectionProps = {
 };
 
 type SectionIntroProps = {
+  action?: ReactNode;
   description?: string;
   eyebrow: string;
   invert?: boolean;
@@ -136,7 +137,7 @@ const eyebrowClass = "eyebrow mb-4 font-sans text-[0.78rem] font-semibold upperc
 const darkEyebrowClass = `${eyebrowClass} text-[var(--color-blue-soft)]`;
 const sectionClass = `${landingShellClass} px-[var(--page-gutter)] py-[var(--section-y)]`;
 const sectionHeadingClass = "max-w-[790px]";
-const splitHeadingClass = `${sectionHeadingClass} grid max-w-none items-end gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] max-[809px]:grid-cols-1`;
+const splitHeadingClass = `${sectionHeadingClass} grid max-w-none items-center gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] max-[809px]:grid-cols-1`;
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-[background,border-color] duration-150";
 const buttonClasses = {
   primary: `${buttonClass} bg-[image:var(--gradient-cta)] text-[var(--color-paper)]`,
@@ -151,7 +152,7 @@ export function LandingSection({ children, className = "", id }: LandingSectionP
   );
 }
 
-export function SectionIntro({ description, eyebrow, invert = false, split = false, title }: SectionIntroProps) {
+export function SectionIntro({ action, description, eyebrow, invert = false, split = false, title }: SectionIntroProps) {
   const descriptionClass = invert ? `${sectionDescriptionClass} text-white/70` : sectionDescriptionClass;
 
   if (split) {
@@ -161,7 +162,12 @@ export function SectionIntro({ description, eyebrow, invert = false, split = fal
           <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
           <h2 className={sectionTitleClass}>{title}</h2>
         </div>
-        {description ? <p className={descriptionClass}>{description}</p> : null}
+        {description || action ? (
+          <div>
+            {description ? <p className={descriptionClass}>{description}</p> : null}
+            {action ? <div className="mt-5">{action}</div> : null}
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -171,6 +177,7 @@ export function SectionIntro({ description, eyebrow, invert = false, split = fal
       <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
       <h2 className={sectionTitleClass}>{title}</h2>
       {description ? <p className={descriptionClass}>{description}</p> : null}
+      {action ? <div className="mt-5">{action}</div> : null}
     </div>
   );
 }

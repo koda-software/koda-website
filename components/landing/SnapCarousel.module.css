@@ -1,0 +1,117 @@
+.carousel {
+  --snap-carousel-gap: 1rem;
+  --snap-carousel-item-width: clamp(14rem, 20vw, 18rem);
+  --snap-carousel-fade: clamp(2.5rem, 10vw, 8rem);
+  --snap-carousel-fade-color: transparent;
+  position: relative;
+}
+
+.hasFades::before,
+.hasFades::after {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: var(--snap-carousel-fade);
+  pointer-events: none;
+  content: "";
+}
+
+.hasFades::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--snap-carousel-fade-color) 0%, transparent 100%);
+}
+
+.hasFades::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--snap-carousel-fade-color) 0%, transparent 100%);
+}
+
+.viewport {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  user-select: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.isDragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.track {
+  align-items: center;
+  display: flex;
+  width: max-content;
+  gap: var(--snap-carousel-gap);
+  min-height: var(--snap-carousel-track-height, auto);
+  padding-block: var(--snap-carousel-padding-y, 2rem);
+  padding-inline: max(
+    calc((100% - var(--snap-carousel-item-width)) / 2),
+    var(--page-gutter)
+  );
+}
+
+.item {
+  align-items: center;
+  display: flex;
+  width: var(--snap-carousel-item-width);
+  flex: 0 0 var(--snap-carousel-item-width);
+  scroll-snap-align: center;
+  opacity: 0.62;
+  transition:
+    opacity 220ms ease,
+    filter 220ms ease;
+}
+
+.itemInner {
+  height: 100%;
+  width: 100%;
+  transform: scale(0.955);
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.itemActive {
+  z-index: 2;
+  opacity: 1;
+  filter: saturate(1.05);
+}
+
+.itemActive .itemInner {
+  transform: scale(1.045);
+}
+
+@media (max-width: 640px) {
+  .carousel {
+    --snap-carousel-fade: clamp(2rem, 16vw, 4rem);
+    --snap-carousel-item-width: min(72vw, 18rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    padding-bottom: 0.5rem;
+    scroll-behavior: auto;
+  }
+
+  .hasFades::before,
+  .hasFades::after {
+    display: none;
+  }
+
+  .item,
+  .itemInner {
+    transition: none;
+  }
+}

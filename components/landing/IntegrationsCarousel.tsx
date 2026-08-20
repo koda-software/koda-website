@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import BadgeCheckIcon from "lucide-react/dist/esm/icons/badge-check.mjs";
 import Building2Icon from "lucide-react/dist/esm/icons/building-2.mjs";
@@ -6,9 +8,11 @@ import MessageSquareTextIcon from "lucide-react/dist/esm/icons/message-square-te
 import PenLineIcon from "lucide-react/dist/esm/icons/pen-line.mjs";
 import ReceiptTextIcon from "lucide-react/dist/esm/icons/receipt-text.mjs";
 import type { HomeIntegrationItem } from "@/content/types";
+import { SnapCarousel } from "./SnapCarousel";
 import styles from "./IntegrationsCarousel.module.css";
 
 type IntegrationsCarouselProps = {
+  fadeColor?: string;
   items: HomeIntegrationItem[];
 };
 
@@ -34,42 +38,44 @@ function IntegrationCard({ item }: { item: HomeIntegrationItem }) {
   const Icon = iconByKey[item.icon];
 
   return (
-    <article className={`${styles.integrationCard} shrink-0 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-5 shadow-[0_18px_54px_-42px_rgba(2,2,13,0.34)]`}>
-      <div className="flex items-center justify-start gap-2.5">
-        <span className={`grid shrink-0 place-items-center rounded-[calc(var(--radius-button)+2px)] ${
+    <article className={styles.integrationCard}>
+      <div className={styles.identity}>
+        <span className={`${styles.mark} ${
           item.logoSrc
-            ? "h-12 w-auto min-w-12 bg-white pr-1"
-            : `h-10 w-10 border ${toneClass[item.tone]}`
+            ? styles.logoMark
+            : `${styles.iconMark} ${toneClass[item.tone]}`
         }`}>
           {item.logoSrc ? (
-            <Image alt="" className="h-auto max-h-9 w-auto max-w-[7.25rem] object-contain" height={37} src={item.logoSrc} width={116} />
+            <Image alt="" className={styles.logoImage} height={37} src={item.logoSrc} width={116} />
           ) : (
             <Icon className="h-4 w-4" strokeWidth={1.7} />
           )}
         </span>
         {item.logoSrc ? null : (
-          <h3 className="m-0 text-[1.02rem] font-semibold leading-tight text-[var(--color-ink)]">
+          <h3 className={styles.integrationName}>
             {item.name}
           </h3>
         )}
       </div>
-      <p className="mt-4 text-[0.86rem] font-light leading-[1.52] text-[var(--color-muted)]">
+      <p className={styles.integrationDescription}>
         {item.description}
       </p>
     </article>
   );
 }
 
-export function IntegrationsCarousel({ items }: IntegrationsCarouselProps) {
-  const loopItems = [...items, ...items];
-
+export function IntegrationsCarousel({ fadeColor, items }: IntegrationsCarouselProps) {
   return (
-    <div className={styles.carouselMask}>
-      <div className={styles.carouselTrack}>
-        {loopItems.map((item, index) => (
-          <IntegrationCard item={item} key={`${item.name}-${index}`} />
-        ))}
-      </div>
-    </div>
+    <SnapCarousel
+      ariaLabel="Integrations"
+      className={styles.integrationCarousel}
+      fadeColor={fadeColor}
+      pauseMs={1000}
+      scrollDurationMs={620}
+    >
+      {items.map((item) => (
+        <IntegrationCard item={item} key={item.name} />
+      ))}
+    </SnapCarousel>
   );
 }

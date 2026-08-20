@@ -1,66 +1,93 @@
-.carouselMask {
-  position: relative;
-  overflow: hidden;
-}
-
-.carouselMask::before,
-.carouselMask::after {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  bottom: 0;
-  width: clamp(2.5rem, 10vw, 8rem);
-  pointer-events: none;
-  content: "";
-}
-
-.carouselMask::before {
-  left: 0;
-  background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-.carouselMask::after {
-  right: 0;
-  background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-.carouselTrack {
-  display: flex;
-  width: max-content;
-  gap: 1rem;
-  animation: integrationsCarousel 34s linear infinite;
-}
-
-.carouselMask:hover .carouselTrack {
-  animation-play-state: paused;
+.integrationCarousel {
+  --snap-carousel-gap: clamp(0.9rem, 2vw, 1.35rem);
+  --snap-carousel-item-width: clamp(15rem, 21vw, 18.5rem);
+  --snap-carousel-padding-y: 2.25rem;
+  --snap-carousel-track-height: 14rem;
 }
 
 .integrationCard {
-  width: clamp(14rem, 20vw, 18rem);
-  min-height: 8.5rem;
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 10rem;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(10, 24, 38, 0.08);
+  border-radius: calc(var(--radius-panel) - 12px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 251, 252, 0.96)),
+    linear-gradient(135deg, rgba(10, 24, 38, 0.035), transparent 38%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.86) inset,
+    0 22px 52px -46px rgba(6, 24, 38, 0.42);
+  padding: 1.15rem;
 }
 
-@keyframes integrationsCarousel {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-50% - 0.5rem));
-  }
+.identity,
+.integrationDescription {
+  position: relative;
+  z-index: 1;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .carouselMask {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
+.identity {
+  display: flex;
+  min-height: 3.6rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: calc(var(--radius-button) + 3px);
+}
+
+.logoMark {
+  min-width: 0;
+  height: 2.9rem;
+  justify-content: start;
+}
+
+.iconMark {
+  width: 2.55rem;
+  height: 2.55rem;
+}
+
+.logoImage {
+  width: auto;
+  max-width: 7.65rem;
+  height: auto;
+  max-height: 2.35rem;
+  object-fit: contain;
+}
+
+.integrationName {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 1.02rem;
+  font-weight: 520;
+  line-height: 1.16;
+}
+
+.integrationDescription {
+  margin: 0.95rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.86rem;
+  font-weight: 300;
+  line-height: 1.52;
+}
+
+@media (max-width: 640px) {
+  .integrationCarousel {
+    --snap-carousel-fade: clamp(2.4rem, 18vw, 4.5rem);
+    --snap-carousel-item-width: min(76vw, 18rem);
+    --snap-carousel-padding-y: 2rem;
+    --snap-carousel-track-height: 13.25rem;
   }
 
-  .carouselMask::before,
-  .carouselMask::after {
-    display: none;
-  }
-
-  .carouselTrack {
-    animation: none;
+  .integrationCard {
+    min-height: 9.75rem;
   }
 }

@@ -28,7 +28,10 @@ export function ComparisonSlider({
   const [position, setPosition] = useState(100);
   const isManualRef = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const style = { "--comparison-position": `${position}%` } as CSSProperties;
+  const style = {
+    "--comparison-position": `${position}%`,
+    maxWidth: "min(100%, calc((min(55.625rem, 91svh - 2rem) - 2.5rem) * 2044 / 1549))",
+  } as CSSProperties;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -78,7 +81,7 @@ export function ComparisonSlider({
 
   return (
     <div
-      className="overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.1)] bg-white shadow-[0_24px_76px_-40px_rgba(2,2,13,0.58)]"
+      className="mx-auto w-full overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.1)] bg-white shadow-[0_24px_76px_-40px_rgba(2,2,13,0.58)]"
       ref={rootRef}
       style={style}
     >

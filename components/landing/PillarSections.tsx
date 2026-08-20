@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { FeaturePillar } from "@/content/types";
+import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import BarChart3Icon from "lucide-react/dist/esm/icons/bar-chart-3.mjs";
 import BadgeAlertIcon from "lucide-react/dist/esm/icons/badge-alert.mjs";
 import BadgeCheckIcon from "lucide-react/dist/esm/icons/badge-check.mjs";
@@ -704,6 +706,20 @@ export function PillarSections({ items }: PillarSectionsProps) {
                     </li>
                   ))}
                 </ul>
+                {pillar.link ? (
+                  <Link
+                    className="group mt-7 inline-flex items-center gap-2 text-[1.06rem] font-semibold text-[var(--color-blue)] transition-colors duration-150 hover:text-[var(--color-blue-deep)]"
+                    href={pillar.link.href}
+                  >
+                    <span className="border-b border-[rgba(56,182,255,0.34)] pb-0.5 transition-colors duration-150 group-hover:border-[rgba(20,112,184,0.55)]">
+                      {pillar.link.label}
+                    </span>
+                    <ArrowRightIcon
+                      className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5"
+                      strokeWidth={1.8}
+                    />
+                  </Link>
+                ) : null}
               </article>
             </Reveal>
           </section>

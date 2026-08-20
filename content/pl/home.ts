@@ -1,3 +1,4 @@
+import { localizeFeaturePath } from "@/lib/i18n/features";
 import { localizePath } from "@/lib/i18n/routes";
 import type { HomeContent } from "../types";
 
@@ -122,6 +123,10 @@ export const homeContent: HomeContent = {
           "Formularze i układy",
           "Słowniki i listy własne",
         ],
+        link: {
+          label: "Więcej o no-code",
+          href: localizeFeaturePath("pl", "noCode"),
+        },
         animation: {
           dashboard: {
             blocks: ["Licznik", "Raport", "Tabela"],
@@ -146,6 +151,10 @@ export const homeContent: HomeContent = {
           "Wygodne kalendarze i wykresy Gantta",
           "Widoki, filtry i układy dopasowane do ról",
         ],
+        link: {
+          label: "Więcej o widokach",
+          href: localizeFeaturePath("pl", "reports"),
+        },
       },
       {
         title: "Automatyzuj wszystko",
@@ -157,6 +166,10 @@ export const homeContent: HomeContent = {
           "Integracje z narzędziami używanymi przez zespoły",
           "Asystent AI i API do własnych operacji",
         ],
+        link: {
+          label: "Więcej o automatyzacji",
+          href: localizeFeaturePath("pl", "lowCode"),
+        },
         ruleAnimation: {
           actionLabel: "Wyślij fakturę",
           start: {
@@ -191,6 +204,10 @@ export const homeContent: HomeContent = {
           "KSeF i e-Doręczenia",
           "Tokeny API, MFA i logi",
         ],
+        link: {
+          label: "Więcej o uprawnieniach",
+          href: localizeFeaturePath("pl", "security"),
+        },
         permissionAnimation: {
           title: "Profil pracownika",
           viewAsLabel: "Widok jako:",
@@ -245,6 +262,10 @@ export const homeContent: HomeContent = {
     title: "Połącz Opero z usługami wokół Twojego procesu.",
     description:
       "Opero może wymieniać dane z rejestrami publicznymi, kanałami doręczeń, podpisami i narzędziami, z których zespół już korzysta. Zacznij od integracji potrzebnych dziś i dodawaj kolejne, gdy proces się rozwija.",
+    link: {
+      label: "Więcej o integracjach",
+      href: localizeFeaturePath("pl", "integrations"),
+    },
     items: [
       {
         name: "KSeF",

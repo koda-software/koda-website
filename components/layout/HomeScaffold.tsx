@@ -200,7 +200,6 @@ export function HomeScaffold({
       </section>
 
       <section className="relative overflow-hidden bg-white px-[var(--page-gutter)] py-[clamp(4.5rem,8vw,7rem)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(56,182,255,0.08),transparent_30%),radial-gradient(circle_at_86%_72%,rgba(99,102,241,0.06),transparent_32%)]" aria-hidden="true" />
         <div className={`${landingShellClass} relative z-[1]`}>
           <Reveal>
             <SectionIntro
@@ -208,10 +207,24 @@ export function HomeScaffold({
               title={content.integrations.title}
               description={content.integrations.description}
               split
+              action={(
+                <Link
+                  className="group inline-flex items-center gap-2 text-[1.08rem] font-semibold text-[var(--color-blue)] transition-colors duration-150 hover:text-[var(--color-blue-deep)]"
+                  href={content.integrations.link.href}
+                >
+                  <span className="border-b border-[rgba(56,182,255,0.34)] pb-0.5 transition-colors duration-150 group-hover:border-[rgba(20,112,184,0.55)]">
+                    {content.integrations.link.label}
+                  </span>
+                  <ArrowRightIcon
+                    className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5"
+                    strokeWidth={1.8}
+                  />
+                </Link>
+              )}
             />
           </Reveal>
           <Reveal className="mt-[clamp(2rem,4vw,3.25rem)]">
-            <IntegrationsCarousel items={content.integrations.items} />
+            <IntegrationsCarousel fadeColor="#ffffff" items={content.integrations.items} />
           </Reveal>
         </div>
       </section>
