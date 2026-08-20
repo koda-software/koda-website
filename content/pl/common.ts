@@ -24,6 +24,27 @@ export const commonContent: ShellContent = {
     links: [{ label: "Dokumentacja", href: "/docs/pl" }],
     languageLabel: "Język",
     productLine: "BPM low-code od KodaSoft",
+    contact: {
+      eyebrow: "Kontakt",
+      title: "Porozmawiajmy o jednym Waszym procesie.",
+      description:
+        "Wystarczy jeden proces, który dziś żyje w arkuszu albo w mailach. Pokażemy, jak wygląda w Operze, i powiemy wprost, czy to dobry kierunek.",
+      emailLabel: "Napisz",
+      email: "kontakt@kodasoft.pl",
+      phoneLabel: "Zadzwoń",
+      phone: "+48 666 618 026",
+      formLabel: "Umów demo",
+      formHint: "Odpowiadamy w ciągu jednego dnia roboczego",
+      flowSteps: ["Brak wydajności procesów firmowych", "Dowiadujesz się o Opero"],
+    },
+    productHeading: "Produkt",
+    companyHeading: "Firma",
+    reachHeading: "Porozmawiajmy",
+    talkBody: "Bez prezentacji handlowej. Pokaż nam jeden proces, a my powiemy, co da się z nim zrobić.",
+    linkedinLabel: "KodaSoft na LinkedIn",
+    legalName: "KodaSoft sp. z o.o.",
+    rights: "Wszelkie prawa zastrzeżone.",
+    privacyLabel: "Polityka prywatności",
   },
 };
 

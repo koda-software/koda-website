@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useId, useState } from "react";
 import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
 import type { Locale } from "@/lib/i18n/config";
+import { localizePath } from "@/lib/i18n/routes";
 import type { ContactFormContent } from "@/content/types";
 
 type ContactFormProps = {
@@ -187,7 +189,15 @@ export function ContactForm({ locale, content }: ContactFormProps) {
         />
       </label>
 
-      <p className="m-0 text-[0.82rem] font-light leading-[1.6] text-[var(--color-muted)]">{content.consent}</p>
+      <p className="m-0 text-[0.82rem] font-light leading-[1.6] text-[var(--color-muted)]">
+        {content.consent}{" "}
+        <Link
+          className="underline decoration-[var(--color-blue)]/40 underline-offset-2 transition-colors hover:text-[var(--color-ink)] hover:decoration-[var(--color-blue)]"
+          href={localizePath(locale, "privacy")}
+        >
+          {content.consentLinkLabel}
+        </Link>
+      </p>
 
       <div className="flex flex-wrap items-center gap-4">
         <button

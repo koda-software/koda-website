@@ -24,6 +24,27 @@ export const commonContent: ShellContent = {
     links: [{ label: "Documentation", href: "/docs/en" }],
     languageLabel: "Language",
     productLine: "Low-code BPM by KodaSoft",
+    contact: {
+      eyebrow: "Get in touch",
+      title: "Let's talk about one of your processes.",
+      description:
+        "One process is enough - the one that lives in a spreadsheet or an inbox today. We will show you what it looks like in Opero and tell you plainly whether it is the right fit.",
+      emailLabel: "Email us",
+      email: "kontakt@kodasoft.pl",
+      phoneLabel: "Call us",
+      phone: "+48 666 618 026",
+      formLabel: "Book a demo",
+      formHint: "We reply within one working day",
+      flowSteps: ["Business processes that slow the company down", "You find out about Opero"],
+    },
+    productHeading: "Product",
+    companyHeading: "Company",
+    reachHeading: "Let us talk",
+    talkBody: "No sales pitch. Show us one process and we will tell you what can be done with it.",
+    linkedinLabel: "KodaSoft on LinkedIn",
+    legalName: "KodaSoft sp. z o.o.",
+    rights: "All rights reserved.",
+    privacyLabel: "Privacy policy",
   },
 };
 

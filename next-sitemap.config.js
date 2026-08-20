@@ -43,9 +43,16 @@ const routes = [
   { page: "blog", path: "/pl/blog" },
   { page: "contact", path: "/en/contact" },
   { page: "contact", path: "/pl/contact" },
+  { page: "privacy", path: "/en/privacy-policy" },
+  { page: "privacy", path: "/pl/polityka-prywatnosci" },
 ];
 
 const alternatePaths = {
+  privacy: {
+    en: "/en/privacy-policy",
+    pl: "/pl/polityka-prywatnosci",
+    "x-default": "/en/privacy-policy",
+  },
   home: {
     en: "/",
     pl: "/pl",
@@ -83,7 +90,7 @@ function sitemapEntry(route) {
   return {
     loc: route.path,
     changefreq: route.page === "home" ? "weekly" : "monthly",
-    priority: route.page === "home" ? 1 : 0.7,
+    priority: route.page === "home" ? 1 : route.page === "privacy" ? 0.3 : 0.7,
     alternateRefs: Object.entries(alternatePaths[route.page]).map(([hreflang, path]) => ({
       hreflang,
       href: absoluteUrl(path),

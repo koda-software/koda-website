@@ -41,6 +41,45 @@ export type ShellContent = {
     links: Array<{ label: string; href: string }>;
     languageLabel: string;
     productLine: string;
+    /** Opening band: the invitation to get in touch. */
+    contact: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      /**
+       * Ways to reach the company, rendered as cards. Each entry is optional
+       * because the company is pre-incorporation: a card only appears once
+       * there is a real value for it, rather than a placeholder standing in.
+       */
+      emailLabel: string;
+      email?: string;
+      phoneLabel: string;
+      phone?: string;
+      /** Falls back to the demo form when neither address nor number exists. */
+      formLabel: string;
+      formHint: string;
+      /**
+       * The two stages leading into the email card. They are the reader's own
+       * story, not the product's: the problem they arrived with, and finding
+       * out there is an answer. The card is the third stage.
+       */
+      flowSteps: [string, string];
+    };
+    /** Column headings for the link groups. */
+    productHeading: string;
+    companyHeading: string;
+    reachHeading: string;
+    /** One line under the closing invitation in the last footer column. */
+    talkBody: string;
+    linkedinLabel: string;
+    /**
+     * Bottom line. `legalName` stays undefined until the company is registered;
+     * until then the bar carries the brand alone rather than inventing an
+     * entity that does not exist yet.
+     */
+    legalName?: string;
+    rights: string;
+    privacyLabel: string;
   };
 };
 
@@ -789,6 +828,8 @@ export type ContactFormContent = {
   interestLabel: string;
   messageLabel: string;
   consent: string;
+  /** Link text appended to the consent line, pointing at the privacy policy. */
+  consentLinkLabel: string;
   requiredHint: string;
   optionalHint: string;
   submitLabel: string;
@@ -822,4 +863,26 @@ export type ContactPageContent = {
     }>;
   };
   form: ContactFormContent;
+};
+
+/** One block of a legal document: a heading and its body. */
+export type LegalSection = {
+  heading: string;
+  paragraphs?: string[];
+  list?: string[];
+  /** Term-and-explanation rows, for things like the list of processors. */
+  rows?: Array<{ term: string; description: string }>;
+};
+
+export type PrivacyContent = {
+  seo: SeoContent;
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
+  updatedLabel: string;
+  /** ISO date, rendered by the page in the reader's locale. */
+  updatedAt: string;
+  sections: LegalSection[];
 };

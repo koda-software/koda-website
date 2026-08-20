@@ -44,6 +44,7 @@ export const contactContent: ContactPageContent = {
     interestLabel: "Główny temat",
     messageLabel: "Co chcesz omówić?",
     consent: "Wysyłając formularz, zgadzasz się na kontakt KodaSoft w sprawie zapytania.",
+    consentLinkLabel: "Polityka prywatności",
     requiredHint: "Wymagane",
     optionalHint: "Opcjonalne",
     submitLabel: "Wyślij zapytanie",

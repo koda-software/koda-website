@@ -1,6 +1,6 @@
 import { defaultLocale, type Locale, locales } from "./config";
 
-export type PageKey = "home" | "opero" | "solutions" | "blog" | "about" | "contact";
+export type PageKey = "home" | "opero" | "solutions" | "blog" | "about" | "contact" | "privacy";
 
 /**
  * Slug per page and locale, mirroring how the feature pages are addressed. Most
@@ -14,9 +14,10 @@ export const pageSlugs: Record<Exclude<PageKey, "home">, Record<Locale, string>>
   blog: { en: "blog", pl: "blog" },
   about: { en: "about", pl: "o-nas" },
   contact: { en: "contact", pl: "contact" },
+  privacy: { en: "privacy-policy", pl: "polityka-prywatnosci" },
 };
 
-export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "about", "contact"];
+export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "about", "contact", "privacy"];
 
 export function localizePath(locale: Locale, page: PageKey): string {
   if (page === "home") {
