@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PhotoBackdrop, type PhotoName } from "@/components/layout/PhotoBackdrop";
+import { GsapRevealRoot } from "./GsapRevealRoot";
 
 type LandingSectionProps = {
   children: ReactNode;
@@ -233,12 +234,18 @@ export function LandingHero({
     <section className={`relative flex items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(5rem,9vw,8rem)] pt-[clamp(9rem,14vw,13rem)] text-[var(--color-paper)] max-[809px]:pt-[8rem] ${edgeVisual ? "max-[809px]:pb-[min(48vw,14rem)]" : ""}`.trim()}>
       {photo ? <PhotoBackdrop photo={photo} priority /> : null}
       {edgeVisual ? children : null}
-      <div className={`relative z-[1] ${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}>
+      <GsapRevealRoot
+        className={`relative z-[1] ${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}
+        duration={0.95}
+        stagger={0.1}
+        start="top 92%"
+        y={28}
+      >
         <div className="relative z-[1]">
-          <div className="hero-rise"><Eyebrow invert>{eyebrow}</Eyebrow></div>
-          <div className="hero-rise hero-d1"><HeroTitle className="max-w-[880px]" title={title} /></div>
-          <p className="hero-rise hero-d2 mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
-          <div className="hero-rise hero-d3">
+          <div data-gsap-reveal><Eyebrow invert>{eyebrow}</Eyebrow></div>
+          <div data-gsap-reveal><HeroTitle className="max-w-[880px]" title={title} /></div>
+          <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">{description}</p>
+          <div data-gsap-reveal>
           <CtaRow
             actions={[
               { href: primaryHref, label: primaryCta },
@@ -250,9 +257,9 @@ export function LandingHero({
         {edgeVisual ? (
           <div aria-hidden="true" />
         ) : (
-          <div className="hero-slide hero-d3 relative z-[1] min-w-0 max-[809px]:mt-6">{children}</div>
+          <div className="relative z-[1] min-w-0 max-[809px]:mt-6" data-gsap-reveal>{children}</div>
         )}
-      </div>
+      </GsapRevealRoot>
 
       {scrollTarget ? (
         <a
@@ -324,29 +331,34 @@ export function PageHero({
       photoPosition={photoPosition}
     >
       {backgroundVisual}
-      <div
+      <GsapRevealRoot
         className={`relative z-[1] mx-auto w-[min(100%,var(--shell-width))] ${
           hasVisual
             ? "grid grid-cols-[minmax(0,1fr)_minmax(18rem,0.58fr)] items-center gap-16 max-[980px]:grid-cols-1"
             : ""
         } ${shellClassName}`.trim()}
+        duration={0.95}
+        stagger={0.1}
+        start="top 92%"
+        y={28}
       >
         <div>
-          <div className="hero-rise">
+          <div data-gsap-reveal>
             <Eyebrow invert>{eyebrow}</Eyebrow>
           </div>
-          <div className="hero-rise hero-d1">
+          <div data-gsap-reveal>
             <HeroTitle className={titleClassName} title={title} />
           </div>
           {description ? (
             <p
-              className={`hero-rise hero-d2 mt-6 max-w-[760px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem] ${descriptionClassName}`.trim()}
+              className={`mt-6 max-w-[760px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem] ${descriptionClassName}`.trim()}
+              data-gsap-reveal
             >
               {description}
             </p>
           ) : null}
           {hasActions ? (
-            <div className="hero-rise hero-d3">
+            <div data-gsap-reveal>
               <CtaRow
                 actions={[
                   { href: primaryHref, label: primaryCta },
@@ -357,11 +369,11 @@ export function PageHero({
           ) : null}
         </div>
         {hasVisual ? (
-          <div className={`hero-slide hero-d3 relative z-[1] min-w-0 ${visualClassName}`.trim()}>
+          <div className={`relative z-[1] min-w-0 ${visualClassName}`.trim()} data-gsap-reveal>
             {children}
           </div>
         ) : null}
-      </div>
+      </GsapRevealRoot>
     </HeroShell>
   );
 }

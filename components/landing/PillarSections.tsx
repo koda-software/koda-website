@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import type { gsap as GsapNamespace } from "gsap";
+import type { MotionPathPlugin as MotionPathPluginInstance } from "gsap/MotionPathPlugin";
 import type { FeaturePillar } from "@/content/types";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import BarChart3Icon from "lucide-react/dist/esm/icons/bar-chart-3.mjs";
@@ -35,6 +37,12 @@ type BlockIcon = typeof GaugeIcon;
 type ProcessViewMode = "table" | "kanban" | "calendar";
 type PermissionRole = "employee" | "hr";
 type RuleRoute = "positive" | "negative";
+type GsapModule = {
+  gsap: typeof GsapNamespace;
+};
+type MotionPathModule = {
+  MotionPathPlugin: typeof MotionPathPluginInstance;
+};
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
@@ -45,6 +53,32 @@ const pageClass =
   "relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] pt-3";
 const dropSlotClass =
   "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
+
+async function animateDemoIn(root: HTMLElement | null, selector: string, y = 10) {
+  if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  const { gsap } = await (import("gsap") as Promise<GsapModule>);
+  const targets = Array.from(root.querySelectorAll<HTMLElement>(selector));
+
+  if (targets.length === 0) {
+    return;
+  }
+
+  gsap.fromTo(
+    targets,
+    { autoAlpha: 0, scale: 0.975, y },
+    {
+      autoAlpha: 1,
+      duration: 0.42,
+      ease: "back.out(1.45)",
+      scale: 1,
+      stagger: 0.035,
+      y: 0,
+    },
+  );
+}
 
 function BrowserPanel({
   children,
@@ -145,7 +179,7 @@ function DashboardPage({
     <div className="grid h-full min-h-[15.5rem] grid-rows-[auto_1fr] gap-3">
       <div className={`${dropSlotClass} min-h-[4.625rem] p-2 ${styles.interactiveDropZone}`}>
         {visibleBlocks[0] ? (
-          <div className={`${styles.componentPop} grid grid-cols-3 gap-2`}>
+          <div className={`${styles.componentPop} grid grid-cols-3 gap-2`} data-build-component="0">
             {animation.metrics.map((metric, index) => (
               <span
                 className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.08)] bg-white p-2"
@@ -171,7 +205,7 @@ function DashboardPage({
       <div className="grid grid-cols-[1fr_0.76fr] gap-3">
         <div className={`${dropSlotClass} p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[1] ? (
-          <div className={styles.componentPop}>
+          <div className={styles.componentPop} data-build-component="1">
             <span className="mb-2 block h-2 w-1/2 rounded-full bg-[rgba(11,17,22,0.12)]" />
             <div className="flex h-20 items-end gap-2">
               {[54, 78, 42, 68, 88].map((height, index) => (
@@ -189,7 +223,7 @@ function DashboardPage({
         </div>
         <div className={`${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[2] ? (
-          <div className={`${styles.componentPop} grid gap-2`}>
+          <div className={`${styles.componentPop} grid gap-2`} data-build-component="2">
             <span className="h-2 w-2/3 rounded-full bg-[rgba(11,17,22,0.12)]" />
             <span className="h-2 w-full rounded-full bg-[rgba(11,17,22,0.08)]" />
             <span className="h-2 w-5/6 rounded-full bg-[rgba(11,17,22,0.08)]" />
@@ -206,14 +240,19 @@ function DashboardPage({
 
 function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
   const [visibleBlocks, setVisibleBlocks] = useState([false, false, false]);
+  const rootRef = useRef<HTMLDivElement>(null);
   const complete = visibleBlocks.every(Boolean);
 
   const addBlock = (index: number) => {
     setVisibleBlocks((current) => current.map((visible, blockIndex) => visible || blockIndex === index));
+    window.requestAnimationFrame(() => {
+      void animateDemoIn(rootRef.current, `[data-build-component="${index}"]`);
+      void animateDemoIn(rootRef.current, "[data-build-complete]", 6);
+    });
   };
 
   return (
-    <div className="relative min-h-[22rem] overflow-visible">
+    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.buildStage}`}>
         <div className="relative grid h-full min-h-[18rem] grid-cols-[0.42fr_1fr] gap-4">
           <div className="relative">
@@ -230,7 +269,7 @@ function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
           <div className={pageClass}>
             <DashboardPage animation={animation.dashboard} visibleBlocks={visibleBlocks} />
             {complete ? (
-              <span className={`${styles.componentPop} absolute bottom-0 right-0 grid h-8 w-8 translate-x-1/2 translate-y-1/2 place-items-center rounded-full border border-[rgba(16,185,129,0.24)] bg-[rgba(236,253,245,0.96)] text-[#0f8b5d] shadow-[0_16px_34px_-18px_rgba(2,2,13,0.38)]`}>
+              <span className={`${styles.componentPop} absolute bottom-0 right-0 grid h-8 w-8 translate-x-1/2 translate-y-1/2 place-items-center rounded-full border border-[rgba(16,185,129,0.24)] bg-[rgba(236,253,245,0.96)] text-[#0f8b5d] shadow-[0_16px_34px_-18px_rgba(2,2,13,0.38)]`} data-build-complete>
                 <CheckIcon className="h-4 w-4" strokeWidth={2} />
               </span>
             ) : null}
@@ -271,7 +310,7 @@ function ViewModeButton({
 
 function TableView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>
+    <div className={`absolute inset-0 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="table">
       <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.09)] bg-white">
         <div className="grid grid-cols-[1.12fr_0.78fr_0.65fr] bg-[rgba(246,250,253,0.92)] text-[0.54rem] font-semibold uppercase text-[rgba(11,17,22,0.46)]">
           <span className="border-r border-[rgba(2,2,13,0.08)] px-3 py-2">Case</span>
@@ -307,7 +346,7 @@ function KanbanView({ active }: { active: boolean }) {
   ];
 
   return (
-    <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>
+    <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="kanban">
       {columns.map((column, columnIndex) => (
         <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.1)] bg-[rgba(246,250,253,0.82)] p-2 shadow-[0_14px_34px_-30px_rgba(2,2,13,0.38)]" key={columnIndex}>
           <span className={`mb-1 h-2 w-2/3 rounded-full ${column[0]}`} />
@@ -331,7 +370,7 @@ function CalendarView({ active }: { active: boolean }) {
   ];
 
   return (
-    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>
+    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
       {Array.from({ length: 35 }, (_, index) => (
         <span
           className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.05)] bg-white/72 p-1 text-[0.5rem] text-[rgba(11,17,22,0.38)]"
@@ -350,9 +389,16 @@ function CalendarView({ active }: { active: boolean }) {
 function ProcessViewInteractive() {
   const [activeView, setActiveView] = useState<ProcessViewMode>("table");
   const [hasOpenedKanban, setHasOpenedKanban] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      void animateDemoIn(rootRef.current, `[data-process-view="${activeView}"] > *`, 8);
+    });
+  }, [activeView]);
 
   return (
-    <div className="relative min-h-[22rem] overflow-visible">
+    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.processStage}`}>
         <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] p-4">
           <div className="mb-3 flex gap-2">
@@ -394,15 +440,19 @@ function ProcessViewInteractive() {
 }
 
 function RuleNode({
+  children,
   className,
   icon: Icon,
   meta,
+  nodeId,
   tone = "blue",
   title,
 }: {
+  children?: React.ReactNode;
   className: string;
   icon: BlockIcon;
   meta: string;
+  nodeId: string;
   tone?: "blue" | "green" | "red";
   title: string;
 }) {
@@ -414,7 +464,7 @@ function RuleNode({
         : "border-[rgba(56,182,255,0.2)] bg-[rgba(56,182,255,0.08)] text-[var(--color-blue)]";
 
   return (
-    <div className={`absolute rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_18px_42px_-34px_rgba(2,2,13,0.42)] ${className}`}>
+    <div className={`absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_18px_42px_-34px_rgba(2,2,13,0.42)] ${className}`} data-rule-node={nodeId}>
       <div className="flex items-start gap-2.5">
         <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border ${toneClass}`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
@@ -428,6 +478,7 @@ function RuleNode({
           </span>
         </span>
       </div>
+      {children}
     </div>
   );
 }
@@ -436,26 +487,348 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   const [isRunning, setIsRunning] = useState(false);
   const [activeRoute, setActiveRoute] = useState<RuleRoute>("positive");
   const [nextRoute, setNextRoute] = useState<RuleRoute>("positive");
-  const [runId, setRunId] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inputPathRef = useRef<SVGPathElement>(null);
+  const middlePathRef = useRef<SVGPathElement>(null);
+  const branchPathRef = useRef<SVGPathElement>(null);
+  const tokenRef = useRef<HTMLDivElement>(null);
+  const tokenCoreRef = useRef<HTMLSpanElement>(null);
+  const tokenAmountRef = useRef<HTMLSpanElement>(null);
+  const conditionLogicRef = useRef<HTMLSpanElement>(null);
+  const conditionAmountRef = useRef<HTMLSpanElement>(null);
+  const conditionOperatorRef = useRef<HTMLSpanElement>(null);
+  const conditionLimitRef = useRef<HTMLSpanElement>(null);
+  const positiveLabelRef = useRef<HTMLSpanElement>(null);
+  const negativeLabelRef = useRef<HTMLSpanElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
-    if (!isRunning) return;
+    return () => {
+      timelineRef.current?.kill();
+    };
+  }, []);
 
-    const reset = window.setTimeout(() => setIsRunning(false), 3400);
+  const playRuleFlow = async (route: RuleRoute) => {
+    const root = rootRef.current;
+    const inputPath = inputPathRef.current;
+    const middlePath = middlePathRef.current;
+    const branchPath = branchPathRef.current;
+    const token = tokenRef.current;
+    const tokenCore = tokenCoreRef.current;
+    const tokenAmount = tokenAmountRef.current;
+    const conditionLogic = conditionLogicRef.current;
+    const conditionAmount = conditionAmountRef.current;
+    const conditionOperator = conditionOperatorRef.current;
+    const conditionLimit = conditionLimitRef.current;
 
-    return () => window.clearTimeout(reset);
-  }, [isRunning, runId]);
+    if (
+      !root ||
+      !inputPath ||
+      !middlePath ||
+      !branchPath ||
+      !token ||
+      !tokenCore ||
+      !tokenAmount ||
+      !conditionLogic ||
+      !conditionAmount ||
+      !conditionOperator ||
+      !conditionLimit
+    ) {
+      setIsRunning(false);
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsRunning(false);
+      return;
+    }
+
+    const [{ gsap }, { MotionPathPlugin }] = await Promise.all([
+      import("gsap") as Promise<GsapModule>,
+      import("gsap/MotionPathPlugin") as Promise<MotionPathModule>,
+    ]);
+    gsap.registerPlugin(MotionPathPlugin);
+
+    timelineRef.current?.kill();
+
+    const startNode = root.querySelector<HTMLElement>('[data-rule-node="start"]');
+    const conditionNode = root.querySelector<HTMLElement>('[data-rule-node="condition"]');
+    const resultNode = root.querySelector<HTMLElement>(`[data-rule-node="${route}"]`);
+    const activeLabel = route === "positive" ? positiveLabelRef.current : negativeLabelRef.current;
+    const inactiveLabel = route === "positive" ? negativeLabelRef.current : positiveLabelRef.current;
+    const activeColor = route === "positive" ? "#10b981" : "#f87171";
+    const activeSoftColor = route === "positive" ? "rgba(16,185,129,0.78)" : "rgba(248,113,113,0.82)";
+    const amount = route === "positive" ? "€499" : "€2400";
+    const decisionShadow =
+      route === "positive"
+        ? "0 0 0 4px rgba(16,185,129,0.13), 0 18px 42px -34px rgba(2,2,13,0.42)"
+        : "0 0 0 4px rgba(248,113,113,0.14), 0 18px 42px -34px rgba(2,2,13,0.42)";
+    const branchPathD =
+      route === "positive"
+        ? "M 252 246 C 252 306 160 306 160 342"
+        : "M 252 246 C 252 306 344 306 344 342";
+
+    inputPath.setAttribute("d", "M 252 54 V 95");
+    middlePath.setAttribute("d", "M 252 151 V 190");
+    branchPath.setAttribute("d", branchPathD);
+    tokenAmount.textContent = amount;
+    conditionAmount.textContent = amount;
+
+    const preparePath = (path: SVGPathElement, color: string) => {
+      path.style.stroke = color;
+      path.style.strokeDasharray = "1";
+      path.style.strokeDashoffset = "1";
+      path.style.opacity = "0";
+    };
+
+    preparePath(inputPath, "rgba(56,182,255,0.76)");
+    preparePath(middlePath, "rgba(56,182,255,0.76)");
+    preparePath(branchPath, activeSoftColor);
+
+    gsap.set([startNode, conditionNode, resultNode], {
+      boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
+      scale: 1,
+    });
+    gsap.set([positiveLabelRef.current, negativeLabelRef.current], {
+      backgroundColor: "rgba(255,255,255,0.86)",
+      borderColor: "rgba(11,17,22,0.1)",
+      color: "rgba(11,17,22,0.42)",
+      opacity: 0.58,
+      scale: 1,
+    });
+    gsap.set(conditionLogic, {
+      autoAlpha: 0,
+      backgroundColor: "rgba(246,250,253,0.88)",
+      borderColor: "rgba(11,17,22,0.08)",
+      color: "var(--color-muted)",
+      scale: 0.98,
+      y: 4,
+    });
+    gsap.set([conditionAmount, conditionOperator, conditionLimit], {
+      color: "var(--color-muted)",
+    });
+    gsap.set(token, { autoAlpha: 1, scale: 1, x: 252, y: 54 });
+    gsap.set(tokenCore, {
+      autoAlpha: 1,
+      backgroundColor: "var(--color-blue)",
+      boxShadow: "0 0 0 0 rgba(56,182,255,0)",
+      scale: 1,
+    });
+    gsap.set(tokenAmount, { autoAlpha: 1, x: 0 });
+
+    const pulseNode = (node: HTMLElement | null, color = "rgba(56,182,255,0.18)", shadow?: string) => {
+      if (!node) {
+        return;
+      }
+
+      timeline.to(
+        node,
+        {
+          boxShadow: shadow ?? `0 0 0 5px ${color}, 0 18px 42px -34px rgba(2,2,13,0.42)`,
+          duration: 0.16,
+          ease: "power2.out",
+          scale: 1.025,
+        },
+      ).to(
+        node,
+        {
+          boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
+          duration: 0.28,
+          ease: "power3.out",
+          scale: 1,
+        },
+      );
+    };
+
+    const absorbAt = (node: HTMLElement | null, color = "rgba(56,182,255,0.18)") => {
+      pulseNode(node, color);
+      timeline
+        .to(tokenCore, {
+          boxShadow: `0 0 0 7px ${color}`,
+          duration: 0.12,
+          ease: "power2.out",
+          scale: 1.18,
+        }, "<")
+        .to(tokenAmount, {
+          autoAlpha: 0,
+          duration: 0.12,
+          ease: "power2.out",
+          x: 3,
+        }, "<")
+        .to(tokenCore, {
+          autoAlpha: 0,
+          duration: 0.16,
+          ease: "power2.in",
+          scale: 0.28,
+        });
+    };
+
+    const emitFrom = (x: number, y: number, color = "var(--color-blue)") => {
+      timeline
+        .set(token, { x, y })
+        .set(tokenCore, {
+          autoAlpha: 1,
+          backgroundColor: color,
+          boxShadow: "0 0 0 0 rgba(56,182,255,0)",
+          scale: 0.34,
+        })
+        .set(tokenAmount, { x: -2 })
+        .to(tokenCore, {
+          duration: 0.18,
+          ease: "back.out(2.2)",
+          scale: 1,
+        })
+        .to(tokenAmount, {
+          autoAlpha: 1,
+          duration: 0.18,
+          ease: "power2.out",
+          x: 0,
+        }, "<0.03");
+    };
+
+    const timeline = gsap.timeline({
+      defaults: { ease: "power2.inOut" },
+      onComplete: () => {
+        gsap.to(token, { autoAlpha: 0, duration: 0.22, ease: "power2.out" });
+        setIsRunning(false);
+      },
+    });
+    timelineRef.current = timeline;
+
+    timeline
+      .fromTo(token, { autoAlpha: 0, scale: 0.72 }, { autoAlpha: 1, duration: 0.18, ease: "power2.out", scale: 1 })
+      .to(inputPath, { opacity: 1, duration: 0.06 }, "<")
+      .to(inputPath, { duration: 0.46, ease: "power1.inOut", strokeDashoffset: 0 }, "<")
+      .to(
+        token,
+        {
+          duration: 0.46,
+          ease: "power2.inOut",
+          motionPath: { path: "M 252 54 V 95", autoRotate: false },
+        },
+        "<",
+      );
+
+    absorbAt(startNode);
+    emitFrom(252, 151);
+
+    timeline
+      .to(middlePath, { opacity: 1, duration: 0.06 }, "+=0.02")
+      .to(middlePath, { duration: 0.42, ease: "power1.inOut", strokeDashoffset: 0 }, "<")
+      .to(
+        token,
+        {
+          duration: 0.42,
+          ease: "power2.inOut",
+          motionPath: { path: "M 252 151 V 190", autoRotate: false },
+        },
+        "<",
+      );
+
+    absorbAt(conditionNode);
+
+    timeline
+      .to(conditionLogic, {
+        autoAlpha: 1,
+        duration: 0.2,
+        ease: "back.out(1.8)",
+        scale: 1,
+        y: 0,
+      }, "+=0.02")
+      .to(conditionAmount, {
+        color: "var(--color-ink)",
+        duration: 0.16,
+        ease: "power2.out",
+      })
+      .to(conditionOperator, {
+        color: activeColor,
+        duration: 0.16,
+        ease: "power2.out",
+      }, "<0.05")
+      .to(conditionLimit, {
+        color: "var(--color-ink)",
+        duration: 0.16,
+        ease: "power2.out",
+      }, "<0.05")
+      .to(conditionLogic, {
+        backgroundColor: route === "positive" ? "rgba(236,253,245,0.94)" : "rgba(254,242,242,0.94)",
+        borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
+        color: activeColor,
+        duration: 0.2,
+        ease: "power2.out",
+      }, "+=0.03")
+      .to(conditionNode, {
+        boxShadow: decisionShadow,
+        duration: 0.16,
+        ease: "power2.out",
+        scale: 1.018,
+      }, "<")
+      .to(tokenCore, {
+        backgroundColor: activeColor,
+        duration: 0.01,
+      }, "+=0.08");
+
+    emitFrom(252, 246, activeColor);
+
+    timeline
+      .to(conditionNode, {
+        boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
+        duration: 0.28,
+        ease: "power3.out",
+        scale: 1,
+      })
+      .to(conditionLogic, {
+        autoAlpha: 0,
+        duration: 0.18,
+        ease: "power2.out",
+        scale: 0.98,
+        y: 4,
+      }, "<")
+      .to(activeLabel, {
+        backgroundColor: route === "positive" ? "rgba(236,253,245,0.96)" : "rgba(254,242,242,0.96)",
+        borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
+        color: route === "positive" ? "#0f8b5d" : "#c2413b",
+        duration: 0.18,
+        ease: "power2.out",
+        opacity: 1,
+        scale: 1.04,
+      }, "<0.08")
+      .to(inactiveLabel, { duration: 0.2, opacity: 0.32 }, "<")
+      .to(branchPath, { opacity: 1, duration: 0.06 }, ">")
+      .to(branchPath, { duration: 0.68, ease: "power1.inOut", strokeDashoffset: 0 }, "<")
+      .to(
+        token,
+        {
+          duration: 0.68,
+          ease: "power2.inOut",
+          motionPath: { path: branchPathD, autoRotate: false },
+        },
+        "<",
+      );
+
+    absorbAt(resultNode, route === "positive" ? "rgba(16,185,129,0.16)" : "rgba(248,113,113,0.17)");
+
+    timeline
+      .to(tokenCore, {
+        boxShadow: `0 0 0 0 ${route === "positive" ? "rgba(16,185,129,0)" : "rgba(248,113,113,0)"}`,
+        duration: 0.24,
+        ease: "power2.out",
+      }, "+=0.02")
+      .to([inputPath, middlePath, branchPath], { opacity: 0.28, duration: 0.35, ease: "power2.out" }, "+=0.25")
+      .to(activeLabel, { opacity: 0.72, scale: 1, duration: 0.28, ease: "power2.out" }, "<");
+  };
 
   const startFlow = () => {
     if (isRunning) return;
-    setActiveRoute(nextRoute);
+    const route = nextRoute;
+    setActiveRoute(route);
     setNextRoute((current) => (current === "positive" ? "negative" : "positive"));
-    setRunId((current) => current + 1);
     setIsRunning(true);
+    void playRuleFlow(route);
   };
 
   return (
-    <div className="relative min-h-[29rem] overflow-visible pt-12">
+    <div className="relative min-h-[29rem] overflow-visible pt-12" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[26.25rem] w-[31.5rem] ${styles.stageScale} ${styles.ruleStage}`}>
         <div className="relative h-[26.25rem] overflow-visible rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.1)_1px,transparent_1.2px)] [background-size:18px_18px]">
           <button
@@ -467,74 +840,65 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
             <SendIcon className="h-4 w-4 text-[var(--color-blue)]" strokeWidth={1.7} />
             {animation.actionLabel}
           </button>
-          <svg className="absolute inset-0 h-full w-full" key={runId} preserveAspectRatio="none" viewBox="0 0 504 384">
-            <path className={styles.ruleBasePath} d="M 252 50 V 236" />
-            <path className={styles.ruleBasePath} d="M 252 236 C 252 288 160 288 160 328" />
-            <path className={styles.ruleBasePath} d="M 252 236 C 252 288 344 288 344 328" />
-            {isRunning ? (
-              <>
-                <path className={`${styles.ruleSinglePath} ${styles.ruleSingleStartPath}`} d="M 252 50 V 236" pathLength="1" />
-                <path
-                  className={`${styles.ruleSinglePath} ${
-                    activeRoute === "positive" ? styles.ruleSinglePositivePath : styles.ruleSingleNegativePath
-                  }`}
-                  d={activeRoute === "positive" ? "M 252 236 C 252 288 160 288 160 328" : "M 252 236 C 252 288 344 288 344 328"}
-                  pathLength="1"
-                />
-                <g className={`${styles.ruleSvgToken} ${styles.ruleSingleToken} ${
-                  activeRoute === "positive" ? styles.ruleSinglePositiveToken : styles.ruleSingleNegativeToken
-                }`}>
-                  <circle r="5.5" />
-                  <circle className={styles.ruleTokenDot} r="1.8" />
-                  <g className={styles.ruleTokenAmountPill}>
-                    <rect height="22" rx="11" width="50" x="11" y="-11" />
-                    <text dominantBaseline="middle" textAnchor="middle" x="36" y="0">
-                      {activeRoute === "positive" ? "€499" : "€2400"}
-                    </text>
-                  </g>
-                  <animateMotion
-                    begin="0s"
-                    calcMode="linear"
-                    dur="3.4s"
-                    keyPoints="0;0.2;0.2;0.54;0.54;1"
-                    keyTimes="0;0.22;0.34;0.56;0.68;1"
-                    path={activeRoute === "positive" ? "M 252 50 V 236 C 252 288 160 288 160 328" : "M 252 50 V 236 C 252 288 344 288 344 328"}
-                    repeatCount="1"
-                  />
-                </g>
-              </>
-            ) : null}
+          <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 504 420">
+            <path className={styles.ruleBasePath} d="M 252 54 V 95" />
+            <path className={styles.ruleBasePath} d="M 252 151 V 190" />
+            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 160 306 160 342" />
+            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 344 306 344 342" />
+            <path className={styles.ruleGsapPath} pathLength="1" ref={inputPathRef} />
+            <path className={styles.ruleGsapPath} pathLength="1" ref={middlePathRef} />
+            <path className={styles.ruleGsapPath} pathLength="1" ref={branchPathRef} />
           </svg>
+          <div className={styles.ruleMotionToken} ref={tokenRef}>
+            <span className={styles.ruleMotionTokenInner}>
+              <span className={styles.ruleMotionTokenCore} ref={tokenCoreRef}>
+                <span />
+              </span>
+              <span className={styles.ruleMotionTokenAmount} ref={tokenAmountRef}>
+                {activeRoute === "positive" ? "€499" : "€2400"}
+              </span>
+            </span>
+          </div>
 
           <RuleNode
-            className={`left-1/2 top-[5.95rem] w-[10.5rem] -translate-x-1/2 ${isRunning ? styles.ruleStartNodePulse : ""}`}
+            className="left-1/2 top-[5.95rem] w-[10.5rem] -translate-x-1/2"
             icon={FileTextIcon}
             meta={animation.start.meta}
+            nodeId="start"
             title={animation.start.title}
           />
           <RuleNode
-            className={`left-1/2 top-[12.6rem] w-[10.5rem] -translate-x-1/2 ${isRunning ? styles.ruleConditionNodePulse : ""}`}
+            className="left-1/2 top-[11.85rem] w-[11rem] -translate-x-1/2"
             icon={GitBranchIcon}
             meta={animation.condition.meta}
+            nodeId="condition"
             title={animation.condition.title}
-          />
-          <span className={`${styles.ruleBranchLabel} ${isRunning && activeRoute === "positive" ? styles.rulePositiveLabel : ""} left-[5.65rem] top-[19.1rem]`}>
+          >
+            <span className={styles.ruleConditionLogic} ref={conditionLogicRef}>
+              <span ref={conditionAmountRef}>{activeRoute === "positive" ? "€499" : "€2400"}</span>
+              <span ref={conditionOperatorRef}>&lt;</span>
+              <span ref={conditionLimitRef}>€1000</span>
+            </span>
+          </RuleNode>
+          <span className={`${styles.ruleBranchLabel} left-[5.65rem] top-[19.1rem]`} ref={positiveLabelRef}>
             {animation.positiveLabel}
           </span>
           <RuleNode
-            className={`left-7 top-[21.4rem] w-[11.6rem] ${isRunning && activeRoute === "positive" ? styles.ruleResultNodePulse : ""}`}
+            className="left-7 top-[21.4rem] w-[11.6rem]"
             icon={BadgeCheckIcon}
             meta={animation.positive.meta}
+            nodeId="positive"
             title={animation.positive.title}
             tone="green"
           />
-          <span className={`${styles.ruleBranchLabel} ${isRunning && activeRoute === "negative" ? styles.ruleNegativeLabel : ""} right-[5.65rem] top-[19.1rem]`}>
+          <span className={`${styles.ruleBranchLabel} right-[5.65rem] top-[19.1rem]`} ref={negativeLabelRef}>
             {animation.negativeLabel}
           </span>
           <RuleNode
-            className={`right-7 top-[21.4rem] w-[11.6rem] ${isRunning && activeRoute === "negative" ? styles.ruleResultNodePulse : ""}`}
+            className="right-7 top-[21.4rem] w-[11.6rem]"
             icon={BadgeAlertIcon}
             meta={animation.negative.meta}
+            nodeId="negative"
             title={animation.negative.title}
             tone="red"
           />
@@ -547,10 +911,17 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
 function PermissionFormInteractive({ animation }: { animation: PermissionAnimation }) {
   const [role, setRole] = useState<PermissionRole>("hr");
   const [hasViewedEmployee, setHasViewedEmployee] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const protectedHidden = role === "employee";
 
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      void animateDemoIn(rootRef.current, "[data-permission-field]", 6);
+    });
+  }, [role]);
+
   return (
-    <div className="relative min-h-[22rem] overflow-visible">
+    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.permissionStage}`}>
         <div className="relative h-[22rem] overflow-hidden rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.08)_1px,transparent_1.2px)] [background-size:18px_18px]">
           <div className="absolute left-1/2 top-5 grid w-[24rem] -translate-x-1/2 gap-3">
@@ -596,6 +967,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                     className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.08)] bg-[rgba(246,250,253,0.72)] p-3 ${
                       protectedField && protectedHidden ? styles.permissionProtectedFieldHidden : ""
                     }`}
+                    data-permission-field={protectedField ? "protected" : "open"}
                     key={field.label}
                   >
                     <div className={`grid gap-2 ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import MenuIcon from "lucide-react/dist/esm/icons/menu.mjs";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
+import type { gsap as GsapNamespace } from "gsap";
 
 type ComparisonSliderProps = {
   afterAlt: string;
@@ -14,6 +15,16 @@ type ComparisonSliderProps = {
   beforeSrc: string;
   title: string;
 };
+
+const scrollRevealDistance = 90;
+
+type GsapModule = {
+  gsap: typeof GsapNamespace;
+};
+
+function smoothProgress(value: number) {
+  return value * value * (3 - 2 * value);
+}
 
 export function ComparisonSlider({
   afterAlt,
@@ -28,6 +39,9 @@ export function ComparisonSlider({
   const [position, setPosition] = useState(100);
   const isManualRef = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const gsapRef = useRef<typeof GsapNamespace | null>(null);
+  const sliderValueRef = useRef({ value: 100 });
+  const tweenToPositionRef = useRef<((value: number) => void) | null>(null);
   const style = {
     "--comparison-position": `${position}%`,
     maxWidth: "min(100%, calc((min(55.625rem, 91svh - 2rem) - 2.5rem) * 2044 / 1549))",
@@ -44,38 +58,66 @@ export function ComparisonSlider({
       return;
     }
 
-    let frame = 0;
+    let cancelled = false;
+    let scrollFrame = 0;
+    const sliderValue = sliderValueRef.current;
+
+    const setupGsap = async () => {
+      const { gsap } = await (import("gsap") as Promise<GsapModule>);
+
+      if (cancelled) {
+        return;
+      }
+
+      gsapRef.current = gsap;
+      tweenToPositionRef.current = gsap.quickTo(sliderValue, "value", {
+        duration: 1.1,
+        ease: "power3.out",
+        onUpdate: () => setPosition(sliderValue.value),
+      });
+    };
 
     const updateFromScroll = () => {
-      frame = 0;
+      scrollFrame = 0;
       if (isManualRef.current) return;
 
       const rect = root.getBoundingClientRect();
-      const startLine = window.innerHeight * 0.78;
-      const endLine = window.innerHeight * 0.28;
+      const startLine = window.innerHeight * 0.84;
+      const endLine = window.innerHeight * 0.12;
       const progress = Math.min(1, Math.max(0, (startLine - rect.top) / (startLine - endLine)));
+      const nextPosition = 100 - smoothProgress(progress) * scrollRevealDistance;
 
-      setPosition(100 - progress * 90);
+      if (tweenToPositionRef.current) {
+        tweenToPositionRef.current(nextPosition);
+      } else {
+        sliderValue.value = nextPosition;
+        setPosition(nextPosition);
+      }
     };
 
     const scheduleUpdate = () => {
-      if (frame || isManualRef.current) return;
-      frame = requestAnimationFrame(updateFromScroll);
+      if (scrollFrame || isManualRef.current) return;
+      scrollFrame = requestAnimationFrame(updateFromScroll);
     };
 
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
+    void setupGsap();
     scheduleUpdate();
 
     return () => {
+      cancelled = true;
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
-      if (frame) cancelAnimationFrame(frame);
+      if (scrollFrame) cancelAnimationFrame(scrollFrame);
+      gsapRef.current?.killTweensOf(sliderValue);
     };
   }, []);
 
   const enterManualMode = (nextPosition: number) => {
     isManualRef.current = true;
+    gsapRef.current?.killTweensOf(sliderValueRef.current);
+    sliderValueRef.current.value = nextPosition;
     setPosition(nextPosition);
   };
 

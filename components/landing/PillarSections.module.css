@@ -297,8 +297,7 @@
   animation: processCursorMove var(--process-cycle) cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
 }
 
-.ruleBasePath,
-.ruleActivePath {
+.ruleBasePath {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -309,72 +308,99 @@
   stroke: rgba(11, 17, 22, 0.18);
 }
 
-.ruleActivePath {
-  opacity: 0;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation-duration: var(--rule-cycle);
-  animation-fill-mode: forwards;
-  animation-iteration-count: 1;
-  animation-timing-function: linear;
-}
-
-.ruleSinglePath {
+.ruleGsapPath {
   fill: none;
   opacity: 0;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2;
-  animation-duration: var(--rule-run);
-  animation-fill-mode: forwards;
-  animation-iteration-count: 1;
-  animation-timing-function: linear;
+  stroke-width: 3;
 }
 
-.ruleSingleStartPath {
-  stroke: rgba(56, 182, 255, 0.72);
-  animation-name: drawRuleSingleStart;
+.ruleMotionToken {
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
 }
 
-.ruleSinglePositivePath {
-  stroke: rgba(16, 185, 129, 0.72);
-  animation-name: drawRuleSingleBranch;
+.ruleMotionTokenInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 10px 12px rgba(2, 2, 13, 0.16));
 }
 
-.ruleSingleNegativePath {
-  stroke: rgba(248, 113, 113, 0.75);
-  animation-name: drawRuleSingleBranch;
+.ruleMotionTokenCore {
+  display: grid;
+  width: 1.05rem;
+  height: 1.05rem;
+  place-items: center;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: var(--color-blue);
 }
 
-.rulePositivePathOne,
-.ruleNegativePathOne {
-  stroke: rgba(56, 182, 255, 0.7);
+.ruleMotionTokenCore span {
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: white;
 }
 
-.rulePositivePathTwo {
-  stroke: rgba(16, 185, 129, 0.72);
+.ruleMotionTokenAmount {
+  position: absolute;
+  top: 50%;
+  left: 1.32rem;
+  min-width: 3.4rem;
+  border: 1px solid rgba(11, 17, 22, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.28rem 0.5rem;
+  color: var(--color-ink-soft);
+  font-size: 0.64rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  transform: translateY(-50%);
+  white-space: nowrap;
 }
 
-.ruleNegativePathTwo {
-  stroke: rgba(248, 113, 113, 0.75);
+.ruleConditionLogic {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.55rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  transform: translateY(-50%);
+  border: 1px solid rgba(11, 17, 22, 0.08);
+  border-radius: calc(var(--radius-button) + 2px);
+  background: rgba(246, 250, 253, 0.88);
+  padding: 0.4rem 0.52rem;
+  color: var(--color-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 14px 30px -24px rgba(2, 2, 13, 0.34);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  white-space: nowrap;
 }
 
-.rulePositivePathOne {
-  animation-name: drawRulePositiveOne;
-}
-
-.rulePositivePathTwo {
-  animation-name: drawRulePositiveTwo;
-}
-
-.ruleNegativePathOne {
-  animation-name: drawRuleNegativeOne;
-}
-
-.ruleNegativePathTwo {
-  animation-name: drawRuleNegativeTwo;
+.ruleConditionLogic span:nth-child(2) {
+  min-width: 0.72rem;
+  text-align: center;
 }
 
 .ruleBranchLabel {
@@ -393,87 +419,6 @@
 .ruleBranchLabel {
   padding: 0.45rem 0.65rem;
   font-size: 0.62rem;
-}
-
-.rulePositiveLabel {
-  animation: pulseRulePositive var(--rule-run) ease 1 forwards;
-}
-
-.ruleNegativeLabel {
-  animation: pulseRuleNegative var(--rule-run) ease 1 forwards;
-}
-
-.ruleSvgToken {
-  opacity: 0;
-  filter: drop-shadow(0 7px 7px rgba(2, 2, 13, 0.16));
-}
-
-.ruleSvgToken circle:first-child {
-  fill: var(--color-blue);
-  stroke: white;
-  stroke-width: 2;
-}
-
-.ruleTokenDot {
-  fill: white;
-}
-
-.ruleTokenAmountPill {
-  filter: drop-shadow(0 8px 10px rgba(2, 2, 13, 0.14));
-}
-
-.ruleTokenAmountPill rect {
-  fill: rgba(255, 255, 255, 0.96);
-  stroke: rgba(11, 17, 22, 0.12);
-  stroke-width: 1;
-}
-
-.ruleTokenAmountPill text {
-  fill: var(--color-ink-soft);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0;
-}
-
-.rulePositiveToken {
-  animation: showRulePositiveToken var(--rule-cycle) linear 1 forwards;
-}
-
-.rulePositiveToken circle:first-child {
-  animation: colorRulePositiveToken var(--rule-cycle) linear 1 forwards;
-}
-
-.ruleNegativeToken {
-  animation: showRuleNegativeToken var(--rule-cycle) linear 1 forwards;
-}
-
-.ruleNegativeToken circle:first-child {
-  animation: colorRuleNegativeToken var(--rule-cycle) linear 1 forwards;
-}
-
-.ruleSingleToken {
-  animation: showRuleSingleToken var(--rule-run) linear 1 forwards;
-}
-
-.ruleSinglePositiveToken circle:first-child {
-  animation: colorRuleSinglePositiveToken var(--rule-run) linear 1 forwards;
-}
-
-.ruleSingleNegativeToken circle:first-child {
-  animation: colorRuleSingleNegativeToken var(--rule-run) linear 1 forwards;
-}
-
-.ruleStartNodePulse {
-  animation: ruleStartNodePulse var(--rule-run) ease 1 forwards;
-}
-
-.ruleConditionNodePulse {
-  animation: ruleConditionNodePulse var(--rule-run) ease 1 forwards;
-}
-
-.ruleResultNodePulse {
-  animation: ruleResultNodePulse var(--rule-run) ease 1 forwards;
 }
 
 .permissionStatus {
@@ -577,248 +522,6 @@
   52%, 86% {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes drawRuleSingleStart {
-  0%, 5% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  8% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  24%, 36% {
-    opacity: 1;
-    stroke-dashoffset: 0.66;
-  }
-  56%, 92% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawRuleSingleBranch {
-  0%, 66% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  68% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  88%, 92% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes showRuleSingleToken {
-  0%, 5%, 94%, 100% {
-    opacity: 0;
-  }
-  8%, 90% {
-    opacity: 1;
-  }
-}
-
-@keyframes colorRuleSinglePositiveToken {
-  0%, 67% {
-    fill: var(--color-blue);
-  }
-  68%, 100% {
-    fill: #10b981;
-  }
-}
-
-@keyframes colorRuleSingleNegativeToken {
-  0%, 67% {
-    fill: var(--color-blue);
-  }
-  68%, 100% {
-    fill: #f87171;
-  }
-}
-
-@keyframes ruleStartNodePulse {
-  0%, 18%, 40%, 100% {
-    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-  24%, 34% {
-    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.14), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-}
-
-@keyframes ruleConditionNodePulse {
-  0%, 50%, 72%, 100% {
-    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-  56%, 68% {
-    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.14), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-}
-
-@keyframes ruleResultNodePulse {
-  0%, 80%, 100% {
-    box-shadow: 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-  88%, 96% {
-    box-shadow: 0 0 0 4px rgba(56, 182, 255, 0.12), 0 18px 42px -34px rgba(2, 2, 13, 0.42);
-  }
-}
-
-@keyframes drawRulePositiveOne {
-  0%, 7% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  8% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  23%, 43% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  49%, 100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawRulePositiveTwo {
-  0%, 22% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  23% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  39%, 43% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  49%, 100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawRuleNegativeOne {
-  0%, 52% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  55% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  70%, 91% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  97%, 100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawRuleNegativeTwo {
-  0%, 69% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
-  70% {
-    opacity: 1;
-    stroke-dashoffset: 1;
-  }
-  86%, 91% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  97%, 100% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes pulseRulePositive {
-  0%, 66%, 94%, 100% {
-    color: rgba(11, 17, 22, 0.42);
-    background: rgba(255, 255, 255, 0.86);
-    border-color: rgba(11, 17, 22, 0.1);
-    opacity: 0.58;
-    transform: translateY(0) scale(1);
-  }
-  72%, 90% {
-    color: #0f8b5d;
-    background: rgba(236, 253, 245, 0.9);
-    border-color: rgba(16, 185, 129, 0.18);
-    opacity: 1;
-    transform: translateY(-1px) scale(1.02);
-  }
-}
-
-@keyframes pulseRuleNegative {
-  0%, 66%, 94%, 100% {
-    color: rgba(11, 17, 22, 0.42);
-    background: rgba(255, 255, 255, 0.86);
-    border-color: rgba(11, 17, 22, 0.1);
-    opacity: 0.58;
-    transform: translateY(0) scale(1);
-  }
-  72%, 90% {
-    color: #c2413b;
-    background: rgba(254, 242, 242, 0.92);
-    border-color: rgba(248, 113, 113, 0.22);
-    opacity: 1;
-    transform: translateY(-1px) scale(1.02);
-  }
-}
-
-@keyframes showRulePositiveToken {
-  0%, 6%, 48%, 100% {
-    opacity: 0;
-  }
-  8%, 43% {
-    opacity: 1;
-  }
-}
-
-@keyframes showRuleNegativeToken {
-  0%, 52%, 96%, 100% {
-    opacity: 0;
-  }
-  55%, 91% {
-    opacity: 1;
-  }
-}
-
-@keyframes colorRulePositiveToken {
-  0%, 22% {
-    fill: var(--color-blue);
-  }
-  23%, 100% {
-    fill: #10b981;
-  }
-}
-
-@keyframes colorRuleNegativeToken {
-  0%, 69% {
-    fill: var(--color-blue);
-  }
-  70%, 100% {
-    fill: #f87171;
   }
 }
 
@@ -1278,15 +981,9 @@
   .modeButton,
   .processView,
   .processCursor,
-  .ruleActivePath,
-  .ruleSinglePath,
   .ruleBranchLabel,
-  .ruleSvgToken,
-  .ruleSingleToken,
-  .ruleSvgToken circle:first-child,
-  .ruleStartNodePulse,
-  .ruleConditionNodePulse,
-  .ruleResultNodePulse,
+  .ruleGsapPath,
+  .ruleMotionToken,
   .permissionStatus,
   .permissionRoleBefore,
   .permissionRoleAfter,
@@ -1299,8 +996,7 @@
   .dragBlock,
   .cursor,
   .processCursor,
-  .ruleSvgToken,
-  .ruleSingleToken {
+  .ruleMotionToken {
     opacity: 0;
   }
 

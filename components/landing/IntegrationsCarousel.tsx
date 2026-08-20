@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRef } from "react";
 import BadgeCheckIcon from "lucide-react/dist/esm/icons/badge-check.mjs";
 import Building2Icon from "lucide-react/dist/esm/icons/building-2.mjs";
 import MailCheckIcon from "lucide-react/dist/esm/icons/mail-check.mjs";
@@ -9,6 +10,7 @@ import PenLineIcon from "lucide-react/dist/esm/icons/pen-line.mjs";
 import ReceiptTextIcon from "lucide-react/dist/esm/icons/receipt-text.mjs";
 import type { HomeIntegrationItem } from "@/content/types";
 import { SnapCarousel } from "./SnapCarousel";
+import { useGsapReveal } from "./useGsapReveal";
 import styles from "./IntegrationsCarousel.module.css";
 
 type IntegrationsCarouselProps = {
@@ -65,17 +67,30 @@ function IntegrationCard({ item }: { item: HomeIntegrationItem }) {
 }
 
 export function IntegrationsCarousel({ fadeColor, items }: IntegrationsCarouselProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useGsapReveal(rootRef, {
+    duration: 0.7,
+    scale: 0.97,
+    selector: "[data-snap-carousel-item]",
+    stagger: 0.035,
+    start: "top 82%",
+    y: 18,
+  });
+
   return (
-    <SnapCarousel
-      ariaLabel="Integrations"
-      className={styles.integrationCarousel}
-      fadeColor={fadeColor}
-      pauseMs={1000}
-      scrollDurationMs={620}
-    >
-      {items.map((item) => (
-        <IntegrationCard item={item} key={item.name} />
-      ))}
-    </SnapCarousel>
+    <div ref={rootRef}>
+      <SnapCarousel
+        ariaLabel="Integrations"
+        className={styles.integrationCarousel}
+        fadeColor={fadeColor}
+        pauseMs={1000}
+        scrollDurationMs={620}
+      >
+        {items.map((item) => (
+          <IntegrationCard item={item} key={item.name} />
+        ))}
+      </SnapCarousel>
+    </div>
   );
 }

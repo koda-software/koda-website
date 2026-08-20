@@ -1,183 +1,117 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
+import type { gsap as GsapNamespace } from "gsap";
+import type { ScrollSmoother as ScrollSmootherInstance } from "gsap/ScrollSmoother";
+import type { ScrollTrigger as ScrollTriggerInstance } from "gsap/ScrollTrigger";
 
-const wheelMultiplier = 0.82;
-const easing = 0.16;
-const stopThreshold = 0.45;
-const routeSettleMs = 420;
+type ScrollSmootherModule = {
+  ScrollSmoother: typeof ScrollSmootherInstance;
+};
 
-function normalizeDelta(event: WheelEvent) {
-  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-    return event.deltaY * 18;
-  }
+type ScrollTriggerModule = {
+  ScrollTrigger: typeof ScrollTriggerInstance;
+};
 
-  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
-    return event.deltaY * window.innerHeight;
-  }
+type GsapModule = {
+  gsap: typeof GsapNamespace;
+};
 
-  return event.deltaY;
-}
+type SmoothScrollProviderProps = {
+  children: ReactNode;
+};
 
-function canNestedScrollerMove(target: EventTarget | null, deltaY: number) {
-  if (!(target instanceof Element)) {
-    return false;
-  }
+const desktopQuery = "(min-width: 992px) and (hover: hover) and (pointer: fine)";
+const smoothSeconds = 0.9;
 
-  let node: Element | null = target;
-
-  while (node && node !== document.documentElement && node !== document.body) {
-    const style = window.getComputedStyle(node);
-    const canScrollY = /(auto|scroll)/.test(style.overflowY);
-
-    if (canScrollY && node.scrollHeight > node.clientHeight) {
-      const maxScrollTop = node.scrollHeight - node.clientHeight;
-      const hasRoomDown = deltaY > 0 && node.scrollTop < maxScrollTop;
-      const hasRoomUp = deltaY < 0 && node.scrollTop > 0;
-
-      if (hasRoomDown || hasRoomUp) {
-        return true;
-      }
-    }
-
-    node = node.parentElement;
-  }
-
-  return false;
-}
-
-export function SmoothScrollProvider() {
+export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   const pathname = usePathname();
-  const frameRef = useRef<number | undefined>(undefined);
-  const targetRef = useRef(0);
-  const disabledUntilRef = useRef(0);
-  const programmaticUntilRef = useRef(0);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const smootherRef = useRef<ScrollSmootherInstance | null>(null);
+  const scrollTriggerRef = useRef<typeof ScrollTriggerInstance | null>(null);
 
   useEffect(() => {
-    const supportsFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let cancelled = false;
+    let creating = false;
+    const desktopMedia = window.matchMedia(desktopQuery);
+    const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    if (!supportsFinePointer || prefersReducedMotion) {
-      return undefined;
-    }
-
-    const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
-
-    const stop = () => {
-      if (frameRef.current !== undefined) {
-        window.cancelAnimationFrame(frameRef.current);
-        frameRef.current = undefined;
-      }
+    const killSmoother = () => {
+      smootherRef.current?.kill();
+      smootherRef.current = null;
     };
 
-    const tick = () => {
-      const current = window.scrollY;
-      const distance = targetRef.current - current;
-
-      if (Math.abs(distance) < stopThreshold) {
-        programmaticUntilRef.current = performance.now() + 120;
-        window.scrollTo(0, targetRef.current);
-        frameRef.current = undefined;
+    const createSmoother = async () => {
+      if (creating || smootherRef.current || !wrapperRef.current || !contentRef.current) {
         return;
       }
 
-      programmaticUntilRef.current = performance.now() + 120;
-      window.scrollTo(0, current + distance * easing);
-      frameRef.current = window.requestAnimationFrame(tick);
-    };
+      creating = true;
+      const [{ gsap }, { ScrollTrigger }, { ScrollSmoother }] = await Promise.all([
+        import("gsap") as Promise<GsapModule>,
+        import("gsap/ScrollTrigger") as Promise<ScrollTriggerModule>,
+        import("gsap/ScrollSmoother") as Promise<ScrollSmootherModule>,
+      ]);
+      creating = false;
 
-    const start = () => {
-      if (frameRef.current === undefined) {
-        frameRef.current = window.requestAnimationFrame(tick);
-      }
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (
-        event.defaultPrevented ||
-        event.ctrlKey ||
-        event.metaKey ||
-        event.shiftKey ||
-        Math.abs(event.deltaX) > Math.abs(event.deltaY) ||
-        performance.now() < disabledUntilRef.current
-      ) {
+      if (cancelled || !desktopMedia.matches || reducedMotionMedia.matches || !wrapperRef.current || !contentRef.current) {
         return;
       }
 
-      const deltaY = normalizeDelta(event) * wheelMultiplier;
-
-      if (deltaY === 0 || canNestedScrollerMove(event.target, deltaY)) {
-        return;
-      }
-
-      const limit = maxScroll();
-
-      if (limit <= 0) {
-        return;
-      }
-
-      event.preventDefault();
-      targetRef.current = Math.min(limit, Math.max(0, targetRef.current + deltaY));
-      start();
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+      scrollTriggerRef.current = ScrollTrigger;
+      ScrollSmoother.get()?.kill();
+      smootherRef.current = ScrollSmoother.create({
+        wrapper: wrapperRef.current,
+        content: contentRef.current,
+        smooth: smoothSeconds,
+        smoothTouch: false,
+        effects: false,
+        normalizeScroll: false,
+        ignoreMobileResize: true,
+      });
+      ScrollTrigger.refresh();
     };
 
-    const stopAndSyncToNativeScroll = () => {
-      stop();
-      targetRef.current = window.scrollY;
-    };
-
-    const handleNativeScroll = () => {
-      if (performance.now() < programmaticUntilRef.current) {
-        return;
-      }
-
-      stopAndSyncToNativeScroll();
-    };
-
-    const handlePointerDown = () => {
-      disabledUntilRef.current = performance.now() + 160;
-      stopAndSyncToNativeScroll();
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === "ArrowDown" ||
-        event.key === "ArrowUp" ||
-        event.key === "End" ||
-        event.key === "Home" ||
-        event.key === "PageDown" ||
-        event.key === "PageUp" ||
-        event.key === " "
-      ) {
-        stopAndSyncToNativeScroll();
+    const syncSmoother = () => {
+      if (desktopMedia.matches && !reducedMotionMedia.matches) {
+        void createSmoother();
+      } else {
+        killSmoother();
       }
     };
 
-    targetRef.current = window.scrollY;
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("scroll", handleNativeScroll, { passive: true });
-    window.addEventListener("pointerdown", handlePointerDown, true);
-    window.addEventListener("keydown", handleKeyDown);
+    syncSmoother();
+    desktopMedia.addEventListener("change", syncSmoother);
+    reducedMotionMedia.addEventListener("change", syncSmoother);
 
     return () => {
-      stop();
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("scroll", handleNativeScroll);
-      window.removeEventListener("pointerdown", handlePointerDown, true);
-      window.removeEventListener("keydown", handleKeyDown);
+      cancelled = true;
+      desktopMedia.removeEventListener("change", syncSmoother);
+      reducedMotionMedia.removeEventListener("change", syncSmoother);
+      killSmoother();
     };
   }, []);
 
   useEffect(() => {
-    disabledUntilRef.current = performance.now() + routeSettleMs;
-    targetRef.current = window.scrollY;
+    const timeout = window.setTimeout(() => {
+      smootherRef.current?.scrollTop(0);
+      smootherRef.current?.refresh(true, true);
+      scrollTriggerRef.current?.refresh();
+    }, 80);
 
-    if (frameRef.current !== undefined) {
-      window.cancelAnimationFrame(frameRef.current);
-      frameRef.current = undefined;
-    }
+    return () => {
+      window.clearTimeout(timeout);
+    };
   }, [pathname]);
 
-  return null;
+  return (
+    <div id="smooth-wrapper" ref={wrapperRef}>
+      <div id="smooth-content" ref={contentRef}>
+        {children}
+      </div>
+    </div>
+  );
 }

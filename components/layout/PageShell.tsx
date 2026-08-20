@@ -21,10 +21,11 @@ export function PageShell({ locale, page, shell, navItems, children, alternatePa
   return (
     <>
       <SiteHeader locale={locale} page={page} content={shell} navItems={navItems} />
-      <main className="min-h-[70vh]">{children}</main>
-      <SmoothScrollProvider />
+      <SmoothScrollProvider>
+        <main className="min-h-[70vh]">{children}</main>
+        <SiteFooter alternatePaths={alternatePaths} locale={locale} page={page} content={shell} navItems={navItems} />
+      </SmoothScrollProvider>
       <ScrollReveal />
-      <SiteFooter alternatePaths={alternatePaths} locale={locale} page={page} content={shell} navItems={navItems} />
     </>
   );
 }
