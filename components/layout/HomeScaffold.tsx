@@ -86,21 +86,15 @@ export function HomeScaffold({
       </section>
 
       <section className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:radial-gradient(circle_at_16%_22%,rgba(56,182,255,0.2),transparent_34%),linear-gradient(135deg,#0b1116_0%,#0d1e2e_48%,#164363_100%)] px-[var(--page-gutter)] pt-[clamp(3rem,6vw,5rem)] text-white">
-        <div className={`${landingShellClass} grid items-end gap-[clamp(2rem,4vw,4.75rem)] grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.74fr)] max-[1200px]:grid-cols-1`}>
-          <Reveal className="max-[1200px]:order-2 max-[809px]:hidden" from="left">
+        <div className={`${landingShellClass} grid items-end gap-[clamp(2.75rem,5vw,5.75rem)] grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.74fr)] max-[1440px]:grid-cols-[minmax(0,0.9fr)_minmax(26rem,1fr)] max-[1440px]:items-center max-[1200px]:grid-cols-1`}>
+          <Reveal className="max-[1440px]:self-center max-[1200px]:order-2 max-[809px]:hidden" from="left">
             {/*
-              The width used to be set explicitly (min(73vw, 65rem)), which at
-              common desktop sizes came out wider than the column this sits in
-              - so the screenshot ran under the copy beside it. Letting the
-              width resolve from the column instead means the negative margin
-              still carries it off the left edge of the window while its right
-              edge stops exactly where the column does, and it cannot reach the
-              text at any viewport. Once the section stacks, the screenshot is
-              the closing row and bleeds to the section edges instead of sitting
-              inside the text shell.
+              On wide screens the screenshot still bleeds out of the visual
+              column. Once the section stacks, it becomes a smaller centered
+              row so it does not dominate the copy above it.
             */}
-            <div className="relative ml-[calc(min(0px,(var(--shell-width)-100vw)/2)-var(--page-gutter)-clamp(1rem,2vw,2rem))] max-[1200px]:ml-[calc(var(--page-gutter)*-1)] max-[1200px]:w-[calc(100%+(var(--page-gutter)*2))]">
-              <SolutionScreenshotMock className="relative left-[50px] h-auto w-full max-w-[64rem] select-none max-[1200px]:left-0 max-[1200px]:max-w-none max-[980px]:w-[112%] max-[980px]:origin-bottom-left" />
+            <div className="relative ml-[calc(min(0px,(var(--shell-width)-100vw)/2)-var(--page-gutter)-clamp(1rem,2vw,2rem))] max-[1440px]:max-w-[56rem] max-[1200px]:mx-auto max-[1200px]:ml-auto max-[1200px]:w-[min(100%,52rem)]">
+              <SolutionScreenshotMock className="relative left-[50px] h-auto w-full max-w-[64rem] select-none max-[1440px]:max-w-none max-[1200px]:left-0 max-[980px]:origin-bottom-left" />
             </div>
           </Reveal>
 

@@ -59,10 +59,10 @@ const dashboardMetrics = [
   { caption: "Deals", tone: "bg-[rgba(99,102,241,0.2)] text-[#4338ca]", value: "27" },
 ] as const;
 const dashboardBars = [
-  { label: "New", value: 58 },
-  { label: "Won", value: 82 },
-  { label: "Risk", value: 36 },
-  { label: "Soon", value: 68 },
+  { label: "New", value: 42 },
+  { label: "Won", value: 78 },
+  { label: "Risk", value: 28 },
+  { label: "Soon", value: 62 },
   { label: "VIP", value: 92 },
 ] as const;
 const dashboardRows = [
@@ -230,7 +230,7 @@ function BlockPalette({
           type="button"
         >
           {showTryMe && index === 0 && !selected?.[0] ? (
-            <span className={`${styles.tryMePopover} pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.38)] bg-[rgba(56,182,255,0.12)] px-2.5 py-1.5 text-[0.72rem] font-semibold text-[var(--color-blue)] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
+            <span className={`${styles.tryMePopover} pointer-events-none absolute left-[calc(50%+1.55rem)] top-0 z-20 min-w-[5.25rem] -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+3px)] border border-[rgba(16,185,129,0.36)] bg-[rgba(236,253,245,0.94)] px-3.5 py-2 text-center text-[0.82rem] font-semibold text-[#057344] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
               {tryLabel}
             </span>
           ) : null}
@@ -281,7 +281,7 @@ function DashboardPage({
       <div className="grid grid-cols-[1fr_0.76fr] gap-3">
         <div className={visibleBlocks[1] ? "min-h-full" : `${dropSlotClass} p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[1] ? (
-          <div className={`${styles.componentPop} h-full`} data-build-component="1">
+          <div className={`${styles.componentPop} grid h-full grid-rows-[auto_1fr]`} data-build-component="1">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[0.58rem] font-semibold text-[var(--color-ink)]">
                 {animation.chartTitle}
@@ -290,14 +290,16 @@ function DashboardPage({
                 live
               </span>
             </div>
-            <div className="relative flex h-20 items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.22)] bg-[linear-gradient(180deg,rgba(56,182,255,0.1),rgba(255,255,255,0.7))] px-2 pb-4 pt-2 shadow-[inset_0_0_0_1px_rgba(56,182,255,0.08)]">
+            <div className="relative flex h-full min-h-[10.5rem] items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.22)] bg-[linear-gradient(180deg,rgba(56,182,255,0.1),rgba(255,255,255,0.7))] px-2 pb-4 pt-2 shadow-[inset_0_0_0_1px_rgba(56,182,255,0.08)]">
               <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.18)]" aria-hidden="true" />
               {dashboardBars.map((bar) => (
-                <span className="relative z-[1] grid h-full flex-1 content-end gap-1" key={bar.label}>
-                  <span
-                    className="min-h-3 rounded-t-sm bg-[linear-gradient(180deg,#38b6ff,#1470b8)] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.85)]"
-                    style={{ height: `${bar.value}%` }}
-                  />
+                <span className="relative z-[1] flex h-full flex-1 flex-col justify-end gap-1" key={bar.label}>
+                  <span className="flex min-h-0 flex-1 items-end">
+                    <span
+                      className="block min-h-3 w-full rounded-t-sm bg-[linear-gradient(180deg,#38b6ff,#1470b8)] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.85)]"
+                      style={{ height: `${bar.value}%` }}
+                    />
+                  </span>
                   <span className="truncate text-center text-[0.45rem] font-semibold text-[rgba(11,17,22,0.62)]">
                     {bar.label}
                   </span>
@@ -347,8 +349,8 @@ function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
   };
 
   return (
-    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
-      <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.buildStage}`}>
+    <div className="relative min-h-[22rem] w-full overflow-visible" ref={rootRef}>
+      <div className={`relative left-1/2 min-h-[22rem] w-full ${styles.stageScale} ${styles.startStage} ${styles.buildStage}`}>
         <div className="relative grid h-full min-h-[18rem] grid-cols-[0.42fr_1fr] gap-4">
           <div className="relative">
             <BlockPalette
@@ -446,7 +448,7 @@ function KanbanView({ active }: { active: boolean }) {
           {processRecords
             .filter((record) => record.status === column.status)
             .map((record) => (
-            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(250,252,254,1)] p-2 text-[0.6rem] font-bold leading-[1.25] text-[var(--color-ink)] shadow-[0_12px_28px_-20px_rgba(2,2,13,0.5)]" key={record.title}>
+            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(250,252,254,1)] p-2 text-[0.6rem] font-bold leading-[1.25] text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.24)]" key={record.title}>
               {record.title}
               <span className="mt-1 block text-[0.48rem] font-semibold text-[rgba(11,17,22,0.62)]">
                 {record.owner} · day {record.date}
@@ -491,10 +493,11 @@ function ProcessViewInteractive() {
   }, [activeView]);
 
   return (
-    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
-      <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.processStage}`}>
+    <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`} ref={rootRef}>
+      <div className={`relative left-1/2 min-h-[22rem] w-full min-[1440px]:pl-8 ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.processStage}`}>
         <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] p-4">
-          <div className="mb-3 inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
+          <div className="mb-3 ml-4 flex w-[calc(100%-1rem)]">
+            <div className="inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
             <ViewModeButton
               active={activeView === "table"}
               label="Table"
@@ -514,6 +517,7 @@ function ProcessViewInteractive() {
               label="Calendar"
               onClick={() => setActiveView("calendar")}
             />
+            </div>
           </div>
           <div className="relative h-[16.5rem] overflow-hidden">
             <TableView active={activeView === "table"} />
@@ -897,8 +901,8 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   };
 
   return (
-    <div className="relative min-h-[29rem] overflow-visible pt-12" ref={rootRef}>
-      <div className={`relative left-1/2 min-h-[26.25rem] w-[31.5rem] ${styles.stageScale} ${styles.ruleStage}`}>
+    <div className="relative min-h-[29rem] w-full overflow-visible pt-12 min-[1440px]:min-h-[31rem]" ref={rootRef}>
+      <div className={`relative left-1/2 min-h-[26.25rem] w-[31.5rem] max-[900px]:w-full ${styles.stageScale} ${styles.startStage} ${styles.wideRuleStage} ${styles.ruleStage}`}>
         <div className="relative h-[26.25rem] overflow-visible rounded-[calc(var(--radius-panel)-14px)]">
           <div
             aria-hidden="true"
@@ -990,8 +994,8 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
   }, []);
 
   return (
-    <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
-      <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.permissionStage}`}>
+    <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`} ref={rootRef}>
+      <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] max-[1200px]:w-full ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.permissionStage}`}>
         <div className="relative h-[22rem] overflow-hidden rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.08)_1px,transparent_1.2px)] [background-size:18px_18px]">
           <div className="absolute left-1/2 top-5 grid w-[24rem] -translate-x-1/2 gap-3">
             <div className="flex justify-end">
@@ -1099,16 +1103,17 @@ function PlaceholderAnimation({ index, pillar }: { index: number; pillar: Featur
 
 export function PillarSections({ items }: PillarSectionsProps) {
   return (
-    <div className="mt-[clamp(2.6rem,5vw,4.5rem)] grid gap-[clamp(6rem,10vw,9rem)]">
+    <div className="mt-[clamp(2.6rem,5vw,4.5rem)] grid gap-[clamp(7rem,12vw,11rem)]">
       {items.map((pillar, index) => {
         const visualFirst = index % 2 === 1;
+        const wideVisualLead = index === 0 || index === 2;
 
         return (
           <section
-            className="grid items-center gap-[clamp(2rem,5vw,4.5rem)] grid-cols-[minmax(0,0.76fr)_minmax(22rem,1fr)] max-[1120px]:grid-cols-[minmax(31.5rem,1.05fr)_minmax(17rem,0.85fr)] max-[900px]:grid-cols-1"
+            className={`relative grid items-center gap-[clamp(2rem,5vw,4.5rem)] ${index > 0 ? "pt-[clamp(3rem,6vw,5rem)] before:absolute before:left-0 before:right-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(11,17,22,0.08)_18%,rgba(56,182,255,0.22)_50%,rgba(11,17,22,0.08)_82%,transparent)]" : ""} ${wideVisualLead ? "grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" : "grid-cols-[minmax(0,0.76fr)_minmax(22rem,1fr)]"} max-[1200px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] max-[900px]:grid-cols-1`}
             key={pillar.title}
           >
-            <Reveal className={`${visualFirst ? "max-[900px]:order-2" : ""} max-[640px]:hidden max-[900px]:px-[clamp(0.75rem,4vw,1.25rem)]`.trim()} from={visualFirst ? "left" : "right"}>
+            <Reveal className="order-1 w-full max-[900px]:order-2 max-[640px]:hidden max-[900px]:px-[clamp(0.75rem,4vw,1.25rem)]" from={visualFirst ? "left" : "right"}>
               {index === 0 && pillar.animation ? (
                 <BuildPageInteractive animation={pillar.animation} />
               ) : index === 1 ? (
@@ -1121,7 +1126,7 @@ export function PillarSections({ items }: PillarSectionsProps) {
                 <PlaceholderAnimation index={index} pillar={pillar} />
               )}
             </Reveal>
-            <Reveal className={visualFirst ? "order-first max-[900px]:order-1" : ""} from={visualFirst ? "right" : "left"}>
+            <Reveal className={visualFirst ? "order-first max-[900px]:order-1" : "order-2 max-[900px]:order-1"} from={visualFirst ? "right" : "left"}>
               <article>
                 <div className="mb-5 flex items-center gap-3">
                   <HexIndex index={index} />

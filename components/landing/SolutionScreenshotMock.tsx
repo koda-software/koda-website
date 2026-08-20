@@ -13,6 +13,7 @@ type SolutionScreenshotMockProps = {
 };
 
 const finalTransform = "rotateX(4deg) rotateY(5deg) rotateZ(-2deg) scale(0.96)";
+const stackedFinalTransform = "rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.88)";
 const startTransform = "translateY(34px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.92)";
 
 export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMockProps) {
@@ -29,9 +30,12 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
       return undefined;
     }
 
+    const stacked = window.matchMedia("(max-width: 1200px)").matches;
+    const targetTransform = stacked ? stackedFinalTransform : finalTransform;
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       screenshot.style.opacity = "1";
-      screenshot.style.transform = finalTransform;
+      screenshot.style.transform = targetTransform;
       if (glow) {
         glow.style.opacity = "1";
       }
@@ -66,17 +70,17 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
           .to(screenshot, {
             autoAlpha: 1,
             duration: 0.42,
-            scale: 0.92,
+            scale: stacked ? 0.86 : 0.92,
             y: 0,
           })
           .to(
             screenshot,
             {
               duration: 1.05,
-              rotateX: 4,
-              rotateY: 5,
-              rotateZ: -2,
-              scale: 0.96,
+              rotateX: stacked ? 0 : 4,
+              rotateY: stacked ? 0 : 5,
+              rotateZ: stacked ? 0 : -2,
+              scale: stacked ? 0.88 : 0.96,
             },
             "-=0.08",
           )

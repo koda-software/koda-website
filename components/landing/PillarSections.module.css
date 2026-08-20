@@ -30,9 +30,9 @@
   left: 50%;
   width: 0.5rem;
   height: 0.5rem;
-  background: #eaf8ff;
-  border-right: 1px solid rgba(56, 182, 255, 0.34);
-  border-bottom: 1px solid rgba(56, 182, 255, 0.34);
+  background: #ecfdf5;
+  border-right: 1px solid rgba(16, 185, 129, 0.34);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.34);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -96,6 +96,36 @@
 .stageScale {
   transform: translateX(-50%);
   transform-origin: top center;
+}
+
+@media (min-width: 901px) {
+  .startStage {
+    left: 0;
+    transform: none;
+    transform-origin: top left;
+  }
+
+  .edgeStage {
+    left: 100%;
+    transform: translateX(-100%);
+    transform-origin: top right;
+  }
+}
+
+@media (min-width: 1440px) {
+  .wideStageFrame {
+    min-height: 25rem;
+  }
+
+  .wideDesktopStage {
+    transform: translateX(-100%) scale(1.14);
+  }
+
+  .wideRuleStage {
+    min-height: 30rem;
+    transform: scale(1.14);
+    transform-origin: top left;
+  }
 }
 
 @keyframes pulseHint {
