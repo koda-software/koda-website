@@ -30,22 +30,21 @@
   left: 50%;
   width: 0.5rem;
   height: 0.5rem;
-  background: #ffffff;
-  border-right: 1px solid rgba(56, 182, 255, 0.24);
-  border-bottom: 1px solid rgba(56, 182, 255, 0.24);
+  background: #eaf8ff;
+  border-right: 1px solid rgba(56, 182, 255, 0.34);
+  border-bottom: 1px solid rgba(56, 182, 255, 0.34);
   transform: translateX(-50%) rotate(45deg);
 }
 
 .interactiveDropZone {
-  background: rgba(56, 182, 255, 0.04);
-  border-color: rgba(56, 182, 255, 0.22);
-  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  background: rgba(2, 2, 13, 0.045);
+  border-color: rgba(2, 2, 13, 0.18);
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .interactiveDropZone:has(.componentPop) {
-  background: rgba(56, 182, 255, 0.07);
-  border-color: rgba(56, 182, 255, 0.36);
-  box-shadow: inset 0 0 0 1px rgba(56, 182, 255, 0.08);
+  background: rgba(2, 2, 13, 0.055);
+  border-color: rgba(2, 2, 13, 0.24);
 }
 
 .componentPop {
@@ -53,14 +52,14 @@
 }
 
 .modeButton.modeButtonActive {
-  color: var(--color-blue);
-  background: rgba(56, 182, 255, 0.12);
+  color: #075985;
+  background: rgba(56, 182, 255, 0.18);
   box-shadow: none;
 }
 
 .modeButton.modeButtonActive:hover {
-  color: var(--color-blue);
-  background: rgba(56, 182, 255, 0.12);
+  color: #075985;
+  background: rgba(56, 182, 255, 0.18);
 }
 
 .permissionProtectedField {
@@ -68,9 +67,9 @@
 }
 
 .permissionProtectedFieldHidden {
-  border-color: rgba(56, 182, 255, 0.3);
-  background: rgba(56, 182, 255, 0.05);
-  box-shadow: inset 0 0 0 1px rgba(56, 182, 255, 0.12);
+  border-color: rgba(2, 2, 13, 0.2);
+  background: rgba(2, 2, 13, 0.045);
+  box-shadow: inset 0 0 0 1px rgba(2, 2, 13, 0.08);
 }
 
 .permissionFieldContent {
@@ -353,7 +352,7 @@
 }
 
 .ruleBasePath {
-  stroke: rgba(11, 17, 22, 0.18);
+  stroke: rgba(11, 17, 22, 0.26);
 }
 
 .ruleGsapPath {
@@ -368,7 +367,7 @@
 
 .ruleNode {
   isolation: isolate;
-  opacity: 0.5;
+  opacity: 0.62;
 }
 
 .ruleCheckBadge {
@@ -395,7 +394,7 @@
   width: 1.05rem;
   height: 1.05rem;
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 10px 12px rgba(2, 2, 13, 0.16));
+  filter: drop-shadow(0 10px 12px rgba(2, 2, 13, 0.24));
 }
 
 .ruleMotionTokenCore {
@@ -406,6 +405,7 @@
   border: 2px solid white;
   border-radius: 999px;
   background: var(--color-blue);
+  box-shadow: 0 0 0 1px rgba(8, 112, 180, 0.24);
 }
 
 .ruleMotionTokenCore span {
@@ -420,11 +420,11 @@
   top: 50%;
   left: 1.32rem;
   min-width: 3.4rem;
-  border: 1px solid rgba(11, 17, 22, 0.12);
+  border: 1px solid rgba(11, 17, 22, 0.2);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.96);
   padding: 0.28rem 0.5rem;
-  color: var(--color-ink-soft);
+  color: var(--color-ink);
   font-size: 0.64rem;
   font-weight: 700;
   line-height: 1;
@@ -441,9 +441,9 @@
   align-items: center;
   gap: 0.28rem;
   transform: translateY(-50%);
-  border: 1px solid rgba(11, 17, 22, 0.08);
+  border: 1px solid rgba(11, 17, 22, 0.16);
   border-radius: calc(var(--radius-button) + 2px);
-  background: rgba(246, 250, 253, 0.88);
+  background: rgba(255, 255, 255, 0.96);
   padding: 0.4rem 0.52rem;
   color: var(--color-muted);
   font-size: 0.62rem;

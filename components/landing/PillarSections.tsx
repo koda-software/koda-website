@@ -43,20 +43,20 @@ type MotionPathModule = {
   MotionPathPlugin: typeof MotionPathPluginInstance;
 };
 
-const ruleNodeShadow = "0 8px 16px -12px rgba(2,2,13,0.62), 0 12px 24px -20px rgba(2,2,13,0.6)";
+const ruleNodeShadow = "0 3px 6px -4px rgba(2,2,13,0.74), 0 5px 9px -8px rgba(2,2,13,0.7)";
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
 const paletteClass =
-  "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.07)] bg-white/68 p-3";
+  "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.12)] bg-white/88 p-3";
 const pageClass =
-  "relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] pt-3";
+  "relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] pt-3";
 const dropSlotClass =
   "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
 const dashboardMetrics = [
-  { caption: "Open", tone: "bg-[rgba(56,182,255,0.16)] text-[var(--color-blue)]", value: "€18.4k" },
-  { caption: "Weighted", tone: "bg-[rgba(16,185,129,0.14)] text-[#0f8b5d]", value: "€12.1k" },
-  { caption: "Deals", tone: "bg-[rgba(99,102,241,0.14)] text-[#5b5fc7]", value: "27" },
+  { caption: "Open", tone: "bg-[rgba(56,182,255,0.22)] text-[#075985]", value: "€18.4k" },
+  { caption: "Weighted", tone: "bg-[rgba(16,185,129,0.2)] text-[#047857]", value: "€12.1k" },
+  { caption: "Deals", tone: "bg-[rgba(99,102,241,0.2)] text-[#4338ca]", value: "27" },
 ] as const;
 const dashboardBars = [
   { label: "New", value: 58 },
@@ -72,35 +72,35 @@ const dashboardRows = [
 ] as const;
 const processRecords = [
   {
-    calendarClass: "col-start-2 row-start-1 bg-[rgba(56,182,255,0.34)] text-[#075985]",
+    calendarClass: "col-start-2 row-start-1 bg-[#bdefff] text-[#075985]",
     date: "2",
     owner: "Marta",
     status: "Intake",
     title: "Invoice #1042",
   },
   {
-    calendarClass: "col-start-5 row-start-2 bg-[rgba(16,185,129,0.28)] text-[#047857]",
+    calendarClass: "col-start-5 row-start-2 bg-[#bef2da] text-[#047857]",
     date: "12",
     owner: "Tomek",
     status: "Doing",
     title: "Onboarding kit",
   },
   {
-    calendarClass: "col-start-3 row-start-3 bg-[rgba(99,102,241,0.26)] text-[#4338ca]",
+    calendarClass: "col-start-3 row-start-3 bg-[#d9dafe] text-[#4338ca]",
     date: "17",
     owner: "Ania",
     status: "Done",
     title: "Coffee budget",
   },
   {
-    calendarClass: "col-start-6 row-start-4 bg-[rgba(16,185,129,0.28)] text-[#047857]",
+    calendarClass: "col-start-6 row-start-4 bg-[#bef2da] text-[#047857]",
     date: "27",
     owner: "Piotr",
     status: "Doing",
     title: "Vendor NDA",
   },
   {
-    calendarClass: "col-start-3 row-start-5 bg-[rgba(56,182,255,0.34)] text-[#075985]",
+    calendarClass: "col-start-3 row-start-5 bg-[#bdefff] text-[#075985]",
     date: "31",
     owner: "Marta",
     status: "Intake",
@@ -109,15 +109,15 @@ const processRecords = [
 ] as const;
 const kanbanColumns = [
   {
-    color: "bg-[rgba(56,182,255,0.26)] text-[#075985]",
+    color: "bg-[#d9f4ff] text-[#075985] ring-1 ring-[#8fdcff]",
     status: "Intake",
   },
   {
-    color: "bg-[rgba(16,185,129,0.24)] text-[#047857]",
+    color: "bg-[#dff8eb] text-[#047857] ring-1 ring-[#9be5c1]",
     status: "Doing",
   },
   {
-    color: "bg-[rgba(99,102,241,0.24)] text-[#4338ca]",
+    color: "bg-[#e3e4ff] text-[#4338ca] ring-1 ring-[#b6b8ff]",
     status: "Done",
   },
 ] as const;
@@ -188,8 +188,8 @@ function BlockLabel({
   icon: BlockIcon;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.08)] bg-white px-3 py-2 text-[0.78rem] font-medium text-[var(--color-ink-soft)]">
-      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border border-[rgba(56,182,255,0.2)] bg-[rgba(56,182,255,0.08)] text-[var(--color-blue)]">
+    <div className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.14)] bg-white px-3 py-2 text-[0.78rem] font-semibold text-[var(--color-ink)]">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border border-[rgba(56,182,255,0.28)] bg-[rgba(56,182,255,0.11)] text-[var(--color-blue)]">
         <Icon className="h-4 w-4" strokeWidth={1.6} />
       </span>
       <span className="truncate">{children}</span>
@@ -230,7 +230,7 @@ function BlockPalette({
           type="button"
         >
           {showTryMe && index === 0 && !selected?.[0] ? (
-            <span className={`${styles.tryMePopover} pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.24)] bg-white px-2.5 py-1.5 text-[0.72rem] font-semibold text-[var(--color-blue)] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
+            <span className={`${styles.tryMePopover} pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.38)] bg-[rgba(56,182,255,0.12)] px-2.5 py-1.5 text-[0.72rem] font-semibold text-[var(--color-blue)] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
               {tryLabel}
             </span>
           ) : null}
@@ -259,13 +259,13 @@ function DashboardPage({
           <div className={`${styles.componentPop} grid min-h-[4.625rem] grid-cols-3 gap-2`} data-build-component="0">
             {animation.metrics.map((metric, index) => (
               <span
-                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.08)] bg-white p-2 shadow-[0_12px_26px_-22px_rgba(2,2,13,0.4)]"
+                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.14)] bg-white p-2 shadow-[0_14px_28px_-22px_rgba(2,2,13,0.42)]"
                 key={metric}
               >
-                <span className="block truncate text-[0.5rem] font-semibold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.46)]">
+                <span className="block truncate text-[0.5rem] font-bold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.62)]">
                   {metric}
                 </span>
-                <span className="mt-1 block truncate text-[0.95rem] font-semibold leading-none text-[var(--color-ink)]">
+                <span className="mt-1 block truncate text-[0.98rem] font-bold leading-none text-[var(--color-ink)]">
                   {dashboardMetrics[index].value}
                 </span>
                 <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[0.48rem] font-semibold ${dashboardMetrics[index].tone}`}>
@@ -286,19 +286,19 @@ function DashboardPage({
               <span className="text-[0.58rem] font-semibold text-[var(--color-ink)]">
                 {animation.chartTitle}
               </span>
-              <span className="rounded-full bg-[rgba(56,182,255,0.12)] px-2 py-0.5 text-[0.48rem] font-semibold text-[var(--color-blue)]">
+              <span className="rounded-full bg-[rgba(56,182,255,0.18)] px-2 py-0.5 text-[0.48rem] font-bold text-[#0870b4]">
                 live
               </span>
             </div>
-            <div className="relative flex h-20 items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.12)] bg-[linear-gradient(180deg,rgba(56,182,255,0.06),rgba(255,255,255,0.54))] px-2 pb-4 pt-2">
-              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.1)]" aria-hidden="true" />
+            <div className="relative flex h-20 items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(56,182,255,0.22)] bg-[linear-gradient(180deg,rgba(56,182,255,0.1),rgba(255,255,255,0.7))] px-2 pb-4 pt-2 shadow-[inset_0_0_0_1px_rgba(56,182,255,0.08)]">
+              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.18)]" aria-hidden="true" />
               {dashboardBars.map((bar) => (
                 <span className="relative z-[1] grid h-full flex-1 content-end gap-1" key={bar.label}>
                   <span
-                    className="min-h-3 rounded-t-sm bg-[linear-gradient(180deg,rgba(56,182,255,0.82),rgba(20,112,184,0.58))] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.7)]"
+                    className="min-h-3 rounded-t-sm bg-[linear-gradient(180deg,#38b6ff,#1470b8)] shadow-[0_8px_18px_-12px_rgba(20,112,184,0.85)]"
                     style={{ height: `${bar.value}%` }}
                   />
-                  <span className="truncate text-center text-[0.45rem] font-medium text-[rgba(11,17,22,0.48)]">
+                  <span className="truncate text-center text-[0.45rem] font-semibold text-[rgba(11,17,22,0.62)]">
                     {bar.label}
                   </span>
                 </span>
@@ -311,15 +311,15 @@ function DashboardPage({
         </div>
         <div className={visibleBlocks[2] ? "grid min-h-full" : `${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[2] ? (
-          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.07)] bg-white shadow-[0_12px_26px_-22px_rgba(2,2,13,0.4)]`} data-build-component="2">
-            <div className="border-b border-[rgba(2,2,13,0.06)] px-2 py-1.5 text-[0.54rem] font-semibold text-[var(--color-ink)]">
+          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.13)] bg-white shadow-[0_14px_28px_-22px_rgba(2,2,13,0.42)]`} data-build-component="2">
+            <div className="border-b border-[rgba(2,2,13,0.12)] bg-[rgba(232,241,248,0.72)] px-2 py-1.5 text-[0.54rem] font-bold text-[var(--color-ink)]">
               {animation.tableTitle}
             </div>
             {dashboardRows.map((row) => (
               <div className="grid grid-cols-[1fr_1.8rem_2.7rem] border-b border-[rgba(2,2,13,0.05)] text-[0.48rem] last:border-b-0" key={row[0]}>
-                <span className="truncate px-2 py-1.5 font-medium text-[var(--color-ink-soft)]">{row[0]}</span>
-                <span className="px-1 py-1.5 text-right text-[rgba(11,17,22,0.48)]">{row[1]}</span>
-                <span className="truncate px-1.5 py-1.5 text-[rgba(11,17,22,0.5)]">{row[2]}</span>
+                <span className="truncate px-2 py-1.5 font-semibold text-[var(--color-ink)]">{row[0]}</span>
+                <span className="px-1 py-1.5 text-right font-semibold text-[rgba(11,17,22,0.66)]">{row[1]}</span>
+                <span className="truncate px-1.5 py-1.5 font-medium text-[rgba(11,17,22,0.64)]">{row[2]}</span>
               </div>
             ))}
           </div>
@@ -404,8 +404,8 @@ function ViewModeButton({
 function TableView({ active }: { active: boolean }) {
   return (
     <div className={`absolute inset-0 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="table">
-      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-white shadow-[0_18px_44px_-34px_rgba(2,2,13,0.42)]">
-        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(232,241,248,0.96)] text-[0.54rem] font-bold uppercase text-[rgba(11,17,22,0.62)]">
+      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.18)] bg-white">
+        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(220,235,246,0.98)] text-[0.54rem] font-bold uppercase text-[rgba(11,17,22,0.72)]">
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Case</span>
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Owner</span>
           <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Status</span>
@@ -413,19 +413,19 @@ function TableView({ active }: { active: boolean }) {
         </div>
         {processRecords.map((record) => (
           <div
-            className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] border-t border-[rgba(2,2,13,0.09)]"
+            className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] border-t border-[rgba(2,2,13,0.12)]"
             key={record.title}
           >
-            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.64rem] font-semibold text-[var(--color-ink)]">
+            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.64rem] font-bold text-[var(--color-ink)]">
               {record.title}
             </span>
-            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.64rem] text-[var(--color-ink-soft)]">
+            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.64rem] font-medium text-[rgba(11,17,22,0.72)]">
               {record.owner}
             </span>
-            <span className="truncate border-r border-[rgba(2,2,13,0.08)] px-3 py-2 text-[0.62rem] font-medium text-[rgba(11,17,22,0.72)]">
+            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.62rem] font-semibold text-[rgba(11,17,22,0.78)]">
               {record.status}
             </span>
-            <span className="px-3 py-2 text-[0.62rem] font-medium text-[rgba(11,17,22,0.66)]">
+            <span className="px-3 py-2 text-[0.62rem] font-semibold text-[rgba(11,17,22,0.72)]">
               {record.date}
             </span>
           </div>
@@ -439,16 +439,16 @@ function KanbanView({ active }: { active: boolean }) {
   return (
     <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="kanban">
       {kanbanColumns.map((column) => (
-        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.13)] bg-white p-2 shadow-[0_16px_38px_-30px_rgba(2,2,13,0.46)]" key={column.status}>
+        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(248,249,250,0.94)] p-2" key={column.status}>
           <span className={`mb-1 rounded-full px-2 py-1 text-[0.58rem] font-bold ${column.color}`}>
             {column.status}
           </span>
           {processRecords
             .filter((record) => record.status === column.status)
             .map((record) => (
-            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.13)] bg-[rgba(250,252,254,0.98)] p-2 text-[0.6rem] font-semibold leading-[1.25] text-[var(--color-ink)] shadow-[0_12px_28px_-21px_rgba(2,2,13,0.44)]" key={record.title}>
+            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(250,252,254,1)] p-2 text-[0.6rem] font-bold leading-[1.25] text-[var(--color-ink)] shadow-[0_12px_28px_-20px_rgba(2,2,13,0.5)]" key={record.title}>
               {record.title}
-              <span className="mt-1 block text-[0.48rem] font-medium text-[rgba(11,17,22,0.54)]">
+              <span className="mt-1 block text-[0.48rem] font-semibold text-[rgba(11,17,22,0.62)]">
                 {record.owner} · day {record.date}
               </span>
             </span>
@@ -461,17 +461,17 @@ function KanbanView({ active }: { active: boolean }) {
 
 function CalendarView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] bg-white p-4 shadow-[0_18px_46px_-34px_rgba(2,2,13,0.46)] transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
+    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(248,249,250,0.94)] p-4 transition-[opacity,transform] duration-300 ${active ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`} data-process-view="calendar">
       {Array.from({ length: 35 }, (_, index) => (
         <span
-          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.12)] bg-[rgba(241,246,250,0.96)] p-1 text-[0.5rem] font-semibold text-[rgba(11,17,22,0.58)]"
+          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(235,242,248,0.98)] p-1 text-[0.5rem] font-bold text-[rgba(11,17,22,0.66)]"
           key={index}
         >
           {index + 1}
         </span>
       ))}
       {processRecords.map((record) => (
-        <span className={`${record.calendarClass} z-10 mt-4 truncate rounded-full border border-white px-2 py-1 text-[0.54rem] font-bold shadow-[0_14px_30px_-18px_rgba(2,2,13,0.42)] ring-1 ring-white/90`} key={record.title}>
+        <span className={`${record.calendarClass} z-10 mt-4 truncate rounded-full border border-white px-2 py-1 text-[0.54rem] font-bold shadow-[0_14px_30px_-16px_rgba(2,2,13,0.52)] ring-1 ring-[rgba(2,2,13,0.08)]`} key={record.title}>
           {record.title.replace(/^(.+?)(\s|#).*$/, "$1")}
         </span>
       ))}
@@ -493,8 +493,8 @@ function ProcessViewInteractive() {
   return (
     <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.processStage}`}>
-        <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] p-4">
-          <div className="mb-3 inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.08)] bg-white p-1 shadow-[0_12px_28px_-24px_rgba(2,2,13,0.32)]">
+        <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] p-4">
+          <div className="mb-3 inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
             <ViewModeButton
               active={activeView === "table"}
               label="Table"
@@ -550,10 +550,10 @@ function RuleNode({
       ? "border-[rgba(16,185,129,0.2)] bg-[rgba(16,185,129,0.08)] text-[#0f8b5d]"
       : tone === "red"
         ? "border-[rgba(248,113,113,0.26)] bg-[rgba(248,113,113,0.08)] text-[#c2413b]"
-        : "border-[rgba(56,182,255,0.2)] bg-[rgba(56,182,255,0.08)] text-[var(--color-blue)]";
+        : "border-[rgba(2,2,13,0.14)] bg-[rgba(2,2,13,0.05)] text-[rgba(11,17,22,0.72)]";
 
   return (
-    <div className={`${styles.ruleNode} absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_8px_16px_-12px_rgba(2,2,13,0.62),0_12px_24px_-20px_rgba(2,2,13,0.6)] ${className}`} data-rule-node={nodeId}>
+    <div className={`${styles.ruleNode} absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_3px_6px_-4px_rgba(2,2,13,0.74),0_5px_9px_-8px_rgba(2,2,13,0.7)] ${className}`} data-rule-node={nodeId}>
       <div className="flex items-start gap-2.5">
         <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border ${toneClass}`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
@@ -659,7 +659,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
 
     const activeColor = route === "positive" ? "#10b981" : "#f87171";
     const activeSoftColor = route === "positive" ? "rgba(16,185,129,0.78)" : "rgba(248,113,113,0.82)";
-    const activeDecisionBorder = route === "positive" ? "rgba(16,185,129,0.42)" : "rgba(248,113,113,0.5)";
+    const activeDecisionRing = route === "positive" ? "rgba(16,185,129,0.52)" : "rgba(248,113,113,0.58)";
     const amount = route === "positive" ? "€499" : "€2400";
     const branchPathD =
       route === "positive"
@@ -685,9 +685,8 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
 
     gsap.set(ruleNodes, {
       borderColor: "rgba(2,2,13,0.08)",
-      borderWidth: 1,
       boxShadow: ruleNodeShadow,
-      opacity: 0.5,
+      opacity: 0.62,
       scale: 1,
       y: 0,
     });
@@ -700,8 +699,8 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     });
     gsap.set(conditionLogic, {
       autoAlpha: 0,
-      backgroundColor: "rgba(246,250,253,0.88)",
-      borderColor: "rgba(11,17,22,0.08)",
+      backgroundColor: "rgba(255,255,255,0.96)",
+      borderColor: "rgba(11,17,22,0.16)",
       color: "var(--color-muted)",
       scale: 0.98,
       y: 4,
@@ -861,8 +860,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         ease: "power2.out",
       }, "+=0.16")
       .to(conditionNode, {
-        borderColor: activeDecisionBorder,
-        borderWidth: 2,
+        boxShadow: `${ruleNodeShadow}, 0 0 0 3px ${activeDecisionRing}`,
         duration: 0.22,
         ease: "power2.out",
       }, "<")
@@ -874,11 +872,6 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     emitFrom(252, 246, activeColor);
 
     timeline
-      .to(conditionNode, {
-        boxShadow: ruleNodeShadow,
-        duration: 0.16,
-        ease: "power3.out",
-      })
       .to(activeLabel, {
         backgroundColor: route === "positive" ? "rgba(236,253,245,0.96)" : "rgba(254,242,242,0.96)",
         borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
@@ -934,12 +927,12 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
             className="pointer-events-none absolute inset-0 rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.15)_1px,transparent_1.25px),linear-gradient(rgba(241,244,247,0.82),rgba(241,244,247,0.82))] [background-size:18px_18px,100%_100%] [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
           />
           <button
-            className={`absolute left-1/2 top-[0.625rem] z-20 inline-flex -translate-x-1/2 cursor-pointer items-center gap-2.5 rounded-[calc(var(--radius-button)+4px)] border border-[rgba(56,182,255,0.3)] bg-white px-4 py-2.5 text-[0.78rem] font-semibold text-[var(--color-ink-soft)] shadow-[0_16px_34px_-22px_rgba(2,2,13,0.38)] transition-[filter] duration-150 hover:brightness-[0.96] disabled:cursor-default ${!isRunning ? styles.pulseHint : ""}`}
+            className={`absolute left-1/2 top-[0.375rem] z-20 inline-flex -translate-x-1/2 cursor-pointer items-center gap-3 rounded-[calc(var(--radius-button)+6px)] border border-[rgba(11,123,190,0.22)] bg-[var(--color-blue)] px-5 py-3 text-[0.9rem] font-semibold text-white shadow-[0_16px_34px_-24px_rgba(11,123,190,0.82)] transition-[background-color,transform] duration-150 hover:bg-[#096da9] active:translate-y-px disabled:cursor-default ${!isRunning ? styles.pulseHint : ""}`}
             disabled={isRunning}
             onClick={startFlow}
             type="button"
           >
-            <SendIcon className="h-4 w-4 text-[var(--color-blue)]" strokeWidth={1.7} />
+            <SendIcon className="h-4.5 w-4.5 text-white" strokeWidth={1.9} />
             {animation.actionLabel}
           </button>
           <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 504 420">
@@ -1030,7 +1023,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
         <div className="relative h-[22rem] overflow-hidden rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.08)_1px,transparent_1.2px)] [background-size:18px_18px]">
           <div className="absolute left-1/2 top-5 grid w-[24rem] -translate-x-1/2 gap-3">
             <div className="flex justify-end">
-              <div className="flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.08)] bg-white p-1 shadow-[0_12px_28px_-24px_rgba(2,2,13,0.32)]">
+              <div className="flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
                 {([
                   ["hr", animation.hrRoleLabel],
                   ["employee", animation.employeeRoleLabel],
@@ -1051,7 +1044,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
               </div>
             </div>
 
-            <div className="rounded-[calc(var(--radius-panel)-12px)] border border-[rgba(2,2,13,0.08)] bg-white p-4 shadow-[0_18px_46px_-36px_rgba(2,2,13,0.4)]">
+            <div className="rounded-[calc(var(--radius-panel)-12px)] border border-[rgba(2,2,13,0.14)] bg-white p-4 shadow-[0_18px_46px_-34px_rgba(2,2,13,0.46)]">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-[0.82rem] font-semibold text-[var(--color-ink)]">
                 {animation.title}
@@ -1063,7 +1056,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
 
                 return (
                   <div
-                    className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.08)] bg-[rgba(246,250,253,0.72)] p-3 ${
+                    className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(241,246,250,0.92)] p-3 ${
                       protectedField ? styles.permissionProtectedField : ""
                     } ${
                       protectedField && protectedHidden ? styles.permissionProtectedFieldHidden : ""
@@ -1072,17 +1065,17 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                     key={field.label}
                   >
                     <div className={`grid gap-2 ${protectedField ? styles.permissionFieldContent : ""} ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>
-                      <span className="text-[0.58rem] font-medium text-[var(--color-ink-soft)]">
+                      <span className="text-[0.58rem] font-bold text-[rgba(11,17,22,0.68)]">
                         {field.label}
                       </span>
-                      <span className="rounded-[calc(var(--radius-button)-4px)] border border-[rgba(2,2,13,0.08)] bg-white px-3 py-2 text-[0.72rem] font-medium text-[var(--color-ink)]">
+                      <span className="rounded-[calc(var(--radius-button)-4px)] border border-[rgba(2,2,13,0.16)] bg-white px-3 py-2 text-[0.72rem] font-semibold text-[var(--color-ink)]">
                         {field.value}
                       </span>
                     </div>
                     {protectedField ? (
-                      <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.78)] backdrop-blur-[2px]`}>
-                        <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(56,182,255,0.26)] bg-white px-3 py-2 text-[0.68rem] font-semibold text-[var(--color-ink-soft)] shadow-[0_14px_28px_-22px_rgba(2,2,13,0.35)]">
-                          <LockKeyholeIcon className="h-4 w-4 text-[var(--color-blue)]" strokeWidth={1.7} />
+                      <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.84)] backdrop-blur-[2px]`}>
+                        <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.18)] bg-white px-3 py-2 text-[0.68rem] font-bold text-[var(--color-ink)] shadow-[0_14px_28px_-20px_rgba(2,2,13,0.42)]">
+                          <LockKeyholeIcon className="h-4 w-4 text-[rgba(11,17,22,0.62)]" strokeWidth={1.9} />
                           {animation.lockedLabel}
                         </span>
                       </div>
@@ -1110,7 +1103,7 @@ function PlaceholderAnimation({ index, pillar }: { index: number; pillar: Featur
 
               return (
                 <span
-                  className="grid h-16 place-items-center rounded-[calc(var(--radius-card)-4px)] border border-[rgba(56,182,255,0.18)] bg-white/72 text-[var(--color-blue)]"
+                  className="grid h-16 place-items-center rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.12)] bg-white/76 text-[rgba(11,17,22,0.58)]"
                   key={capability}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.5} />
@@ -1118,12 +1111,12 @@ function PlaceholderAnimation({ index, pillar }: { index: number; pillar: Featur
               );
             })}
           </div>
-          <div className="rounded-[calc(var(--radius-panel)-12px)] border border-dashed border-[rgba(56,182,255,0.28)] bg-white/72 p-4">
+          <div className="rounded-[calc(var(--radius-panel)-12px)] border border-dashed border-[rgba(2,2,13,0.18)] bg-white/72 p-4">
             <div className="mb-3 h-3 w-2/5 rounded-full bg-[rgba(11,17,22,0.16)]" />
             <div className="grid gap-2">
               <span className="h-8 rounded-[calc(var(--radius-button)-4px)] bg-[rgba(11,17,22,0.06)]" />
               <span className="h-8 rounded-[calc(var(--radius-button)-4px)] bg-[rgba(11,17,22,0.06)]" />
-              <span className="h-8 w-3/4 rounded-[calc(var(--radius-button)-4px)] bg-[rgba(56,182,255,0.12)]" />
+              <span className="h-8 w-3/4 rounded-[calc(var(--radius-button)-4px)] bg-[rgba(11,17,22,0.1)]" />
             </div>
           </div>
         </div>
