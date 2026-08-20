@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --color-ink: #02020d;
-  --color-ink-soft: #202232;
-  --color-muted: #6f7076;
-  --color-muted-light: #c0c2c6;
+  /* One graphite family, hue-matched to the logo blue, instead of the mix of
+     near-black and blue-grey this used to be. Pure black (#02020d, #000407)
+     read as a default dark theme rather than as KodaSoft's own colour: large
+     dark planes are the most visible surface on the site, so they carry the
+     brand or they carry nothing. Every tone below is hsl(207deg) at a
+     different lightness, and each keeps a wide contrast margin - ink on paper
+     is 19.0:1, muted on paper 5.3:1, white on the darkest surface 19.0:1. */
+  --color-ink: #0b1116;
+  --color-ink-soft: #1b262f;
+  --color-muted: #5f6d78;
+  --color-muted-light: #c2c8cd;
   --color-paper: #ffffff;
-  --color-paper-soft: #f9f9f9;
+  --color-paper-soft: #f7f8f9;
+  /* The darkest surface, for banners and dark panels. Named rather than
+     repeated as a literal: it was hardcoded as #000407 in seven components. */
+  --color-surface-dark: #0b1116;
   /* Brand blue is #38B6FF (logo). Used directly for decorative accents (glows,
      gradients, icons/borders on dark) and as --color-blue-soft, since dark
      backgrounds give it huge contrast headroom. As text on a white background
@@ -34,11 +44,12 @@
      mid-to-light end of the brand blue range. */
   --gradient-cta: linear-gradient(135deg, #2ca6f0, #0b4e7d);
   /* Kept nearly flat on purpose: gradients are reserved for the hero banners,
-     everywhere else (panels, cards) gets a plain dark tone instead. */
-  --gradient-technical: linear-gradient(165deg, #050e17 0%, #02070d 55%, #000407 100%);
-  /* One clean diagonal sweep from near-black to brand blue - matches the
+     everywhere else (panels, cards) gets a plain dark tone instead. Graphite
+     rather than black, so a panel reads as a lit surface with depth. */
+  --gradient-technical: linear-gradient(165deg, #16222e 0%, #101a23 55%, #0b1116 100%);
+  /* One clean diagonal sweep from graphite to brand blue - matches the
      KodaSoft business card, not a hazy multi-stop glow. */
-  --gradient-hero: linear-gradient(135deg, #000407 0%, #051730 38%, #0d3a68 68%, #1a68b3 100%);
+  --gradient-hero: linear-gradient(135deg, #0b1116 0%, #0f2437 38%, #12456f 68%, #1c6cb5 100%);
 }
 
 @theme inline {
@@ -96,38 +107,38 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+/* The floating navigation pill.
+ *
+ * This used to be three stacked glass layers: an 72px blur on the element, a
+ * second 96px blur on ::before, and three superimposed gradients on ::after.
+ * Two problems with that. It read as generic product-launch glassmorphism
+ * rather than as KodaSoft, and a backdrop-filter on an element that is fixed
+ * during scroll forces the compositor to re-sample and re-blur everything
+ * behind it on every frame - twice over, at radii where the cost is real on a
+ * phone. What is left is one moderate blur over a graphite tint plus a single
+ * top highlight: the same floating-glass read, one compositing layer instead
+ * of three. The blur radius itself is set inline in SiteHeader, which steps it
+ * from 4px to 6px once the header sticks.
+ */
 .site-menu-pill {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(2, 2, 13, 0.46);
-  box-shadow: 0 18px 48px rgba(2, 2, 13, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(72px) saturate(190%) contrast(118%);
-  -webkit-backdrop-filter: blur(72px) saturate(190%) contrast(118%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(11, 17, 22, 0.62);
+  box-shadow: 0 12px 36px rgba(11, 17, 22, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
-.site-menu-pill::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: rgba(2, 2, 13, 0.38);
-  backdrop-filter: blur(96px) saturate(210%) contrast(122%);
-  -webkit-backdrop-filter: blur(96px) saturate(210%) contrast(122%);
-}
-
+/* A single highlight along the top edge - what makes a glass surface read as
+   lit. The blue wash that used to sit under it is gone: the pill floats over
+   the hero, which is already brand blue, so it was tinting blue with blue. */
 .site-menu-pill::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   border-radius: inherit;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 52%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05) 42%, rgba(126, 231, 255, 0.14)),
-    linear-gradient(120deg, rgba(2, 2, 13, 0.5), rgba(18, 24, 60, 0.46) 54%, rgba(56, 182, 255, 0.34));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 58%);
   pointer-events: none;
 }
 
@@ -140,25 +151,48 @@ button:focus-visible {
   color: var(--color-ink) !important;
 }
 
+/* Once the header sticks it sits over page content rather than the dark hero,
+   so the tint deepens to keep the white labels legible against anything. */
 .site-menu-pill-scrolled {
-  border-color: rgba(255, 255, 255, 0.32);
-  background: rgba(2, 2, 13, 0.52);
-  box-shadow: 0 18px 54px rgba(2, 2, 13, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(88px) saturate(210%) contrast(122%);
-  -webkit-backdrop-filter: blur(88px) saturate(210%) contrast(122%);
-}
-
-.site-menu-pill-scrolled::before {
-  background: rgba(2, 2, 13, 0.42);
-  backdrop-filter: blur(112px) saturate(220%) contrast(124%);
-  -webkit-backdrop-filter: blur(112px) saturate(220%) contrast(124%);
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(11, 17, 22, 0.82);
+  box-shadow: 0 14px 40px rgba(11, 17, 22, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .site-menu-pill-scrolled::after {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 54%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.07) 40%, rgba(126, 231, 255, 0.18)),
-    linear-gradient(120deg, rgba(2, 2, 13, 0.46), rgba(22, 28, 72, 0.42) 55%, rgba(56, 182, 255, 0.32));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 58%);
+}
+
+/* ============================================================
+   ETYKIETA SEKCJI - the Opero hexagon as the node in front of every
+   section label.
+
+   Done as a mask rather than a background image so the shape takes
+   `currentColor`, which is what lets the same rule serve the blue label on a
+   white section and the light-blue one on a dark banner without a second
+   definition. Sits in `components` so Tailwind utilities on the element still
+   win, per the note at the top of this file.
+
+   The mark replaced 41 assorted icons that used to open these sections and
+   cards. One shape, two roles: this node, and the numbered badge in
+   components/landing/BrandMark.tsx.
+   ============================================================ */
+@layer components {
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 0.62rem;
+    height: 0.62rem;
+    flex: none;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20d%3D%27M%2010.4%202.32%20Q%2012%201.4%2013.6%202.32%20L%2019.6%205.78%20Q%2021.2%206.7%2021.2%208.55%20L%2021.2%2015.45%20Q%2021.2%2017.3%2019.6%2018.22%20L%2013.6%2021.68%20Q%2012%2022.6%2010.4%2021.68%20L%204.4%2018.22%20Q%202.8%2017.3%202.8%2015.45%20L%202.8%208.55%20Q%202.8%206.7%204.4%205.78%20Z%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20d%3D%27M%2010.4%202.32%20Q%2012%201.4%2013.6%202.32%20L%2019.6%205.78%20Q%2021.2%206.7%2021.2%208.55%20L%2021.2%2015.45%20Q%2021.2%2017.3%2019.6%2018.22%20L%2013.6%2021.68%20Q%2012%2022.6%2010.4%2021.68%20L%204.4%2018.22%20Q%202.8%2017.3%202.8%2015.45%20L%202.8%208.55%20Q%202.8%206.7%204.4%205.78%20Z%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+  }
 }
 
 /* Rich text rendered from the Opero blog module. Token-based so article bodies

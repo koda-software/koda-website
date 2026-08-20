@@ -46,7 +46,7 @@ export const documentsFeature: FeaturePageContent = {
       { file: "invoice.pdf", detail: "approved" },
     ],
     currentLabel: "current",
-    captions: { intake: "A document arrives and <b>becomes a record by itself</b>", numbering: "The number is assigned <b>automatically</b>", path: "The approval path <b>depends on the amount</b>", versions: "Every file is versioned — <b>nothing gets lost</b>" },
+    captions: { intake: "A document arrives and <b>becomes a record by itself</b>", numbering: "The number is assigned <b>automatically</b>", path: "The approval path <b>depends on the amount</b>", versions: "Every file is versioned - <b>nothing gets lost</b>" },
   },
   blocks: {
     eyebrow: "What you get",

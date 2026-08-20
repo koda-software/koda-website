@@ -48,17 +48,17 @@ export function AuthorLinks({ author, invert = false, className = "mt-5" }: { au
   return (
     <div className={`${className} flex gap-2`}>
       {author.linkedin ? (
-        <a className={linkClass} href={author.linkedin} rel="noopener noreferrer nofollow" target="_blank" aria-label={`LinkedIn — ${author.nazwa}`}>
+        <a className={linkClass} href={author.linkedin} rel="noopener noreferrer nofollow" target="_blank" aria-label={`LinkedIn - ${author.nazwa}`}>
           <LinkedInGlyph />
         </a>
       ) : null}
       {author.x ? (
-        <a className={linkClass} href={author.x} rel="noopener noreferrer nofollow" target="_blank" aria-label={`X — ${author.nazwa}`}>
+        <a className={linkClass} href={author.x} rel="noopener noreferrer nofollow" target="_blank" aria-label={`X - ${author.nazwa}`}>
           <XGlyph />
         </a>
       ) : null}
       {author.www ? (
-        <a className={linkClass} href={author.www} rel="noopener noreferrer nofollow" target="_blank" aria-label={`${author.nazwa} — www`}>
+        <a className={linkClass} href={author.www} rel="noopener noreferrer nofollow" target="_blank" aria-label={`${author.nazwa} - www`}>
           <GlobeIcon className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
         </a>
       ) : null}

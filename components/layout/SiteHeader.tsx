@@ -293,7 +293,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
       </nav>
       <div
         ref={mobileMenuRef}
-        className={`mx-auto mt-3 w-[min(100%,var(--shell-width))] max-w-[var(--shell-width)] overflow-y-auto rounded-[calc(var(--radius-panel)-12px)] border border-white/[0.14] bg-[#070b18]/95 shadow-[0_18px_54px_rgba(2,2,13,0.28)] transition-[max-height,opacity] duration-200 min-[810px]:hidden ${
+        className={`mx-auto mt-3 w-[min(100%,var(--shell-width))] max-w-[var(--shell-width)] overflow-y-auto rounded-[calc(var(--radius-panel)-12px)] border border-white/[0.14] bg-[var(--color-surface-dark)]/95 shadow-[0_18px_54px_rgba(2,2,13,0.28)] transition-[max-height,opacity] duration-200 min-[810px]:hidden ${
           isMobileMenuOpen ? "max-h-[70vh] opacity-100" : "max-h-0 opacity-0"
         }`}
         id="mobile-navigation"

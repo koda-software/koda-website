@@ -31,13 +31,13 @@ export const reportsFeature: FeaturePageContent = {
       { category: "Complaint", count: "2", value: "2,300.00" },
     ],
     chartTitle: "Request value by category",
-    drillTitle: "Outage — records behind the bar",
+    drillTitle: "Outage - records behind the bar",
     drillRows: [
       { number: "SR/2026/019", title: "VoIP system outage", value: "1,800.00" },
       { number: "SR/2026/013", title: "File server outage", value: "9,400.00" },
       { number: "SR/2026/007", title: "UPS power outage", value: "7,200.00" },
     ],
-    captions: { table: "A plain table of data", chart: "The same report <b>as a chart</b>", drill: "Click a bar — and see <b>the records behind it</b>" },
+    captions: { table: "A plain table of data", chart: "The same report <b>as a chart</b>", drill: "Click a bar - and see <b>the records behind it</b>" },
   },
   blocks: {
     eyebrow: "What you get",

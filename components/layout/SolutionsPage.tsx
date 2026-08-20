@@ -13,6 +13,7 @@ import type {
   SolutionIndustryIcon,
   SolutionsContent,
 } from "@/content/types";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type SolutionsPageProps = {
   content: SolutionsContent;
@@ -26,7 +27,7 @@ const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass =
   "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const darkEyebrowClass =
-  "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+  "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const titleClass =
   "m-0 max-w-[900px] text-[2.55rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.85rem]";
 const bodyClass =
@@ -181,8 +182,9 @@ export function SolutionsPage({
 }: SolutionsPageProps) {
   return (
     <>
-      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+        <PhotoBackdrop photo="documents" opacity={0.26} position="74% center" priority />
+        <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(18rem,0.52fr)] items-end gap-16 max-[980px]:grid-cols-1">
           <div>
             <p className={`${darkEyebrowClass} hero-rise`}>
               {content.hero.eyebrow}

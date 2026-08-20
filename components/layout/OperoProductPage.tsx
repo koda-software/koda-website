@@ -7,6 +7,7 @@ import type {
 } from "@/content/types";
 import { LazyHeroVideo } from "@/components/landing/LazyHeroVideo";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type OperoProductPageProps = {
   content: OperoProductContent;
@@ -22,7 +23,7 @@ const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass =
   "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const darkEyebrowClass =
-  "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+  "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const sectionTitleClass =
   "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
 const bodyClass =
@@ -100,12 +101,15 @@ export function OperoProductPage({
 }: OperoProductPageProps) {
   return (
     <>
-      <section className="relative isolate flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[980px]:pb-[min(44vw,15rem)] max-[809px]:pt-28">
+      <section className="relative isolate flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[980px]:pb-[min(44vw,15rem)] max-[809px]:pt-28">
+        <PhotoBackdrop photo="operations" priority />
         <div className="pointer-events-none absolute bottom-0 right-[100px] z-0 w-[clamp(48rem,72vw,84rem)] translate-x-[31%] translate-y-[22%] rotate-[-3deg] opacity-95 max-[1200px]:opacity-55 max-[980px]:right-[100px] max-[980px]:w-[min(56rem,118vw)] max-[980px]:translate-x-[30%] max-[980px]:translate-y-[28%] max-[809px]:opacity-40">
           <LazyHeroVideo
             ariaLabel="Opero executive dashboard in the product interface"
             className="h-auto w-full select-none"
+            feather="top-left"
             height={1080}
+            poster="/hero/opero-dashboard-hero-poster.webp"
             src="/hero/opero-dashboard-hero.webm"
             width={1440}
           />

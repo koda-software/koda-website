@@ -2,6 +2,7 @@ import type { Locale } from "@/lib/i18n/config";
 import type { ContactPageContent } from "@/content/types";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import { ContactForm } from "./ContactForm";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type ContactPageProps = {
   locale: Locale;
@@ -11,14 +12,15 @@ type ContactPageProps = {
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+const darkEyebrowClass = "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 
 export function ContactPage({ locale, content }: ContactPageProps) {
   return (
     <>
-      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <div className="mx-auto w-[min(100%,var(--shell-width))]">
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+        <PhotoBackdrop photo="meeting" priority />
+        <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">
           <div>
             <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
             <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>

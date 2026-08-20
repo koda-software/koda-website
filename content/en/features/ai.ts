@@ -27,7 +27,7 @@ export const aiFeature: FeaturePageContent = {
     question: "Summarise this request and suggest a due date.",
     readingLabel: "Reading context",
     contextItems: ["Request SR/2026/019", "Process history", "Attachments (2)"],
-    answer: "VoIP outage at Panorama Hotel, critical priority, technician on site since yesterday. You closed similar outages in 2 days on average — I suggest 14 Aug 2026.",
+    answer: "VoIP outage at Panorama Hotel, critical priority, technician on site since yesterday. You closed similar outages in 2 days on average - I suggest 14 Aug 2026.",
     proposalLabel: "Suggested change",
     proposalField: "Due date",
     proposalValue: "2026-08-14",
@@ -35,7 +35,7 @@ export const aiFeature: FeaturePageContent = {
     dismissLabel: "Dismiss",
     savedLabel: "Saved to the record",
     appliedLabel: "SR/2026/019 · Due date",
-    captions: { ask: "You ask <b>in the context of a record</b>", reading: "The AI reads <b>the record, its history and files</b>", answer: "It answers and suggests <b>a concrete change</b>", applied: "You approve — and the change <b>lands in the record</b>" },
+    captions: { ask: "You ask <b>in the context of a record</b>", reading: "The AI reads <b>the record, its history and files</b>", answer: "It answers and suggests <b>a concrete change</b>", applied: "You approve - and the change <b>lands in the record</b>" },
   },
   blocks: {
     eyebrow: "What you get",

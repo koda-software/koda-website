@@ -29,7 +29,7 @@ export const lowCodeFeature: FeaturePageContent = {
     fieldEffect: { title: "A field sets itself", detail: "Urgent", from: "No", to: "Yes" },
     notificationEffect: { title: "A notification goes out", detail: "to: Mark Wilson · SMS + e-mail" },
     blockEffect: { title: "A transition is blocked", detail: "Handover report missing", transition: "Close request" },
-    captions: { condition: "You assemble the condition <b>from ready-made blocks</b>", fired: "The rule fires <b>on every record</b>", summary: "Field, notification, blocked transition — <b>with no chasing</b>" },
+    captions: { condition: "You assemble the condition <b>from ready-made blocks</b>", fired: "The rule fires <b>on every record</b>", summary: "Field, notification, blocked transition - <b>with no chasing</b>" },
   },
   blocks: {
     eyebrow: "What you get",

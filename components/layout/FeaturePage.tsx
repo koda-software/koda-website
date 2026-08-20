@@ -1,45 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ComponentType, SVGProps } from "react";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import BadgeCheckIcon from "lucide-react/dist/esm/icons/badge-check.mjs";
-import BarChartIcon from "lucide-react/dist/esm/icons/bar-chart-3.mjs";
-import BookMarkedIcon from "lucide-react/dist/esm/icons/book-marked.mjs";
-import BoxesIcon from "lucide-react/dist/esm/icons/boxes.mjs";
-import Building2Icon from "lucide-react/dist/esm/icons/building-2.mjs";
-import ClipboardListIcon from "lucide-react/dist/esm/icons/clipboard-list.mjs";
-import CodeIcon from "lucide-react/dist/esm/icons/code.mjs";
-import CoinsIcon from "lucide-react/dist/esm/icons/coins.mjs";
-import CompassIcon from "lucide-react/dist/esm/icons/compass.mjs";
-import DatabaseIcon from "lucide-react/dist/esm/icons/database.mjs";
-import FileCheckIcon from "lucide-react/dist/esm/icons/file-check.mjs";
-import FileTextIcon from "lucide-react/dist/esm/icons/file-text.mjs";
-import HistoryIcon from "lucide-react/dist/esm/icons/history.mjs";
-import KeyRoundIcon from "lucide-react/dist/esm/icons/key-round.mjs";
-import LayersIcon from "lucide-react/dist/esm/icons/layers.mjs";
-import LayoutDashboardIcon from "lucide-react/dist/esm/icons/layout-dashboard.mjs";
-import LayoutGridIcon from "lucide-react/dist/esm/icons/layout-grid.mjs";
-import LineChartIcon from "lucide-react/dist/esm/icons/line-chart.mjs";
-import MailIcon from "lucide-react/dist/esm/icons/mail.mjs";
-import MessageSquareIcon from "lucide-react/dist/esm/icons/message-square.mjs";
-import NetworkIcon from "lucide-react/dist/esm/icons/network.mjs";
-import PlugIcon from "lucide-react/dist/esm/icons/plug.mjs";
-import ReceiptIcon from "lucide-react/dist/esm/icons/receipt.mjs";
-import ScrollTextIcon from "lucide-react/dist/esm/icons/scroll-text.mjs";
-import ShieldCheckIcon from "lucide-react/dist/esm/icons/shield-check.mjs";
-import SparklesIcon from "lucide-react/dist/esm/icons/sparkles.mjs";
-import SquareKanbanIcon from "lucide-react/dist/esm/icons/square-kanban.mjs";
-import UsersIcon from "lucide-react/dist/esm/icons/users.mjs";
-import WorkflowIcon from "lucide-react/dist/esm/icons/workflow.mjs";
-import ZapIcon from "lucide-react/dist/esm/icons/zap.mjs";
-import { IconTextGrid } from "@/components/landing/LandingCards";
+import { HexIndex } from "@/components/landing/BrandMark";
+import { CardHead, IconTextGrid } from "@/components/landing/LandingCards";
 import { FeatureDemo } from "./demos/FeatureDemo";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
-
-type LandingIcon = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>;
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type FeaturePageProps = {
   feature: FeatureKey;
@@ -52,7 +21,7 @@ type FeaturePageProps = {
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+const darkEyebrowClass = "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const sectionTitleClass = "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
@@ -61,17 +30,6 @@ const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[v
  * Per-page icon sets. Icons are a presentation concern, so they stay out of the
  * translated content modules; the order matches the `blocks.items` order.
  */
-const blockIcons: Record<FeatureKey, LandingIcon[]> = {
-  processes: [WorkflowIcon, SquareKanbanIcon, BoxesIcon, ClipboardListIcon, HistoryIcon],
-  documents: [FileTextIcon, WorkflowIcon, ClipboardListIcon, LayersIcon, FileCheckIcon],
-  noCode: [BoxesIcon, LayersIcon, LayoutGridIcon, CompassIcon, BookMarkedIcon, WorkflowIcon],
-  lowCode: [ZapIcon, CodeIcon, DatabaseIcon],
-  reports: [BarChartIcon, LineChartIcon, LayoutDashboardIcon, DatabaseIcon],
-  security: [UsersIcon, ShieldCheckIcon, Building2Icon, KeyRoundIcon, ScrollTextIcon],
-  integrations: [ReceiptIcon, MailIcon, CoinsIcon, BadgeCheckIcon, PlugIcon],
-  ai: [SparklesIcon, MessageSquareIcon, NetworkIcon],
-};
-
 /**
  * The eight pages share a hero and a related-pages block; everything between
  * them varies, so the section deals with a different rhythm on each page rather
@@ -104,10 +62,6 @@ const pageLayouts: Record<FeatureKey, PageLayout> = {
   ai: { blocks: "grid", intro: "plain", shots: "alternating" },
 };
 
-function iconAt(icons: LandingIcon[], index: number) {
-  return icons[index] ?? icons[icons.length - 1];
-}
-
 /** Numbered rows. Reads as an ordered sequence, which suits process-shaped topics. */
 function StepBlocks({ items }: { items: FeatureBlock[] }) {
   return (
@@ -127,57 +81,38 @@ function StepBlocks({ items }: { items: FeatureBlock[] }) {
   );
 }
 
-/** Compact three-column cards with the icon on top. Suits catalogues of parts. */
-function TileBlocks({ icons, items }: { icons: LandingIcon[]; items: FeatureBlock[] }) {
+/** Compact three-column blocks. Suits catalogues of parts. */
+function TileBlocks({ items }: { items: FeatureBlock[] }) {
   return (
-    <div className="mt-10 grid grid-cols-3 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
-      {items.map((item, index) => {
-        const Icon = iconAt(icons, index);
-
-        return (
-          <article
-            data-reveal
-            className="flex flex-col gap-4 rounded-[calc(var(--radius-panel)-8px)] border border-[rgba(2,2,13,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,1),rgba(249,249,249,0.9)_60%,rgba(56, 182, 255,0.05))] p-6 transition-colors duration-200 hover:border-[rgba(56, 182, 255,0.18)]"
-            key={item.title}
-          >
-            <span
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-blue)]/[0.08] text-[var(--color-blue)]"
-              aria-hidden="true"
-            >
-              <Icon className="h-6 w-6" strokeWidth={1.6} />
-            </span>
-            <h3 className="m-0 text-[1.22rem] font-medium leading-[1.18] text-[var(--color-ink)]">{item.title}</h3>
-            <p className={`${bodyClass} text-[0.95rem]`}>{item.description}</p>
-          </article>
-        );
-      })}
+    <div className="mt-10 grid grid-cols-3 gap-x-[clamp(1.5rem,3vw,2.75rem)] gap-y-[clamp(2rem,3.5vw,2.75rem)] max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
+      {items.map((item, index) => (
+        <article data-reveal key={item.title}>
+          <CardHead index={index} />
+          <h3 className="m-0 text-[1.22rem] font-medium leading-[1.18] text-[var(--color-ink)]">{item.title}</h3>
+          <p className={`${bodyClass} mt-3 text-[0.95rem]`}>{item.description}</p>
+        </article>
+      ))}
     </div>
   );
 }
 
-/** Full-width rows with a large icon. Gives few, meaty items room to breathe. */
-function SplitBlocks({ icons, items }: { icons: LandingIcon[]; items: FeatureBlock[] }) {
+/** Full-width rows. Gives few, meaty items room to breathe. */
+function SplitBlocks({ items }: { items: FeatureBlock[] }) {
   return (
-    <div className="mt-10 border-b border-[rgba(2,2,13,0.12)]">
-      {items.map((item, index) => {
-        const Icon = iconAt(icons, index);
-
-        return (
-          <article
-            data-reveal
-            className="grid grid-cols-[auto_minmax(0,0.5fr)_minmax(0,1fr)] items-start gap-8 border-t border-[rgba(2,2,13,0.12)] py-9 max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-x-5 max-[900px]:gap-y-4"
-            key={item.title}
-          >
-            <span className="text-[var(--color-blue)]/[0.75]" aria-hidden="true">
-              <Icon className="h-11 w-11" strokeWidth={1.3} />
-            </span>
-            <h3 className="m-0 self-center text-[1.5rem] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-ink)] max-[900px]:self-center">
-              {item.title}
-            </h3>
-            <p className={`${bodyClass} max-[900px]:col-span-2`}>{item.description}</p>
-          </article>
-        );
-      })}
+    <div className="mt-10 border-b border-[rgba(11,17,22,0.12)]">
+      {items.map((item, index) => (
+        <article
+          data-reveal
+          className="grid grid-cols-[auto_minmax(0,0.5fr)_minmax(0,1fr)] items-start gap-8 border-t border-[rgba(11,17,22,0.12)] py-9 max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-x-5 max-[900px]:gap-y-4"
+          key={item.title}
+        >
+          <HexIndex index={index} />
+          <h3 className="m-0 self-center text-[1.5rem] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-ink)] max-[900px]:self-center">
+            {item.title}
+          </h3>
+          <p className={`${bodyClass} max-[900px]:col-span-2`}>{item.description}</p>
+        </article>
+      ))}
     </div>
   );
 }
@@ -245,7 +180,6 @@ function ShotFrame({
 export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref }: FeaturePageProps) {
   const content = pages[feature];
   const layout = pageLayouts[feature];
-  const icons = blockIcons[feature];
   const related = content.related.items.map((key) => ({
     key,
     href: localizeFeaturePath(locale, key),
@@ -280,9 +214,9 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       <p className={eyebrowClass}>{content.blocks.eyebrow}</p>
       <h2 className={sectionTitleClass}>{content.blocks.title}</h2>
       {layout.blocks === "steps" ? <StepBlocks items={content.blocks.items} /> : null}
-      {layout.blocks === "tiles" ? <TileBlocks icons={icons} items={content.blocks.items} /> : null}
-      {layout.blocks === "split" ? <SplitBlocks icons={icons} items={content.blocks.items} /> : null}
-      {layout.blocks === "grid" ? <IconTextGrid icons={icons} items={content.blocks.items} /> : null}
+      {layout.blocks === "tiles" ? <TileBlocks items={content.blocks.items} /> : null}
+      {layout.blocks === "split" ? <SplitBlocks items={content.blocks.items} /> : null}
+      {layout.blocks === "grid" ? <IconTextGrid items={content.blocks.items} /> : null}
     </section>
   );
 
@@ -329,7 +263,8 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   return (
     <>
-      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5.5rem] pt-[10rem] text-white max-[809px]:pt-28">
+        <PhotoBackdrop photo="operations" priority />
         {content.demo ? (
           /*
            * The demo sits beside the headline, the way the home and Opero
@@ -339,7 +274,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
            * hides itself and the grid collapses to the copy alone.
            */
           <div
-            className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-[clamp(2rem,4vw,4rem)] grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] max-[980px]:grid-cols-1`}
+            className={`relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-[clamp(2rem,4vw,4rem)] grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] max-[980px]:grid-cols-1`}
           >
             {heroCopy}
             <div className="hero-slide hero-d3 min-w-0">
@@ -348,7 +283,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
           </div>
         ) : content.hero.shot ? (
           <div
-            className={`mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-16 max-[980px]:grid-cols-1 ${
+            className={`relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] items-center gap-16 max-[980px]:grid-cols-1 ${
               layout.heroImageColumn === "wide"
                 ? "grid-cols-[minmax(0,0.8fr)_minmax(26rem,1.2fr)]"
                 : "grid-cols-[minmax(0,1fr)_minmax(22rem,0.86fr)]"
@@ -358,7 +293,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
             <ShotFrame invert priority shot={content.hero.shot} />
           </div>
         ) : (
-          <div className="mx-auto w-[min(100%,var(--shell-width))]">{heroCopy}</div>
+          <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">{heroCopy}</div>
         )}
       </section>
 

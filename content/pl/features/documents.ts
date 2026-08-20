@@ -46,7 +46,7 @@ export const documentsFeature: FeaturePageContent = {
       { file: "faktura.pdf", detail: "zatwierdzona" },
     ],
     currentLabel: "aktualna",
-    captions: { intake: "Dokument wpada i <b>sam staje się rekordem</b>", numbering: "Numer nadaje się <b>automatycznie</b>", path: "Ścieżka akceptacji <b>zależy od kwoty</b>", versions: "Każdy plik ma wersje — <b>nic nie ginie</b>" },
+    captions: { intake: "Dokument wpada i <b>sam staje się rekordem</b>", numbering: "Numer nadaje się <b>automatycznie</b>", path: "Ścieżka akceptacji <b>zależy od kwoty</b>", versions: "Każdy plik ma wersje - <b>nic nie ginie</b>" },
   },
   blocks: {
     eyebrow: "Co dostajesz",

@@ -29,7 +29,7 @@ export const lowCodeFeature: FeaturePageContent = {
     fieldEffect: { title: "Pole ustawia się samo", detail: "Pilne", from: "Nie", to: "Tak" },
     notificationEffect: { title: "Powiadomienie wychodzi", detail: "do: Marek Wiśniewski · SMS + e-mail" },
     blockEffect: { title: "Przejście zablokowane", detail: "Brak protokołu odbioru", transition: "Zamknij zgłoszenie" },
-    captions: { condition: "Warunek składasz <b>z gotowych klocków</b>", fired: "Reguła odpala się <b>przy każdym rekordzie</b>", summary: "Pole, powiadomienie, blokada przejścia — <b>bez pilnowania</b>" },
+    captions: { condition: "Warunek składasz <b>z gotowych klocków</b>", fired: "Reguła odpala się <b>przy każdym rekordzie</b>", summary: "Pole, powiadomienie, blokada przejścia - <b>bez pilnowania</b>" },
   },
   blocks: {
     eyebrow: "Co dostajesz",

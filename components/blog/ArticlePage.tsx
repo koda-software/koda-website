@@ -9,6 +9,7 @@ import { AuthorAvatar, AuthorBox, type BlogAuthor } from "./AuthorBox";
 import { RelatedList } from "./RelatedList";
 import { TagChips } from "./TagChips";
 import { BlogFinalCta, blogMetaClass } from "./primitives";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type ArticlePageProps = {
   article: ArticleFullRow;
@@ -42,9 +43,10 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
 
   return (
     <>
-      <header className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
+      <header className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[2.25rem] pt-[9rem] text-white max-[809px]:pt-28">
+      <PhotoBackdrop photo="workspace" opacity={0.18} />
         {/* The <header> already owns the page gutter; the column only sets the measure. */}
-        <div className={proseColumnClass}>
+        <div className={`relative z-[1] ${proseColumnClass}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.78rem] font-semibold uppercase tracking-[0.08em]">
             {article.kategoria_slug && article.kategoria_nazwa ? (
               <Link className="text-[var(--color-blue-soft)] transition-opacity hover:opacity-75" href={categoryPath(locale, article.kategoria_slug)}>

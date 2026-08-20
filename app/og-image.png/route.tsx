@@ -32,8 +32,8 @@ export function GET() {
           alignItems: "center",
           justifyContent: "center",
           // The same gradient the page banners run on.
-          backgroundColor: "#000407",
-          backgroundImage: "linear-gradient(135deg, #000407 0%, #051730 38%, #0d3a68 68%, #1a68b3 100%)",
+          backgroundColor: "#0b1116",
+          backgroundImage: "linear-gradient(135deg, #0b1116 0%, #0f2437 38%, #12456f 68%, #1c6cb5 100%)",
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- satori renders

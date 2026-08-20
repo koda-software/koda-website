@@ -2,6 +2,7 @@ import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import { HeroTitle } from "@/components/landing/LandingPrimitives";
 import type { AboutPageContent } from "@/content/types";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 type AboutPageProps = {
   content: AboutPageContent;
@@ -11,7 +12,7 @@ type AboutPageProps = {
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
+const darkEyebrowClass = "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const sectionTitleClass = "m-0 max-w-[52rem] text-[clamp(1.9rem,3.4vw,2.6rem)] leading-[1.1] tracking-[-0.03em] text-[var(--color-ink)]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass =
@@ -20,8 +21,9 @@ const buttonClass =
 export function AboutPage({ content, ctas }: AboutPageProps) {
   return (
     <>
-      <section className="flex items-center overflow-hidden bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
-        <div className="mx-auto w-[min(100%,var(--shell-width))]">
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[5rem] pt-[10rem] text-white max-[809px]:pt-28">
+        <PhotoBackdrop photo="workspace" priority />
+        <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">
           <p className={`${darkEyebrowClass} hero-rise`}>{content.hero.eyebrow}</p>
           <div className="hero-rise hero-d1"><HeroTitle className="max-w-[940px]" title={content.hero.title} /></div>
           <p className="hero-rise hero-d2 mt-6 max-w-[780px] text-[1.18rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.04rem]">

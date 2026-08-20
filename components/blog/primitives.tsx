@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
 
 /**
  * Shared class idioms for the blog, mirroring the homepage and solutions pages:
@@ -28,8 +29,9 @@ type BlogHeroProps = {
  */
 export function BlogHero({ eyebrow, title, description, aside }: BlogHeroProps) {
   return (
-    <section className="bg-[#000407] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[3.75rem] pt-[9rem] text-white max-[809px]:pt-28">
-      <div className="mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(16rem,0.46fr)] items-end gap-12 max-[980px]:grid-cols-1 max-[980px]:gap-8">
+    <section className="relative overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[3.75rem] pt-[9rem] text-white max-[809px]:pt-28">
+      <PhotoBackdrop photo="workspace" opacity={0.22} />
+      <div className="relative z-[1] mx-auto grid w-[min(100%,var(--shell-width))] grid-cols-[minmax(0,1fr)_minmax(16rem,0.46fr)] items-end gap-12 max-[980px]:grid-cols-1 max-[980px]:gap-8">
         <div>
           <p className={`${blogDarkEyebrowClass} mb-4`}>{eyebrow}</p>
           <h1 className="m-0 max-w-[900px] text-[3.5rem] leading-[1.02] tracking-[-0.04em] max-[809px]:text-[2.35rem]">{title}</h1>
