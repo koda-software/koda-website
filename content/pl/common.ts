@@ -28,7 +28,7 @@ export const commonContent: ShellContent = {
       eyebrow: "Kontakt",
       title: "Porozmawiajmy o jednym Waszym procesie.",
       description:
-        "Wystarczy jeden proces, który dziś żyje w arkuszu albo w mailach. Pokażemy, jak wygląda w Operze, i powiemy wprost, czy to dobry kierunek.",
+        "Wystarczy jeden proces, który dziś żyje w arkuszu albo w mailach. Pokażemy, jak wygląda w Opero, i powiemy wprost, czy to dobry kierunek.",
       emailLabel: "Napisz",
       email: "kontakt@kodasoft.pl",
       phoneLabel: "Zadzwoń",
