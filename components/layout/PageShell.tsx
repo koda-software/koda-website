@@ -5,6 +5,7 @@ import type { NavItem, ShellContent } from "@/content/types";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { SmoothScrollProvider } from "./SmoothScrollProvider";
 
 type PageShellProps = {
   locale: Locale;
@@ -21,6 +22,7 @@ export function PageShell({ locale, page, shell, navItems, children, alternatePa
     <>
       <SiteHeader locale={locale} page={page} content={shell} navItems={navItems} />
       <main className="min-h-[70vh]">{children}</main>
+      <SmoothScrollProvider />
       <ScrollReveal />
       <SiteFooter alternatePaths={alternatePaths} locale={locale} page={page} content={shell} navItems={navItems} />
     </>
