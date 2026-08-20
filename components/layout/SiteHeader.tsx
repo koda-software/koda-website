@@ -265,7 +265,7 @@ export function SiteHeader({ locale, page, content, navItems }: SiteHeaderProps)
                   <div className="grid grid-cols-2 gap-1">
                     {submenuItems.map((subItem) => (
                       <Link
-                        className="rounded-full px-3.5 py-2.5 text-[0.86rem] font-medium text-white/[0.78] transition-colors hover:bg-white/10 hover:text-white"
+                        className="rounded-full px-3.5 py-2.5 text-[0.86rem] font-normal text-white/[0.78] transition-colors hover:bg-white/10 hover:text-white"
                         href={subItem.href}
                         key={subItem.feature}
                         onClick={() => setIsSubmenuOpen(false)}

@@ -147,38 +147,22 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* The floating navigation pill.
- *
- * This used to be three stacked glass layers: an 72px blur on the element, a
- * second 96px blur on ::before, and three superimposed gradients on ::after.
- * Two problems with that. It read as generic product-launch glassmorphism
- * rather than as KodaSoft, and a backdrop-filter on an element that is fixed
- * during scroll forces the compositor to re-sample and re-blur everything
- * behind it on every frame - twice over, at radii where the cost is real on a
- * phone. What is left is one moderate blur over a graphite tint plus a single
- * top highlight: the same floating-glass read, one compositing layer instead
- * of three. The blur radius itself is set inline in SiteHeader, which steps it
- * from 4px to 6px once the header sticks.
- */
 .site-menu-pill {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(11, 17, 22, 0.62);
-  box-shadow: 0 12px 36px rgba(11, 17, 22, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background: rgba(8, 26, 42, 0.64);
+  box-shadow: 0 12px 36px rgba(7, 26, 43, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
-/* A single highlight along the top edge - what makes a glass surface read as
-   lit. The blue wash that used to sit under it is gone: the pill floats over
-   the hero, which is already brand blue, so it was tinting blue with blue. */
 .site-menu-pill::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 58%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0) 58%);
   pointer-events: none;
 }
 
@@ -191,16 +175,14 @@ button:focus-visible {
   color: var(--color-ink) !important;
 }
 
-/* Once the header sticks it sits over page content rather than the dark hero,
-   so the tint deepens to keep the white labels legible against anything. */
 .site-menu-pill-scrolled {
   border-color: rgba(255, 255, 255, 0.26);
-  background: rgba(11, 17, 22, 0.82);
-  box-shadow: 0 14px 40px rgba(11, 17, 22, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: rgba(8, 26, 42, 0.84);
+  box-shadow: 0 14px 40px rgba(7, 26, 43, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .site-menu-pill-scrolled::after {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 58%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 58%);
 }
 
 /* Section eyebrow labels share a class so page-specific utilities can keep
