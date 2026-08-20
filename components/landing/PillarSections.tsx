@@ -9,13 +9,11 @@ import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import BarChart3Icon from "lucide-react/dist/esm/icons/bar-chart-3.mjs";
 import BadgeAlertIcon from "lucide-react/dist/esm/icons/badge-alert.mjs";
 import BadgeCheckIcon from "lucide-react/dist/esm/icons/badge-check.mjs";
-import CalendarDaysIcon from "lucide-react/dist/esm/icons/calendar-days.mjs";
 import CheckIcon from "lucide-react/dist/esm/icons/check.mjs";
 import CheckSquareIcon from "lucide-react/dist/esm/icons/check-square.mjs";
 import FileTextIcon from "lucide-react/dist/esm/icons/file-text.mjs";
 import GaugeIcon from "lucide-react/dist/esm/icons/gauge.mjs";
 import GitBranchIcon from "lucide-react/dist/esm/icons/git-branch.mjs";
-import KanbanSquareIcon from "lucide-react/dist/esm/icons/kanban-square.mjs";
 import LockKeyholeIcon from "lucide-react/dist/esm/icons/lock-keyhole.mjs";
 import Rows3Icon from "lucide-react/dist/esm/icons/rows-3.mjs";
 import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
@@ -49,7 +47,6 @@ const ruleNodeShadow = "0 22px 54px -34px rgba(2,2,13,0.52)";
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
-const processViewIcons = [Table2Icon, KanbanSquareIcon, CalendarDaysIcon] as const;
 const paletteClass =
   "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.07)] bg-white/68 p-3";
 const pageClass =
@@ -285,15 +282,11 @@ function BuildPageInteractive({ animation }: { animation: PillarAnimation }) {
 
 function ViewModeButton({
   active,
-  className,
-  icon: Icon,
   label,
   onClick,
   pulse = false,
 }: {
   active: boolean;
-  className: string;
-  icon: BlockIcon;
   label: string;
   onClick: () => void;
   pulse?: boolean;
@@ -302,11 +295,11 @@ function ViewModeButton({
     <button
       aria-label={label}
       aria-pressed={active}
-      className={`${styles.modeButton} ${className} ${active ? styles.modeButtonActive : ""} ${pulse ? styles.pulseHint : ""}`}
+      className={`${styles.modeButton} ${active ? styles.modeButtonActive : ""} ${pulse ? styles.pulseHint : ""}`}
       onClick={onClick}
       type="button"
     >
-      <Icon className="h-4 w-4" strokeWidth={1.65} />
+      {label}
     </button>
   );
 }
@@ -404,19 +397,15 @@ function ProcessViewInteractive() {
     <div className="relative min-h-[22rem] overflow-visible" ref={rootRef}>
       <div className={`relative left-1/2 min-h-[22rem] w-[31.5rem] ${styles.stageScale} ${styles.processStage}`}>
         <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.72)] p-4">
-          <div className="mb-3 flex gap-2">
+          <div className="mb-3 inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.08)] bg-white p-1 shadow-[0_12px_28px_-24px_rgba(2,2,13,0.32)]">
             <ViewModeButton
               active={activeView === "table"}
-              className=""
-              icon={processViewIcons[0]}
-              label="Table view"
+              label="Table"
               onClick={() => setActiveView("table")}
             />
             <ViewModeButton
               active={activeView === "kanban"}
-              className=""
-              icon={processViewIcons[1]}
-              label="Kanban view"
+              label="Kanban"
               onClick={() => {
                 setActiveView("kanban");
                 setHasOpenedKanban(true);
@@ -425,9 +414,7 @@ function ProcessViewInteractive() {
             />
             <ViewModeButton
               active={activeView === "calendar"}
-              className=""
-              icon={processViewIcons[2]}
-              label="Calendar view"
+              label="Calendar"
               onClick={() => setActiveView("calendar")}
             />
           </div>
@@ -1051,7 +1038,7 @@ export function PillarSections({ items }: PillarSectionsProps) {
             className="grid items-center gap-[clamp(2rem,5vw,4.5rem)] grid-cols-[minmax(0,0.76fr)_minmax(22rem,1fr)] max-[1120px]:grid-cols-[minmax(31.5rem,1.05fr)_minmax(17rem,0.85fr)] max-[900px]:grid-cols-1"
             key={pillar.title}
           >
-            <Reveal className={`${visualFirst ? "max-[900px]:order-2" : ""} max-[900px]:px-[clamp(0.75rem,4vw,1.25rem)]`.trim()} from={visualFirst ? "left" : "right"}>
+            <Reveal className={`${visualFirst ? "max-[900px]:order-2" : ""} max-[640px]:hidden max-[900px]:px-[clamp(0.75rem,4vw,1.25rem)]`.trim()} from={visualFirst ? "left" : "right"}>
               {index === 0 && pillar.animation ? (
                 <BuildPageInteractive animation={pillar.animation} />
               ) : index === 1 ? (
