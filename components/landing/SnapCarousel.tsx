@@ -2,6 +2,7 @@
 
 import { Children, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent, ReactNode, WheelEvent } from "react";
+import type { gsap as GsapNamespace } from "gsap";
 import styles from "./SnapCarousel.module.css";
 
 type SnapCarouselProps = {
@@ -18,10 +19,21 @@ type SnapCarouselProps = {
   viewportClassName?: string;
 };
 
+type GsapModule = {
+  gsap: typeof GsapNamespace;
+};
+
 const defaultPauseMs = 1000;
 const defaultScrollDurationMs = 620;
 const defaultSettleMs = 180;
-const loopCopies = 7;
+
+const wrapIndex = (index: number, itemCount: number) => {
+  return ((index % itemCount) + itemCount) % itemCount;
+};
+
+const getWrappedDelta = (delta: number, itemCount: number) => {
+  return ((delta + itemCount / 2) % itemCount + itemCount) % itemCount - itemCount / 2;
+};
 
 export function SnapCarousel({
   ariaLabel,
@@ -36,108 +48,25 @@ export function SnapCarousel({
   trackClassName = "",
   viewportClassName = "",
 }: SnapCarouselProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const gsapRef = useRef<typeof GsapNamespace | null>(null);
   const autoplayTimerRef = useRef<number | undefined>(undefined);
   const settleTimerRef = useRef<number | undefined>(undefined);
   const scheduleAutoplayRef = useRef<(delay?: number) => void>(() => {});
-  const dragRef = useRef({ active: false, startScroll: 0, startX: 0 });
+  const tweenRef = useRef<ReturnType<typeof GsapNamespace.to> | null>(null);
+  const currentIndexRef = useRef(0);
+  const dragRef = useRef({ active: false, startIndex: 0, startX: 0 });
+  const measureRef = useRef({ itemWidth: 0, step: 1, viewportWidth: 0 });
   const reducedMotionRef = useRef(false);
-  const userScrollRef = useRef(false);
   const slides = useMemo(() => Children.toArray(children), [children]);
   const itemCount = slides.length;
-  const loopSlides = useMemo(
-    () => (itemCount > 1 ? Array.from({ length: loopCopies }, () => slides).flat() : slides),
-    [itemCount, slides],
-  );
-  const middleCopy = Math.floor(loopCopies / 2);
-  const middleStartIndex = itemCount > 1 ? itemCount * middleCopy : 0;
-  const [activeLoopIndex, setActiveLoopIndexState] = useState(middleStartIndex);
-  const activeLoopIndexRef = useRef(middleStartIndex);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const carouselStyle = fadeColor
     ? ({ "--snap-carousel-fade-color": fadeColor } as CSSProperties)
     : undefined;
-
-  const setActiveLoopIndex = useCallback((index: number) => {
-    activeLoopIndexRef.current = index;
-    setActiveLoopIndexState(index);
-  }, []);
-
-  const getItemElements = useCallback(() => {
-    return Array.from(trackRef.current?.querySelectorAll<HTMLElement>("[data-snap-carousel-item]") ?? []);
-  }, []);
-
-  const getCenteredScrollLeft = useCallback(
-    (index: number) => {
-      const viewport = viewportRef.current;
-      const item = getItemElements()[index];
-
-      if (!viewport || !item) {
-        return 0;
-      }
-
-      return item.offsetLeft + item.offsetWidth / 2 - viewport.clientWidth / 2;
-    },
-    [getItemElements],
-  );
-
-  const scrollToLoopIndex = useCallback(
-    (index: number, behavior: ScrollBehavior) => {
-      const viewport = viewportRef.current;
-
-      if (!viewport) {
-        return;
-      }
-
-      viewport.scrollTo({
-        behavior,
-        left: getCenteredScrollLeft(index),
-      });
-      setActiveLoopIndex(index);
-    },
-    [getCenteredScrollLeft, setActiveLoopIndex],
-  );
-
-  const normalizeLoopIndex = useCallback(
-    (index: number) => {
-      if (itemCount <= 1) {
-        return index;
-      }
-
-      if (index < itemCount) {
-        return index + itemCount * middleCopy;
-      }
-
-      if (index >= itemCount * (loopCopies - 1)) {
-        return index - itemCount * middleCopy;
-      }
-
-      return index;
-    },
-    [itemCount, middleCopy],
-  );
-
-  const findNearestLoopIndex = useCallback(() => {
-    const viewport = viewportRef.current;
-    const items = getItemElements();
-
-    if (!viewport || items.length === 0) {
-      return activeLoopIndexRef.current;
-    }
-
-    const viewportCenter = viewport.scrollLeft + viewport.clientWidth / 2;
-
-    return items.reduce((nearestIndex, item, index) => {
-      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-      const nearest = items[nearestIndex];
-      const nearestCenter = nearest.offsetLeft + nearest.offsetWidth / 2;
-
-      return Math.abs(itemCenter - viewportCenter) < Math.abs(nearestCenter - viewportCenter)
-        ? index
-        : nearestIndex;
-    }, 0);
-  }, [getItemElements]);
 
   const clearAutoplay = useCallback(() => {
     window.clearTimeout(autoplayTimerRef.current);
@@ -146,6 +75,110 @@ export function SnapCarousel({
   const clearSettle = useCallback(() => {
     window.clearTimeout(settleTimerRef.current);
   }, []);
+
+  const getGap = useCallback(() => {
+    const root = rootRef.current;
+
+    if (!root) {
+      return 18;
+    }
+
+    const computed = window.getComputedStyle(root);
+    const cssGap = computed.getPropertyValue("--snap-carousel-gap").trim();
+    const parsedGap = Number.parseFloat(cssGap);
+
+    if (Number.isFinite(parsedGap)) {
+      return parsedGap;
+    }
+
+    return Math.max(14, Math.min(22, root.clientWidth * 0.015));
+  }, []);
+
+  const measure = useCallback(() => {
+    const viewport = viewportRef.current;
+    const firstItem = itemRefs.current[0];
+
+    if (!viewport || !firstItem) {
+      return measureRef.current;
+    }
+
+    const itemWidth = firstItem.getBoundingClientRect().width;
+    measureRef.current = {
+      itemWidth,
+      step: itemWidth + getGap(),
+      viewportWidth: viewport.clientWidth,
+    };
+
+    return measureRef.current;
+  }, [getGap]);
+
+  const setPositions = useCallback(
+    (index: number) => {
+      const gsap = gsapRef.current;
+
+      if (!gsap || itemCount === 0) {
+        return;
+      }
+
+      const { itemWidth, step, viewportWidth } = measure();
+      const centerX = viewportWidth / 2 - itemWidth / 2;
+      const roundedIndex = wrapIndex(Math.round(index), itemCount);
+
+      itemRefs.current.forEach((item, itemIndex) => {
+        if (!item) {
+          return;
+        }
+
+        const delta = getWrappedDelta(itemIndex - index, itemCount);
+        const distance = Math.abs(delta);
+        const scale = Math.max(0.88, 1.07 - Math.min(distance, 1.9) * 0.105);
+
+        gsap.set(item, {
+          autoAlpha: 1,
+          scale,
+          x: centerX + delta * step,
+          yPercent: -50,
+          zIndex: Math.round(100 - distance * 10),
+        });
+      });
+
+      setActiveIndex(roundedIndex);
+    },
+    [itemCount, measure],
+  );
+
+  const animateToIndex = useCallback(
+    (targetIndex: number, options: { duration?: number; restartAutoplay?: boolean } = {}) => {
+      const gsap = gsapRef.current;
+
+      if (!gsap || itemCount <= 1) {
+        return;
+      }
+
+      tweenRef.current?.kill();
+      const state = { index: currentIndexRef.current };
+      const duration = options.duration ?? scrollDurationMs / 1000;
+
+      tweenRef.current = gsap.to(state, {
+        duration: reducedMotionRef.current ? 0 : duration,
+        ease: "power3.inOut",
+        index: targetIndex,
+        onComplete: () => {
+          currentIndexRef.current = targetIndex;
+          setPositions(targetIndex);
+
+          if (options.restartAutoplay) {
+            scheduleAutoplayRef.current(pauseMs);
+          }
+        },
+        onUpdate: () => {
+          currentIndexRef.current = state.index;
+          setPositions(state.index);
+        },
+      });
+    },
+    [itemCount, pauseMs, scrollDurationMs, setPositions],
+  );
 
   const scheduleAutoplay = useCallback(
     (delay = pauseMs) => {
@@ -156,89 +189,81 @@ export function SnapCarousel({
       }
 
       autoplayTimerRef.current = window.setTimeout(() => {
-        const nextIndex = activeLoopIndexRef.current + 1;
-
-        scrollToLoopIndex(nextIndex, "smooth");
-        autoplayTimerRef.current = window.setTimeout(() => {
-          const normalizedIndex = normalizeLoopIndex(activeLoopIndexRef.current);
-
-          if (normalizedIndex !== activeLoopIndexRef.current) {
-            scrollToLoopIndex(normalizedIndex, "auto");
-          }
-
-          scheduleAutoplayRef.current(pauseMs);
-        }, scrollDurationMs);
+        animateToIndex(currentIndexRef.current + 1, { restartAutoplay: true });
       }, delay);
     },
-    [autoplay, clearAutoplay, itemCount, normalizeLoopIndex, pauseMs, scrollDurationMs, scrollToLoopIndex],
+    [animateToIndex, autoplay, clearAutoplay, itemCount, pauseMs],
   );
-
-  const snapToNearest = useCallback(
-    (behavior: ScrollBehavior) => {
-      const nearestIndex = findNearestLoopIndex();
-      const normalizedIndex = normalizeLoopIndex(nearestIndex);
-
-      scrollToLoopIndex(normalizedIndex, nearestIndex === normalizedIndex ? behavior : "auto");
-    },
-    [findNearestLoopIndex, normalizeLoopIndex, scrollToLoopIndex],
-  );
-
-  const finishUserScroll = useCallback(() => {
-    clearSettle();
-    userScrollRef.current = false;
-    snapToNearest("smooth");
-    scheduleAutoplay(scrollDurationMs + pauseMs);
-  }, [clearSettle, pauseMs, scheduleAutoplay, scrollDurationMs, snapToNearest]);
-
-  const queueUserSettle = useCallback(() => {
-    clearSettle();
-    settleTimerRef.current = window.setTimeout(finishUserScroll, settleMs);
-  }, [clearSettle, finishUserScroll, settleMs]);
 
   useEffect(() => {
     scheduleAutoplayRef.current = scheduleAutoplay;
   }, [scheduleAutoplay]);
 
-  useEffect(() => {
-    reducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const snapToNearest = useCallback(() => {
+    const targetIndex = Math.round(currentIndexRef.current);
 
-    const frame = window.requestAnimationFrame(() => {
-      scrollToLoopIndex(middleStartIndex, "auto");
-      scheduleAutoplay(pauseMs);
+    animateToIndex(targetIndex, {
+      duration: Math.max(0.24, Math.min(0.42, settleMs / 1000 + 0.16)),
+      restartAutoplay: false,
     });
+    scheduleAutoplay(scrollDurationMs + pauseMs);
+  }, [animateToIndex, pauseMs, scheduleAutoplay, scrollDurationMs, settleMs]);
+
+  const queueSettle = useCallback(() => {
+    clearSettle();
+    settleTimerRef.current = window.setTimeout(snapToNearest, settleMs);
+  }, [clearSettle, settleMs, snapToNearest]);
+
+  useEffect(() => {
+    let mounted = true;
+    let resizeObserver: ResizeObserver | undefined;
+
+    const setup = async () => {
+      const { gsap } = await import("gsap") as GsapModule;
+
+      if (!mounted) {
+        return;
+      }
+
+      gsapRef.current = gsap;
+      reducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      measure();
+      setPositions(currentIndexRef.current);
+
+      resizeObserver = new ResizeObserver(() => {
+        measure();
+        setPositions(currentIndexRef.current);
+      });
+
+      if (viewportRef.current) {
+        resizeObserver.observe(viewportRef.current);
+      }
+
+      scheduleAutoplay(pauseMs);
+    };
+
+    void setup();
 
     return () => {
-      window.cancelAnimationFrame(frame);
+      mounted = false;
+      resizeObserver?.disconnect();
       clearAutoplay();
       clearSettle();
+      tweenRef.current?.kill();
     };
-  }, [clearAutoplay, clearSettle, middleStartIndex, pauseMs, scheduleAutoplay, scrollToLoopIndex]);
-
-  const handleScroll = () => {
-    setActiveLoopIndex(findNearestLoopIndex());
-
-    if (userScrollRef.current && !dragRef.current.active) {
-      queueUserSettle();
-    }
-  };
+  }, [clearAutoplay, clearSettle, measure, pauseMs, scheduleAutoplay, setPositions]);
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse" || event.button !== 0) {
-      return;
-    }
-
-    const viewport = viewportRef.current;
-
-    if (!viewport) {
+    if (event.button !== 0 && event.pointerType === "mouse") {
       return;
     }
 
     clearAutoplay();
     clearSettle();
-    userScrollRef.current = true;
+    tweenRef.current?.kill();
     dragRef.current = {
       active: true,
-      startScroll: viewport.scrollLeft,
+      startIndex: currentIndexRef.current,
       startX: event.clientX,
     };
     setIsDragging(true);
@@ -246,15 +271,16 @@ export function SnapCarousel({
   };
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const viewport = viewportRef.current;
-
-    if (!viewport || !dragRef.current.active) {
+    if (!dragRef.current.active) {
       return;
     }
 
     event.preventDefault();
-    viewport.scrollLeft = dragRef.current.startScroll - (event.clientX - dragRef.current.startX);
-    setActiveLoopIndex(findNearestLoopIndex());
+    const { step } = measureRef.current;
+    const nextIndex = dragRef.current.startIndex - (event.clientX - dragRef.current.startX) / step;
+
+    currentIndexRef.current = nextIndex;
+    setPositions(nextIndex);
   };
 
   const handlePointerEnd = (event: PointerEvent<HTMLDivElement>) => {
@@ -269,33 +295,32 @@ export function SnapCarousel({
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
-    finishUserScroll();
-  };
-
-  const handleTouchStart = () => {
-    clearAutoplay();
-    clearSettle();
-    userScrollRef.current = true;
-  };
-
-  const handleTouchEnd = () => {
-    queueUserSettle();
+    snapToNearest();
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) {
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || itemCount <= 1) {
       return;
     }
 
+    event.preventDefault();
     clearAutoplay();
-    userScrollRef.current = true;
-    queueUserSettle();
+    clearSettle();
+    tweenRef.current?.kill();
+
+    const { step } = measureRef.current;
+    const nextIndex = currentIndexRef.current + event.deltaX / step;
+
+    currentIndexRef.current = nextIndex;
+    setPositions(nextIndex);
+    queueSettle();
   };
 
   return (
     <div
       aria-label={ariaLabel}
       className={`${styles.carousel} ${fadeColor ? styles.hasFades : ""} ${className}`.trim()}
+      ref={rootRef}
       role={ariaLabel ? "region" : undefined}
       style={carouselStyle}
     >
@@ -305,30 +330,24 @@ export function SnapCarousel({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
-        onScroll={handleScroll}
-        onTouchEnd={handleTouchEnd}
-        onTouchStart={handleTouchStart}
         onWheel={handleWheel}
         ref={viewportRef}
       >
-        <div className={`${styles.track} ${trackClassName}`.trim()} ref={trackRef}>
-          {loopSlides.map((slide, index) => {
-            const isActive = itemCount > 1
-              ? index % itemCount === activeLoopIndex % itemCount
-              : index === activeLoopIndex;
-            const isClone = itemCount > 1 && Math.floor(index / itemCount) !== middleCopy;
-
-            return (
-              <div
-                aria-hidden={isClone && !isActive}
-                className={`${styles.item} ${isActive ? styles.itemActive : ""} ${itemClassName}`.trim()}
-                data-snap-carousel-item
-                key={`${index}-${index % Math.max(itemCount, 1)}`}
-              >
-                <div className={styles.itemInner}>{slide}</div>
-              </div>
-            );
-          })}
+        <div className={`${styles.track} ${trackClassName}`.trim()}>
+          {slides.map((slide, index) => (
+            <div
+              aria-hidden={index !== activeIndex}
+              className={`${styles.item} ${index === activeIndex ? styles.itemActive : ""} ${itemClassName}`.trim()}
+              data-active={index === activeIndex ? "true" : undefined}
+              data-snap-carousel-item
+              key={index}
+              ref={(node) => {
+                itemRefs.current[index] = node;
+              }}
+            >
+              <div className={styles.itemInner}>{slide}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

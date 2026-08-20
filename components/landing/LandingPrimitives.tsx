@@ -450,7 +450,7 @@ export function FinalCtaPanel({ description, eyebrow, primaryCta, primaryHref, s
       <BrandMarkMotif />
       <div className="relative z-[1]">
         <p className={darkEyebrowClass}>{eyebrow}</p>
-        <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.65rem,5.6vw,4.25rem)] leading-[1.01] tracking-[-0.055em] max-[809px]:text-[clamp(2rem,9vw,2.75rem)] max-[520px]:leading-[1.04]">
+        <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.25rem,4.8vw,3.65rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(1.75rem,7.8vw,2.3rem)] max-[520px]:leading-[1.06]">
           {title}
         </h2>
         <p className={`${sectionDescriptionClass} max-w-[680px] text-white/70 max-[520px]:mt-3 max-[520px]:text-[1rem]`}>

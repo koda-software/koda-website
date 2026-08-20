@@ -46,7 +46,7 @@ export function HomeScaffold({
         secondaryHref={secondaryHref}
         visualMode="edge"
       >
-        <div className="pointer-events-none absolute left-[calc(clamp(34rem,58vw,64rem)-100px)] top-[calc(clamp(12.5rem,23vw,18rem)-170px)] z-0 w-[clamp(50rem,72vw,83rem)] opacity-95 max-[1200px]:left-[calc(clamp(23rem,44vw,36rem)-100px)] max-[1200px]:top-[calc(clamp(15rem,28vw,20rem)-170px)] max-[1200px]:w-[clamp(48rem,88vw,74rem)] max-[1200px]:opacity-40 max-[809px]:left-[calc(52vw-100px)] max-[809px]:top-[calc(19rem-170px)] max-[809px]:w-[min(54rem,124vw)] max-[809px]:opacity-24">
+        <div className="pointer-events-none absolute right-[-20.75rem] top-[calc(clamp(12.5rem,23vw,18rem)-170px)] z-0 w-[clamp(50rem,72vw,83rem)] opacity-95 max-[1200px]:left-[calc(clamp(23rem,44vw,36rem)-100px)] max-[1200px]:right-auto max-[1200px]:top-[calc(clamp(15rem,28vw,20rem)-170px)] max-[1200px]:w-[clamp(48rem,88vw,74rem)] max-[1200px]:opacity-40 max-[809px]:left-[calc(52vw-100px)] max-[809px]:top-[calc(19rem-170px)] max-[809px]:w-[min(54rem,124vw)] max-[809px]:opacity-24">
           <HeroDashboardMock className="h-auto w-full select-none" />
         </div>
       </LandingHero>

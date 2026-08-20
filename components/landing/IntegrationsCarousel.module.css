@@ -1,8 +1,9 @@
 .integrationCarousel {
   --snap-carousel-gap: clamp(0.9rem, 2vw, 1.35rem);
   --snap-carousel-item-width: clamp(15rem, 21vw, 18.5rem);
-  --snap-carousel-padding-y: 2.25rem;
-  --snap-carousel-track-height: 14rem;
+  --snap-carousel-padding-y: 2.75rem;
+  --snap-carousel-track-height: 15.25rem;
+  --snap-carousel-shadow-room: 2rem;
 }
 
 .integrationCard {
@@ -13,15 +14,33 @@
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid rgba(10, 24, 38, 0.08);
+  border: 1px solid rgba(10, 24, 38, 0.13);
   border-radius: calc(var(--radius-panel) - 12px);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 251, 252, 0.96)),
-    linear-gradient(135deg, rgba(10, 24, 38, 0.035), transparent 38%);
+    linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(249, 251, 252, 0.98)),
+    radial-gradient(circle at 18% 0%, rgba(10, 24, 38, 0.075), transparent 44%),
+    linear-gradient(135deg, rgba(10, 24, 38, 0.04), transparent 42%);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.86) inset,
-    0 22px 52px -46px rgba(6, 24, 38, 0.42);
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.72) inset,
+    0 8px 16px -14px rgba(6, 24, 38, 0.5);
   padding: 1.15rem;
+  transition: box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.integrationCarousel [data-active="true"] .integrationCard {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.72) inset,
+    0 24px 54px -34px rgba(6, 24, 38, 0.58);
+}
+
+.integrationCard::after {
+  position: absolute;
+  inset: auto 1rem 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(10, 24, 38, 0.28), transparent);
+  content: "";
 }
 
 .identity,
@@ -66,25 +85,31 @@
 .integrationName {
   margin: 0;
   color: var(--color-ink);
-  font-size: 1.02rem;
+  font-size: 0.96rem;
   font-weight: 520;
   line-height: 1.16;
 }
 
 .integrationDescription {
   margin: 0.95rem 0 0;
-  color: var(--color-muted);
+  color: rgba(11, 17, 22, 0.62);
   font-size: 0.86rem;
-  font-weight: 300;
+  font-weight: 330;
   line-height: 1.52;
+}
+
+.integrationCarousel [data-active="true"] .integrationDescription {
+  color: rgba(11, 17, 22, 0.78);
+  font-weight: 380;
 }
 
 @media (max-width: 640px) {
   .integrationCarousel {
     --snap-carousel-fade: clamp(2.4rem, 18vw, 4.5rem);
     --snap-carousel-item-width: min(76vw, 18rem);
-    --snap-carousel-padding-y: 2rem;
-    --snap-carousel-track-height: 13.25rem;
+    --snap-carousel-padding-y: 2.5rem;
+    --snap-carousel-track-height: 14.5rem;
+    --snap-carousel-shadow-room: 1.75rem;
   }
 
   .integrationCard {
