@@ -37,12 +37,15 @@ type BlockIcon = typeof GaugeIcon;
 type ProcessViewMode = "table" | "kanban" | "calendar";
 type PermissionRole = "employee" | "hr";
 type RuleRoute = "positive" | "negative";
+type RuleCompletion = RuleRoute | null;
 type GsapModule = {
   gsap: typeof GsapNamespace;
 };
 type MotionPathModule = {
   MotionPathPlugin: typeof MotionPathPluginInstance;
 };
+
+const ruleNodeShadow = "0 22px 54px -34px rgba(2,2,13,0.52)";
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
@@ -442,6 +445,7 @@ function ProcessViewInteractive() {
 function RuleNode({
   children,
   className,
+  finalSuccess = false,
   icon: Icon,
   meta,
   nodeId,
@@ -450,6 +454,7 @@ function RuleNode({
 }: {
   children?: React.ReactNode;
   className: string;
+  finalSuccess?: boolean;
   icon: BlockIcon;
   meta: string;
   nodeId: string;
@@ -464,7 +469,7 @@ function RuleNode({
         : "border-[rgba(56,182,255,0.2)] bg-[rgba(56,182,255,0.08)] text-[var(--color-blue)]";
 
   return (
-    <div className={`absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_18px_42px_-34px_rgba(2,2,13,0.42)] ${className}`} data-rule-node={nodeId}>
+    <div className={`absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_22px_54px_-34px_rgba(2,2,13,0.52)] ${className}`} data-rule-node={nodeId}>
       <div className="flex items-start gap-2.5">
         <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border ${toneClass}`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
@@ -479,6 +484,11 @@ function RuleNode({
         </span>
       </div>
       {children}
+      {finalSuccess ? (
+        <span className="absolute bottom-0 left-0 grid h-6 w-6 -translate-x-1/3 translate-y-1/3 place-items-center rounded-full border border-[rgba(16,185,129,0.28)] bg-[rgba(236,253,245,0.98)] text-[#0f8b5d] shadow-[0_12px_24px_-16px_rgba(2,2,13,0.38)]">
+          <CheckIcon className="h-3.5 w-3.5" strokeWidth={2.2} />
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -487,6 +497,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   const [isRunning, setIsRunning] = useState(false);
   const [activeRoute, setActiveRoute] = useState<RuleRoute>("positive");
   const [nextRoute, setNextRoute] = useState<RuleRoute>("positive");
+  const [completedRoute, setCompletedRoute] = useState<RuleCompletion>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const inputPathRef = useRef<SVGPathElement>(null);
   const middlePathRef = useRef<SVGPathElement>(null);
@@ -561,12 +572,12 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     const amount = route === "positive" ? "€499" : "€2400";
     const decisionShadow =
       route === "positive"
-        ? "0 0 0 4px rgba(16,185,129,0.13), 0 18px 42px -34px rgba(2,2,13,0.42)"
-        : "0 0 0 4px rgba(248,113,113,0.14), 0 18px 42px -34px rgba(2,2,13,0.42)";
+        ? `0 0 0 4px rgba(16,185,129,0.13), ${ruleNodeShadow}`
+        : `0 0 0 4px rgba(248,113,113,0.14), ${ruleNodeShadow}`;
     const branchPathD =
       route === "positive"
-        ? "M 252 246 C 252 306 160 306 160 342"
-        : "M 252 246 C 252 306 344 306 344 342";
+        ? "M 252 246 C 252 306 132 306 132 342"
+        : "M 252 246 C 252 306 372 306 372 342";
 
     inputPath.setAttribute("d", "M 252 54 V 95");
     middlePath.setAttribute("d", "M 252 151 V 190");
@@ -586,7 +597,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     preparePath(branchPath, activeSoftColor);
 
     gsap.set([startNode, conditionNode, resultNode], {
-      boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
+      boxShadow: ruleNodeShadow,
       scale: 1,
     });
     gsap.set([positiveLabelRef.current, negativeLabelRef.current], {
@@ -624,16 +635,16 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
       timeline.to(
         node,
         {
-          boxShadow: shadow ?? `0 0 0 5px ${color}, 0 18px 42px -34px rgba(2,2,13,0.42)`,
-          duration: 0.16,
+          boxShadow: shadow ?? `0 0 0 5px ${color}, ${ruleNodeShadow}`,
+          duration: 0.1,
           ease: "power2.out",
-          scale: 1.025,
+          scale: 1.018,
         },
       ).to(
         node,
         {
-          boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
-          duration: 0.28,
+          boxShadow: ruleNodeShadow,
+          duration: 0.16,
           ease: "power3.out",
           scale: 1,
         },
@@ -645,19 +656,19 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
       timeline
         .to(tokenCore, {
           boxShadow: `0 0 0 7px ${color}`,
-          duration: 0.12,
+          duration: 0.08,
           ease: "power2.out",
-          scale: 1.18,
+          scale: 1.12,
         }, "<")
         .to(tokenAmount, {
           autoAlpha: 0,
-          duration: 0.12,
+          duration: 0.08,
           ease: "power2.out",
           x: 3,
         }, "<")
         .to(tokenCore, {
           autoAlpha: 0,
-          duration: 0.16,
+          duration: 0.1,
           ease: "power2.in",
           scale: 0.28,
         });
@@ -674,13 +685,13 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         })
         .set(tokenAmount, { x: -2 })
         .to(tokenCore, {
-          duration: 0.18,
+          duration: 0.12,
           ease: "back.out(2.2)",
           scale: 1,
         })
         .to(tokenAmount, {
           autoAlpha: 1,
-          duration: 0.18,
+          duration: 0.12,
           ease: "power2.out",
           x: 0,
         }, "<0.03");
@@ -730,60 +741,53 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
     timeline
       .to(conditionLogic, {
         autoAlpha: 1,
-        duration: 0.2,
+        duration: 0.24,
         ease: "back.out(1.8)",
         scale: 1,
         y: 0,
       }, "+=0.02")
       .to(conditionAmount, {
         color: "var(--color-ink)",
-        duration: 0.16,
+        duration: 0.2,
         ease: "power2.out",
       })
       .to(conditionOperator, {
         color: activeColor,
-        duration: 0.16,
+        duration: 0.2,
         ease: "power2.out",
-      }, "<0.05")
+      }, "<0.08")
       .to(conditionLimit, {
         color: "var(--color-ink)",
-        duration: 0.16,
+        duration: 0.2,
         ease: "power2.out",
-      }, "<0.05")
+      }, "<0.08")
       .to(conditionLogic, {
         backgroundColor: route === "positive" ? "rgba(236,253,245,0.94)" : "rgba(254,242,242,0.94)",
         borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
         color: activeColor,
-        duration: 0.2,
+        duration: 0.24,
         ease: "power2.out",
-      }, "+=0.03")
+      }, "+=0.16")
       .to(conditionNode, {
         boxShadow: decisionShadow,
-        duration: 0.16,
+        duration: 0.1,
         ease: "power2.out",
-        scale: 1.018,
+        scale: 1.014,
       }, "<")
       .to(tokenCore, {
         backgroundColor: activeColor,
         duration: 0.01,
-      }, "+=0.08");
+      }, "+=0.22");
 
     emitFrom(252, 246, activeColor);
 
     timeline
       .to(conditionNode, {
-        boxShadow: "0 18px 42px -34px rgba(2,2,13,0.42)",
-        duration: 0.28,
+        boxShadow: ruleNodeShadow,
+        duration: 0.16,
         ease: "power3.out",
         scale: 1,
       })
-      .to(conditionLogic, {
-        autoAlpha: 0,
-        duration: 0.18,
-        ease: "power2.out",
-        scale: 0.98,
-        y: 4,
-      }, "<")
       .to(activeLabel, {
         backgroundColor: route === "positive" ? "rgba(236,253,245,0.96)" : "rgba(254,242,242,0.96)",
         borderColor: route === "positive" ? "rgba(16,185,129,0.28)" : "rgba(248,113,113,0.34)",
@@ -808,6 +812,8 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
 
     absorbAt(resultNode, route === "positive" ? "rgba(16,185,129,0.16)" : "rgba(248,113,113,0.17)");
 
+    timeline.add(() => setCompletedRoute(route));
+
     timeline
       .to(tokenCore, {
         boxShadow: `0 0 0 0 ${route === "positive" ? "rgba(16,185,129,0)" : "rgba(248,113,113,0)"}`,
@@ -821,6 +827,7 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
   const startFlow = () => {
     if (isRunning) return;
     const route = nextRoute;
+    setCompletedRoute(null);
     setActiveRoute(route);
     setNextRoute((current) => (current === "positive" ? "negative" : "positive"));
     setIsRunning(true);
@@ -843,8 +850,8 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
           <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 504 420">
             <path className={styles.ruleBasePath} d="M 252 54 V 95" />
             <path className={styles.ruleBasePath} d="M 252 151 V 190" />
-            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 160 306 160 342" />
-            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 344 306 344 342" />
+            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 132 306 132 342" />
+            <path className={styles.ruleBasePath} d="M 252 246 C 252 306 372 306 372 342" />
             <path className={styles.ruleGsapPath} pathLength="1" ref={inputPathRef} />
             <path className={styles.ruleGsapPath} pathLength="1" ref={middlePathRef} />
             <path className={styles.ruleGsapPath} pathLength="1" ref={branchPathRef} />
@@ -861,14 +868,14 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
           </div>
 
           <RuleNode
-            className="left-1/2 top-[5.95rem] w-[10.5rem] -translate-x-1/2"
+            className="left-1/2 top-[5.95rem] w-[13.625rem] -translate-x-1/2"
             icon={FileTextIcon}
             meta={animation.start.meta}
             nodeId="start"
             title={animation.start.title}
           />
           <RuleNode
-            className="left-1/2 top-[11.85rem] w-[11rem] -translate-x-1/2"
+            className="left-1/2 top-[11.85rem] w-[14.125rem] -translate-x-1/2"
             icon={GitBranchIcon}
             meta={animation.condition.meta}
             nodeId="condition"
@@ -880,26 +887,28 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
               <span ref={conditionLimitRef}>€1000</span>
             </span>
           </RuleNode>
-          <span className={`${styles.ruleBranchLabel} left-[5.65rem] top-[19.1rem]`} ref={positiveLabelRef}>
+          <span className={`${styles.ruleBranchLabel} left-[4rem] top-[19.1rem]`} ref={positiveLabelRef}>
             {animation.positiveLabel}
           </span>
           <RuleNode
-            className="left-7 top-[21.4rem] w-[11.6rem]"
+            className="left-0 top-[21.4rem] w-[14.725rem]"
             icon={BadgeCheckIcon}
             meta={animation.positive.meta}
             nodeId="positive"
             title={animation.positive.title}
+            finalSuccess={completedRoute === "positive"}
             tone="green"
           />
-          <span className={`${styles.ruleBranchLabel} right-[5.65rem] top-[19.1rem]`} ref={negativeLabelRef}>
+          <span className={`${styles.ruleBranchLabel} right-[4rem] top-[19.1rem]`} ref={negativeLabelRef}>
             {animation.negativeLabel}
           </span>
           <RuleNode
-            className="right-7 top-[21.4rem] w-[11.6rem]"
+            className="right-0 top-[21.4rem] w-[14.725rem]"
             icon={BadgeAlertIcon}
             meta={animation.negative.meta}
             nodeId="negative"
             title={animation.negative.title}
+            finalSuccess={completedRoute === "negative"}
             tone="red"
           />
         </div>
