@@ -42,7 +42,6 @@ export const commonContent: ShellContent = {
     reachHeading: "Porozmawiajmy",
     talkBody: "Bez prezentacji handlowej. Pokaż nam jeden proces, a my powiemy, co da się z nim zrobić.",
     linkedinLabel: "KodaSoft na LinkedIn",
-    legalName: "KodaSoft sp. z o.o.",
     rights: "Wszelkie prawa zastrzeżone.",
     privacyLabel: "Polityka prywatności",
   },

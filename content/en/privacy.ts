@@ -4,6 +4,8 @@ import type { PrivacyContent } from "../types";
  * The Polish text in `content/pl/privacy.ts` is the authoritative version: the
  * controller is a Polish company and a supervisory authority would read that
  * one. This is a faithful translation of it, kept in step section by section.
+ *
+ * OPEN: see the note in the Polish file about identifying the controller.
  */
 export const privacyContent: PrivacyContent = {
   seo: {
@@ -23,7 +25,7 @@ export const privacyContent: PrivacyContent = {
     {
       heading: "1. Data controller",
       paragraphs: [
-        "The controller of personal data submitted through this site is KodaSoft sp. z o.o., the company behind the Opero platform.",
+        "The controller of personal data submitted through this site is KodaSoft, the team behind the Opero platform.",
         "For anything concerning personal data - including exercising the rights described in section 8 - write to kontakt@kodasoft.pl or call +48 666 618 026.",
         "We have not appointed a Data Protection Officer, and we are not required to: we do not process data on a large scale, we do not monitor individuals regularly and systematically, and we process no special categories of data.",
       ],

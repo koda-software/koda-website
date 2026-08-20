@@ -14,6 +14,13 @@ import type { PrivacyContent } from "../types";
  *   czytelnika nie łączy się z serwerami Google.
  * - Jedyny pomiar to `@vercel/speed-insights`, który nie używa ciasteczek.
  *
+ *
+ * OTWARTE: identyfikacja administratora. Dokument mówi "KodaSoft", bo spółka
+ * nie jest jeszcze zarejestrowana i podanie formy prawnej byłoby twierdzeniem
+ * o podmiocie, który nie istnieje. RODO wymaga jednak wskazania administratora
+ * wraz z danymi identyfikującymi. Po rejestracji (planowo październik 2026)
+ * trzeba uzupełnić punkt 1 o pełną nazwę, adres siedziby i numery NIP/KRS -
+ * i dopiero wtedy dokument jest kompletny w rozumieniu art. 13 RODO.
  * Jeżeli którakolwiek z tych rzeczy się zmieni - dojdzie analityka, baza
  * zgłoszeń, zewnętrzny czat - ten dokument trzeba zmienić razem z nią.
  */
@@ -35,7 +42,7 @@ export const privacyContent: PrivacyContent = {
     {
       heading: "1. Administrator danych",
       paragraphs: [
-        "Administratorem danych osobowych przekazanych przez ten serwis jest KodaSoft sp. z o.o., twórca platformy Opero.",
+        "Administratorem danych osobowych przekazanych przez ten serwis jest KodaSoft, twórca platformy Opero.",
         "We wszystkich sprawach dotyczących danych osobowych - w tym w celu skorzystania z praw opisanych w punkcie 8 - prosimy o kontakt na adres kontakt@kodasoft.pl lub telefonicznie pod numerem +48 666 618 026.",
         "Nie wyznaczyliśmy Inspektora Ochrony Danych. Nie mamy takiego obowiązku: nie przetwarzamy danych na dużą skalę, nie monitorujemy osób w sposób regularny i systematyczny ani nie przetwarzamy szczególnych kategorii danych.",
       ],
