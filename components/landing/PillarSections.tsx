@@ -496,7 +496,7 @@ function ProcessViewInteractive() {
             <div className="inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
             <ViewModeButton
               active={activeView === "table"}
-              label="Table"
+              label="List"
               onClick={() => setActiveView("table")}
             />
             <ViewModeButton
