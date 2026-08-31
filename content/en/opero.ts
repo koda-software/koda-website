@@ -5,293 +5,316 @@ export const operoProductContent: OperoProductContent = {
   seo: {
     title: "Opero - low-code BPM and document workflow",
     description:
-      "Opero combines processes and workflow, document management, no-code configuration, low-code automation, reports, permissions and contextual AI.",
+      "Opero makes your company’s way of working visible, repeatable and easier to improve as the business changes.",
   },
   hero: {
-    eyebrow: "Opero product",
-    title: "A low-code BPM platform for companies with custom processes.",
-    description:
-      "Opero turns the way your company works into a working system: workflows, documents, automation, reports and permissions under one roof. You configure it visually, and reach for code only where it genuinely pays off.",
+    eyebrow: "Meet Opero",
+    title: "Build the system around the way your company works.",
+    brief:
+      "Every company develops its own way of working. Opero makes that work visible, repeatable and easier to improve, without turning every change into another software project.",
     primaryCta: "Book a demo",
-    secondaryCta: "Explore solutions",
-    configDemo: {
-      rule: {
-        triggerLabel: "When this happens",
-        triggerTitle: "Record created",
-        triggerChip: "Service request",
-        stepsLabel: "Then do this",
-        steps: [
-          { title: "Condition", detail: "priority = critical" },
-          { title: "Update record", detail: "Urgent = Yes" },
-          { title: "Log entry", detail: "Request flagged as urgent" },
-        ],
-        addStep: "Add step",
-      },
-      script: {
-        title: "Script",
-        chip: "Option filter",
-        run: "Run",
-        resultTime: "finished in 12 ms",
-        field: "record.priority",
-        values: ["critical", "high"],
-      },
-      query: {
-        title: "SQL query",
-        chip: "Requests above value",
-        run: "Run",
-        paramValue: "1000",
-        sql: { columns: "number, title, client, value", table: "requests", field: "value", param: "min_value" },
-        columns: ["Number", "Title", "Client", "Value"],
-        rows: [
-          ["SR/2026/016", "Backup and data migration", "Kowalski Furniture", "4,200.00"],
-          ["SR/2026/012", "Laptop battery replacement", "Lex Law Firm", "3,200.00"],
-          ["SR/2026/019", "VoIP phone system outage", "Panorama Hotel", "1,800.00"],
-        ],
-      },
-      captions: {
-        rule: "<b>A rule</b>: a trigger and steps, without a line of code",
-        ruleDone: "Three steps, and the logic runs on <b>every record</b>",
-        script: "<b>A script</b>, when the logic needs to be smarter",
-        scriptDone: "Run it and <b>see the result instantly</b>",
-        query: "<b>An SQL query</b>: your data, your calculations",
-        summary: "Rule, script, query: <b>three levels of one platform</b>",
-      },
+    secondaryCta: "Explore the platform",
+    visual: {
+      alt: "Opero CRM deals displayed on a Kanban board",
     },
-  },
-  overview: {
-    eyebrow: "What Opero is",
-    title: "A configurable platform instead of off-the-shelf software.",
-    paragraphs: [
-      "Standard ERP starts with predefined modules and expects the company to adapt to them. Opero starts with how you actually work: the records you manage, who approves what, where a case moves between departments, and which exceptions happen often enough to deserve a place in the system.",
-      "You design the data structure, the views and the navigation in visual configuration. On top of that come processes built on stages and transitions, document workflow, a rule engine, reports and precise permissions. All on one data model, in one platform.",
-      "It is built for companies that have outgrown spreadsheets and off-the-shelf modules but do not want software written from scratch. The configuration changes together with the company, not with the next development project.",
-    ],
-  },
-  features: {
-    eyebrow: "Feature depth",
-    title: "Eight areas that add up to one system.",
-    description:
-      "Each area solves a specific operational problem, but all of them run on the same data, permissions and processes.",
-    rows: [
-      {
-        title: "Processes and workflow (BPM)",
-        description:
-          "You model a flow of work as stages and transitions, with conditions, deadlines and the people responsible. Each stage generates tasks, and the team's work lines up on a kanban board and in “my tasks” lists.",
-        supports: ["Stages and transitions", "Tasks and kanban", "Approvals and reassignment", "Full run history"],
-      },
-      {
-        title: "Document workflow and files",
-        description:
-          "A document gets its own record, an approval path and a complete set of versioned files. Contracts, letters and decisions are generated from templates straight out of record data, always in the current version.",
-        supports: ["Registration and numbering", "Assignment and approvals", "File versioning", "Document templates"],
-      },
-      {
-        title: "No-code platform",
-        description:
-          "Custom objects and more than 20 field types describe the data, forms and layouts build the views, and menus and custom pages arrange the navigation. Structure changes go through a safe draft.",
-        supports: ["Custom objects and fields", "Forms and layouts", "Menus and custom pages", "Dictionaries and custom lists"],
-      },
-      {
-        title: "Low-code and automation",
-        description:
-          "The rule engine works on a condition-then-action basis: set a field, create a record, send a notification, block a transition. Rules are tested before rollout, so automation stays predictable.",
-        supports: ["Event triggers", "Action steps and schedules", "Scripts and SQL queries", "Execution history"],
-      },
-      {
-        title: "Reports and analytics",
-        description:
-          "Aggregations, charts and dashboards run on live system data, with no export to spreadsheets. Drill-down leads from an aggregate number to the records behind it.",
-        supports: ["Reports and charts", "Team dashboards", "Drill-down to records", "SQL queries as a source"],
-      },
-      {
-        title: "Security and permissions",
-        description:
-          "Access is arranged from the organisation and its companies, through roles, down to the visibility of a single field. Integrations are secured with API tokens and accounts with multi-factor authentication.",
-        supports: ["Roles and field permissions", "Many companies in one org", "API tokens and MFA", "Event log"],
-      },
-      {
-        title: "Integrations and compliance",
-        description:
-          "KSeF, e-Delivery, NBP exchange rates and VAT verification work straight from the system, and an open API connects Opero with the rest of your tools in both directions.",
-        supports: ["KSeF and e-Delivery", "NBP exchange rates", "VAT white list and VIES", "Open API"],
-      },
-      {
-        title: "Contextual AI",
-        description:
-          "The assistant knows the structure, configuration and data of your instance. Consultants use it to build configuration, users ask about data in natural language, and permissions apply exactly as they do in normal work.",
-        supports: ["AI during configuration", "Questions about data", "Record summaries", "Permissions apply to AI"],
-      },
-    ],
-  },
-  featureLinks: {
-    eyebrow: "System features",
-    title: "Go deeper into the area that concerns you.",
-    description: "Every page shows the same thing from the inside: exactly what you get, how it looks in the system and the questions we answer most often.",
   },
   connectedModel: {
-    eyebrow: "Connected model",
-    title: "The same model powers data, process, automation and control.",
-    description:
-      "Opero is valuable because these parts stay connected. A process knows the record. A rule acts on the same data. A report counts it without an export. AI works from the same context, and permissions apply everywhere the same way.",
-    layers: [
-      { label: "Data model", detail: "Custom objects, fields, relations, dictionaries and lists." },
-      { label: "Processes", detail: "Stages, transitions, tasks, approvals and history." },
-      { label: "Automation", detail: "Rules, scripts, SQL queries and notifications." },
-      { label: "Reports", detail: "Aggregations, charts, dashboards and drill-down." },
-      { label: "Permissions", detail: "Roles, field access, companies, API tokens and logs." },
-    ],
-  },
-  ai: {
-    label: "Practical AI",
-    title: "AI should work inside the process, not next to it.",
-    description:
-      "The Opero assistant knows the structure, configuration and data of your instance, so it answers with specifics rather than generalities. Consultants use it to build configuration, and users ask about data in natural language, within their own permissions.",
-    points: [
-      "Building objects, forms and rules in a dialogue with the assistant.",
-      "Questions about data in natural language, without clicking through views.",
-      "Summaries of record context in the middle of a process.",
-      "Classifying and transforming data during a rule execution.",
-      "The user's permissions apply exactly as they do in normal work.",
-    ],
-    chat: {
-      assistantName: "Opero assistant",
-      userRequest: "I need a report of the 5 best-selling products from last week.",
-      assistantReply: "Sure. Here is the report built from your sales records.",
-      reportTitle: "Top products - last week",
-      statusLabel: "ready",
-      scopeLabel: "governed",
-      sendLabel: "Send",
-      tableHeaders: ["Product", "Units", "Revenue"],
-      tableRows: [
-        ["Hydraulic kit A", "184", "42.8k"],
-        ["Service pack Pro", "139", "31.4k"],
-        ["Control module X2", "112", "28.1k"],
-        ["Sensor bundle", "96", "19.6k"],
-        ["Mounting frame", "81", "17.9k"],
+    eyebrow: "The Opero idea",
+    title: "One shared model. Every part of the work connected.",
+    brief:
+      "Instead of passing fragments of work between separate tools, Opero keeps the whole story together. What happened, who acted, what was decided and what comes next remain visible from start to finish.",
+    comparison: {
+      title: "Customer requests",
+      ariaLabel: "Compare the list and task-board views of customer requests",
+      beforeLabel: "List view",
+      beforeAlt: "Customer requests displayed as a structured list in Opero",
+      afterLabel: "Tasks board",
+      afterAlt: "The same customer requests displayed as a workflow board in Opero",
+    },
+    story: {
+      ariaLabel: "How a customer request becomes a working Opero process",
+      previousLabel: "Show the previous step",
+      nextLabel: "Show the next step",
+      steps: [
+        {
+          title: "Define the information",
+          image: {
+            src: "/opero/customer-request-story/01-data-model.webp",
+            alt: "Opero data model editor showing the fields of a customer request",
+            width: 2094,
+            height: 1691,
+            magnifier: {
+              src: "/opero/customer-request-story/01-magnifier.webp",
+              alt: "Close-up of the field type selector with text, email, phone and VAT identifier options",
+              width: 659,
+              height: 657,
+              placement: "model",
+            },
+          },
+        },
+        {
+          title: "Design the form",
+          image: {
+            src: "/opero/customer-request-story/02-form-builder.webp",
+            alt: "Opero form builder arranging the customer request intake form",
+            width: 1937,
+            height: 1267,
+            magnifier: {
+              src: "/opero/customer-request-story/02-magnifier.webp",
+              alt: "Close-up of the finished intake form with its request fields and guidance",
+              width: 596,
+              height: 595,
+              placement: "form",
+            },
+          },
+        },
+        {
+          title: "Put it to work",
+          image: {
+            src: "/opero/customer-request-story/03-live-request.webp",
+            alt: "Completed customer request in Opero with an attachment and workflow action",
+            width: 2096,
+            height: 1483,
+            trimBottom: true,
+            magnifier: {
+              src: "/opero/customer-request-story/03-magnifier.webp",
+              alt: "Close-up of the workflow action that moves a request from triage to in progress",
+              width: 567,
+              height: 567,
+              placement: "record",
+            },
+          },
+        },
+        {
+          title: "Automate the response",
+          image: {
+            src: "/opero/customer-request-story/04-automation.webp",
+            alt: "Opero automation rule routing customer requests by category",
+            width: 1909,
+            height: 1532,
+            magnifier: {
+              src: "/opero/customer-request-story/04-magnifier.webp",
+              alt: "Close-up of the automation branch that routes requests by category and handles errors",
+              width: 529,
+              height: 529,
+              placement: "automation",
+            },
+          },
+        },
+        {
+          title: "Shape the workflow",
+          image: {
+            src: "/opero/customer-request-story/05-workflow.webp",
+            alt: "Opero workflow builder showing triage, in progress, resolved and rejected stages",
+            width: 1937,
+            height: 1267,
+            magnifier: {
+              src: "/opero/customer-request-story/05-magnifier.webp",
+              alt: "Close-up of the workflow transitions from in progress to resolved or rejected",
+              width: 422,
+              height: 422,
+              placement: "workflow",
+            },
+          },
+        },
+        {
+          title: "Keep files with the record",
+          image: {
+            src: "/opero/documents/record-with-file-preview.webp",
+            alt: "Opero spare-part record with metadata and a Files panel previewing an attached 3D model",
+            width: 2480,
+            height: 1887,
+            magnifier: {
+              src: "/opero/documents/files-panel-magnifier.webp",
+              alt: "Close-up of the Files tab showing three attachments and the selected STL file details",
+              width: 497,
+              height: 494,
+              placement: "documents",
+            },
+          },
+        },
+        {
+          title: "Automate KSeF invoice handling",
+          image: {
+            src: "/opero/ksef/invoice-automation-rule.webp",
+            alt: "Opero automation rule downloading a KSeF invoice, creating a cost invoice and generating its PDF visualisation",
+            width: 1869,
+            height: 1179,
+            magnifier: {
+              src: "/opero/ksef/pdf-step-magnifier.webp",
+              alt: "Close-up of the automation step that renders a KSeF invoice as a PDF",
+              width: 353,
+              height: 353,
+              placement: "ksef",
+            },
+          },
+        },
+        {
+          title: "Classify and route work with AI",
+          image: {
+            src: "/opero/ai/ticket-triage-rule.webp",
+            alt: "Opero ticket-triage rule using AI to categorize a ticket before routing it to the responsible department",
+            width: 1869,
+            height: 1179,
+            magnifier: {
+              src: "/opero/ai/categorization-step-magnifier.webp",
+              alt: "Close-up of the AI step that categorizes an incoming ticket",
+              width: 360,
+              height: 360,
+              placement: "ai",
+            },
+          },
+        },
+        {
+          title: "Explore and export live reports",
+          image: {
+            src: "/opero/reporting/open-deals-report.webp",
+            alt: "Opero report showing open deals grouped by stage with company filters, deal values and weighted values",
+            width: 1879,
+            height: 1314,
+            magnifier: {
+              src: "/opero/reporting/export-options-magnifier.webp",
+              alt: "Close-up of report export options for the aggregated view or raw source rows in Excel and CSV formats",
+              width: 316,
+              height: 317,
+              placement: "reports",
+            },
+          },
+        },
+        {
+          title: "Keep collaboration in context",
+          image: {
+            src: "/opero/communication/comments-and-notifications.webp",
+            alt: "Opero asset record showing a comment thread with mentions and reactions alongside the notifications panel",
+            width: 1869,
+            height: 1223,
+            magnifier: {
+              src: "/opero/communication/notifications-magnifier.webp",
+              alt: "Close-up of notifications for comment reactions, mentions and assigned work",
+              width: 528,
+              height: 528,
+              placement: "communication",
+            },
+          },
+        },
+        {
+          title: "Control access across the company",
+          image: {
+            src: "/opero/access/company-asset-access.webp",
+            alt: "Opero company access settings showing audiences and enabled or disabled overrides for individual assets",
+            width: 1761,
+            height: 1167,
+            popover: {
+              src: "/opero/access/access-diagnostics-popover.webp",
+              alt: "Access diagnostics panel testing create, view and edit permissions for a selected company member",
+              width: 1269,
+              height: 572,
+            },
+          },
+        },
       ],
-      captions: {
-        ask: "You ask about <b>your own data</b>, not general knowledge",
-        working: "The assistant reads <b>records and permissions</b>",
-        report: "The answer comes back as <b>a finished report</b>",
-        scope: "Always within <b>the user's permissions</b>",
-      },
     },
   },
-  useCases: {
-    label: "Where it fits",
-    title: "For processes that have outgrown off-the-shelf systems.",
-    description:
-      "Opero works best where the process is specific to your company yet still has to be governed, searchable and ready for an audit.",
-    items: [
+  productTour: {
+    eyebrow: "Explore the platform",
+    title: "Eight capabilities. One Opero.",
+    brief:
+      "Every part of Opero works with the same operational context. Records, documents, decisions, permissions and history remain connected as work moves across the company.",
+    exploreLabel: "Explore this feature",
+    chapters: [
       {
-        title: "Document workflow and approvals",
-        description:
-          "Route letters, invoices and requests through assignment, review and approval, with file versions and a full history on the case.",
+        eyebrow: "01 / Shape the system",
+        title: "Model the work in your own language.",
+        brief:
+          "Start from the way your teams already describe their work. Opero turns that structure into a system they can use and continue to evolve.",
+        features: [
+          {
+            feature: "noCode",
+            brief: "Build around your company’s language instead of forcing the company into someone else’s structure. Opero gives each team the records and screens its work actually requires.",
+          },
+        ],
       },
       {
-        title: "Custom operational records",
-        description:
-          "Build objects and forms for orders, tickets, equipment or contracts when standard ERP modules do not match the process.",
+        eyebrow: "02 / Run the work",
+        title: "Move cases and documents through the company.",
+        brief:
+          "Every case follows a visible path, with a responsible person, current stage and next action. Teams know what is moving and what needs attention.",
+        features: [
+          {
+            feature: "processes",
+            brief: "Replace informal handovers with a visible path from intake to completion. Everyone can see what is happening, who is responsible and where attention is needed.",
+          },
+          {
+            feature: "documents",
+            brief: "Keep every file beside the record, people and decisions it belongs to. The business context remains available without searching through inboxes and shared drives.",
+          },
+        ],
       },
       {
-        title: "Automating repetitive work",
-        description:
-          "Move manual steps into rules: numbering, notifications, deadline checks and recurring reports.",
+        eyebrow: "03 / Automate and extend",
+        title: "Let the platform handle the repeatable work.",
+        brief:
+          "Once the process is clear, Opero can handle the repeatable steps. Rules, integrations and AI keep work moving while people remain in control.",
+        features: [
+          {
+            feature: "lowCode",
+            brief: "Automate the work your team should not have to repeat. Routine decisions happen consistently, and every execution remains part of the process history.",
+          },
+          {
+            feature: "integrations",
+            brief: "Connect Opero to the services your company already depends on. Data can enter, update and continue through the process without losing its business context.",
+          },
+          {
+            feature: "ai",
+            brief: "AI in Opero is not limited to one predefined use. Give it the business context and an instruction, and it can carry out the job as part of the same controlled process.",
+          },
+        ],
       },
       {
-        title: "Reporting without exports",
-        description:
-          "Collect metrics on live data and go from an aggregate number down to the individual records behind it.",
-      },
-    ],
-  },
-  workflowExample: {
-    eyebrow: "Example",
-    title: "A cost invoice: from arrival to report.",
-    description:
-      "Invoices circulating over email are a problem every company knows. Below is that same process run in Opero, step by step: from the document arriving, through approvals and deadlines, to the report for management.",
-    needLabel: "What happens",
-    supportLabel: "How Opero handles it",
-    rows: [
-      {
-        need: "An invoice arrives",
-        support: "You pull it in from KSeF or register it manually. A record is created immediately, with a number, counterparty and amount.",
-      },
-      {
-        need: "It needs describing and assigning",
-        support: "Assignment to a department, project or cost centre. The front office sees a different set of fields than the person reviewing it.",
-      },
-      {
-        need: "Someone has to approve it",
-        support: "An approval path that depends on the amount and the department, with a task and a deadline at every stage.",
-      },
-      {
-        need: "The document must not get lost",
-        support: "The scan and every later version of the file stay on the record: searchable, access-controlled and with a full history.",
-      },
-      {
-        need: "The payment date is approaching",
-        support: "A rule reminds the people responsible before the deadline passes, and escalates the case when nobody reacts.",
-      },
-      {
-        need: "Management asks about costs",
-        support: "A report broken down by department and month, with drill-down from the total to a single invoice.",
-      },
-    ],
-  },
-  implementation: {
-    eyebrow: "How the configuration is built",
-    title: "A system shaped around the way you work.",
-    steps: [
-      {
-        title: "Map",
-        description: "We name the records, roles, approvals, handoffs and exceptions that actually shape the process in your company.",
-        supports: ["Records", "Roles", "Approvals"],
-      },
-      {
-        title: "Model",
-        description: "We turn that into custom objects, fields, forms, layouts, permissions and data that can be searched.",
-        supports: ["Objects", "Forms", "Permissions"],
-      },
-      {
-        title: "Automate",
-        description: "We add rules, notifications, scheduled checks, integrations, reports and AI support where they genuinely save time.",
-        supports: ["Rules", "Integrations", "Reports"],
-      },
-      {
-        title: "Evolve",
-        description: "You change the configuration as the company changes: a new field, a new process stage or a new report needs no development project.",
-        supports: ["New fields", "New stages", "New reports"],
+        eyebrow: "04 / Understand and control",
+        title: "See what is happening and govern who can act.",
+        brief:
+          "Opero makes activity measurable without separating oversight from daily work. The same platform shows the results and controls who can act.",
+        features: [
+          {
+            feature: "reports",
+            brief:
+              "Build reports around the questions your company actually asks. Explore the data from different angles and move from a summary directly to its source.",
+          },
+          {
+            key: "communication",
+            label: "Communication and notifications",
+            brief:
+              "Collaboration stays connected to the case instead of disappearing into separate chats. Teams can ask, respond, react and follow decisions where the work happens.",
+          },
+          {
+            feature: "security",
+            brief:
+              "Match access to the real structure of your organisation. Set shared rules, introduce precise exceptions and verify exactly what a selected user can do.",
+          },
+        ],
       },
     ],
   },
-  comparison: {
-    eyebrow: "Where it fits",
-    title: "Between packaged ERP and fragile workarounds.",
-    columns: [
-      {
-        label: "Standard ERP",
-        description: "Works when the company fits the predefined modules. It is harder to adapt to unusual records, exceptions and industry-specific processes.",
-      },
-      {
-        label: "Spreadsheets and separate tools",
-        description: "Flexible at the start, but as complexity grows they become hard to govern, search, automate and audit.",
-      },
-      {
-        label: "Software written from scratch",
-        description: "Fitted to one moment in time, but every change to a workflow, role or report means another development project.",
-      },
-      {
-        label: "Opero",
-        description: "A configurable platform that adapts to your work and keeps data, processes, automation, reports and control as one coherent whole.",
-      },
-    ],
+  customization: {
+    eyebrow: "Your workspace",
+    title: "Make it yours",
+    brief:
+      "Opero can feel like your company’s own system from the first login. Apply your logo, colours and preferred visual style without changing how the underlying work operates.",
+    comparison: {
+      title: "Executive dashboard",
+      ariaLabel: "Compare the default Opero workspace with a fully branded dark workspace",
+      beforeLabel: "Opero",
+      beforeAlt: "Executive dashboard in the default light Opero workspace",
+      afterLabel: "Your brand",
+      afterAlt: "The same executive dashboard with a custom logo, colours and dark visual style",
+    },
   },
   finalCta: {
-    eyebrow: "Book a demo",
-    title: "If your process is specific, the software should be able to understand it.",
-    description:
-      "Tell us how your company works. We will show you live how Opero models that data, those processes, documents and permissions.",
+    eyebrow: "See Opero in your process",
+    title: "Bring us one process. We will show you what it could look like in Opero.",
+    brief:
+      "Tell us where work slows down or loses context. We will prepare a practical Opero walkthrough around that situation instead of giving you a generic product presentation.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore solutions",
   },

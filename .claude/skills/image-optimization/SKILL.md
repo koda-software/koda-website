@@ -1,6 +1,6 @@
 ---
 name: image-optimization
-description: Compress images with the repo-local get-low tool. Use whenever adding or updating any image (PNG, JPEG, GIF, SVG, WebP, AVIF) in the repo, converting images to WebP/AVIF, or when asked to optimize images. Every image committed to this repo must be compressed.
+description: Compress images with the repo-local get-low tool. Use whenever adding or updating any image (PNG, JPEG, GIF, SVG, WebP, AVIF) in the repo, converting images to WebP/AVIF, preparing video or animated GIF for website embedding, or when asked to optimize images or video. Every image committed to this repo must be compressed.
 ---
 
 # Image optimization with get-low
@@ -55,3 +55,26 @@ reference the new filename; use plain `-w` when the filename must not change.
 - Exit code 1 means at least one file failed; the failure lines name the
   files, the rest were still processed.
 - Source lives in `~/Projects/personal/get-low` (Dockerized build, `make release`).
+
+## Video
+
+`tools/get-low video` prepares web-embed video from any input (mp4, mov,
+mkv, avi, webm, gif) — always producing a pair: `<name>.webm` (VP9, primary,
+keeps transparency) + `<name>.mp4` (H.264 fallback, plays everywhere,
+faststart). Large animated GIFs belong in this pipeline too (~90% smaller
+than the GIF).
+
+```bash
+tools/get-low video -mute -poster hero.mov   # + hero-poster.jpg for poster=
+tools/get-low video anim.gif
+```
+
+```html
+<video autoplay muted loop playsinline poster="name-poster.jpg">
+  <source src="name.webm" type="video/webm">
+  <source src="name.mp4"  type="video/mp4">
+</video>
+```
+
+Downloads its own static ffmpeg once (~100 MB, linux/amd64) into the user cache; system ffmpeg is ignored.
+Tune with -crf (mp4, default 23) and -webm-crf (vp9, default 32).

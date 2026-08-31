@@ -53,8 +53,8 @@ export function BlogListPage({
           <p className={`${blogBodyClass} border-t border-[rgba(2,2,13,0.12)] pt-10`}>{ui.labels.emptyState}</p>
         ) : (
           <div>
-            {rows.map((article) => (
-              <ArticleRow article={article} key={article.id} locale={locale} ui={ui} />
+            {rows.map((article, index) => (
+              <ArticleRow article={article} key={article.id} locale={locale} priority={page === 1 && index === 0} ui={ui} />
             ))}
           </div>
         )}

@@ -13,10 +13,12 @@ type ComparisonSliderProps = {
   beforeAlt: string;
   beforeLabel: string;
   beforeSrc: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  scrollRevealDistance?: number;
+  showLabels?: boolean;
   title: string;
 };
-
-const scrollRevealDistance = 90;
 
 type GsapModule = {
   gsap: typeof GsapNamespace;
@@ -34,6 +36,10 @@ export function ComparisonSlider({
   beforeAlt,
   beforeLabel,
   beforeSrc,
+  imageHeight = 1549,
+  imageWidth = 2044,
+  scrollRevealDistance = 90,
+  showLabels = true,
   title,
 }: ComparisonSliderProps) {
   const [position, setPosition] = useState(100);
@@ -44,7 +50,7 @@ export function ComparisonSlider({
   const tweenToPositionRef = useRef<((value: number) => void) | null>(null);
   const style = {
     "--comparison-position": `${position}%`,
-    maxWidth: "min(100%, calc((min(55.625rem, 91svh - 2rem) - 2.5rem) * 2044 / 1549))",
+    maxWidth: `min(100%, calc((min(55.625rem, 91svh - 2rem) - 2.5rem) * ${imageWidth} / ${imageHeight}))`,
   } as CSSProperties;
 
   useEffect(() => {
@@ -84,8 +90,12 @@ export function ComparisonSlider({
       const rect = root.getBoundingClientRect();
       const startLine = window.innerHeight * 0.84;
       const endLine = window.innerHeight * 0.12;
-      const progress = Math.min(1, Math.max(0, (startLine - rect.top) / (startLine - endLine)));
-      const nextPosition = 100 - smoothProgress(progress) * scrollRevealDistance;
+      const progress = Math.min(
+        1,
+        Math.max(0, (startLine - rect.top) / (startLine - endLine)),
+      );
+      const nextPosition =
+        100 - smoothProgress(progress) * scrollRevealDistance;
 
       if (tweenToPositionRef.current) {
         tweenToPositionRef.current(nextPosition);
@@ -112,7 +122,7 @@ export function ComparisonSlider({
       if (scrollFrame) cancelAnimationFrame(scrollFrame);
       gsapRef.current?.killTweensOf(sliderValue);
     };
-  }, []);
+  }, [scrollRevealDistance]);
 
   const enterManualMode = (nextPosition: number) => {
     isManualRef.current = true;
@@ -138,7 +148,10 @@ export function ComparisonSlider({
         </div>
       </div>
 
-      <div className="relative aspect-[2044/1549] overflow-hidden bg-white">
+      <div
+        className="relative overflow-hidden bg-white"
+        style={{ aspectRatio: `${imageWidth} / ${imageHeight}` }}
+      >
         <Image
           alt={afterAlt}
           className="object-cover"
@@ -148,7 +161,10 @@ export function ComparisonSlider({
         />
         <div
           className="absolute inset-0 overflow-hidden"
-          style={{ clipPath: "inset(0 calc(100% - var(--comparison-position)) 0 0)" }}
+          style={{
+            clipPath:
+              "inset(0 calc(100% - var(--comparison-position)) 0 0)",
+          }}
         >
           <Image
             alt={beforeAlt}
@@ -159,12 +175,16 @@ export function ComparisonSlider({
           />
         </div>
 
-        <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-sans text-[0.74rem] font-semibold text-[var(--color-ink-soft)] ring-1 ring-[rgba(2,2,13,0.08)]">
-          {beforeLabel}
-        </div>
-        <div className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 font-sans text-[0.74rem] font-semibold text-[var(--color-ink-soft)] ring-1 ring-[rgba(2,2,13,0.08)]">
-          {afterLabel}
-        </div>
+        {showLabels ? (
+          <>
+            <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-sans text-[0.74rem] font-semibold text-[var(--color-ink-soft)] ring-1 ring-[rgba(2,2,13,0.08)]">
+              {beforeLabel}
+            </div>
+            <div className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 font-sans text-[0.74rem] font-semibold text-[var(--color-ink-soft)] ring-1 ring-[rgba(2,2,13,0.08)]">
+              {afterLabel}
+            </div>
+          </>
+        ) : null}
 
         <input
           aria-label={ariaLabel}

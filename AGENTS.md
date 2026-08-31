@@ -9,7 +9,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 Every image committed to this repo must be compressed with `tools/get-low` (a
 self-contained binary; safe to re-run — a file is only replaced when the
 result is actually smaller). Supports PNG/JPEG/GIF/SVG/WebP/AVIF; `-to webp|avif`
-converts. The `image-optimization` skill has the full workflow.
+converts, and `tools/get-low video` turns any video or large GIF into a
+web-ready WebM+MP4 pair. The `image-optimization` skill has the full workflow.
 
 ```bash
 tools/get-low -w path/to/image.png

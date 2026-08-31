@@ -305,64 +305,109 @@ export type OperoProductContent = {
   hero: {
     eyebrow: string;
     title: string;
-    description: string;
+    brief: string;
     primaryCta: string;
     secondaryCta: string;
-    configDemo: ConfigDemoContent;
-  };
-  overview: {
-    eyebrow: string;
-    title: string;
-    paragraphs: string[];
-  };
-  features: {
-    eyebrow: string;
-    title: string;
-    description: string;
-    rows: ProductFeatureRow[];
-  };
-  /** Entry point to the eight "system features" pages nested under this route. */
-  featureLinks: {
-    eyebrow: string;
-    title: string;
-    description: string;
+    visual: {
+      alt: string;
+    };
   };
   connectedModel: {
     eyebrow: string;
     title: string;
-    description: string;
-    layers: Array<{
-      label: string;
-      detail: string;
+    brief: string;
+    comparison: {
+      title: string;
+      ariaLabel: string;
+      beforeLabel: string;
+      beforeAlt: string;
+      afterLabel: string;
+      afterAlt: string;
+    };
+    story: OperoBuildStoryContent;
+  };
+  productTour: {
+    eyebrow: string;
+    title: string;
+    brief: string;
+    exploreLabel: string;
+    chapters: Array<{
+      eyebrow: string;
+      title: string;
+      brief: string;
+      features: Array<
+        | {
+            feature: FeatureKey;
+            brief: string;
+          }
+        | {
+            key: "communication";
+            label: string;
+            brief: string;
+          }
+      >;
     }>;
   };
-  ai: AiSectionContent;
-  useCases: UseCasesSectionContent;
-  /** One end-to-end process walked step by step, to make the abstract capabilities concrete. */
-  workflowExample: {
+  customization: {
     eyebrow: string;
     title: string;
-    description: string;
-    needLabel: string;
-    supportLabel: string;
-    rows: ProductTableRow[];
-  };
-  implementation: {
-    eyebrow: string;
-    title: string;
-    steps: ProductFeatureRow[];
-  };
-  comparison: {
-    eyebrow: string;
-    title: string;
-    columns: ProductComparisonColumn[];
+    brief: string;
+    comparison: {
+      title: string;
+      ariaLabel: string;
+      beforeLabel: string;
+      beforeAlt: string;
+      afterLabel: string;
+      afterAlt: string;
+    };
   };
   finalCta: {
     eyebrow: string;
     title: string;
-    description: string;
+    brief: string;
     primaryCta: string;
     secondaryCta: string;
+  };
+};
+
+export type OperoBuildStoryContent = {
+  ariaLabel: string;
+  previousLabel: string;
+  nextLabel: string;
+  steps: OperoBuildStoryStep[];
+};
+
+export type OperoBuildStoryStep = {
+  title: string;
+  image: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    trimBottom?: boolean;
+    magnifier?: {
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+      placement:
+        | "model"
+        | "form"
+        | "record"
+        | "automation"
+        | "workflow"
+        | "documents"
+        | "ksef"
+        | "ai"
+        | "reports"
+        | "communication";
+    };
+    popover?: {
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
   };
 };
 

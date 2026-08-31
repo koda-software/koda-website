@@ -9,14 +9,34 @@ type GsapModule = {
 };
 
 type SolutionScreenshotMockProps = {
+  alt?: string;
   className?: string;
+  glowVariant?: "default" | "hero";
+  height?: number;
+  perspectiveVariant?: "default" | "hero";
+  priority?: boolean;
+  sizes?: string;
+  src?: string;
+  width?: number;
 };
 
 const finalTransform = "rotateX(4deg) rotateY(5deg) rotateZ(-2deg) scale(0.96)";
+const heroFinalTransform =
+  "rotateX(5.5deg) rotateY(-10deg) rotateZ(-2.5deg) scale(0.98)";
 const stackedFinalTransform = "rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.88)";
 const startTransform = "translateY(34px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.92)";
 
-export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMockProps) {
+export function SolutionScreenshotMock({
+  alt = "Opero visual rule editor",
+  className = "",
+  glowVariant = "default",
+  height = 1355,
+  perspectiveVariant = "default",
+  priority = false,
+  sizes = "(min-width: 1200px) 65rem, 112vw",
+  src = "/hero/opero-solution-screenshot-static.png",
+  width = 1828,
+}: SolutionScreenshotMockProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const screenshotRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -31,7 +51,12 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
     }
 
     const stacked = window.matchMedia("(max-width: 1200px)").matches;
-    const targetTransform = stacked ? stackedFinalTransform : finalTransform;
+    const heroPerspective = perspectiveVariant === "hero";
+    const targetTransform = stacked
+      ? stackedFinalTransform
+      : heroPerspective
+        ? heroFinalTransform
+        : finalTransform;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       screenshot.style.opacity = "1";
@@ -57,10 +82,10 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
       context = gsap.context(() => {
         gsap.set(root, {
           perspective: 1300,
-          perspectiveOrigin: "42% 42%",
+          perspectiveOrigin: heroPerspective ? "58% 44%" : "42% 42%",
         });
         gsap.set(screenshot, {
-          transformOrigin: "18% 78%",
+          transformOrigin: heroPerspective ? "48% 72%" : "18% 78%",
           transformStyle: "preserve-3d",
           willChange: "transform, opacity",
         });
@@ -77,10 +102,10 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
             screenshot,
             {
               duration: 1.05,
-              rotateX: stacked ? 0 : 4,
-              rotateY: stacked ? 0 : 5,
-              rotateZ: stacked ? 0 : -2,
-              scale: stacked ? 0.88 : 0.96,
+              rotateX: stacked ? 0 : heroPerspective ? 5.5 : 4,
+              rotateY: stacked ? 0 : heroPerspective ? -10 : 5,
+              rotateZ: stacked ? 0 : heroPerspective ? -2.5 : -2,
+              scale: stacked ? 0.88 : heroPerspective ? 0.98 : 0.96,
             },
             "-=0.08",
           )
@@ -130,13 +155,17 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
       observer.disconnect();
       context?.revert();
     };
-  }, []);
+  }, [perspectiveVariant]);
 
   return (
     <div className={`relative ${className}`.trim()} ref={rootRef}>
       <div
         aria-hidden="true"
-        className="absolute inset-[10%] rounded-full bg-[rgba(56,182,255,0.18)] blur-3xl"
+        className={
+          glowVariant === "hero"
+            ? "absolute -inset-[10%] rounded-[34%] bg-[radial-gradient(ellipse_at_center,rgba(56,182,255,0.3)_0%,rgba(20,94,148,0.3)_36%,rgba(0,6,12,0.4)_62%,transparent_82%)] blur-[72px] shadow-[0_90px_190px_-24px_rgba(0,0,0,0.82),0_28px_110px_-20px_rgba(0,0,0,0.64)]"
+            : "absolute inset-[10%] rounded-full bg-[rgba(56,182,255,0.18)] blur-3xl"
+        }
         ref={glowRef}
         style={{ opacity: 0, transform: "scale(0.9)" }}
       />
@@ -157,13 +186,13 @@ export function SolutionScreenshotMock({ className = "" }: SolutionScreenshotMoc
         </div>
         <div className="relative bg-[#f6f9fc]">
           <Image
-            alt="Opero visual rule editor"
+            alt={alt}
             className="h-auto w-full"
-            height={1355}
-            priority={false}
-            sizes="(min-width: 1200px) 65rem, 112vw"
-            src="/hero/opero-solution-screenshot-static.png"
-            width={1828}
+            height={height}
+            priority={priority}
+            sizes={sizes}
+            src={src}
+            width={width}
           />
         </div>
       </div>
