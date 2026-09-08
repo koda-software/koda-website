@@ -20,6 +20,7 @@ import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
 import Table2Icon from "lucide-react/dist/esm/icons/table-2.mjs";
 import TextCursorInputIcon from "lucide-react/dist/esm/icons/text-cursor-input.mjs";
 import { HexIndex } from "./BrandMark";
+import { BrowserFrame } from "./BrowserFrame";
 import { mutedCopyClass, sectionDescriptionClass } from "./LandingPrimitives";
 import styles from "./PillarSections.module.css";
 import { Reveal } from "./Reveal";
@@ -158,25 +159,21 @@ function BrowserPanel({
   tall?: boolean;
 }) {
   return (
-    <div
+    <BrowserFrame
       aria-hidden="true"
-      className={`relative overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.09)] bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(246,250,253,0.88))] p-5 shadow-[0_22px_70px_-46px_rgba(2,2,13,0.36)] ${tall ? "min-h-[22rem]" : "min-h-[20rem]"}`}
+      chromeClassName="relative z-[1] mb-5 h-auto justify-between bg-transparent px-0 pb-4"
+      chromeContent={(
+        <span className="ml-auto font-sans text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]">
+          {label}
+        </span>
+      )}
+      className={`relative flex flex-col rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.09)] bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(246,250,253,0.88))] p-5 shadow-[0_22px_70px_-46px_rgba(2,2,13,0.36)] ${tall ? "min-h-[22rem]" : "min-h-[20rem]"}`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(56,182,255,0.12),transparent_30%),radial-gradient(circle_at_84%_76%,rgba(99,102,241,0.08),transparent_34%)]" aria-hidden="true" />
-      <div className="relative flex h-full flex-col">
-        <div className="mb-5 flex items-center justify-between border-b border-[rgba(2,2,13,0.07)] pb-4">
-          <div className="flex items-center gap-2" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#ff6b5f]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#f7c948]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#37c978]" />
-          </div>
-          <span className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]">
-            {label}
-          </span>
-        </div>
+      <div className="relative z-[1] flex flex-1 flex-col">
         {children}
       </div>
-    </div>
+    </BrowserFrame>
   );
 }
 

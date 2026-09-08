@@ -4,6 +4,7 @@ import Image from "next/image";
 import MenuIcon from "lucide-react/dist/esm/icons/menu.mjs";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import type { gsap as GsapNamespace } from "gsap";
+import { BrowserFrame } from "@/components/landing/BrowserFrame";
 
 type ComparisonSliderProps = {
   afterAlt: string;
@@ -132,22 +133,13 @@ export function ComparisonSlider({
   };
 
   return (
-    <div
+    <BrowserFrame
+      addressLabel={title}
+      browserRef={rootRef}
       className="mx-auto w-full overflow-hidden rounded-[var(--radius-panel)] border border-[rgba(2,2,13,0.1)] bg-white shadow-[0_24px_76px_-40px_rgba(2,2,13,0.58)]"
-      ref={rootRef}
+      chromeClassName="h-10 gap-3 bg-[var(--color-paper-soft)]"
       style={style}
     >
-      <div className="flex h-10 items-center gap-3 border-b border-[rgba(2,2,13,0.08)] bg-[var(--color-paper-soft)] px-4">
-        <div className="flex gap-1.5" aria-hidden="true">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff6b5f]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#f7c948]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#37c978]" />
-        </div>
-        <div className="min-w-0 flex-1 rounded-full border border-[rgba(2,2,13,0.08)] bg-white px-3 py-1 text-center font-sans text-[0.76rem] text-[var(--color-muted)]">
-          {title}
-        </div>
-      </div>
-
       <div
         className="relative overflow-hidden bg-white"
         style={{ aspectRatio: `${imageWidth} / ${imageHeight}` }}
@@ -211,6 +203,6 @@ export function ComparisonSlider({
           <MenuIcon className="h-5 w-5" strokeWidth={1.5} />
         </div>
       </div>
-    </div>
+    </BrowserFrame>
   );
 }

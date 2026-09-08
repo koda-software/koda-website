@@ -4,6 +4,15 @@ import { featureNavItems } from "./features";
 
 export const commonContent: ShellContent = {
   brand: "KodaSoft",
+  analytics: {
+    title: "Pomóż nam ulepszać KodaSoft",
+    description:
+      "Za Państwa zgodą Google Analytics użyje analitycznych plików cookies do pomiaru odwiedzin i sposobu korzystania z serwisu. Google Analytics pozostaje wyłączone do czasu wyrażenia zgody.",
+    privacyLinkLabel: "Przeczytaj politykę prywatności",
+    acceptLabel: "Zgadzam się na analitykę",
+    rejectLabel: "Kontynuuj bez analityki",
+    settingsLabel: "Ustawienia analityki",
+  },
   nav: {
     home: "Start",
     openMenu: "Otwórz menu",

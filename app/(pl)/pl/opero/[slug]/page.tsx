@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { commonContent, navItems } from "@/content/pl/common";
 import { featureCtas, featurePages } from "@/content/pl/features";
+import { noCodePage } from "@/content/pl/features/no-code";
 import { FeaturePage } from "@/components/layout/FeaturePage";
+import { NoCodeFeaturePage } from "@/components/layout/NoCodeFeaturePage";
 import { PageShell } from "@/components/layout/PageShell";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
 import { createFeaturePageMetadata } from "@/lib/seo/metadata";
@@ -44,7 +46,9 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
           { name: featurePages[feature].navLabel, path: localizeFeaturePath("pl", feature) },
         ]}
       />
-      <FaqJsonLd items={featurePages[feature].faq.items} />
+      <FaqJsonLd
+        items={feature === "noCode" ? noCodePage.faq.items : featurePages[feature].faq.items}
+      />
       <PageShell
         locale="pl"
         page="opero"
@@ -52,13 +56,22 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
         navItems={navItems}
         alternatePaths={{ en: alternates.en, pl: alternates.pl }}
       >
-        <FeaturePage
-          feature={feature}
-          locale="pl"
-          pages={featurePages}
-          primaryHref={featureCtas.primary}
-          secondaryHref={featureCtas.secondary}
-        />
+        {feature === "noCode" ? (
+          <NoCodeFeaturePage
+            content={noCodePage}
+            locale="pl"
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : (
+          <FeaturePage
+            feature={feature}
+            locale="pl"
+            pages={featurePages}
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        )}
       </PageShell>
     </>
   );

@@ -25,8 +25,18 @@ export type CtaContent = {
   href: string;
 };
 
+export type AnalyticsConsentContent = {
+  title: string;
+  description: string;
+  privacyLinkLabel: string;
+  acceptLabel: string;
+  rejectLabel: string;
+  settingsLabel: string;
+};
+
 export type ShellContent = {
   brand: string;
+  analytics: AnalyticsConsentContent;
   nav: {
     home: string;
     openMenu: string;
@@ -489,6 +499,133 @@ export type FeaturePageContent = {
 };
 
 export type FeaturePagesContent = Record<FeatureKey, FeaturePageContent>;
+
+export type NoCodePageVisual = {
+  label: string;
+  title: string;
+  image?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
+};
+
+export type NoCodePageSection = {
+  number: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  bullets: string[];
+  visual: NoCodePageVisual;
+  reverse?: boolean;
+};
+
+export type NoCodePageComparisonCell = {
+  label: string;
+  meta: string;
+  mode: "build" | "configure" | "included";
+};
+
+export type NoCodePageComparison = {
+  traditional: {
+    title: string;
+  };
+  opero: {
+    title: string;
+  };
+  groups: Array<{
+    label?: string;
+    rows: Array<{
+      title: string;
+      detail: string;
+      traditional: NoCodePageComparisonCell;
+      opero: NoCodePageComparisonCell;
+    }>;
+  }>;
+  summaries: {
+    traditional: {
+      total: string;
+      description: string;
+      tags: string[];
+    };
+    opero: {
+      total: string;
+      description: string;
+      tags: string[];
+    };
+  };
+};
+
+export type NoCodePageContent = {
+  labels: {
+    screenshotPlaceholder: string;
+  };
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+    image: {
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+  };
+  foundation: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    comparison: NoCodePageComparison;
+  };
+  capabilities: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: NoCodePageSection[];
+  };
+  process: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    tracker: {
+      stages: Array<{
+        title: string;
+        detailBefore: string;
+        emphasis?: string;
+        timestamp: string;
+        state: "complete" | "active" | "upcoming";
+      }>;
+    };
+    cta: string;
+  };
+  adaptation: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    bullets: string[];
+    visual: NoCodePageVisual;
+  };
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ question: string; answer: string }>;
+  };
+  related: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ feature: FeatureKey; title: string; description: string }>;
+  };
+  finalCta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+  };
+};
 
 /**
  * Copy for the animated demo on each feature page. Every demo is decorative and

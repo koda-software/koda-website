@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
+import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalyticsConsent } from "@/components/analytics/GoogleAnalyticsConsent";
+import { commonContent } from "@/content/en/common";
+import { GOOGLE_ANALYTICS_CONSENT_BOOTSTRAP } from "@/lib/analytics/google";
+import { localizePath } from "@/lib/i18n/routes";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/seo/json-ld";
 import { siteConfig } from "@/lib/seo/site";
 import "../globals.css";
@@ -42,10 +47,14 @@ export default function EnglishRootLayout({ children }: Readonly<{ children: Rea
   return (
     <html lang="en" className={`${sora.variable} h-full antialiased`}>
       <body className={`${sora.className} min-h-full`}>
+        <Script id="analytics-consent-default" strategy="beforeInteractive">
+          {GOOGLE_ANALYTICS_CONSENT_BOOTSTRAP}
+        </Script>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
         {children}
         <SpeedInsights />
+        <GoogleAnalyticsConsent content={commonContent.analytics} privacyHref={localizePath("en", "privacy")} />
       </body>
     </html>
   );

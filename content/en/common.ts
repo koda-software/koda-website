@@ -4,6 +4,15 @@ import { featureNavItems } from "./features";
 
 export const commonContent: ShellContent = {
   brand: "KodaSoft",
+  analytics: {
+    title: "Help us improve KodaSoft",
+    description:
+      "With your permission, Google Analytics will use analytics cookies to measure visits and how the site is used. Google Analytics stays off until you accept.",
+    privacyLinkLabel: "Read the privacy policy",
+    acceptLabel: "Accept analytics",
+    rejectLabel: "Continue without analytics",
+    settingsLabel: "Analytics settings",
+  },
   nav: {
     home: "Home",
     openMenu: "Open menu",

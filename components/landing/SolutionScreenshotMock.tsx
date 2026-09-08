@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import type { gsap as GsapNamespace } from "gsap";
+import { BrowserFrame } from "@/components/landing/BrowserFrame";
 
 type GsapModule = {
   gsap: typeof GsapNamespace;
@@ -169,21 +170,15 @@ export function SolutionScreenshotMock({
         ref={glowRef}
         style={{ opacity: 0, transform: "scale(0.9)" }}
       />
-      <div
+      <BrowserFrame
+        browserRef={screenshotRef}
         className="relative h-auto w-full overflow-hidden rounded-[0.85rem] border border-white/18 bg-white/94 shadow-[0_54px_130px_-40px_rgba(2,8,16,0.88),0_130px_280px_-88px_rgba(56,182,255,0.54),0_22px_72px_-34px_rgba(255,255,255,0.34)] ring-1 ring-black/[0.04]"
-        ref={screenshotRef}
+        showAddressBar={false}
         style={{
           opacity: 0,
           transform: startTransform,
         }}
       >
-        <div className="flex h-9 items-center gap-2 border-b border-[rgba(11,17,22,0.08)] bg-[rgba(250,253,255,0.97)] px-4">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff6b5f]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ffca47]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#23c46e]" />
-          <span className="ml-4 h-4 w-[min(24rem,42%)] rounded-full bg-[#e9f1f7]" />
-          <span className="ml-auto h-4 w-4 rounded-full bg-[#d7edf8]" />
-        </div>
         <div className="relative bg-[#f6f9fc]">
           <Image
             alt={alt}
@@ -195,7 +190,7 @@ export function SolutionScreenshotMock({
             width={width}
           />
         </div>
-      </div>
+      </BrowserFrame>
     </div>
   );
 }
