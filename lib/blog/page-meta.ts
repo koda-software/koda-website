@@ -73,7 +73,8 @@ export async function blogAuthorMetadata(locale: BlogLocale, slug: string): Prom
   const { ui } = blogBundle(locale);
   const author = await getAuthorBySlug(slug);
 
-  if (!author) return {};
+  // An inactive author renders the 404 page, so nothing about them may leak into its head.
+  if (!author || author.aktywny === false) return {};
 
   const name = author.imie_nazwisko;
   const bio = tiptapPlainText(author.bio);
