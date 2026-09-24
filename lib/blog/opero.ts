@@ -10,7 +10,7 @@ if (typeof window !== "undefined") {
   throw new Error("lib/blog/opero is server-only and must not be imported from client code.");
 }
 
-const apiBase = (process.env.OPERO_API_BASE || "https://api.kodasoft.pl").replace(/\/$/, "");
+const apiBase = (process.env.OPERO_API_BASE || "https://opero.kodasoft.pl/api").replace(/\/$/, "");
 
 export class OperoApiError extends Error {
   constructor(
