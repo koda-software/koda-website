@@ -33,11 +33,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/docs",
-        destination: "https://docs.kodasoft.pl/docs",
+        destination: "https://opero.kodasoft.pl/docs",
       },
       {
         source: "/docs/:path*",
-        destination: "https://docs.kodasoft.pl/docs/:path*",
+        destination: "https://opero.kodasoft.pl/docs/:path*",
       },
     ];
   },
