@@ -1,0 +1,62 @@
+---
+title: "The side panel"
+description: "Kolumna po prawej stronie formularza z trzema zakładkami: Ogólne, Załączniki i Komentarze. Co zawiera każda z nich i dlaczego to stałe miejsce w każdym rekordzie."
+---
+
+## The form's split into two areas
+
+A record form is split into the **main area** and the **side panel**. The main area holds the matter's content: sections with fields, tabs, item tables. The side panel is on the right, is narrower, and contains what accompanies the record regardless of its content.
+
+The split is not decorative. The main area answers the question "what is in this matter", the side panel the question "where do we stand and what happened along the way".
+
+## The panel's three tabs
+
+The side panel has a **fixed layout of three tabs**, the same on every list and every record.
+
+| Tab | What it contains |
+| --- | --- |
+| General | process data: the current stage, handling of the matter, and course history; the record's basic data: identifier, author, dates |
+| Attachments | files pinned to the record |
+| Comments | the conversation at the record together with mentions |
+
+This layout is part of the system, not the administrator's decision when building the list. That is why files and comments do not need to be searched for: on every record they are in the same place.
+
+> **Example.** On a contract, the General tab shows the stage Active, the buttons for available transitions, who did the previous ones and when, and the record's creation date and the person who created it. In the Attachments tab lies a scan of the signed contract, in Comments the agreements with the client.
+
+## The General tab
+
+It gathers two things at once. The first is the **process**: what stage the matter is at, which transitions are available, and who did the previous ones. The second is the **record metadata**: the identifier, the person who created it, and the dates. These are pieces of information about the record itself, not about its content, which is why they do not sit among the fields in the main area.
+
+The administrator may add selected record fields to the panel, for example the responsible person, the priority, or the deadline, so that they stay visible throughout the work. The set of such fields differs across lists.
+
+> **The side panel is narrow by design.** It holds short values: a date, an amount, a name, a stage. Long descriptions and rich text fields are illegible there and therefore are not there. A specific field missing from the panel does not mean the field is not on the record, only that its place is in the main area.
+
+## The Attachments tab
+
+The standard place for files accompanying a matter: scans, offers, photos, signed documents. A file added here is visible to everyone who has access to the record.
+
+File fields in the main area are something else. They are there when a record has a **specific, named document**, for example a Handover report scan field. The Attachments tab takes everything else.
+
+## The Comments tab
+
+A conversation carried on at the matter instead of in an e-mail or a chat. A mention directed at a specific person triggers a notification, so a comment is also a way to pass a matter on without detaching it from its context.
+
+## Differences visible between people and records
+
+- **Permissions.** The panel shows only what a given person has a right to, so the same matter will show two people a different set of fields in the General tab.
+- **Process.** A record not covered by a process has no stage or transitions, so the General tab then shows the record metadata alone.
+- **Mode.** When creating a record the panel is limited, because there is nothing to describe yet: some content appears only after the first save.
+
+## Typical situations
+
+| Symptom | Cause | What to do |
+| --- | --- | --- |
+| The panel is empty when creating a record | the content concerns a saved record | save the record and open it again |
+| The General tab has no stage or transitions | the record is not run by a process | this is intended behavior; a process is set up by the administrator |
+| A transition button disappeared after a stage change | the transition is available only at selected stages | check the list of available transitions at the current stage |
+| The panel shows less than a colleague's | a narrower permissions scope | ask the administrator, giving the list and field name |
+| A file added a moment ago is not visible | the screen shows the state before the addition | refresh the form |
+
+## Related
+
+The record form describes the whole record screen. Form layout describes the sections and tabs of the main area. Attachments describe working with files. Comments and mentions describe the conversation at a record. Record change history describes the record of changes. Processes - introduction describes stages and transitions. Roles and permissions describe the scope of visible data.

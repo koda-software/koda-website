@@ -1,0 +1,6 @@
+{
+  "title": "Status usługi",
+  "pages": [
+    "liveness-and-database-health-check"
+  ]
+}

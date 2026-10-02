@@ -1,0 +1,24 @@
+{
+  "title": "05 Rekordy",
+  "pages": [
+    "tworzenie-i-edycja-rekordu",
+    "formularz-rekordu",
+    "pola-podstawowe",
+    "pola-wyboru-i-slowniki",
+    "slowniki",
+    "pola-tekstu-sformatowanego",
+    "pola-plikow",
+    "pola-wyliczane",
+    "pola-referencyjne",
+    "obiekty-podrzedne",
+    "powiazane-rekordy",
+    "uklady-formularzy",
+    "panel-boczny",
+    "zalaczniki",
+    "komentarze-i-wzmianki",
+    "historia-zmian",
+    "komponenty-ukladu",
+    "formularze",
+    "obiekty-singletonowe"
+  ]
+}

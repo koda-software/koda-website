@@ -1,0 +1,201 @@
+---
+title: Building Layouts
+description: Create layout containers, save full drafts, publish versions, and manage assignments.
+---
+
+# Building Layouts
+
+Building a View Layout means creating or finding a layout container, saving a full draft, and publishing that draft when validation passes.
+
+For custom object forms, the layout container is normally created for you when the form is created. Use `viewLayoutId` from the form response and edit that layout.
+
+## When To Create A Layout Directly
+
+Use [`POST /v1/view-layouts`](/docs/en/api/view-layout-configuration/create-view-layout) when you are creating a layout that is not owned by a custom object form, such as an organization, contractor, user, invoice, or dashboard layout.
+
+Do not use it to create another layout for a custom object form:
+
+```json
+{
+  "surface": "DYNAMIC_OBJECT",
+  "target": {
+    "moduleKey": "support",
+    "objectKey": "ticket",
+    "formId": "form_ticket_intake"
+  }
+}
+```
+
+That target is form-owned. Create the form first, then edit the layout that the form owns.
+
+## Layout Metadata
+
+Layout metadata describes where the layout applies.
+
+| Field | Meaning |
+| --- | --- |
+| `surface` | Page family, such as `DYNAMIC_OBJECT`, `ORGANIZATION`, or `DASHBOARD`. |
+| `supportedModes` | Modes the layout can serve, such as `CREATE`, `VIEW`, or `EDIT`. |
+| `target` | Additional context for the surface. Dynamic object targets use `moduleKey`, `objectKey`, and usually `formId`. |
+| `name` | Human-readable name for the layout. |
+| `metadata` | Optional client-owned metadata. |
+
+You can update safe metadata with [`PATCH /v1/view-layouts/:layoutId`](/docs/en/api/view-layout-configuration/update-view-layout). For form-owned layouts, change form types through the form endpoint instead of updating `surface`, `target`, or `supportedModes` directly.
+
+## Regions
+
+Regions are named areas where blocks can be placed. A simple dynamic object form can start with one `main` region.
+
+```json
+[
+  {
+    "key": "main",
+    "label": "Main",
+    "layout": "grid",
+    "columns": 12,
+    "displayOrder": 0,
+    "config": {}
+  }
+]
+```
+
+Region fields:
+
+| Field | Meaning |
+| --- | --- |
+| `key` | Stable region identifier used by blocks. |
+| `label` | Human-readable label. |
+| `layout` | Layout style: `grid`, `tabs`, `stack`, `sidebar`, or `dashboard_grid`. |
+| `columns` | Number of grid columns when applicable. |
+| `displayOrder` | Region order. |
+| `config` | Region-specific settings. |
+
+Use [`GET /v1/view-layouts/surface-definitions`](/docs/en/api/view-layout-configuration/get-view-layout-surface-definitions) to learn the default regions for a surface.
+
+## Save A Draft
+
+Draft saves replace the full draft content. Send all regions, all blocks, staged field definitions, script bindings, and metadata that should remain.
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_title",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "title" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Title" },
+      "requiredPolicy": "required",
+      "supportedModes": ["CREATE", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+The response includes the saved draft version and validation result.
+
+| State | Meaning |
+| --- | --- |
+| `valid` | The draft can be published. |
+| `valid_with_warnings` | The draft can be published, but the response includes warnings to review. |
+| `invalid` | The draft cannot be published until errors are fixed. |
+
+## Publish A Draft
+
+Publishing makes the draft the runtime version.
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+If the draft has validation errors, publish returns `409 Conflict` with validation details.
+
+When publishing staged custom field changes that may clear values or change field types, include `confirmFieldChanges` for the staged entries that require confirmation.
+
+## Versions
+
+List versions with [`GET /v1/view-layouts/:layoutId/versions`](/docs/en/api/view-layout-configuration/list-view-layout-versions). Read one version with [`GET /v1/view-layouts/:layoutId/versions/:versionId`](/docs/en/api/view-layout-configuration/get-view-layout-version).
+
+To restore a previous version as the current draft:
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/versions/version_ticket_published_1/restore-draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-restore-001"
+}
+```
+
+Restoring creates or replaces the draft. It does not publish automatically.
+
+## Assignments
+
+Assignments are for organization-owned layouts that need role or default selection. Form-owned dynamic object layouts are normally selected through the form itself.
+
+```http
+PUT /v1/view-layouts/layout_org_edit/assignments
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "org-layout-assign-001",
+  "organizationDefault": true,
+  "roles": [
+    {
+      "roleId": "role_operations",
+      "priority": 10
+    }
+  ]
+}
+```
+
+This endpoint replaces the assignment set for the layout.
+
+## Archive A Layout
+
+Archived layouts are hidden from reads and runtime resolution.
+
+```http
+POST /v1/view-layouts/layout_org_edit/archive
+Authorization: Bearer ek_...
+```
+
+Do not archive a form-owned layout to change form behavior. Edit or delete the form instead.
+
+## What To Do Next
+
+- Use [Block Types](/docs/en/api/view-layout-configuration/block-types) for block construction and nesting.
+- Use [Custom Fields](/docs/en/api/view-layout-configuration/custom-fields) when a draft creates, updates, unlinks, or deletes custom field definitions.
+- Use [Runtime Guide](/docs/en/api/view-layout-runtime/runtime) after publishing.

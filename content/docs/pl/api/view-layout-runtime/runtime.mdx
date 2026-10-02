@@ -1,0 +1,188 @@
+---
+title: Przewodnik po runtime
+description: Rozwiązuj opublikowane układy widoku, ładuj dane runtime i zapisuj rekordy obiektów własnych.
+---
+
+# Runtime układów widoku
+
+Endpointy runtime używają opublikowanych układów widoku. Służą do renderowania układu, ładowania danych bloków ładowanych później oraz tworzenia albo aktualizacji rekordów obiektów własnych przez opublikowany kontrakt układu.
+
+Zmiany wersji roboczej nie są używane w runtime, dopóki nie zostaną opublikowane.
+
+## Zanim zaczniesz
+
+Dla pracy runtime z obiektami dynamicznymi token API potrzebuje:
+
+- `api.view_layouts.read` do rozwiązywania układów i danych runtime;
+- `api.custom_records.read` do odczytu danych runtime obiektów dynamicznych;
+- `api.custom_records.write` do tworzenia albo aktualizacji rekordów;
+- zewnętrznego profilu obiektu własnego, który udostępnia obiekt i pozwala na operację.
+
+Profil obiektu własnego kontroluje, które pola są czytelne, zapisywalne, filtrowalne, sortowalne i rozwijalne. Endpointy runtime wymuszają te reguły profilu oprócz opublikowanego układu.
+
+## Rozwiązanie opublikowanego układu
+
+Resolve mówi klientowi, który opublikowany układ ma zastosowanie, i zwraca drzewo bloków do wyrenderowania.
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Dla wyświetlania albo edycji istniejącego rekordu dołącz `recordId`:
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_intake&recordId=rec_ticket_123
+Authorization: Bearer ek_...
+```
+
+Odpowiedź zawiera:
+
+- wybrany układ i wersję;
+- żądany tryb;
+- regiony i rozwiązane bloki;
+- stan walidacji;
+- wymagania danych dla danych runtime ładowanych później;
+- kontekst renderowania, taki jak powierzchnia, tryb, klucz modułu, klucz obiektu i ID formularza;
+- stan procesu, gdy ma zastosowanie.
+
+## Ładowanie danych runtime
+
+Niektóre bloki wymagają danych runtime ładowanych później. Resolve zwraca `dataRequirements`; wyślij te wymagania do endpointu danych runtime.
+
+```http
+POST /v1/view-layouts/runtime-data?surface=DYNAMIC_OBJECT&mode=VIEW&moduleKey=support&objectKey=ticket&formId=form_ticket_details&recordId=rec_ticket_123
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "requirements": [
+    {
+      "blockId": "field_title",
+      "type": "dynamic_fields",
+      "key": "ticket_fields"
+    }
+  ]
+}
+```
+
+Endpoint sprawdza, czy każde wymaganie należy do rozwiązanego układu. Przestarzałe albo nieznane wymagania są zwracane jako niedostępne, zamiast być bezwarunkowo zaufane.
+
+## Utworzenie rekordu
+
+Tworzenie używa rozwiązanego układu `CREATE`. Wysłane pola muszą być dozwolone przez opublikowany układ i zapisywalne według zewnętrznego profilu obiektu własnego.
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Cannot log in",
+    "notes": "The customer cannot access the portal."
+  }
+}
+```
+
+`clientMutationId` jest wymagane dla zapytań tworzenia. Jeśli aktywny proces ma zastosowanie do obiektu docelowego, kontrakt runtime może wymagać `workflowId`.
+
+## Aktualizacja rekordu
+
+Aktualizacja używa rozwiązanego układu `EDIT`.
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/rec_ticket_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_editor
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Reset link sent."
+  }
+}
+```
+
+Dla aktualizacji `clientMutationId` jest zalecane w każdym zapytaniu i wymagane, gdy aktualizacja agregatu tworzy albo usuwa wiersze potomne.
+
+Jeśli rekord jest na etapie procesu, który nie pozwala aktorowi edytować, endpoint zwraca `403 Forbidden`.
+
+## Zapisy tabel relacji
+
+Zmiany tabel relacji są zapisywane w zapytaniu tworzenia albo aktualizacji rekordu nadrzędnego.
+
+```json
+{
+  "clientMutationId": "ticket-create-with-comments",
+  "values": {
+    "title": "Cannot log in"
+  },
+  "relationTables": {
+    "comments": {
+      "create": [
+        {
+          "clientId": "tmp_comment_1",
+          "values": {
+            "text": "Initial report from support desk."
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+Obiekt docelowy tabeli relacji także musi być udostępniony przez zewnętrzny profil obiektu własnego. Zagnieżdżone tworzenie, aktualizowanie, usuwanie i zapisywalne pola są sprawdzane względem profilu targetu.
+
+## Zapisy obiektów podrzędnych
+
+Zmiany obiektów podrzędnych używają `subordinateObjects`, z kluczami zgodnymi z kluczem pola referencji podrzędnej.
+
+```json
+{
+  "clientMutationId": "ticket-update-subtasks",
+  "subordinateObjects": {
+    "subtasks": {
+      "create": [
+        {
+          "clientId": "tmp_subtask_1",
+          "values": {
+            "title": "Check account status"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+Obiekty podrzędne nie są bezpośrednio udostępnione jako osobne endpointy rekordów. Są zapisywane przez agregatowe zapytanie obiektu nadrzędnego.
+
+## Metadane tabel relacji
+
+Używaj endpointów runtime tabel relacji, gdy UI potrzebuje wierszy relacji albo docelowych układów wierszy.
+
+| Potrzeba | Endpoint |
+| --- | --- |
+| Rozwiązanie docelowego układu wiersza dla UI tworzenia albo edycji | [`GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout`](/docs/pl/api/view-layout-runtime/resolve-relation-table-target-layout) |
+| Odczyt wybranych wierszy tabeli relacji przez docelowy układ wiersza | [`POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout`](/docs/pl/api/view-layout-runtime/get-relation-table-row-layout-data) |
+| Zapytanie o tabelę relacji dla rekordu nadrzędnego | [`POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query`](/docs/pl/api/view-layout-runtime/query-relation-table-rows-through-view-layout) |
+
+Ścieżka endpointu zapytania zawiera nadrzędne `recordId`, ponieważ wiersze relacji są odczytywane w kontekście tego rekordu nadrzędnego.
+
+## Co wymusza runtime
+
+Endpointy runtime sprawdzają:
+
+- uprawnienia tokenu API;
+- zakres organizacji;
+- czy obiekt własny jest udostępniony zewnętrznie;
+- czy żądana operacja jest dozwolona przez profil zewnętrzny;
+- czy wysłane pola nadrzędne są zapisywalne;
+- czy zagnieżdżone targety relacji i obiektów podrzędnych są udostępnione i pozwalają na operację zagnieżdżoną;
+- czy opublikowany układ obsługuje żądany tryb;
+- ograniczenia edycji wynikające z procesu dla zapytań edycji.
+
+Użyj [Rozwiązywania problemów](/docs/pl/api/view-layout-configuration/troubleshooting) dla częstych odpowiedzi błędów.

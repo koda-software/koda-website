@@ -1,0 +1,31 @@
+---
+title: "Diagnostyka reguł"
+description: "Co zrobić, gdy automatyzacja zadziałała niezgodnie z oczekiwaniem lub nie uruchomiła się. Jak zgłosić problem, żeby dało się go szybko zdiagnozować, i czego się spodziewać."
+---
+
+## Automat też bywa do poprawki
+
+Reguła robi dokładnie to, co jej ustawiono. Jeżeli zachowała się inaczej, niż oczekiwałeś, zwykle znaczy to jedno z dwojga: albo trafił się przypadek, którego reguła nie obejmuje, albo sama reguła wymaga korekty. W obu sytuacjach da się to naprawić, a punktem wyjścia jest zgłoszenie.
+
+## Zasady zgłaszania
+
+Administrator ma podgląd, co reguła faktycznie zrobiła krok po kroku, ale musi wiedzieć, gdzie patrzeć. Podaj więc:
+
+- **Który rekord** i najlepiej jego numer.
+- **Kiedy** to się stało, choćby z grubsza.
+- **Co się wydarzyło** i **czego oczekiwałeś**.
+- **Co robiłeś tuż przed** tym, na przykład zatwierdziłeś sprawę albo zmieniłeś pole.
+
+Im konkretniej, tym szybciej administrator znajdzie właściwy przebieg reguły i zobaczy, gdzie zachowanie odbiega od zamiaru.
+
+> **Przykład.** Zamiast "automat nie wysłał maila", napisz: "zamówienie ZAM/2026/88, wczoraj po zatwierdzeniu, klient nie dostał potwierdzenia, a zwykle dostaje". To wystarcza, żeby odtworzyć przebieg.
+
+## Przebieg obsługi zgłoszenia
+
+- **Skutków nie da się zawsze cofnąć.** Jeżeli reguła wysłała wiadomość, wysłania nie odwołasz. Naprawa dotyczy przyszłych przypadków, a bieżący prostuje się ręcznie.
+- **Poprawka reguły działa od chwili wprowadzenia.** Stare rekordy zwykle nie przeliczają się same, chyba że administrator uruchomi to celowo.
+- **Część zgłoszeń kończy się wyjaśnieniem, że tak ma być.** Reguła bywa zawężona świadomie, na przykład tylko do spraw powyżej kwoty.
+
+## Czynności wymagające zgłoszenia
+
+Nie próbuj obchodzić automatu przez ręczne przestawianie pól albo zakładanie rekordów, które mają udawać efekt reguły. To zwykle miesza dane bardziej, niż pomaga. Lepiej zgłosić i poczekać na poprawkę.

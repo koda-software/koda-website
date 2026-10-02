@@ -1,0 +1,33 @@
+---
+title: "Select fields"
+description: "Pola wyboru pilnują, żeby wszyscy nazywali tak samo te same rzeczy. Skąd biorą się dostępne wartości i co zrobić, gdy brakuje tej właściwej."
+---
+
+## A select field instead of a text field
+
+If the kind of matter were typed by hand, "complaint", "Complaint", "compl.", and "goods return" would arise as four different things. None of these entries can be counted in a report. That is why repeatable values are chosen from the available values.
+
+The effect shows only in the summaries: a filter by status works, a report counts correctly, and there is no doubt whether "in progress" and "under way" are one and the same.
+
+## Single and multiple choice
+
+- **A select field** lets you point to one value. This is how statuses, kinds, and categories work.
+- **A multiple-select field** lets you point to several at once, for example several channels of contact or several labels on a matter.
+
+On the record list, values from a select usually have a color, so you see them at once, without reading the whole column.
+
+## Source of the values
+
+The values are set by the administrator and come from one of three places: from values entered directly at the field, from a shared dictionary used in several places in the system, or from live data, for example a list of active contractors. You recognize the last case by the values changing together with the data, without the administrator's involvement.
+
+> **Example.** The Matter owner field shows only employees with active employment, because its source is a query to the employee list, not a fixed list of values entered once when the field was created.
+
+## Missing values
+
+If a value you need is not there, do not work around it by entering something approximate or by a remark in a description field. Report it to the administrator. Adding a value to a dictionary is a change of a minute, and the data stays consistent.
+
+It is worth knowing that values are sometimes deliberately limited: some lists are short so that a report makes sense. The answer "we do not add that" is also an answer and usually follows from the decisions made during the implementation.
+
+## Order of the values
+
+The values of a select field are usually not sorted by chance: the administrator sets the order so that the most frequent or most important are on top. If the order gets in the way of daily work, that too is a matter to report.

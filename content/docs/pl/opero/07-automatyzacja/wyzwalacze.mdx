@@ -1,0 +1,33 @@
+---
+title: "Wyzwalacze reguł"
+description: "Automatyzacje nie działają cały czas, tylko reagują na konkretne zdarzenia: utworzenie rekordu, zmianę pola, ruch w procesie albo porę dnia."
+---
+
+## Automat czeka na zdarzenie
+
+Reguła nie chodzi w tle bez przerwy. Rusza dopiero, gdy zajdzie **zdarzenie**, na które została ustawiona. Dopóki nic takiego się nie dzieje, reguła nic nie robi.
+
+Dlatego to samo działanie potrafi się wykonać w jednym momencie, a w innym nie: liczy się to, czy zaszło zdarzenie, które je uruchamia.
+
+## Najczęstsze zdarzenia
+
+| Zdarzenie | Co je wywołuje |
+| --- | --- |
+| Utworzenie rekordu | założenie nowego wniosku, zgłoszenia, umowy |
+| Zmiana rekordu | zapisanie zmiany w istniejącym rekordzie |
+| Zmiana konkretnego pola | ustawienie albo zmiana wartości wybranego pola |
+| Ruch w procesie | wykonanie przejścia albo zakończenie sprawy |
+| Pora dnia | uruchomienie o ustalonej godzinie, na przykład codzienny raport |
+| Ręczne uruchomienie | kliknięcie przycisku, który odpala automat |
+
+## Opóźnienie uruchomienia reguły
+
+- **Zdarzenie jeszcze nie zaszło.** Automat na zmianę pola nie ruszy, dopóki nie zapiszesz zmiany tego pola.
+- **Zadziałał inny warunek.** Reguła bywa zawężona, na przykład tylko do faktur powyżej kwoty. Poniżej progu nie zrobi nic i to jest zamierzone.
+- **Reguła działa cyklicznie.** Automat porannego raportu ruszy o swojej godzinie, a nie w chwili, gdy go potrzebujesz.
+
+> **Przykład.** Reguła wysyłająca przypomnienie o niezapłaconej fakturze uruchamia się raz dziennie rano. Jeżeli fakturę wystawiono po południu, przypomnienie ruszy dopiero następnego dnia, a nie od razu.
+
+## Ręczne uruchomienie
+
+Część automatów odpala się przyciskiem: na formularzu rekordu, na liście albo na pulpicie. Wtedy to Ty decydujesz, kiedy działanie ma się wykonać. Zanim klikniesz, upewnij się, co przycisk robi, bo część takich działań zmienia dane albo coś wysyła.

@@ -1,0 +1,240 @@
+---
+title: Overview
+description: Create, configure, and delete custom object forms through the Opero API.
+---
+
+Custom object forms define how records for one custom object are created, viewed, or edited. Use forms when the same object needs different experiences for different modes, roles, teams, integrations, or public submission flows.
+
+A form is not the visual layout itself. When you create a form, Opero creates one owned View Layout for it. The form controls the available modes, defaults, public access, and dashboard access rules. The owned View Layout controls the fields and blocks shown at runtime.
+
+## Before You Start
+
+You need:
+
+- an API token with `api.custom_forms.read` to list and inspect forms;
+- an API token with `api.custom_forms.manage` to create, update, delete, set defaults, or replace access;
+- an existing custom module;
+- a custom object that supports standalone forms.
+
+Subordinate custom objects cannot have standalone forms. They are edited through their parent object flow.
+
+The examples use:
+
+- module key: `crm`;
+- object key: `ticket`;
+- form ID: `form_ticket_intake`;
+- layout ID: `layout_ticket_intake`.
+
+## Create A Form
+
+Create a form under the custom object:
+
+```http
+POST /v1/custom-modules/crm/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Submit a ticket",
+    "successMessage": "Ticket submitted."
+  }
+}
+```
+
+`types` must contain at least one unique value. Supported values are `CREATE`, `VIEW`, and `EDIT`.
+
+The response includes the form and its owned View Layout:
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "name": "Ticket intake",
+    "types": ["CREATE", "EDIT"],
+    "isActive": true,
+    "isPublic": false,
+    "viewLayoutId": "layout_ticket_intake",
+    "viewLayoutName": "Ticket intake view layout",
+    "layoutAvailability": {
+      "CREATE": { "state": "DRAFT_ONLY" },
+      "EDIT": { "state": "DRAFT_ONLY" }
+    },
+    "usableTypes": []
+  }
+}
+```
+
+`DRAFT_ONLY` is expected after creation. Edit and publish the owned View Layout before using the form at runtime.
+
+## List And Inspect Forms
+
+List forms for an object:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms?page=1&limit=20
+Authorization: Bearer ek_...
+```
+
+The list uses the standard list query format. It includes form modes, default flags, access counts, layout availability, and whether each mode is usable.
+
+Get one form:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Use the single-form response after publishing a layout to check `layoutAvailability` and `usableTypes`.
+
+## List Available Forms
+
+Available forms are active forms, optionally filtered by type:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/available?type=CREATE
+Authorization: Bearer ek_...
+```
+
+This endpoint is useful for form picker screens. If your caller needs a form that can actually render or save records, check `usableTypes`, not only `isActive`.
+
+## Update A Form
+
+Update form metadata with `PATCH`:
+
+```http
+PATCH /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake and edit",
+  "types": ["CREATE", "EDIT"],
+  "config": {
+    "title": "Ticket",
+    "successMessage": "Saved."
+  }
+}
+```
+
+Important rules:
+
+- `types` is a full replacement when supplied.
+- Missing `types` leaves the current types unchanged.
+- `types` cannot be empty and cannot contain duplicates.
+- Updating `types` syncs the owned View Layout modes.
+- Removing a type also removes access rows for that unsupported type.
+- Removing a type that is currently used as a default is rejected until that default is cleared.
+- `config` is replaced as a whole when supplied. Pass `null` to clear it.
+- `config` is for runtime text such as title, success message, and description. Visual structure belongs to the View Layout.
+
+## Set Default Forms
+
+Defaults decide which form Opero uses when a caller does not pass a form ID for a mode.
+
+```http
+PATCH /v1/custom-modules/crm/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultEditFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_view"
+}
+```
+
+Clear a default with `null`:
+
+```json
+{
+  "defaultEditFormId": null
+}
+```
+
+The API rejects defaults that point to a form from another object, an inactive form, or a form that does not support the requested type.
+
+## Set Form Access
+
+Form access controls which organization members or roles can use the form in dashboard flows. API tokens still need their own `api.*` permissions.
+
+Read the current access matrix:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake/access
+Authorization: Bearer ek_...
+```
+
+Replace the access matrix:
+
+```http
+PUT /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake/access
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "users": [
+    {
+      "membershipId": "membership_support_agent",
+      "types": ["VIEW", "EDIT"]
+    }
+  ],
+  "roles": [
+    {
+      "roleId": "role_support",
+      "types": ["CREATE", "VIEW", "EDIT"]
+    }
+  ]
+}
+```
+
+`PUT` replaces the full access matrix. To remove all explicit access rows, send:
+
+```json
+{
+  "users": [],
+  "roles": []
+}
+```
+
+The API rejects access rows that reference another organization or a type not supported by the form.
+
+## Delete A Form
+
+Delete a form when it should no longer be used:
+
+```http
+DELETE /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Successful deletion returns `204 No Content`.
+
+The API rejects deleting a form while it is selected as a default. Clear the default first.
+
+When deletion succeeds, Opero deletes the form, its owned View Layout, and public-form uploaded files associated with the form. Treat this as a data-loss operation.
+
+## Endpoint Map
+
+| Need | Endpoint |
+| --- | --- |
+| Create a form | `POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
+| List forms | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
+| Get one form | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| Update a form | `PATCH /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| Delete a form | `DELETE /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| List available forms | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/available` |
+| Update defaults | `PATCH /v1/custom-modules/:moduleKey/objects/:objectKey/forms/defaults` |
+| Read access | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId/access` |
+| Replace access | `PUT /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId/access` |
+
+## Related Pages
+
+- [Editing Form View Layouts](/docs/en/api/custom-object-forms/view-layouts)
+- [Using Form Runtime Layouts](/docs/en/api/custom-object-forms/runtime)
+- [View Layout Configuration](/docs/en/api/view-layout-configuration)
+- [View Layout Runtime](/docs/en/api/view-layout-runtime)

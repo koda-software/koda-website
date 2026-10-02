@@ -1,0 +1,36 @@
+---
+title: "Obiekty własne"
+description: "Obiekt to rodzaj rekordu i zarazem jego definicja: ustala, jakie pola ma rekord. Definiuje go organizacja, więc obiekty i pola noszą nazwy używane w firmie."
+---
+
+## Moduł, obiekt, lista, rekord
+
+Trzy słowa, które warto rozróżniać, bo wracają w całej dokumentacji.
+
+- **Obiekt** to rodzaj rzeczy, którą prowadzicie w systemie: umowa, zgłoszenie serwisowe, pracownik. Należy do budowy systemu i **definiuje pola**, czyli ustala, jakie informacje opisują każdy rekord tego rodzaju.
+- **Rekord** to jedna konkretna rzecz tego rodzaju: umowa numer 14 z firmą Kowalski, zgłoszenie z wczoraj, pracownik Anna.
+- **Lista** to sposób wyświetlenia rekordów jednego obiektu, otwierany z menu. Sama nie przechowuje danych; te same rekordy można pokazać także jako tablicę kanban albo kalendarz.
+
+W Opero obiekty nie są narzucone przez producenta. Buduje je administrator organizacji, dlatego pola i nazwy odpowiadają rzeczywistemu sposobowi pracy, a nie uniwersalnemu wzorcowi.
+
+## Rozpoznawanie rekordu na liście
+
+Każdy obiekt ma ustaloną **etykietę rekordu**, czyli to, co widzisz jako jego nazwę na liście, w wynikach wyszukiwania i w polach wskazujących na ten rekord. Etykieta powstaje z wartości pól, na przykład z numeru i tytułu, więc jest różna dla każdego rekordu i zmienia się razem z jego treścią.
+
+> **Przykład.** Zgłoszenia mają etykietę złożoną z numeru i tematu, więc na liście widzisz „ZG/2026/114 Awaria drukarki w kadrach", a nie sam identyfikator.
+
+## Czynności dostępne na rekordzie
+
+Zakres zależy od posiadanych uprawnień i od tego, czy rekord jest prowadzony procesem. W typowej sytuacji możesz go otworzyć, edytować pola, dodać komentarz i załącznik oraz zobaczyć historię zmian. Jeżeli rekord jest prowadzony procesem, część pól bywa zablokowana na niektórych etapach, a zmiana odbywa się przez przejście procesu, nie przez zwykłą edycję.
+
+## Rodzaje obiektów, które spotkasz
+
+| Rodzaj | Jak wygląda w pracy |
+| --- | --- |
+| Zwykły | lista, kalendarz albo kanban rekordów, otwierane z menu, z formularzem każdego rekordu |
+| Podrzędny | tabela wewnątrz formularza rekordu, na przykład pozycje oferty, edytowana razem z rekordem nadrzędnym |
+| Singleton | pojedynczy formularz bez listy, na przykład parametry obszaru, zwykle dostępny tylko administratorom |
+
+## Decyzje niezależne od obiektu
+
+Obiekt opisuje, jakie informacje zbieracie, ale nie decyduje, kto je zobaczy ani jak wygląda ekran. Za widoczność odpowiadają uprawnienia, a za wygląd formularz i układ ekranu. Ten sam obiekt może być pokazany inaczej różnym rolom.

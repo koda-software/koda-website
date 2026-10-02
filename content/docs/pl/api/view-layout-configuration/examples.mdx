@@ -1,0 +1,245 @@
+---
+title: Przykłady
+description: Przejdź przez pełny przepływ formularza obiektu własnego i układu widoku.
+---
+
+# Przykłady
+
+Ta strona pokazuje pełny przepływ dla obiektu własnego `ticket` w module własnym `support`.
+
+Przykład zakłada, że:
+
+- moduł własny `support` już istnieje;
+- obiekt własny `ticket` już istnieje;
+- obiekt ma pola `title`, `notes` i `priority`;
+- token API ma uprawnienia do formularzy, układów i rekordów własnych.
+
+## 1. Utwórz formularz
+
+```http
+POST /v1/custom-modules/support/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT", "VIEW"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Ticket",
+    "successMessage": "Ticket saved."
+  }
+}
+```
+
+Zapisz te wartości z odpowiedzi:
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "viewLayoutId": "layout_ticket_intake"
+  }
+}
+```
+
+ID formularza trafia do targetów układu obiektu dynamicznego. ID układu jest używane dla endpointów wersji roboczej i publikacji.
+
+## 2. Odkryj bloki
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Znajdź wpisy katalogu dla:
+
+- `title`;
+- `notes`;
+- `priority`;
+- opcjonalnych bloków strukturalnych, takich jak sekcje i zakładki;
+- pól tabel relacji.
+
+Skopiuj wartości `defaultBlock` z katalogu, a potem nadaj im stabilne `id` i umieść je w regionach.
+
+## 3. Zapisz wersję roboczą
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    },
+    {
+      "key": "sidebar",
+      "label": "Sidebar",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 1,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "section_details",
+      "type": "section",
+      "source": "system",
+      "ref": { "componentKey": "layout.section" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "config": { "title": "Details", "columns": 12 },
+      "supportedModes": ["CREATE", "VIEW", "EDIT"],
+      "children": [
+        {
+          "id": "field_title",
+          "type": "field",
+          "source": "dynamic_field",
+          "ref": { "fieldKey": "title" },
+          "regionKey": "main",
+          "displayOrder": 0,
+          "grid": { "colSpan": 12 },
+          "config": { "label": "Title" },
+          "requiredPolicy": "required",
+          "supportedModes": ["CREATE", "VIEW", "EDIT"],
+          "children": []
+        },
+        {
+          "id": "field_notes",
+          "type": "field",
+          "source": "dynamic_field",
+          "ref": { "fieldKey": "notes" },
+          "regionKey": "main",
+          "displayOrder": 1,
+          "grid": { "colSpan": 12 },
+          "config": { "label": "Notes" },
+          "requiredPolicy": "optional",
+          "supportedModes": ["CREATE", "VIEW", "EDIT"],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "field_priority",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "priority" },
+      "regionKey": "sidebar",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Priority" },
+      "requiredPolicy": "optional",
+      "supportedModes": ["CREATE", "VIEW", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+Odpowiedź zawiera ID wersji roboczej i wynik walidacji. Zapisz ID wersji roboczej do publikacji.
+
+## 4. Opublikuj wersję roboczą
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+Po publikacji runtime resolve używa opublikowanej wersji.
+
+## 5. Ustaw formularz domyślny
+
+```http
+PATCH /v1/custom-modules/support/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_intake",
+  "defaultEditFormId": "form_ticket_intake"
+}
+```
+
+Dzięki temu klienci runtime mogą rozwiązać formularz domyślny, gdy nie muszą wybierać innego formularza.
+
+## 6. Rozwiąż układ
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Użyj odpowiedzi do wyrenderowania formularza. Jeśli `dataRequirements` nie jest puste, wywołaj `POST /v1/view-layouts/runtime-data`.
+
+## 7. Utwórz rekord
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Cannot log in",
+    "notes": "The customer cannot access the portal.",
+    "priority": "high"
+  }
+}
+```
+
+API zwraca zapisany rekord nadrzędny oraz wyniki mutacji tabel relacji albo obiektów podrzędnych.
+
+## 8. Zaktualizuj rekord
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/rec_ticket_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Reset link sent."
+  }
+}
+```
+
+Można aktualizować tylko pola zapisywalne w zewnętrznym profilu obiektu własnego i dostępne przez rozwiązany układ.
+
+## Własność ID
+
+Część ID pochodzi z Opero. Część wybiera klient.
+
+| Wartość | Kto ją tworzy |
+| --- | --- |
+| `form_ticket_intake` | Opero zwraca to jako ID formularza. |
+| `layout_ticket_intake` | Opero zwraca to jako ID należącego układu. |
+| `version_ticket_draft_1` | Opero zwraca to po zapisaniu wersji roboczej. |
+| `rec_ticket_123` | Opero zwraca to po utworzeniu rekordu. |
+| `field_title`, `section_details` | Klient wybiera stabilne ID bloków układu. |
+| `ticket-layout-draft-001` | Klient wybiera ID mutacji. |
+| `tmp_comment_1` | Klient wybiera tymczasowe ID wierszy potomnych dla tworzenia agregatowego. |
+
+Używaj stabilnych ID bloków klienta. Nie generuj nowych ID bloków przy każdym zapisie dla tego samego logicznego bloku.

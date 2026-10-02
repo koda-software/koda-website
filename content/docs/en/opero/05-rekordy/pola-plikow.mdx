@@ -1,0 +1,38 @@
+---
+title: "File and signature fields"
+description: "Jak dołączać dokumenty do rekordu, czym różni się pole jednego pliku od pola wielu plików i jak działa pole podpisu odręcznego."
+---
+
+## Documents at the record
+
+A matter rarely ends with filling in fields. A photo of the fault is added to a ticket, a scan of the signed copy to a contract, an invoice to a request. In Opero such documents are kept **at the record**, not on a network drive, so they are always together with the matter they concern.
+
+## One file or many
+
+| Kind of field | Behavior |
+| --- | --- |
+| Single-file field | holds exactly one document; uploading a new one replaces the previous |
+| Multiple-file field | holds a list of documents in a set order; you add them one at a time |
+
+The administrator may restrict the kind of documents a field accepts, for example to PDF files or images. If the system does not accept a file, that is usually the reason, not a fault.
+
+## Where to upload a file
+
+If a field has a name that speaks of a specific document, for example Contract scan, upload only that document there. The rest of the materials belong in the general attachments field. Order in this place decides whether anything can later be found, and whether a document template will reach for the right file.
+
+## The signature field
+
+The signature field is a place for a **handwritten signature made with a finger or a stylus**, useful for handover reports, release confirmations, and consents collected on site at the client. Together with the signature itself, the date and time of signing and the signer's first and last name are recorded.
+
+Two things are worth knowing.
+
+- The signature usually **locks after it is made**: it cannot be overwritten by another. This is deliberate, because otherwise a signed document would be worthless.
+- A handwritten signature in the field **is not a qualified signature**. For documents requiring the legal effect of an electronic signature there is a separate mechanism, described in the chapter on the electronic signature.
+
+> **Example.** A technician finishes the installation, fills in the report on the phone, the client signs with a finger on the screen, and the report with the signature and date stays at the order. No one drives paper to the office.
+
+## What to watch for
+
+- **The file name matters.** A document named scan\_2.pdf is useless to the person who opens the matter a year from now.
+- **Do not duplicate documents** already uploaded elsewhere in the process. One document, one place.
+- **Sensitive data** going into attachments is subject to the same rules as the rest of the personal data in the company. If you do not have to upload it, do not.

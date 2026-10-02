@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "overview",
+    "custom-object-forms",
+    "discovering-blocks",
+    "building-layouts",
+    "block-types",
+    "custom-fields",
+    "examples",
+    "troubleshooting"
+  ],
+  "title": "View Layout Configuration"
+}

@@ -1,0 +1,169 @@
+---
+title: Troubleshooting
+description: Diagnose common View Layout API errors and draft or runtime problems.
+---
+
+# Troubleshooting
+
+Most View Layout API errors come from one of four causes:
+
+- the API token is missing a permission;
+- the layout target does not match the token organization or custom object;
+- the draft is structurally invalid;
+- runtime record data violates the published layout or external custom object profile.
+
+## 400 Bad Request
+
+`400` usually means the request shape or requested operation is invalid.
+
+Common causes:
+
+- `surface`, `mode`, `moduleKey`, `objectKey`, or `formId` is missing for a dynamic object request.
+- A block has an unsupported `type` or `source`.
+- A block `ref` points to a field or relation that does not exist.
+- A block is placed in a region that does not exist.
+- A nested block violates catalog child rules.
+- A submitted field is not writable.
+- A relation table request asks for unsupported columns.
+
+What to check:
+
+1. Call `GET /v1/view-layouts/catalog` for the exact target and mode.
+2. Compare the block against the catalog `defaultBlock`.
+3. Confirm the region key exists in the draft `regions`.
+4. Confirm dynamic object runtime requests include `moduleKey` and `objectKey`.
+5. Confirm submitted values use field keys, not labels.
+
+## 401 Unauthorized
+
+`401` means the token could not authenticate the request.
+
+Common causes:
+
+- Missing `Authorization` header.
+- Header does not use `Bearer ek_...`.
+- Token is invalid.
+- Token is expired.
+- Token is revoked.
+
+## 403 Forbidden
+
+`403` means the token is valid, but it is not allowed to do this action.
+
+Common causes:
+
+- Missing `api.view_layouts.read`.
+- Missing `api.view_layouts.manage` for draft or metadata changes.
+- Missing `api.view_layouts.publish`.
+- Missing `api.custom_forms.manage` for form changes.
+- Missing `api.custom_records.read` or `api.custom_records.write` for runtime dynamic object work.
+- The external custom object profile does not expose the requested operation.
+- A nested relation target profile does not allow create, update, delete, or read.
+- A workflow stage blocks editing.
+
+## 404 Not Found
+
+`404` can mean the resource does not exist or does not belong to the token organization.
+
+Common causes:
+
+- Wrong `moduleKey` or `objectKey`.
+- Wrong `formId`.
+- Wrong `layoutId`.
+- Layout is archived.
+- Custom module, custom object, form, or layout belongs to another organization.
+- The custom object is not exposed through an enabled external profile.
+
+What to check:
+
+1. List forms for the object and verify the form ID.
+2. Read the form and verify `viewLayoutId`.
+3. List layouts for the surface and target.
+4. Confirm the API token belongs to the same organization.
+5. Confirm the custom object profile is enabled.
+
+## 409 Conflict
+
+`409` usually means the requested change conflicts with domain rules or publish validation.
+
+Common causes:
+
+- Publishing a draft with validation errors.
+- Required built-in block is missing.
+- Required dynamic object field is missing for a mode.
+- A form-owned layout is being manually managed in a forbidden way.
+- A staged field change requires confirmation.
+- A form type update would break default form rules.
+
+What to check:
+
+1. Save the draft and inspect `validation.errors`.
+2. Add required field or built-in blocks from the catalog.
+3. Include `confirmFieldChanges` when publishing confirmed field changes.
+4. Do not create a second layout for a form-owned target.
+5. Review default form settings before removing a form type.
+
+## Draft Changes Are Not Visible
+
+Draft saves do not change runtime behavior.
+
+To make changes visible:
+
+1. Save the draft with `PUT /v1/view-layouts/:layoutId/draft`.
+2. Confirm `validation.state` is `valid` or acceptable as `valid_with_warnings`.
+3. Publish with `POST /v1/view-layouts/:layoutId/publish`.
+4. Resolve runtime again with `GET /v1/view-layouts/resolve`.
+
+## Catalog Entry Does Not Save As Expected
+
+Catalog entries are templates. They are not layout blocks until they are added to a draft.
+
+When using a catalog entry:
+
+- copy `defaultBlock`;
+- add a stable `id`;
+- set `regionKey`;
+- set `displayOrder`;
+- keep the required `type`, `source`, and `ref`;
+- keep required blocks and required fields.
+
+## Dynamic Object Runtime Cannot Resolve
+
+For dynamic object resolve, check that the query includes:
+
+```text
+surface=DYNAMIC_OBJECT
+mode=CREATE|VIEW|EDIT
+moduleKey=<module key>
+objectKey=<object key>
+formId=<form id when using a form-owned layout>
+recordId=<record id for VIEW or EDIT when needed>
+```
+
+If `formId` is omitted, Opero may use defaults when available. Passing `formId` is clearer when the client already knows which form it wants.
+
+## Relation Table Saves Fail
+
+Relation table saves are checked at multiple levels.
+
+Check:
+
+- parent object is exposed and allows the parent operation;
+- relation target object is exposed;
+- relation target profile allows the nested operation;
+- child row fields are writable in the target profile;
+- `clientId` is present for created child rows;
+- update rows use an existing `recordId`;
+- delete rows are allowed by the target profile.
+
+## Response Envelope
+
+Most successful responses are wrapped in `data`. List endpoints return `data` plus pagination metadata.
+
+If an example in these docs shows only the inner object, check the actual response body for the surrounding envelope.
+
+## Where To Go Next
+
+- Use [Discovering Blocks](/docs/en/api/view-layout-configuration/discovering-blocks) to compare a block against the catalog.
+- Use [Building Layouts](/docs/en/api/view-layout-configuration/building-layouts) to check the draft and publish flow.
+- Use [Runtime Guide](/docs/en/api/view-layout-runtime/runtime) to check runtime permissions and profile enforcement.

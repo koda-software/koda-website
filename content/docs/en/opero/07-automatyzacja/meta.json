@@ -1,0 +1,11 @@
+{
+  "title": "07 Automatyzacja",
+  "pages": [
+    "reguly-wprowadzenie",
+    "wyzwalacze",
+    "akcje",
+    "powiadomienia-z-regul",
+    "skrypty-wlasne",
+    "testowanie-regul"
+  ]
+}

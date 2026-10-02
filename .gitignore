@@ -44,3 +44,12 @@ next-env.d.ts
 
 # IDE
 .idea/
+
+# Fumadocs generated modules and private staging files
+/.source/
+/.docs-staging/
+
+# Generated verification artifacts
+/.playwright-cli/
+/output/playwright/
+/public/sitemap.xml

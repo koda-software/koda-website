@@ -1,0 +1,16 @@
+{
+  "title": "Obiekty własne",
+  "pages": [
+    "list-custom-objects",
+    "get-custom-object",
+    "get-custom-object-schema",
+    "get-custom-module-schema",
+    "list-custom-records",
+    "create-custom-record",
+    "get-custom-record",
+    "update-custom-record",
+    "delete-custom-record",
+    "get-singleton-custom-record",
+    "update-singleton-custom-record"
+  ]
+}

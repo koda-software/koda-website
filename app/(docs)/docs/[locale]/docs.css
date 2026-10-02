@@ -1,0 +1,181 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-openapi/css/preset.css';
+
+:root {
+  --opero-blue: #3dbbfd;
+  --opero-blue-strong: #1588cf;
+}
+
+.opero-json-tree {
+  font-family:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.opero-json-tree__children {
+  margin: 0;
+  padding: 0 0 0 1rem;
+}
+
+.opero-json-tree__child {
+  margin: 0;
+  padding: 0;
+}
+
+.opero-json-tree__icon {
+  display: inline-flex;
+  width: 0.9rem;
+  margin-right: 0.25rem;
+  color: var(--opero-blue-strong);
+  cursor: pointer;
+  user-select: none;
+}
+
+.opero-json-tree__icon--expand::after {
+  content: '▸';
+}
+
+.opero-json-tree__icon--collapse::after {
+  content: '▾';
+}
+
+.opero-json-tree__collapsed {
+  margin-right: 0.25rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+.opero-json-tree__collapsed::after {
+  content: '…';
+}
+
+.opero-json-tree__label {
+  margin-right: 0.35rem;
+  color: var(--opero-blue-strong);
+  font-weight: 600;
+}
+
+.opero-json-tree__label--clickable {
+  cursor: pointer;
+}
+
+.opero-json-tree__punctuation,
+.opero-json-tree__other {
+  color: var(--color-fd-muted-foreground);
+}
+
+.opero-json-tree__string {
+  color: #138a52;
+}
+
+.opero-json-tree__number {
+  color: #a855f7;
+}
+
+.opero-json-tree__boolean {
+  color: #c2410c;
+}
+
+.opero-json-tree__null,
+.opero-json-tree__undefined {
+  color: var(--color-fd-muted-foreground);
+  font-style: italic;
+}
+
+.dark .opero-json-tree__label,
+.dark .opero-json-tree__icon {
+  color: var(--opero-blue);
+}
+
+.dark .opero-json-tree__string {
+  color: #58d68d;
+}
+
+.dark .opero-json-tree__number {
+  color: #c084fc;
+}
+
+.dark .opero-json-tree__boolean {
+  color: #fb923c;
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > button {
+  color: color-mix(
+    in oklab,
+    var(--color-fd-foreground) 64%,
+    var(--color-fd-muted-foreground)
+  );
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > button
+  svg[data-icon='true'] {
+  color: var(--opero-blue);
+  opacity: 0.8;
+}
+
+#nd-sidebar [data-radix-scroll-area-viewport] > div > a,
+#nd-sidebar [data-radix-scroll-area-viewport] > div > div > a {
+  color: color-mix(in oklab, var(--color-fd-foreground) 82%, transparent);
+  font-weight: 450;
+}
+
+#nd-sidebar [data-radix-scroll-area-viewport] > div > a[data-active='true'],
+#nd-sidebar [data-radix-scroll-area-viewport] > div > div > a[data-active='true'] {
+  color: var(--color-fd-primary);
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > div {
+  margin-block: 0.125rem 0.25rem;
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  > div::before,
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > div::before {
+  display: none;
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > div
+  a {
+  min-height: 1.875rem;
+  padding-inline-start: 1.75rem !important;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.8375rem;
+}
+
+#nd-sidebar
+  [data-radix-scroll-area-viewport]
+  div[data-state]
+  div[data-state]
+  > div
+  a::before {
+  display: none;
+}

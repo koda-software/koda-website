@@ -1,0 +1,13 @@
+{
+  "title": "Rules",
+  "pages": [
+    "introduction",
+    "list-rules",
+    "get-rule",
+    "execute-rule",
+    "list-rule-executions",
+    "get-rule-execution",
+    "get-rules-id-manual-invocation",
+    "post-rules-id-manual-invocation-options"
+  ]
+}

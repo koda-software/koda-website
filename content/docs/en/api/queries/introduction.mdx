@@ -1,0 +1,192 @@
+---
+title: Introduction
+description: Learn how to create, validate, and execute Queries through the Opero API.
+---
+
+# Queries
+
+Queries let integrations store a reusable, read-only SQL query in Opero and execute it later through an API token. Use them for stable exports, reports, lookups, and other integrations that need a predictable result shape.
+
+Each Query has a stable `key`, SQL text, optional parameters, a scope, and an inferred `resultSchema`. Treat the `key`, parameter names, and result column names as an integration contract once another system depends on them.
+
+## Before You Start
+
+Query endpoints use the External API base path:
+
+```text
+/v1/saved-queries
+```
+
+Every request must include an API token:
+
+```http
+Authorization: Bearer ek_...
+```
+
+Use an organization token for Query configuration and organization reporting. Use a company token when an integration executes Queries for one company's operational workspace.
+
+Query execution has two contexts:
+
+- normal company workspace execution for data tied to one selected company
+- explicit organization reporting mode for cross-company reporting
+
+Clients should not add their own organization or company isolation filter to the SQL unless that filter is part of the business question. Use the token scope and execution mode intended for the integration.
+
+Before writing SQL, call [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema). It returns the tables and columns available to the token scope and execution context, including supported built-in tables and organization-owned custom object tables. Use the returned `qualifiedName` values instead of guessing table names.
+
+## Permissions
+
+Query API permissions are separate from dashboard permissions. Give each token only the permissions that its integration needs.
+
+| Permission | Allows |
+| --- | --- |
+| `api.saved_queries.read` | List Queries, read Query details, and inspect the queryable schema. |
+| `api.saved_queries.manage` | Validate SQL, create Queries, update organization Queries, and delete organization Queries. |
+| `api.saved_queries.execute` | Execute Queries. |
+
+The permissions do not imply each other. A token with only `api.saved_queries.manage` can create and update organization Queries, but cannot list or read them. A token with only `api.saved_queries.execute` can execute a known Query ID, but cannot discover it through the list or detail endpoints.
+
+## Query Scopes
+
+Queries have one of two scopes.
+
+| Scope | Meaning | External API behavior |
+| --- | --- | --- |
+| `SYSTEM` | Built-in Query managed by Opero. | Can be listed, read, and executed when visible to the token organization. It cannot be updated or deleted through the External API. |
+| `ORGANIZATION` | Query owned by the API token organization. | Can be created, listed, read, updated, executed, and deleted by tokens with the required permissions. |
+
+External API clients always create `ORGANIZATION` Queries. They cannot create `SYSTEM` Queries.
+
+## Recommended Workflow
+
+### Create a Minimal Token
+
+Decide what the integration is allowed to do before creating the token.
+
+- A Query authoring tool usually needs `api.saved_queries.read` and `api.saved_queries.manage`.
+- A company runtime integration that already knows a Query ID usually needs only `api.saved_queries.execute` on a company token.
+- A runtime integration that must resolve a Query by `key` needs `api.saved_queries.read` and `api.saved_queries.execute`.
+- A cross-company reporting integration should use an organization token and explicit organization reporting mode.
+
+Keep separate tokens for separate jobs when possible. For example, a scheduled export runner should not use the same token as an admin tool that can change Query SQL.
+
+### Inspect the Query Schema
+
+Call [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema) before building SQL. The response tells the integration which tables and columns are available.
+
+Use the schema response to:
+
+- show valid table and column suggestions in a Query editor
+- use `qualifiedName` values exactly as returned
+- avoid referencing tables that are not exposed to the token scope
+- detect organization-owned custom object tables that can be queried
+
+### Write Read-Only SQL
+
+Query SQL must be read-only. Use one `SELECT` statement, or one `WITH` query that ends in a read-only `SELECT`.
+
+Use named parameters when runtime values should change:
+
+```sql
+select contractor.id, contractor.name, contractor.tax_id as taxId
+from "Contractor" contractor
+where contractor.tax_id = :taxId
+```
+
+Select explicit columns and use stable aliases. Avoid `select *`, because result columns become part of the integration contract.
+
+### Declare Parameters
+
+Every named SQL parameter must be declared in the request body, and every declared parameter must be used in SQL.
+
+Supported parameter types are:
+
+| Type | Runtime value |
+| --- | --- |
+| `string` | Text value. |
+| `number` | Numeric value. |
+| `date` | Date or date-time string accepted by the API. |
+| `uuid` | UUID string. |
+| `boolean` | Boolean value. |
+
+Required parameters must be supplied during execution. Optional parameters may be omitted; omitted optional parameters are passed to SQL as `null`.
+
+For optional filters, write SQL that handles `null`:
+
+```sql
+where (:status is null or invoice.status = :status)
+```
+
+### Validate Before Saving
+
+Call [`POST /v1/saved-queries/validate`](/docs/en/api/queries/validate-query) while authoring. Validation checks SQL safety, referenced tables, declared parameters, and whether PostgreSQL can parse the query. It does not save anything.
+
+Create and update requests validate the SQL again before saving. When SQL or parameters change, Opero refreshes `resultSchema` from the query result columns.
+
+### Create and Execute
+
+Create the Query with [`POST /v1/saved-queries`](/docs/en/api/queries/create-query). The `key` must be unique among organization Queries.
+
+Execute with [`POST /v1/saved-queries/{id}/execute`](/docs/en/api/queries/execute-query). The External API executes Queries by `id`; if your integration starts from a `key`, list or filter Queries first to resolve the `id`.
+
+For operational data, execute in the relevant company workspace. Use organization reporting mode only when the Query is meant to return cross-company results.
+
+Execution returns rows, `rowCount`, and `hasMore`. The API applies a default row limit when it runs the SQL. Add an explicit `limit` clause when an integration needs a predictable maximum result size.
+
+## SQL Rules
+
+Allowed SQL patterns:
+
+- one `SELECT` statement
+- one `WITH` query that ends in a read-only `SELECT`
+- named parameters such as `:status` or `:ownerId`
+- tables returned by the schema endpoint
+
+Disallowed patterns include:
+
+- multiple SQL statements
+- data changes such as `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, or `MERGE`
+- DDL such as `CREATE`, `ALTER`, or `DROP`
+- permission or session changes such as `GRANT`, `REVOKE`, `SET`, `RESET`, or `DISCARD`
+- server-side execution blocks such as `CALL`, `DO`, or dynamic `EXECUTE`
+- file, extension, notification, or backend-control operations
+
+Opero also checks table access and runs a PostgreSQL `EXPLAIN` validation before saving a Query.
+
+## Change Management
+
+Queries often become integration contracts. Use these rules when changing them:
+
+| Change | Risk |
+| --- | --- |
+| Add a new optional result column. | Usually compatible. |
+| Add a new optional parameter with SQL fallback behavior. | Usually compatible. |
+| Rename a result column, change a result type, change a required parameter, or change the meaning of a `key`. | Risky. |
+| Remove a result column or required parameter used by a client. | Incompatible. |
+
+For incompatible changes, create a new Query with a new `key`, update clients to use the new Query, and delete the old one only after clients no longer depend on it.
+
+## Endpoint Guide
+
+| Endpoint | Use it for |
+| --- | --- |
+| [`GET /v1/saved-queries`](/docs/en/api/queries/list-queries) | List `SYSTEM` Queries and organization Queries visible to the token. List responses do not include SQL. |
+| [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema) | Inspect tables and columns that can be referenced in Query SQL. |
+| [`POST /v1/saved-queries/validate`](/docs/en/api/queries/validate-query) | Validate SQL and parameters without saving a Query. |
+| [`POST /v1/saved-queries`](/docs/en/api/queries/create-query) | Create an organization Query. |
+| [`GET /v1/saved-queries/{id}`](/docs/en/api/queries/get-query) | Read one Query, including SQL and `resultSchema`. |
+| [`PATCH /v1/saved-queries/{id}`](/docs/en/api/queries/update-query) | Update an organization Query. |
+| [`POST /v1/saved-queries/{id}/execute`](/docs/en/api/queries/execute-query) | Execute a Query with optional `params`. |
+| [`DELETE /v1/saved-queries/{id}`](/docs/en/api/queries/delete-query) | Delete an organization Query. |
+
+## Common Errors
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request body, unsafe SQL, inaccessible table, mismatched parameter declarations, missing required execution parameter, invalid UUID parameter, or result schema inference failure. |
+| `401` | Missing or invalid API token. |
+| `403` | The API token does not have the required `api.saved_queries.*` permission. |
+| `404` | The Query does not exist, is not visible to the token organization, or the client tried to update or delete a `SYSTEM` Query. |
+| `409` | The Query `key` already exists for another organization Query. |
+
+If validation or creation reports `DATABASE_READONLY_URL is not configured`, the Opero deployment is missing its read-only database connection. That is a server configuration issue, not a client request issue.

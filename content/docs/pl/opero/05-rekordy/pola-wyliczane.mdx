@@ -1,0 +1,31 @@
+---
+title: "Numery i pola wyliczane"
+description: "Skąd bierze się numer rekordu, dlaczego pojawia się dopiero po zapisaniu i czemu części pól nie da się edytować, choć widać w nich wartość."
+---
+
+## Numer nadaje system
+
+Rekordy, które muszą mieć jednoznaczne oznaczenie, dostają je automatycznie: zgłoszenie dostaje numer zgłoszenia, faktura numer faktury, umowa numer umowy. Numer powstaje według wzoru ustalonego przy wdrożeniu i zwykle zawiera symbol rodzaju, rok i kolejną liczbę, na przykład ZG/2026/0117.
+
+Dwie rzeczy wynikają z tego wprost.
+
+- **Numer pojawia się dopiero po zapisaniu rekordu.** Zanim rekord istnieje, nie ma czego numerować, więc podczas wypełniania formularza pole numeru jest puste.
+- **Numeru zwykle nie da się zmienić.** Jest identyfikatorem sprawy w rozmowach, mailach i dokumentach, więc jego edycja jest celowo zablokowana.
+
+## Numeracja zaczyna się od nowa co rok
+
+Jeżeli wzór numeru zawiera rok, licznik startuje od jedynki po zmianie roku. Nie jest to usterka, tylko standardowa praktyka: numer ma być krótki i czytelny w obrębie roku.
+
+> **Przykład.** Ostatnie zgłoszenie grudnia to ZG/2026/0117, a pierwsze styczniowe to ZG/2027/0001. Oba są poprawne i oba są jednoznaczne, bo rok jest częścią numeru.
+
+## Przerwy w numeracji
+
+Zdarza się, że po numerze 0042 następny rekord dostaje 0044. Numer bywa rezerwowany w chwili zakładania rekordu, więc gdy zapis się nie powiedzie albo rekord zostanie usunięty, numer zostaje wykorzystany i nie wraca do puli. To normalne działanie, a nie zagubiony dokument.
+
+Jeżeli w firmie ciągłość numeracji jest wymagana przepisami, zgłoście to administratorowi: to temat na osobne ustalenie, a nie coś, co da się poprawić klikając.
+
+## Pola liczone automatycznie
+
+Poza numerem rekord ma zwykle wartości, których nikt nie wpisuje ręcznie: suma pozycji, liczba dni do terminu, wartość po rabacie, saldo. Wylicza je system, zwykle przy zapisie rekordu, i dlatego takie pola są tylko do odczytu.
+
+Jeżeli wyliczona wartość wygląda na błędną, nie obchodź tego przez wpisanie poprawki gdzie indziej. Zgłoś to administratorowi razem z numerem rekordu, bo najczęściej chodzi o warunek w regule, który nie obejmuje danego przypadku.

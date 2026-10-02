@@ -1,0 +1,172 @@
+---
+title: Używanie układów formularzy w czasie działania
+description: Rozwiązywanie opublikowanych formularzy obiektów własnych i zapis rekordów przez układy runtime.
+---
+
+Używaj układów runtime, gdy integracja musi wyrenderować formularz obiektu własnego albo zapisać rekordy przez ten sam kontrakt formularza, którego Opero używa dla skonfigurowanych układów.
+
+Przed użyciem w czasie działania formularz musi istnieć, być aktywny, obsługiwać żądany tryb i mieć opublikowany poprawny powiązany układ.
+
+## Zanim Zaczniesz
+
+Potrzebujesz:
+
+- `api.view_layouts.read`, aby rozwiązywać układy i ładować dane czasu działania;
+- `api.custom_records.read`, aby czytać dane istniejących rekordów i wiersze relacji;
+- `api.custom_records.write`, aby tworzyć lub aktualizować rekordy.
+
+Profil API obiektu własnego musi również pozwalać na żądaną operację na rekordach i dostęp do pól.
+
+Przykłady używają:
+
+- klucza modułu: `crm`;
+- klucza obiektu: `ticket`;
+- ID formularza: `form_ticket_intake`;
+- ID rekordu: `record_123`.
+
+## Rozwiązanie Układu Tworzenia
+
+Rozwiązanie zwraca opublikowany układ, uzupełnione metadane bloków, stan walidacji, kontekst renderowania, kontekst czasu działania, wymagania danych i natychmiast dostępne dane renderowania.
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Użyj tej odpowiedzi, aby zdecydować, które pola i bloki wyrenderować. Nie wysyłaj pól tylko dlatego, że istnieją na obiekcie. Zapisy runtime są sprawdzane względem rozwiązanego układu.
+
+## Rozwiązanie Układu Podglądu Lub Edycji
+
+Przekaż `recordId`, gdy pracujesz z istniejącym rekordem:
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake&recordId=record_123
+Authorization: Bearer ek_...
+```
+
+Dla renderowania tylko do odczytu użyj `mode=VIEW`.
+
+Jeśli `formId` zostanie pominięte, API spróbuje użyć domyślnego formularza dla żądanego trybu.
+
+## Ładowanie Danych Leniwych Runtime
+
+Niektóre bloki deklarują `dataRequirements` w odpowiedzi resolve. Użyj `runtime-data`, aby załadować te wartości:
+
+```http
+POST /v1/view-layouts/runtime-data?surface=DYNAMIC_OBJECT&mode=VIEW&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake&recordId=record_123
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "requirements": [
+    {
+      "blockId": "relation_tasks",
+      "type": "relation_table",
+      "key": "tasks"
+    }
+  ]
+}
+```
+
+API zwraca dane według ID bloku. Wymagania, które nie należą do rozwiązanego układu, są zwracane jako niedostępne zamiast być zaufane.
+
+## Utworzenie Rekordu
+
+Użyj endpointu runtime create dla układów `CREATE`:
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Printer is offline",
+    "notes": "The lobby printer stopped responding."
+  }
+}
+```
+
+`clientMutationId` jest wymagane dla idempotencji tworzenia agregatu. Jeśli do obiektu docelowego pasuje jeden lub więcej aktywnych procesów, dodaj `workflowId`, aby rozpocząć wybrany proces podczas tworzenia.
+
+## Aktualizacja Rekordu
+
+Użyj endpointu runtime update dla układów `EDIT`:
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/record_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Technician dispatched."
+  }
+}
+```
+
+Stan procesu może również wpływać na dostęp do edycji. Jeśli rekord jest na etapie procesu tylko do odczytu albo bieżący aktor nie może edytować bieżącego etapu, API odrzuci edycję nawet wtedy, gdy token ma uprawnienia zapisu.
+
+## Tabele Relacji I Obiekty Podrzędne
+
+Zapisy runtime mogą zawierać więcej niż pola skalarne:
+
+- wartości pól skalarnych trafiają do `values`;
+- mutacje tabel relacji trafiają do `relationTables`;
+- zagnieżdżone mutacje obiektów podrzędnych trafiają do `subordinateObjects`.
+
+Użyj endpointów runtime tabel relacji, gdy interfejs potrzebuje wierszy tabeli albo układów docelowych wierszy:
+
+| Potrzeba | Endpoint |
+| --- | --- |
+| Odczyt wybranych wierszy tabeli relacji przez rozwiązany układ | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Rozwiązanie układu wiersza docelowego dla interfejsu tworzenia lub edycji | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Zapytanie o wiersze relacji dla istniejącego rekordu nadrzędnego | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
+
+## Dlaczego Zapis Runtime Może Się Nie Udać
+
+Przesłane pole lub mutacja dziecka musi przejść każdą warstwę:
+
+- Pole lub relacja istnieje na obiekcie własnym.
+- Pole lub relacja jest uwzględniona w rozwiązanym układzie.
+- Pole jest zapisywalne w żądanym trybie.
+- Profil API obiektu własnego pozwala tokenowi użyć operacji i zapisać pole.
+- Token ma wymagane uprawnienia API.
+- Stan procesu pozwala na mutację, gdy rekord uczestniczy w procesie.
+
+Jeśli jakakolwiek warstwa zablokuje pole lub mutację, API odrzuci zapis.
+
+## Mapa Endpointów Runtime
+
+| Potrzeba | Endpoint |
+| --- | --- |
+| Rozwiązanie opublikowanego układu | `GET /v1/view-layouts/resolve` |
+| Ładowanie leniwych danych runtime | `POST /v1/view-layouts/runtime-data` |
+| Utworzenie rekordu przez układ | `POST /v1/view-layouts/runtime/dynamic-object/records` |
+| Aktualizacja rekordu przez układ | `PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId` |
+| Odczyt układu tabeli relacji | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Rozwiązanie układu wiersza docelowego | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Zapytanie o wiersze tabeli relacji | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
+
+## Rozwiązywanie Problemów
+
+### Resolve Zwraca Not Found
+
+Sprawdź, czy formularz jest aktywny, należy do tego samego obiektu własnego i ma opublikowany poprawny układ dla żądanego trybu. Jeśli pominięto `formId`, sprawdź, czy formularz domyślny jest skonfigurowany dla tego trybu.
+
+### Pole Jest Odrzucone
+
+Rozwiąż układ i potwierdź, że blok pola jest obecny dla żądanego trybu. Następnie sprawdź profil API obiektu własnego i uprawnienia tokena.
+
+### Publiczny Formularz Używa Starego Układu
+
+Opublikuj układ z `advancePublicPinnedVersion: true`, aby publiczne żądania tworzenia używały nowej opublikowanej wersji.
+
+## Powiązane Strony
+
+- [Zarządzanie formularzami obiektów własnych](/docs/pl/api/custom-object-forms/management)
+- [Edycja układów formularzy](/docs/pl/api/custom-object-forms/view-layouts)
+- [Rozwiązanie układu](/docs/pl/api/view-layout-runtime/resolve-view-layout)
+- [Utworzenie dynamicznego rekordu przez układ](/docs/pl/api/view-layout-runtime/create-dynamic-record-through-view-layout)

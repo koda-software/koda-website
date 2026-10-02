@@ -1,0 +1,49 @@
+---
+title: Pierwsze kroki
+description: Znajdź bazowy URL API, przygotuj token i wykonaj pierwsze zapytanie.
+---
+
+## Wymagania
+
+Przed wywołaniem API potrzebujesz:
+
+- organizacji w Opero
+- tokenu API utworzonego w Opero
+- bazowego URL API Opero
+
+Tokeny API używają prefiksu `ek_` i są przekazywane jako bearer token.
+
+```txt
+Authorization: Bearer ek_...
+```
+
+## Bazowy URL API
+
+Bazowy URL API to adres aplikacji webowej Opero z dopiskiem `/api`, na przykład `https://opero.kodasoft.pl/api` w Opero w chmurze lub `https://<adres Twojego Opero>/api` w instalacji własnej. Strony tokenów API w Opero pokazują go w sekcji **Dane połączenia**.
+
+Używaj go jako prefiksu dla każdej ścieżki API:
+
+```txt
+{API_BASE_URL}/v1/ping
+```
+
+Zastąp `{API_BASE_URL}` bazowym adresem przypisanym do Twojej przestrzeni.
+
+## Pierwsze zapytanie
+
+Użyj endpointu ping, aby sprawdzić, czy bazowy URL i token są poprawne:
+
+```bash
+curl "{API_BASE_URL}/v1/ping" \
+  -H "Authorization: Bearer ek_..."
+```
+
+Jeśli zapytanie się powiedzie, token poprawnie uwierzytelnia się w API.
+
+## Opis API
+
+Użyj [opisu Opero API](/docs/pl/api), gdy chcesz sprawdzić dostępne operacje API albo przejrzeć schematy zapytań i odpowiedzi.
+
+## Następny krok
+
+Przejdź do [opisu Opero API](/docs/pl/api), aby sprawdzić dostępne endpointy i wykonać zapytania z poziomu playgroundu.

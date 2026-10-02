@@ -1,0 +1,49 @@
+---
+title: "Working across companies"
+description: "Jak działa kontekst firmy w Opero: dlaczego te same listy pokazują różne dane, jak przełączać firmę, na co uważać przy tworzeniu rekordów i skąd biorą się różnice między firmami."
+---
+
+## One instance, several companies
+
+If an organization runs several companies, they all fit within one Opero. You do not sign in separately to each: you **switch the company context** inside the system.
+
+The company context decides what data you see. The contract list in one company shows its contracts, and in another its own. It is the same screen, but different data, because **business data belongs to a specific company**.
+
+## Always know which company you are in
+
+This is the basic habit in multi-company work. Before you enter a record, check which company is active.
+
+The most common mistake always looks the same: someone returns to the system after a break, creates an invoice or a ticket, and only after the fact turns out the document went to the wrong company. Fixing this usually requires deleting the record and entering it again, because **a record does not move between companies with one click**.
+
+> **Check before saving, not after.** Two seconds to glance at which company is active save a quarter-hour of cleanup. Especially with numbered documents, because a number assigned in the wrong company stays in its list.
+
+## Reasons for differences between companies
+
+Companies need not have an identical set of areas. The administrator decides **which modules are enabled in which company**, so differences are normal.
+
+| What is sometimes different | Why |
+| --- | --- |
+| Available areas in the menu | a module enabled only in some companies |
+| Document numbering | separate number series for each company |
+| Processes and approvals | a different way of working in different companies |
+| Permissions | the scope may be different in each company |
+
+If you cannot find something, the first question is always: **am I in the right company**. The second: does this area work in this company at all.
+
+## Shared elements
+
+Some things are set once for the whole organization, so they look the same everywhere: the structure of lists, the layout of forms, the process definitions. That is why a new column or a new field appears in all companies at once.
+
+The data stays separate. **The system's structure is shared; the data is separate.** This principle explains most questions about why something changed "everywhere" while something else changed only at one company.
+
+## Working with several companies at once
+
+- **Records from different companies do not mix on one list.** An aggregate summary from several companies is a task for a report, not for an ordinary list.
+- **Search works in the current context.** It will not find a document from another company until you switch to it.
+- **Relations lead within a company.** A record of one company does not point to a record of another.
+
+> **Example.** A colleague asks for "that contract from last month". They give the number, but the search finds nothing. Usually it is not about a deleted document, but about another company in which the contract was issued.
+
+## Related
+
+Roles and permissions describe why the permissions scope differs between companies. Record list describes lists that show the current company's data. Searching and filtering describes the scope of search. Reports describe summaries that can reach wider than one company.

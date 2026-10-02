@@ -1,0 +1,245 @@
+---
+title: Examples
+description: Follow a complete custom object form and View Layout flow.
+---
+
+# Examples
+
+This page shows one full flow for a custom object named `ticket` in a custom module named `support`.
+
+The example assumes:
+
+- the custom module `support` already exists;
+- the custom object `ticket` already exists;
+- the object has fields named `title`, `notes`, and `priority`;
+- the API token has form, layout, and custom record permissions.
+
+## 1. Create The Form
+
+```http
+POST /v1/custom-modules/support/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT", "VIEW"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Ticket",
+    "successMessage": "Ticket saved."
+  }
+}
+```
+
+Save these response values:
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "viewLayoutId": "layout_ticket_intake"
+  }
+}
+```
+
+The form ID goes into dynamic object layout targets. The layout ID is used for draft and publish endpoints.
+
+## 2. Discover Blocks
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Look for catalog entries for:
+
+- `title`;
+- `notes`;
+- `priority`;
+- optional structural blocks such as sections and tabs;
+- any relation table fields.
+
+Copy `defaultBlock` values from the catalog, then assign stable `id` values and place them in regions.
+
+## 3. Save A Draft
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    },
+    {
+      "key": "sidebar",
+      "label": "Sidebar",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 1,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "section_details",
+      "type": "section",
+      "source": "system",
+      "ref": { "componentKey": "layout.section" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "config": { "title": "Details", "columns": 12 },
+      "supportedModes": ["CREATE", "VIEW", "EDIT"],
+      "children": [
+        {
+          "id": "field_title",
+          "type": "field",
+          "source": "dynamic_field",
+          "ref": { "fieldKey": "title" },
+          "regionKey": "main",
+          "displayOrder": 0,
+          "grid": { "colSpan": 12 },
+          "config": { "label": "Title" },
+          "requiredPolicy": "required",
+          "supportedModes": ["CREATE", "VIEW", "EDIT"],
+          "children": []
+        },
+        {
+          "id": "field_notes",
+          "type": "field",
+          "source": "dynamic_field",
+          "ref": { "fieldKey": "notes" },
+          "regionKey": "main",
+          "displayOrder": 1,
+          "grid": { "colSpan": 12 },
+          "config": { "label": "Notes" },
+          "requiredPolicy": "optional",
+          "supportedModes": ["CREATE", "VIEW", "EDIT"],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "field_priority",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "priority" },
+      "regionKey": "sidebar",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Priority" },
+      "requiredPolicy": "optional",
+      "supportedModes": ["CREATE", "VIEW", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+The response includes a draft version ID and validation result. Save the draft version ID for publish.
+
+## 4. Publish The Draft
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+After publish, runtime resolve uses the published version.
+
+## 5. Set The Default Form
+
+```http
+PATCH /v1/custom-modules/support/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_intake",
+  "defaultEditFormId": "form_ticket_intake"
+}
+```
+
+This lets runtime clients resolve the default form when they do not need to choose a different form explicitly.
+
+## 6. Resolve The Layout
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Use the response to render the form. If `dataRequirements` is not empty, call `POST /v1/view-layouts/runtime-data`.
+
+## 7. Create A Record
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Cannot log in",
+    "notes": "The customer cannot access the portal.",
+    "priority": "high"
+  }
+}
+```
+
+The API returns the saved parent record and any relation table or subordinate object mutation results.
+
+## 8. Update A Record
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/rec_ticket_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Reset link sent."
+  }
+}
+```
+
+Only fields that are writable in the external custom object profile and available through the resolved layout can be updated.
+
+## ID Ownership
+
+Some IDs come from Opero. Some are chosen by your client.
+
+| Value | Who creates it |
+| --- | --- |
+| `form_ticket_intake` | Opero returns this as the form ID. |
+| `layout_ticket_intake` | Opero returns this as the owned layout ID. |
+| `version_ticket_draft_1` | Opero returns this after saving a draft. |
+| `rec_ticket_123` | Opero returns this after creating a record. |
+| `field_title`, `section_details` | Your client chooses stable layout block IDs. |
+| `ticket-layout-draft-001` | Your client chooses mutation IDs. |
+| `tmp_comment_1` | Your client chooses temporary child row IDs for aggregate creates. |
+
+Use stable client block IDs. Do not generate new block IDs on every save for the same logical block.

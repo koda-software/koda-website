@@ -1,0 +1,42 @@
+---
+title: "Basic fields"
+description: "Tekst, liczba, kwota, data, przełącznik, e-mail, telefon, NIP, adres i kolor. Co oznacza każdy rodzaj pola na formularzu i dlaczego system nie przyjmuje niektórych wartości."
+---
+
+## A field as a unit of information
+
+A record form is made of fields. Every field has its kind, and the kind decides what can be entered in it, how the value looks on the list, and how it behaves in search. That is why a date is not plain text, and an amount is not a plain number.
+
+## The kinds of fields you will meet most often
+
+| Field | What you enter in it |
+| --- | --- |
+| Text | a short piece of information on one line: a name, a title, an external number |
+| Multi-line text | a longer description without formatting, for example notes |
+| Number | a numeric value, for example a count of items, days, or hours |
+| Amount | a monetary value together with the currency |
+| Toggle | a yes or no answer |
+| Date | a day without a time: a deadline, an issue date, an event date |
+| Date with time | a specific moment: the start of a visit, the moment of sending |
+| E-mail, phone, website address | contact data in a format checked by the system |
+| Tax ID | a tax identification number, with the option to verify the contractor |
+| Select field | a list of ready values, for example from a dictionary |
+
+## Reasons a value is rejected
+
+The most common reasons an entry is rejected are four, and each of them is deliberate.
+
+- **Wrong format.** In an e-mail or phone field the system watches the shape of the value, so that it can later be used, for example to send a message.
+- **A number instead of text.** In a number field you cannot store a unit or a comment. If you need a note, there should be a separate field for remarks.
+- **A non-existent day.** The thirtieth of February is an error, not silently shifted to March.
+- **A required field.** A record cannot be saved without filling in the fields marked as required.
+
+## Date versus date with time
+
+This distinction can be confusing, so it is worth knowing. A **date** means the day as such: a payment deadline of the fourteenth of March is the fourteenth of March regardless of where you are. A **date with time** means a specific moment and, when working in a different time zone, may show as a different hour, and for night-time values even as a different day.
+
+So if you see a deadline without a time in the system, it is not an oversight: that is how it is meant to be.
+
+## Read-only fields
+
+Some fields have a gray background and cannot be edited. This usually means one of three things: the value is computed by automation, the value was assigned by the system on save (for example a number), or the record is at a process stage where this field is locked. In none of these cases is it a fault.

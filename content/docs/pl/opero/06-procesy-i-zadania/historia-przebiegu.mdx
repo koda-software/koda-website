@@ -1,0 +1,32 @@
+---
+title: "Historia przebiegu"
+description: "Każda sprawa prowadzona procesem zapisuje swój bieg: kto, kiedy i jakim przejściem ją przesunął. Dzięki temu da się odtworzyć decyzje bez pytania kogokolwiek."
+---
+
+## Sprawa pamięta swój bieg
+
+Sprawa prowadzona procesem zapisuje każdy krok: jakim przejściem została przesunięta, kto to zrobił i kiedy. Ta historia jest przy rekordzie, więc w każdej chwili widać, jak sprawa doszła tam, gdzie jest, bez odtwarzania z pamięci i bez pytania współpracowników.
+
+## Zawartość historii
+
+| Element | Co mówi |
+| --- | --- |
+| Przejście | jaki ruch wykonano, na przykład Zatwierdź albo Odrzuć |
+| Osoba | kto wykonał ruch |
+| Czas | kiedy to się stało |
+| Komentarz | uzasadnienie, jeżeli przejście go wymagało |
+| Etapy | z którego etapu na który sprawa przeszła |
+
+Jeżeli ktoś działał w zastępstwie za osobę nieobecną, historia zachowuje jedno i drugie: kto fizycznie wykonał ruch i w czyim imieniu.
+
+## Zastosowanie
+
+- **Rozliczenie decyzji.** Widać, kto zatwierdził i z jakim uzasadnieniem, więc nie ma sporu, czy coś było akceptowane.
+- **Znalezienie zatoru.** Widać, na którym etapie sprawa stała najdłużej.
+- **Wyjaśnienie pomyłki.** Gdy sprawa poszła nie tą drogą, historia pokazuje, gdzie i przez kogo, więc łatwiej ją naprawić.
+
+> **Przykład.** Klient pyta, dlaczego zamówienie zrealizowano mimo braku zaliczki. Historia pokazuje, że przejście Realizuj wykonał konkretny pracownik danego dnia, z komentarzem "zgoda kierownika telefonicznie". Przebieg sprawy jest ustalony, a nie odtwarzany z pamięci.
+
+## Zakres nieobjęty historią
+
+Historia jest zapisem faktów i nie da się jej edytować. To celowe: gdyby dało się ją poprawiać, straciłaby wartość dowodową. Jeżeli w sprawie zaszła pomyłka, naprawia się ją kolejnym przejściem, które też trafi do historii, a nie przez zacieranie poprzedniego kroku.

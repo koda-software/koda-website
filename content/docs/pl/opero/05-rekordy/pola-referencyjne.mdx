@@ -1,0 +1,32 @@
+---
+title: "Pola powiązań"
+description: "Pole powiązania wskazuje inny rekord w systemie: zgłoszenie wskazuje umowę, projekt wskazuje klienta. Dzięki temu dane nie są przepisywane po raz drugi."
+---
+
+## Zastosowania powiązań
+
+Ta sama informacja bywa potrzebna w kilku miejscach. Zgłoszenie serwisowe dotyczy umowy, umowa dotyczy klienta, projekt ma kierownika. Zamiast przepisywać nazwę klienta do każdego rekordu, wskazuje się **rekord**, który już w systemie jest.
+
+Zysk jest podwójny. Dane nie rozjeżdżają się przy zmianie, bo istnieje jedno miejsce prawdy. Z każdego rekordu da się też przejść do powiązanego jednym kliknięciem, bez szukania po listach.
+
+## Sposób korzystania
+
+Pole powiązania nie jest polem tekstowym: zamiast wpisywać, wybiera się z listy. Zwykle wystarczy zacząć pisać fragment nazwy albo numeru, żeby lista zawęziła się do pasujących rekordów.
+
+To, co widzisz na liście wyboru, jest **etykietą rekordu**, czyli tym samym, co widnieje w jego liście. Jeżeli rekordy są trudne do rozróżnienia, na przykład kilka pozycji o tej samej nazwie, to sygnał dla administratora, że etykieta wymaga uzupełnienia o numer albo datę.
+
+> **Przykład.** Na formularzu zgłoszenia wybierasz umowę wpisując jej numer. Po zapisaniu numer umowy staje się odnośnikiem: klikasz i jesteś na formularzu umowy, z pełnym kontekstem sprawy.
+
+## Jedno powiązanie albo wiele
+
+Pola powiązań występują w dwóch odmianach. Jedne przyjmują dokładnie jeden rekord, na przykład klient projektu. Inne przyjmują ich kilka, na przykład dokumenty powiązane ze sprawą albo pojęcia opisane w artykule. Widać to po samym polu: albo wybierasz jedną wartość, albo dokładasz kolejne pozycje do listy.
+
+## Osoby i kontrahenci
+
+Wskazanie pracownika albo kontrahenta wygląda podobnie, ale korzysta z osobnych rodzajów pól, związanych z listą użytkowników systemu i z listą kontrahentów. W praktyce różnica jest niewidoczna: też wybierasz z listy, tyle że jej zawartość pochodzi z ewidencji osób albo kontrahentów, a nie z listy zbudowanego dla firmy.
+
+## Ograniczenia powiązania
+
+Powiązanie **nie kopiuje danych**. Jeżeli na formularzu zgłoszenia widzisz nazwę klienta pochodzącą z umowy, to podgląd wartości z powiązanego rekordu, a nie jej kopia. Zmiana nazwy klienta zmienia ją wszędzie, i o to chodzi.
+
+Powiązanie nie nadaje też uprawnień. Jeżeli nie masz dostępu do umów, wskazanie umowy w polu nie otworzy jej formularza.

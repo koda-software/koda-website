@@ -1,0 +1,9 @@
+{
+  "title": "Moduły własne",
+  "pages": [
+    "list-custom-modules",
+    "get-custom-module",
+    "get-custom-modules-field-types",
+    "get-custom-modules-field-types-type"
+  ]
+}

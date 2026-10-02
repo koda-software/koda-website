@@ -1,0 +1,52 @@
+---
+title: Open API
+description: Używaj schematu OpenAPI Opero z typowanymi klientami, generatorami SDK i narzędziami API.
+---
+
+Opero publikuje schemat OpenAPI dla API.
+
+[Otwórz schemat OpenAPI](https://opero.kodasoft.pl/api/swagger/v1/json)
+
+```txt
+https://opero.kodasoft.pl/api/swagger/v1/json
+```
+
+Schemat jest też dostępny z opisami po angielsku albo po polsku:
+
+```txt
+https://opero.kodasoft.pl/api/swagger/v1/en/json
+https://opero.kodasoft.pl/api/swagger/v1/pl/json
+```
+
+## Adres bazowy
+
+Wszystkie ścieżki API podaje się względem adresu bazowego API:
+
+- Opero w chmurze: `https://opero.kodasoft.pl/api`
+- Opero na własnym serwerze: `https://<adres Twojego Opero>/api`
+
+W instalacji na własnym serwerze schemat OpenAPI jest dostępny pod tymi samymi ścieżkami względem Twojego adresu bazowego.
+
+Dopisuj ścieżkę endpointu na końcu adresu bazowego, na przykład `https://opero.kodasoft.pl/api/v1/ping`. Nie składaj adresu przez rozwiązywanie ścieżki bezwzględnej względem adresu bazowego: `new URL('/v1/ping', baseUrl)` pomija segment `/api`.
+
+Dawny adres `https://api.kodasoft.pl` nie jest już obsługiwany. Używaj adresu bazowego podanego wyżej.
+
+## Kiedy go używać
+
+Używaj schematu OpenAPI, gdy chcesz połączyć Opero z narzędziami, które rozumieją kontrakty API.
+
+Typowe zastosowania:
+
+- Generowanie silnie typowanych klientów API.
+- Tworzenie typów TypeScript dla zapytań i odpowiedzi.
+- Import API do narzędzi takich jak Postman, Insomnia, Swagger UI albo generatory kodu.
+- Walidacja kodu integracji względem aktualnego kontraktu API.
+
+## Uwagi
+
+Schemat opisuje kontrakt API. Aby wywoływać chronione endpointy, zapytania nadal potrzebują tokenu Opero API.
+
+## Powiązane strony
+
+- [Uwierzytelnianie](/docs/pl/api/authentication)
+- [Język](/docs/pl/api/language)

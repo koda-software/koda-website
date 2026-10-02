@@ -1,0 +1,33 @@
+---
+title: "Pola wyboru"
+description: "Pola wyboru pilnują, żeby wszyscy nazywali tak samo te same rzeczy. Skąd biorą się dostępne wartości i co zrobić, gdy brakuje tej właściwej."
+---
+
+## Pole wyboru zamiast pola tekstowego
+
+Gdyby rodzaj sprawy wpisywało się ręcznie, powstałyby „reklamacja", „Reklamacja", „reklam." i „zwrot towaru" jako cztery różne rzeczy. Żadnego z tych zapisów nie da się policzyć w raporcie. Dlatego wartości powtarzalne wybiera się z dostępnych wartości.
+
+Efekt widać dopiero na zestawieniach: filtr po statusie działa, raport zlicza poprawnie, a nie ma wątpliwości, czy „w toku" i „w trakcie" to jedno i to samo.
+
+## Wybór pojedynczy i wielokrotny
+
+- **Pole wyboru** pozwala wskazać jedną wartość. Tak działają statusy, rodzaje, kategorie.
+- **Pole wielokrotnego wyboru** pozwala wskazać kilka naraz, na przykład kilka kanałów kontaktu albo kilka oznaczeń sprawy.
+
+Na liście rekordów wartości z wyboru zwykle mają kolor, dzięki czemu widać je od razu, bez czytania całej kolumny.
+
+## Źródło wartości
+
+Wartości ustala administrator i pochodzą z jednego z trzech miejsc: z wartości wpisanych wprost przy polu, ze wspólnego słownika używanego w kilku miejscach systemu albo z żywych danych, na przykład listy aktywnych kontrahentów. Ostatni przypadek poznasz po tym, że wartości zmieniają się razem z danymi, bez udziału administratora.
+
+> **Przykład.** Pole Opiekun sprawy pokazuje tylko pracowników z aktywnym zatrudnieniem, bo jego źródłem jest zapytanie do listy pracowników, a nie sztywna lista wpisana raz przy zakładaniu pola.
+
+## Braki wartości
+
+Jeżeli potrzebnej wartości nie ma, nie obchodź tego przez wpisanie czegoś przybliżonego ani przez uwagę w polu opisu. Zgłoś to administratorowi. Dopisanie wartości do słownika to zmiana na minutę, a dane zostają spójne.
+
+Warto wiedzieć, że wartości bywają celowo ograniczone: część list jest krótka, żeby raport miał sens. Odpowiedź „tego nie dodajemy" też jest odpowiedzią i zwykle wynika z ustaleń przy wdrożeniu.
+
+## Kolejność wartości
+
+Wartości pola wyboru zwykle nie są posortowane przypadkiem: kolejność ustawia administrator tak, żeby najczęstsze albo najważniejsze były na górze. Jeżeli kolejność przeszkadza w codziennej pracy, to również jest temat na zgłoszenie.

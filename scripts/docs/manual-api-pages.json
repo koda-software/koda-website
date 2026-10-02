@@ -1,0 +1,42 @@
+{
+  "en": [
+    "authentication.mdx",
+    "language.mdx",
+    "open-api.mdx",
+    "custom-object-forms/management.mdx",
+    "custom-object-forms/view-layouts.mdx",
+    "custom-object-forms/runtime.mdx",
+    "queries/introduction.mdx",
+    "view-layout-configuration/overview.mdx",
+    "view-layout-configuration/custom-object-forms.mdx",
+    "view-layout-configuration/discovering-blocks.mdx",
+    "view-layout-configuration/building-layouts.mdx",
+    "view-layout-configuration/block-types.mdx",
+    "view-layout-configuration/custom-fields.mdx",
+    "view-layout-configuration/examples.mdx",
+    "view-layout-configuration/troubleshooting.mdx",
+    "rules/introduction.mdx",
+    "workflows/introduction.mdx",
+    "view-layout-runtime/runtime.mdx"
+  ],
+  "pl": [
+    "authentication.mdx",
+    "language.mdx",
+    "open-api.mdx",
+    "custom-object-forms/management.mdx",
+    "custom-object-forms/view-layouts.mdx",
+    "custom-object-forms/runtime.mdx",
+    "queries/introduction.mdx",
+    "view-layout-configuration/overview.mdx",
+    "view-layout-configuration/custom-object-forms.mdx",
+    "view-layout-configuration/discovering-blocks.mdx",
+    "view-layout-configuration/building-layouts.mdx",
+    "view-layout-configuration/block-types.mdx",
+    "view-layout-configuration/custom-fields.mdx",
+    "view-layout-configuration/examples.mdx",
+    "view-layout-configuration/troubleshooting.mdx",
+    "rules/introduction.mdx",
+    "workflows/introduction.mdx",
+    "view-layout-runtime/runtime.mdx"
+  ]
+}

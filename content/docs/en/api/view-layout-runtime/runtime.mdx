@@ -1,0 +1,188 @@
+---
+title: Runtime Guide
+description: Resolve published View Layouts, load runtime data, and save custom object records.
+---
+
+# View Layout Runtime
+
+Runtime endpoints use published View Layouts. They are for rendering a layout, loading lazy block data, and creating or updating custom object records through the published layout contract.
+
+Draft changes are not used at runtime until they are published.
+
+## Before You Start
+
+For dynamic object runtime work, the API token needs:
+
+- `api.view_layouts.read` for resolve and runtime data;
+- `api.custom_records.read` for reading dynamic object runtime data;
+- `api.custom_records.write` for creating or updating records;
+- an external custom object profile that exposes the object and allows the operation.
+
+The custom object profile controls which fields are readable, writable, filterable, sortable, and expandable. Runtime endpoints enforce those profile rules in addition to the published layout.
+
+## Resolve A Published Layout
+
+Resolve tells the client which published layout applies and returns the block tree to render.
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+For viewing or editing an existing record, include `recordId`:
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_intake&recordId=rec_ticket_123
+Authorization: Bearer ek_...
+```
+
+The response includes:
+
+- the selected layout and version;
+- the requested mode;
+- regions and resolved blocks;
+- validation state;
+- data requirements for lazy runtime data;
+- render context such as surface, mode, module key, object key, and form ID;
+- workflow state when applicable.
+
+## Load Runtime Data
+
+Some blocks require lazy runtime data. Resolve returns `dataRequirements`; send those requirements to the runtime data endpoint.
+
+```http
+POST /v1/view-layouts/runtime-data?surface=DYNAMIC_OBJECT&mode=VIEW&moduleKey=support&objectKey=ticket&formId=form_ticket_details&recordId=rec_ticket_123
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "requirements": [
+    {
+      "blockId": "field_title",
+      "type": "dynamic_fields",
+      "key": "ticket_fields"
+    }
+  ]
+}
+```
+
+The endpoint validates that each requirement belongs to the resolved layout. Stale or unknown requirements are returned as unavailable instead of being trusted blindly.
+
+## Create A Record
+
+Create uses the resolved `CREATE` layout. The submitted fields must be allowed by the published layout and writable according to the external custom object profile.
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Cannot log in",
+    "notes": "The customer cannot access the portal."
+  }
+}
+```
+
+`clientMutationId` is required for create requests. If an active workflow applies to the target object, `workflowId` may be required by the runtime contract.
+
+## Update A Record
+
+Update uses the resolved `EDIT` layout.
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/rec_ticket_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=support&objectKey=ticket&formId=form_ticket_editor
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Reset link sent."
+  }
+}
+```
+
+For updates, `clientMutationId` is recommended for every request and required when the aggregate update creates or deletes child rows.
+
+If the record is in a workflow stage that does not allow editing for the actor, the endpoint returns `403 Forbidden`.
+
+## Relation Table Saves
+
+Relation table changes are saved in the parent record create or update request.
+
+```json
+{
+  "clientMutationId": "ticket-create-with-comments",
+  "values": {
+    "title": "Cannot log in"
+  },
+  "relationTables": {
+    "comments": {
+      "create": [
+        {
+          "clientId": "tmp_comment_1",
+          "values": {
+            "text": "Initial report from support desk."
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+The target object for the relation table must also be exposed through an external custom object profile. Nested creates, updates, deletes, and writable fields are checked against the target profile.
+
+## Subordinate Object Saves
+
+Subordinate object changes use `subordinateObjects`, keyed by the subordinate reference field key.
+
+```json
+{
+  "clientMutationId": "ticket-update-subtasks",
+  "subordinateObjects": {
+    "subtasks": {
+      "create": [
+        {
+          "clientId": "tmp_subtask_1",
+          "values": {
+            "title": "Check account status"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+Subordinate objects are not directly exposed as standalone record endpoints. They are saved through the parent aggregate request.
+
+## Relation Table Metadata
+
+Use relation table runtime endpoints when a UI needs relation rows or target row layouts.
+
+| Need | Endpoint |
+| --- | --- |
+| Resolve the target row layout for create or edit UI | [`GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout`](/docs/en/api/view-layout-runtime/resolve-relation-table-target-layout) |
+| Read selected relation table rows through the target row layout | [`POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout`](/docs/en/api/view-layout-runtime/get-relation-table-row-layout-data) |
+| Query a relation table for a parent record | [`POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query`](/docs/en/api/view-layout-runtime/query-relation-table-rows-through-view-layout) |
+
+The query endpoint path includes the parent `recordId` because relation rows are read in the context of that parent record.
+
+## What Runtime Enforces
+
+Runtime endpoints check:
+
+- API token permissions;
+- organization scope;
+- whether the custom object is externally exposed;
+- whether the requested operation is allowed by the external profile;
+- whether submitted parent fields are writable;
+- whether nested relation and subordinate targets are exposed and allow the nested operation;
+- whether the published layout supports the requested mode;
+- workflow edit restrictions for edit requests.
+
+Use [Troubleshooting](/docs/en/api/view-layout-configuration/troubleshooting) for common error responses.

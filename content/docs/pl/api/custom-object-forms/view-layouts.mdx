@@ -1,0 +1,221 @@
+---
+title: Edycja układów formularzy
+description: Edycja i publikacja układu powiązanego z formularzem obiektu własnego.
+---
+
+Użyj tej strony po utworzeniu formularza obiektu własnego. Wyjaśnia ona, jak edytować powiązany układ, aby formularz mógł być renderowany i używany w czasie działania.
+
+## Najważniejsza Zasada
+
+Nie twórz osobnego układu i nie próbuj podpinać go do formularza.
+
+Gdy tworzysz formularz, Opero tworzy jeden powiązany układ i zwraca `viewLayoutId`. Używaj tego ID układu do zapisywania wersji roboczych, publikacji, historii wersji i sprawdzania działania.
+
+Każdy formularz ma dokładnie jeden powiązany układ. Obsługiwane tryby układu odzwierciedlają `types` formularza. Jeśli chcesz zmienić tryby, zaktualizuj formularz, a nie metadane układu.
+
+API odrzuca próby utworzenia kolejnego układu `DYNAMIC_OBJECT` z `target.formId`, ponieważ układy formularzy są zarządzane przez formularz.
+
+## Zanim Zaczniesz
+
+Potrzebujesz:
+
+- `api.view_layouts.read`, aby ładować metadane kreatora i szczegóły układu;
+- `api.view_layouts.manage`, aby zapisywać wersje robocze i przywracać wersje jako wersje robocze;
+- `api.view_layouts.publish`, aby publikować wersje robocze;
+- `viewLayoutId` zwróconego przez formularz.
+
+Przykłady używają:
+
+- klucza modułu: `crm`;
+- klucza obiektu: `ticket`;
+- ID formularza: `form_ticket_intake`;
+- ID układu: `layout_ticket_intake`.
+
+## Pobranie Metadanych Kreatora
+
+Pobierz katalog bloków dla powierzchni formularza, trybu, obiektu i formularza:
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Katalog mówi klientowi, jakie pola i bloki można dodać. Wpisy zawierają etykiety, kategorie, typ bloku, źródło, domyślną konfigurację bloku, schemat konfiguracji, obsługiwane tryby oraz flagi wymagania lub blokady.
+
+Używaj katalogu zamiast wpisywać pola obiektu własnego na stałe w kliencie.
+
+Pobierz definicje powierzchni, gdy budujesz nową wersję roboczą lub powłokę edytora:
+
+```http
+GET /v1/view-layouts/surface-definitions?surface=DYNAMIC_OBJECT
+Authorization: Bearer ek_...
+```
+
+Definicje powierzchni opisują domyślne regiony, wymagane bloki i reguły rozmieszczania.
+
+## Zapis Wersji Roboczej
+
+Zapis wersji roboczej utrwala zmiany układu, ale nie publikuje ich dla użytkowników.
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_title",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "title" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Title" },
+      "modeConfig": {},
+      "requiredPolicy": "required",
+      "locked": false,
+      "removable": false,
+      "singleInstance": true,
+      "supportedModes": ["CREATE", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+Odpowiedź zawiera zapisaną wersję roboczą i wynik walidacji:
+
+```json
+{
+  "data": {
+    "draftVersion": {
+      "id": "version_ticket_draft_1",
+      "status": "DRAFT"
+    },
+    "validation": {
+      "state": "valid",
+      "errors": [],
+      "warnings": []
+    }
+  }
+}
+```
+
+Jeśli walidacja jest niepoprawna, popraw zgłoszone błędy i zapisz ponownie. Publikacja nie powiedzie się, dopóki wersja robocza nie będzie poprawna.
+
+## Publikacja Wersji Roboczej
+
+Publikacja udostępnia wersję roboczą w czasie działania.
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+Po publikacji pobierz formularz ponownie:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Opublikowane tryby powinny pojawić się w `usableTypes`, a `layoutAvailability` powinno zwracać `PUBLISHED` dla tych trybów.
+
+Publikacja może też zawierać kontrolę optymistyczną, na przykład `expectedPublishedVersionId`, oraz potwierdzenia zmian pól przez `confirmFieldChanges`. Używaj tych pól, gdy edytor musi chronić przed nadpisaniem nowszej opublikowanej wersji albo gdy przygotowane zmiany pól wymagają jawnego potwierdzenia.
+
+## Publiczne Formularze Tworzenia
+
+Publiczne formularze używają przypiętej opublikowanej wersji układu. Jeśli formularz jest publiczny i obsługuje `CREATE`, opublikuj z `advancePublicPinnedVersion`, gdy nowa wersja ma stać się publiczna:
+
+```json
+{
+  "clientMutationId": "ticket-layout-public-publish-001",
+  "draftVersionId": "version_ticket_draft_1",
+  "advancePublicPinnedVersion": true
+}
+```
+
+Używaj tego tylko wtedy, gdy nowy opublikowany układ ma zastąpić wersję aktualnie używaną przez publiczne zgłoszenia.
+
+## Aktualizacja Metadanych Układu
+
+Dla układów powiązanych z formularzem formularz zarządza:
+
+- powierzchnią;
+- celem;
+- obsługiwanymi trybami.
+
+Nie aktualizuj tych pól przez `PATCH /v1/view-layouts/:layoutId`. Użyj endpointu aktualizacji formularza, gdy chcesz zmienić typy formularza.
+
+Możesz aktualizować bezpieczne metadane, takie jak nazwa układu, jeśli pasuje to do Twojego przepływu pracy.
+
+## Wersje
+
+Listuj wersje, gdy musisz sprawdzić poprzednie opublikowane układy:
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/versions
+Authorization: Bearer ek_...
+```
+
+Przywróć wersję jako wersję roboczą:
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/versions/version_ticket_draft_1/restore-draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-restore-001"
+}
+```
+
+Przywrócenie tworzy wersję roboczą. Opublikuj ją ponownie, gdy ma wejść w życie.
+
+## Rozwiązywanie Problemów
+
+### Formularz Nadal Pokazuje `DRAFT_ONLY`
+
+Wersja robocza nie została opublikowana. Opublikuj układ i pobierz formularz ponownie.
+
+### Publikacja Zwraca Błędy Walidacji
+
+Układ nie zawiera wymaganych pól albo zawiera bloki nieobsługiwane dla powierzchni, trybu lub reguł bezpieczeństwa publicznego. Użyj odpowiedzi walidacji, aby poprawić wersję roboczą.
+
+### Utworzenie Układu Z `target.formId` Kończy Się Błędem
+
+To oczekiwane zachowanie. Układy formularzy są tworzone automatycznie razem z formularzem. Użyj `viewLayoutId` z odpowiedzi formularza.
+
+### Tryby Układu Są Niepoprawne
+
+Zaktualizuj `types` formularza. Opero synchronizuje tryby powiązanego układu z formularza.
+
+## Powiązane Strony
+
+- [Zarządzanie formularzami obiektów własnych](/docs/pl/api/custom-object-forms/management)
+- [Używanie układów formularzy w czasie działania](/docs/pl/api/custom-object-forms/runtime)
+- [Zapis wersji roboczej układu](/docs/pl/api/view-layout-configuration/save-view-layout-draft)
+- [Publikacja układu](/docs/pl/api/view-layout-configuration/publish-view-layout)

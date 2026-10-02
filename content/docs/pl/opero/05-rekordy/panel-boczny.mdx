@@ -1,0 +1,62 @@
+---
+title: "Panel boczny"
+description: "Kolumna po prawej stronie formularza z trzema zakładkami: Ogólne, Załączniki i Komentarze. Co zawiera każda z nich i dlaczego to stałe miejsce w każdym rekordzie."
+---
+
+## Podział formularza na dwa obszary
+
+Formularz rekordu dzieli się na **obszar główny** i **panel boczny**. Obszar główny mieści treść sprawy: sekcje z polami, zakładki, tabele pozycji. Panel boczny stoi po prawej stronie, jest węższy i zawiera to, co towarzyszy rekordowi niezależnie od jego zawartości.
+
+Podział nie jest ozdobny. Obszar główny odpowiada na pytanie „co jest w tej sprawie", panel boczny na pytanie „na czym stoimy i co się przy tym działo".
+
+## Trzy zakładki panelu
+
+Panel boczny ma **stały układ trzech zakładek**, taki sam w każdej liście i w każdym rekordzie.
+
+| Zakładka | Co zawiera |
+| --- | --- |
+| Ogólne | dane procesu: bieżący etap, obsługa sprawy i historia przebiegu; podstawowe dane rekordu: identyfikator, autor, daty |
+| Załączniki | pliki dopięte do rekordu |
+| Komentarze | rozmowa przy rekordzie razem ze wzmiankami |
+
+Ten układ jest częścią systemu, a nie decyzją administratora przy budowie listy. Dlatego plików i komentarzy nie trzeba szukać: przy każdym rekordzie są w tym samym miejscu.
+
+> **Przykład.** Przy umowie w zakładce Ogólne widać etap Aktywna, przyciski dostępnych przejść, kto i kiedy wykonał poprzednie oraz datę założenia rekordu i osobę, która go założyła. W zakładce Załączniki leży skan podpisanej umowy, w Komentarzach ustalenia z klientem.
+
+## Zakładka Ogólne
+
+Zbiera dwie rzeczy naraz. Pierwsza to **proces**: na jakim etapie stoi sprawa, jakie przejścia są dostępne i kto wykonał poprzednie. Druga to **metryka rekordu**: identyfikator, osoba, która go założyła, i daty. Są to informacje o samym rekordzie, a nie o jego treści, dlatego nie stoją wśród pól w obszarze głównym.
+
+Administrator może dołożyć do panelu wybrane pola rekordu, na przykład osobę odpowiedzialną, priorytet albo termin, żeby pozostawały widoczne przez cały czas pracy. Zestaw takich pól bywa różny w różnych listach.
+
+> **Panel boczny jest wąski z założenia.** Mieści krótkie wartości: datę, kwotę, nazwisko, etap. Długie opisy i pola tekstu sformatowanego są tam nieczytelne i dlatego ich tam nie ma. Brak konkretnego pola w panelu nie oznacza, że pola nie ma na rekordzie, tylko że jego miejsce jest w obszarze głównym.
+
+## Zakładka Załączniki
+
+Standardowe miejsce na pliki towarzyszące sprawie: skany, oferty, zdjęcia, dokumenty podpisane. Plik dodany tutaj widzi każdy, kto ma dostęp do rekordu.
+
+Pola plików w obszarze głównym to co innego. Są wtedy, gdy rekord ma **konkretny, nazwany dokument**, na przykład pole Skan protokołu odbioru. Zakładka Załączniki przyjmuje wszystko pozostałe.
+
+## Zakładka Komentarze
+
+Rozmowa prowadzona przy sprawie zamiast w mailu albo na czacie. Wzmianka kierowana do konkretnej osoby wywołuje powiadomienie, więc komentarz bywa też sposobem na przekazanie sprawy dalej bez odrywania jej od kontekstu.
+
+## Różnice widoczne między osobami i rekordami
+
+- **Uprawnienia.** Panel pokazuje wyłącznie to, do czego dana osoba ma prawo, więc ta sama sprawa wyświetli dwóm osobom różny zestaw pól w zakładce Ogólne.
+- **Proces.** Rekord nieobjęty procesem nie ma etapu ani przejść, więc zakładka Ogólne pokazuje wtedy samą metrykę rekordu.
+- **Tryb.** Przy zakładaniu rekordu panel jest ograniczony, bo nie ma jeszcze czego opisywać: część zawartości pojawia się dopiero po pierwszym zapisie.
+
+## Typowe sytuacje
+
+| Objaw | Przyczyna | Co zrobić |
+| --- | --- | --- |
+| Panel jest pusty przy zakładaniu rekordu | zawartość dotyczy zapisanego rekordu | zapisz rekord i otwórz go ponownie |
+| W zakładce Ogólne nie ma etapu ani przejść | rekord nie jest prowadzony procesem | to zachowanie zamierzone; proces zakłada administrator |
+| Przycisk przejścia zniknął po zmianie etapu | przejście jest dostępne tylko na wybranych etapach | sprawdź listę dostępnych przejść na bieżącym etapie |
+| Panel pokazuje mniej niż koledze | węższy zakres uprawnień | zapytaj administratora, podając nazwę listy i pola |
+| Nie widać dodanego przed chwilą pliku | ekran pokazuje stan sprzed dodania | odśwież formularz |
+
+## Powiązane
+
+Formularz rekordu opisuje cały ekran rekordu. Układ formularza opisuje sekcje i zakładki obszaru głównego. Załączniki opisują pracę na plikach. Komentarze i wzmianki opisują rozmowę przy rekordzie. Historia zmian rekordu opisuje zapis zmian. Procesy - wprowadzenie opisuje etapy i przejścia. Role i uprawnienia opisują zakres widocznych danych.

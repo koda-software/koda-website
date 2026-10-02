@@ -1,0 +1,42 @@
+---
+title: "Pola podstawowe"
+description: "Tekst, liczba, kwota, data, przełącznik, e-mail, telefon, NIP, adres i kolor. Co oznacza każdy rodzaj pola na formularzu i dlaczego system nie przyjmuje niektórych wartości."
+---
+
+## Pole jako jednostka informacji
+
+Formularz rekordu składa się z pól. Każde pole ma swój rodzaj, a rodzaj decyduje o tym, co da się w nim wpisać, jak wartość wygląda na liście i jak zachowuje się przy wyszukiwaniu. Dlatego data nie jest zwykłym tekstem, a kwota nie jest zwykłą liczbą.
+
+## Rodzaje pól, które spotkasz najczęściej
+
+| Pole | Co w nie wpisujesz |
+| --- | --- |
+| Tekst | krótka informacja w jednej linii: nazwa, tytuł, numer obcy |
+| Tekst wielolinijkowy | dłuższy opis bez formatowania, na przykład uwagi |
+| Liczba | wartość liczbowa, na przykład liczba sztuk, dni albo godzin |
+| Kwota | wartość pieniężna razem z walutą |
+| Przełącznik | odpowiedź tak albo nie |
+| Data | dzień bez godziny: termin, data wystawienia, data zdarzenia |
+| Data z godziną | konkretny moment: początek wizyty, chwila wysyłki |
+| E-mail, telefon, adres strony | dane kontaktowe w formacie sprawdzanym przez system |
+| NIP | numer identyfikacji podatkowej, z możliwością sprawdzenia kontrahenta |
+| Pole wyboru | lista gotowych wartości, na przykład ze słownika |
+
+## Przyczyny odrzucenia wartości
+
+Najczęstsze powody odrzucenia wpisu są cztery i każdy z nich jest celowy.
+
+- **Zły format.** W polu e-mail albo telefonie system pilnuje kształtu wartości, żeby dało się potem z niej skorzystać, na przykład wysłać wiadomość.
+- **Liczba zamiast tekstu.** W polu liczbowym nie zapiszesz jednostki ani komentarza. Jeżeli potrzebujesz dopisku, powinno istnieć osobne pole na uwagi.
+- **Nieistniejący dzień.** Data trzydziestego lutego jest błędem, a nie zostaje milcząco przesunięta na marzec.
+- **Pole wymagane.** Rekordu nie da się zapisać bez wypełnienia pól oznaczonych jako wymagane.
+
+## Data a data z godziną
+
+To rozróżnienie bywa mylące, więc warto je znać. **Data** oznacza dzień jako taki: termin płatności czternastego marca jest czternastego marca niezależnie od tego, gdzie jesteś. **Data z godziną** oznacza konkretny moment i przy pracy w innej strefie czasowej może wyświetlić się jako inna godzina, a przy wartościach nocnych nawet jako inny dzień.
+
+Jeżeli więc widzisz w systemie termin bez godziny, to nie jest niedopatrzenie: tak ma być.
+
+## Pola tylko do odczytu
+
+Część pól ma szare tło i nie da się ich edytować. Zwykle znaczy to jedną z trzech rzeczy: wartość wylicza automat, wartość nadał system przy zapisie (na przykład numer), albo rekord stoi na etapie procesu, na którym to pole jest zablokowane. W żadnym z tych przypadków nie jest to usterka.

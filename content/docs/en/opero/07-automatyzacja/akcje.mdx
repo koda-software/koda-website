@@ -1,0 +1,33 @@
+---
+title: "Actions performed by rules"
+description: "Reguła może przeliczyć wartość, wysłać powiadomienie albo e-mail, utworzyć dokument, dopisać rekord i wykonać kilka takich kroków po kolei, zależnie od danych."
+---
+
+## An automation performs steps
+
+A rule is not one action, but a **sequence of steps** that perform in order when the triggering event occurs. Thanks to this, one event can pull several things at once: recompute a field, notify the right person, and generate a document.
+
+## Typical uses of rules
+
+- **Recomputes and saves a value**, for example the sum of items or the number of days to a deadline.
+- **Sends a notification in the system** to the right person or role.
+- **Sends an e-mail**, for example a reminder to a contractor.
+- **Creates a document** from a record, a ready PDF file.
+- **Creates or updates a record**, for example adds an entry to a list.
+- **Makes a decision depending on the data**: if the amount exceeds a threshold, it does one thing, otherwise another.
+
+> **Example.** After an order is approved, a rule recomputes the value after the discount, generates a confirmation in PDF, attaches it to the record, and sends an e-mail to the client. Four steps from one event, without manual work.
+
+## Reasons for differences in the result
+
+An automation can behave differently depending on the data. The same rule may send a notification on a large amount and skip it on a small one, because that is how it was built. If you expect an action that did not happen, the cause is usually a condition in the rule, not a failure.
+
+## The expected result
+
+- The effects of a rule are **permanent**: a saved value, a sent e-mail, a created document remain.
+- A rule acts **on the data it found**. On bad data it will compute a bad result.
+- Some steps **reach outside**, for example send a message. This cannot be undone like an ordinary edit.
+
+## Incorrect scope of an automation's action
+
+Report a specific case to the administrator: which record, what event, what happened, and what you expected. The administrator can see which of the rule's steps actually performed and what was in the data, so it is easy to point out where the behavior deviates from the intent.

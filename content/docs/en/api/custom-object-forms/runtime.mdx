@@ -1,0 +1,172 @@
+---
+title: Using Form Runtime Layouts
+description: Resolve published custom object forms and save records through runtime layouts.
+---
+
+Use runtime layouts when an integration needs to render a custom object form or save records through the same form contract that Opero uses for configured layouts.
+
+Before runtime use, the form must exist, be active, support the requested mode, and have a published valid owned View Layout.
+
+## Before You Start
+
+You need:
+
+- `api.view_layouts.read` to resolve layouts and load runtime data;
+- `api.custom_records.read` to read existing record data and relation rows;
+- `api.custom_records.write` to create or update records.
+
+The custom object API profile must also allow the requested record operation and field access.
+
+The examples use:
+
+- module key: `crm`;
+- object key: `ticket`;
+- form ID: `form_ticket_intake`;
+- record ID: `record_123`.
+
+## Resolve A Create Layout
+
+Resolve returns the published layout, hydrated block metadata, validation state, render context, runtime context, data requirements, and immediate render data.
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Use this response to decide which fields and blocks to render. Do not submit fields just because they exist on the object; runtime saves are checked against the resolved layout.
+
+## Resolve A View Or Edit Layout
+
+Pass `recordId` when working with an existing record:
+
+```http
+GET /v1/view-layouts/resolve?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake&recordId=record_123
+Authorization: Bearer ek_...
+```
+
+For view-only rendering, use `mode=VIEW`.
+
+If `formId` is omitted, the API tries to use the default form for the requested mode.
+
+## Load Lazy Runtime Data
+
+Some blocks declare `dataRequirements` in the resolve response. Use `runtime-data` to load those values:
+
+```http
+POST /v1/view-layouts/runtime-data?surface=DYNAMIC_OBJECT&mode=VIEW&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake&recordId=record_123
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "requirements": [
+    {
+      "blockId": "relation_tasks",
+      "type": "relation_table",
+      "key": "tasks"
+    }
+  ]
+}
+```
+
+The API returns data by block ID. Requirements that do not belong to the resolved layout are returned as unavailable instead of being trusted.
+
+## Create A Record
+
+Use the runtime create endpoint for `CREATE` layouts:
+
+```http
+POST /v1/view-layouts/runtime/dynamic-object/records?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-create-001",
+  "values": {
+    "title": "Printer is offline",
+    "notes": "The lobby printer stopped responding."
+  }
+}
+```
+
+`clientMutationId` is required for aggregate create idempotency. If one or more active workflows apply to the target object, include `workflowId` to start the selected workflow during create.
+
+## Update A Record
+
+Use the runtime update endpoint for `EDIT` layouts:
+
+```http
+PATCH /v1/view-layouts/runtime/dynamic-object/records/record_123?surface=DYNAMIC_OBJECT&mode=EDIT&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-update-001",
+  "values": {
+    "notes": "Technician dispatched."
+  }
+}
+```
+
+Workflow state can also affect edit access. If a record is in a read-only workflow stage or the current actor is not allowed to edit the current stage, the API rejects the edit even when the token has write permissions.
+
+## Relation Tables And Subordinate Objects
+
+Runtime saves can include more than scalar fields:
+
+- scalar field values go under `values`;
+- relation-table mutations go under `relationTables`;
+- nested subordinate object mutations go under `subordinateObjects`.
+
+Use the relation-table runtime endpoints when the UI needs table rows or target row layouts:
+
+| Need | Endpoint |
+| --- | --- |
+| Read selected relation-table rows through the resolved layout | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Resolve the target row layout for create or edit UI | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Query relation rows for an existing parent record | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
+
+## Why A Runtime Save Can Fail
+
+A submitted field or child mutation must pass every layer:
+
+- The field or relation exists on the custom object.
+- The field or relation is included in the resolved View Layout.
+- The field is writable in the requested mode.
+- The custom object API profile allows the token to use the operation and write the field.
+- The token has the required API permissions.
+- Workflow state allows the mutation when the record participates in a workflow.
+
+If any layer blocks the field or mutation, the API rejects the save.
+
+## Runtime Endpoint Map
+
+| Need | Endpoint |
+| --- | --- |
+| Resolve published layout | `GET /v1/view-layouts/resolve` |
+| Load lazy runtime data | `POST /v1/view-layouts/runtime-data` |
+| Create record through layout | `POST /v1/view-layouts/runtime/dynamic-object/records` |
+| Update record through layout | `PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId` |
+| Read relation table layout | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Resolve target row layout | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Query relation table rows | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
+
+## Troubleshooting
+
+### Resolve Returns Not Found
+
+Check that the form is active, belongs to the same custom object, and has a published valid layout for the requested mode. If you omitted `formId`, check that a default form is configured for that mode.
+
+### A Field Is Rejected
+
+Resolve the layout and confirm the field block is present for the requested mode. Then check the custom object API profile and token permissions.
+
+### Public Form Uses An Old Layout
+
+Publish the layout with `advancePublicPinnedVersion: true` so public create requests use the new published version.
+
+## Related Pages
+
+- [Managing Custom Object Forms](/docs/en/api/custom-object-forms/management)
+- [Editing Form View Layouts](/docs/en/api/custom-object-forms/view-layouts)
+- [Resolve View Layout](/docs/en/api/view-layout-runtime/resolve-view-layout)
+- [Create Dynamic Record Through View Layout](/docs/en/api/view-layout-runtime/create-dynamic-record-through-view-layout)

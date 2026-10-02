@@ -1,0 +1,19 @@
+---
+title: Language
+description: Request localized API responses with the Accept-Language header.
+---
+
+Opero API returns English localization by default.
+
+To request another supported language, send the `Accept-Language` header with the API request.
+
+```txt
+Accept-Language: pl
+```
+
+Supported languages:
+
+- `en`
+- `pl`
+
+When the requested language is supported, localized content is returned where the endpoint provides it. If the header is omitted or the requested language is not supported, English is used.

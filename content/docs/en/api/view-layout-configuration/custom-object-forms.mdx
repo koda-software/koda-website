@@ -1,0 +1,107 @@
+---
+title: Custom Object Forms
+description: Use custom object forms as the normal starting point for dynamic object View Layouts.
+---
+
+# Custom Object Forms
+
+Custom object forms are the usual starting point for dynamic object View Layout work. The form decides when the form can be used. The form-owned View Layout decides what the form shows.
+
+For example, a `support.ticket` object might have:
+
+- a `CREATE` form named `Ticket intake`;
+- a `VIEW` form named `Ticket details`;
+- an `EDIT` form named `Ticket editor`.
+
+Each form has exactly one owned View Layout. When you create or update the form types, Opero keeps the layout modes in sync.
+
+## Before You Start
+
+You need:
+
+- a custom module key, for example `support`;
+- a custom object key, for example `ticket`;
+- an API token with `api.custom_forms.read` and, for changes, `api.custom_forms.manage`;
+- `api.view_layouts.read`, `api.view_layouts.manage`, and `api.view_layouts.publish` when you edit and publish the owned layout.
+
+The custom object cannot be a subordinate object. Subordinate objects are edited through their parent layout, not through standalone forms.
+
+## Form Types And Layout Modes
+
+Form types map directly to View Layout modes.
+
+| Form type | Layout mode | Use |
+| --- | --- | --- |
+| `CREATE` | `CREATE` | Creating a new custom object record. |
+| `VIEW` | `VIEW` | Viewing an existing custom object record. |
+| `EDIT` | `EDIT` | Editing an existing custom object record. |
+
+When you update a form's `types`, Opero updates the same owned layout. It does not create a second layout for another mode.
+
+## Create A Form
+
+```http
+POST /v1/custom-modules/support/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Submit a ticket",
+    "successMessage": "Ticket submitted."
+  }
+}
+```
+
+The response includes the form ID and the owned layout ID.
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "types": ["CREATE", "EDIT"],
+    "viewLayoutId": "layout_ticket_intake",
+    "layoutAvailability": {
+      "CREATE": { "state": "DRAFT_ONLY" },
+      "EDIT": { "state": "DRAFT_ONLY" }
+    },
+    "usableTypes": []
+  }
+}
+```
+
+Save `viewLayoutId`. You will use it with the View Layout draft and publish endpoints.
+
+## Form Defaults And Access
+
+Default forms are fallback choices for a custom object. API-token actors can use default forms when resolving runtime layouts.
+
+```http
+PATCH /v1/custom-modules/support/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_details",
+  "defaultEditFormId": "form_ticket_editor"
+}
+```
+
+Only set a default to a form that supports that type. For example, `defaultCreateFormId` must point to a form with `CREATE`.
+
+Form access can target organization members by membership ID or roles by role ID. Replacing access is a full replacement, so send every user and role access entry that should remain.
+
+## What To Do Next
+
+After the form exists:
+
+1. Use [Discovering Blocks](/docs/en/api/view-layout-configuration/discovering-blocks) to get the block catalog for the form target.
+2. Use [Building Layouts](/docs/en/api/view-layout-configuration/building-layouts) to save and publish the owned layout.
+3. Use [Runtime Guide](/docs/en/api/view-layout-runtime/runtime) to resolve the published layout and save records.
+
+For the full form-management guide, see [Managing Custom Object Forms](/docs/en/api/custom-object-forms/management).

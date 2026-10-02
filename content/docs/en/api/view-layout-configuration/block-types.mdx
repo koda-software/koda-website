@@ -1,0 +1,202 @@
+---
+title: Block Types
+description: Understand View Layout block anatomy, sources, references, nesting, and common block types.
+---
+
+# Block Types
+
+Blocks are the building units of a View Layout. A block can be a field, section, tab, relation table, built-in component, button, custom HTML block, dashboard block, or another supported layout item.
+
+Use [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) to get supported blocks for the exact surface, mode, and target before saving a draft.
+
+## Block Anatomy
+
+Most draft blocks use this shape:
+
+```json
+{
+  "id": "field_title",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "title" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "grid": { "colSpan": 12 },
+  "config": { "label": "Title" },
+  "modeConfig": {},
+  "runtimeAvailability": null,
+  "requiredPolicy": "required",
+  "locked": false,
+  "removable": true,
+  "singleInstance": true,
+  "supportedModes": ["CREATE", "EDIT"],
+  "children": []
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `id` | Stable client-visible block ID. Preserve it across saves. |
+| `type` | What kind of block this is. |
+| `source` | Where the block comes from, such as `dynamic_field`, `custom_field`, or `system`. |
+| `ref` | The identifier for the field, component, relation, or other item the block represents. |
+| `regionKey` | Region where the block is placed. |
+| `displayOrder` | Order inside its region or parent. |
+| `grid` | Layout placement, such as column span. |
+| `config` | User-editable presentation and behavior options. |
+| `modeConfig` | Mode-specific settings. |
+| `runtimeAvailability` | Optional condition that controls runtime availability. |
+| `requiredPolicy` | `optional`, `required`, or `system_locked`. |
+| `children` | Nested blocks. |
+| `meta` | Runtime metadata returned by resolve. Draft saves may round-trip it, but persistence ignores runtime-only metadata. |
+
+## Sources
+
+| Source | Typical use |
+| --- | --- |
+| `dynamic_field` | Field from a custom object. |
+| `dynamic_relation` | Relation or relation table from a custom object. |
+| `custom_field` | Custom field on a built-in surface. |
+| `draft_custom_field` | Custom field definition staged in the current layout draft. |
+| `built_in` | Built-in surface component or field. |
+| `system` | Structural layout blocks such as sections, tabs, columns, buttons, and custom HTML. |
+| `module` | Module-provided blocks. |
+| `dashboard` | Dashboard workspace blocks. |
+
+## Reference Shapes
+
+The `ref` object identifies what the block points to. Common examples:
+
+```json
+{ "fieldKey": "title" }
+```
+
+```json
+{ "fieldDefinitionId": "custom_field_priority" }
+```
+
+```json
+{ "draftFieldDefinitionId": "draft_priority_field" }
+```
+
+```json
+{ "relationFieldKey": "comments" }
+```
+
+```json
+{ "componentKey": "layout.section" }
+```
+
+Use the catalog response as the source of truth for the expected `ref`.
+
+## Fields
+
+Dynamic object fields use `source: "dynamic_field"` and identify fields by `fieldKey`.
+
+```json
+{
+  "id": "field_title",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "title" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "grid": { "colSpan": 12 },
+  "config": { "label": "Title" },
+  "requiredPolicy": "required",
+  "supportedModes": ["CREATE", "EDIT"],
+  "children": []
+}
+```
+
+Built-in surface custom fields use `source: "custom_field"` and identify field definitions by `fieldDefinitionId`.
+
+## Sections, Columns, And Tabs
+
+Use sections to group blocks under a heading or layout area. Columns are structural blocks for splitting content inside a section or compatible parent. Tabs are a parent `tabs` block containing one or more `tab` blocks.
+
+The catalog advertises child rules such as minimum children, maximum children, allowed types, and allowed sources. Use those rules before nesting blocks.
+
+## Relation Tables
+
+Relation tables represent one-to-many custom object relations.
+
+```json
+{
+  "id": "relation_comments",
+  "type": "relation_table",
+  "source": "dynamic_relation",
+  "ref": {
+    "relationFieldKey": "comments",
+    "moduleKey": "support",
+    "objectKey": "ticket_comment"
+  },
+  "regionKey": "main",
+  "displayOrder": 2,
+  "config": {
+    "columns": ["text", "created_at"],
+    "targetMode": "VIEW"
+  },
+  "supportedModes": ["VIEW", "EDIT"],
+  "children": []
+}
+```
+
+At runtime, use relation table endpoints to resolve target row layouts and query rows. Relation table saves happen inside the parent record save request.
+
+## Buttons And Custom HTML
+
+Buttons are system blocks. Supported button actions are `open_url` and `execute_rule`.
+
+Opero renders and sanitizes custom HTML blocks.
+
+Use [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/en/api/view-layout-runtime/get-view-layout-runtime-context-variables) to learn which variables can be used in button URL templates, custom HTML, scripts, and runtime conditions.
+
+## Built-In Blocks
+
+Built-in blocks are used by built-in surfaces such as organization, contractor, and invoices.
+
+```json
+{
+  "id": "organization_details",
+  "type": "builtin",
+  "source": "built_in",
+  "ref": { "componentKey": "organization.details" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "requiredPolicy": "required",
+  "locked": true,
+  "removable": false
+}
+```
+
+Required built-in blocks must remain present before publish can succeed.
+
+## Runtime Availability
+
+`runtimeAvailability` can make a block available only when a condition matches.
+
+```json
+{
+  "runtimeAvailability": {
+    "condition": {
+      "value1": "{{ workflow.stage.parameters.showAccountingSection }}",
+      "operator": "EQUALS",
+      "value2": true
+    }
+  }
+}
+```
+
+Supported operators include `EQUALS`, `NOT_EQUALS`, comparison operators, `CONTAINS`, `NOT_CONTAINS`, `IS_EMPTY`, and `IS_NOT_EMPTY`.
+
+## Changing A Block
+
+To change a block, save a new full draft:
+
+1. Keep the same `id` when it is still the same logical block.
+2. Change `type`, `source`, and `ref` only when the block should represent a different thing.
+3. Update `config` for presentation changes.
+4. Move it by changing `regionKey`, parent `children`, or `displayOrder`.
+5. Save the draft and inspect validation.
+6. Publish only after validation passes.

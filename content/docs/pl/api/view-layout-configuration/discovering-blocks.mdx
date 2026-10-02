@@ -1,0 +1,107 @@
+---
+title: Odkrywanie bloków
+description: Używaj endpointów odkrywania przed zbudowaniem wersji roboczej układu widoku.
+---
+
+# Odkrywanie bloków
+
+Zanim zapiszesz wersję roboczą układu, zapytaj API, co jest dostępne dla edytowanej powierzchni, trybu i targetu. Dzięki temu klient nie musi wpisywać na stałe list pól, wymaganych bloków, regionów ani reguł typów pól własnych.
+
+Odkrywanie jest szczególnie ważne dla formularzy obiektów dynamicznych, bo dostępne bloki pól zależą od modułu własnego, obiektu własnego, formularza i trybu.
+
+## Endpointy odkrywania
+
+Wszystkie endpointy odkrywania wymagają dostępu do odczytu układów widoku.
+
+| Endpoint | Do czego służy |
+| --- | --- |
+| [`GET /v1/view-layouts/surface-capabilities`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-capabilities) | Sprawdzenie, które powierzchnie i tryby istnieją. |
+| [`GET /v1/view-layouts/surface-definitions`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-definitions) | Regiony, domyślne sekcje, wymagane bloki wbudowane i metadane powierzchni. |
+| [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog) | Bloki, które użytkownik może dodać dla konkretnej powierzchni, trybu i targetu. |
+| [`GET /v1/view-layouts/custom-field-types`](/docs/pl/api/view-layout-configuration/get-view-layout-custom-field-type-schemas) | Schematy typów pól do tworzenia albo edytowania pól własnych w wersji roboczej układu. |
+| [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/pl/api/view-layout-runtime/get-view-layout-runtime-context-variables) | Zmienne dostępne dla własnego HTML, skryptów, URL przycisków i warunków runtime. |
+
+## Możliwości powierzchni
+
+Użyj możliwości, aby sprawdzić, które tryby obsługuje dana powierzchnia.
+
+```http
+GET /v1/view-layouts/surface-capabilities
+Authorization: Bearer ek_...
+```
+
+Częste powierzchnie to `DYNAMIC_OBJECT`, `CONTRACTOR`, `ORGANIZATION`, `SALES_INVOICE`, `COST_INVOICE`, `USER` i `DASHBOARD`.
+
+Częste tryby to `CREATE`, `VIEW`, `EDIT` i `WORKSPACE`. `WORKSPACE` jest używany dla układów dashboardu. Formularze obiektów dynamicznych zwykle używają `CREATE`, `VIEW` i `EDIT`.
+
+## Definicje powierzchni
+
+Definicje powierzchni opisują kształt powierzchni. Użyj ich do zbudowania domyślnych regionów i zrozumienia wymaganych bloków wbudowanych.
+
+```http
+GET /v1/view-layouts/surface-definitions?surface=DYNAMIC_OBJECT
+Authorization: Bearer ek_...
+```
+
+Dla powierzchni wbudowanych, takich jak `ORGANIZATION` albo `CONTRACTOR`, definicje powierzchni informują też, które bloki wbudowane muszą być obecne przed publikacją.
+
+## Katalog
+
+Katalog jest głównym endpointem dla buildera układów.
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Zapytanie musi zawierać `surface` i `mode`. Dla układów obiektów dynamicznych dodaj też `moduleKey`, `objectKey` oraz `formId`, gdy edytujesz układ należący do formularza.
+
+Odpowiedź zawiera:
+
+- kategorie, takie jak pola dynamiczne albo opcjonalne bloki układu;
+- wpisy dla pól, sekcji, tabel relacji, przycisków i innych bloków;
+- `defaultBlock`, czyli punkt startowy dla bloku w wersji roboczej;
+- `configSchema`, który opisuje edytowalną konfigurację;
+- informacje o dostępności;
+- reguły dzieci dla bloków strukturalnych, takich jak zakładki i sekcje.
+
+## Użycie wpisu katalogu
+
+Wpis katalogu nie jest sam w sobie zapisywany. Traktuj `defaultBlock` jako szablon.
+
+Gdy dodajesz go do wersji roboczej:
+
+1. Skopiuj `defaultBlock`.
+2. Dodaj stabilne `id`, jeśli szablon go nie zawiera.
+3. Ustaw `regionKey`.
+4. Ustaw `displayOrder`.
+5. Dostosuj `grid`, `config` albo `children`.
+6. Zachowaj wymagane informacje `ref`, `type`, `source` i obsługiwanych trybów.
+
+ID bloków powinny pozostać stabilne między zapisami wersji roboczej. Aplikacje klienckie często używają ich do zaznaczenia, komunikatów walidacji i operacji przeciągnij-upuść.
+
+## Typy pól własnych
+
+Użyj schematów typów pól własnych przed przygotowaniem albo edycją pól własnych w wersji roboczej.
+
+```http
+GET /v1/view-layouts/custom-field-types
+Authorization: Bearer ek_...
+```
+
+Odpowiedź zawiera schematy tworzenia i aktualizacji definicji pól. Użyj ich do zbudowania konfiguracji zależnej od typu pola zamiast zgadywać prawidłowe opcje.
+
+## Zmienne kontekstu runtime
+
+Użyj zmiennych kontekstu runtime, gdy układ zawiera własny HTML, szablony URL przycisków, powiązania skryptów albo warunki dostępności runtime.
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/runtime-context-variables?mode=CREATE
+Authorization: Bearer ek_...
+```
+
+Ten endpoint odpowiada, do których zmiennych układ może bezpiecznie się odwoływać. Nie mówi, które bloki można dodać. Do dostępności bloków użyj katalogu.
+
+## Co dalej
+
+Po odkryciu użyj [Budowania układów](/docs/pl/api/view-layout-configuration/building-layouts), aby zapisać i opublikować wersję roboczą. Szczegóły struktury i zagnieżdżania znajdziesz w [Typach bloków](/docs/pl/api/view-layout-configuration/block-types).

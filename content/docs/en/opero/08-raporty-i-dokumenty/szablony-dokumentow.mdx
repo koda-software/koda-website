@@ -1,0 +1,34 @@
+---
+title: "Document templates"
+description: "System sam składa dokumenty PDF z danych: fakturę, ofertę, protokół, pismo. Szablon to gotowy wzór, w który wskakują dane rekordu, więc powstaje jednolity dokument bez przepisywania."
+---
+
+## A document from a template
+
+Many documents in a company have a fixed layout, and only the data changes: the number, the contractor, the amounts, the items. In Opero such a document does not arise by typing into Word by hand, but from a **template**. A template is a ready pattern with places marked for data; the system inserts the values from a record into them and produces a ready PDF.
+
+Thanks to this, every invoice and every offer looks the same, has the company letterhead, and no field can be forgotten, because the template watches the layout.
+
+## The data pulled into the document
+
+- **The record's data** drops into the marked places: number, date, contractor, amounts.
+- **The items** (for example the rows of an invoice or an offer) arrange into a table automatically, as many rows as there are.
+- **The company letterhead** with the header, footer, and logo is part of the template, so the document is on-brand right away.
+
+> **Example.** You close an offer. Instead of assembling the PDF by hand, you start generation from the Offer template. The system takes the offer's data, arranges the items into a table, adds the header with the logo, and produces a ready file that you attach to the e-mail to the client.
+
+## Where documents come from
+
+A document from a template arises in two ways, depending on the instance's configuration.
+
+- **Automatically**, when a set event occurs, for example approving a matter starts generating a letter. Then the file appears at the record.
+- **On demand**, when you start generation yourself from the record.
+
+In both cases the result is a **PDF file**, which stays at the record like any attachment.
+
+## Differences from an attachment
+
+- **An attachment** is a file that came from outside and you upload it by hand, for example a scan of the signed contract.
+- **A document from a template** is assembled by the system from data, so it is always up to date with the record at the moment of generation and always in the same, on-brand layout.
+
+If a document you assemble in Word by hand today is always made the same way and only the data changes, that is the best candidate for a template. Tell the administrator.

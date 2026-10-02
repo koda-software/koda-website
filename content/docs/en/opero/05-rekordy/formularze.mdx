@@ -1,0 +1,34 @@
+---
+title: "Forms"
+description: "Formularz decyduje o tym, które pola rekordu są widoczne i które podlegają zmianie. Ten sam rekord bywa pokazany inaczej przy zakładaniu, przy podglądzie i w edycji."
+---
+
+## A form as a view of a record
+
+A record is a collection of information, but not all of it needs to be seen at every moment. When creating a matter you need a few fields, when viewing the whole, and when editing only what may be changed. The **form** is responsible for this: a way of showing the record, prepared by the administrator.
+
+## Three situations, three views
+
+| When | What you usually see |
+| --- | --- |
+| Creating a record | the fields essential at the start, without those filled in later in the process |
+| Viewing | the whole of the information, without the option to edit |
+| Editing | the fields that may be changed at the current stage of the matter |
+
+This is not the same screen with fields locked: these are three separate views, each prepared separately. That is why a field visible when viewing sometimes does not appear when creating.
+
+## Reasons for differences in the scope of visibility
+
+An object may have more than one form, and different roles get different ones. A typical example from HR: an employee sees their request in a simplified version, and a person from the HR department in the full version, together with the settlement fields.
+
+Besides this, some fields are hidden depending on the values of other fields. Choosing the kind of matter can reveal a section that previously made no sense.
+
+> **Example.** On a ticket form the Warranty number field appears only after you mark that the ticket concerns equipment under warranty. Before that it is not on the screen, because it would be only noise.
+
+## Locked fields
+
+A read-only field usually has one of three reasons: automation computes it, the system assigned it, or the process stage does not allow it to be changed. If you must change such a value, the way is a process transition or a report to the administrator, not a workaround through another field.
+
+## Public forms
+
+Some forms are shared externally, under their own address. A client or a contractor without an account in the system fills them in, and a record in the appropriate list arises from the submitted form. They are described in a separate chapter.

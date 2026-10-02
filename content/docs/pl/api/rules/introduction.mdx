@@ -1,0 +1,379 @@
+---
+title: Wprowadzenie
+description: Dowiedz się, jak zarządzać regułami automatyzacji Opero i jak je uruchamiać.
+---
+
+# Reguły
+
+Reguły definiują automatyzację pracy w Opero. Za pomocą External API integracja może odczytywać, tworzyć, aktualizować, usuwać, walidować i ręcznie uruchamiać reguły automatyzacji.
+
+Skorzystaj z tego API, gdy chcesz zarządzać tymi samymi definicjami reguł na poziomie organizacji, które można obsługiwać w Opero, ale z poziomu integracji, skryptu konfiguracyjnego, narzędzia migracyjnego albo automatyzacji przygotowanej dla konkretnego klienta.
+
+Obsługa filtrów szablonów nie jest dostępna w tej wersji External API. Własną logikę reguł realizuj przez skrypty reguł oraz endpoint walidacji skryptu.
+
+## Zanim zaczniesz
+
+Endpointy reguł korzystają z bazowej ścieżki External API:
+
+```text
+/v1/rules
+```
+
+Każde zapytanie musi zawierać token API:
+
+```http
+Authorization: Bearer ek_...
+```
+
+Użyj tokenu organizacji do pracy z definicjami reguł i konfiguracją buildera. Podczas ręcznego uruchamiania reguł na danych operacyjnych użyj kontekstu przestrzeni firmy przeznaczonego dla integracji.
+
+Moduł Reguły musi być włączony w organizacji powiązanej z tokenem albo firmą. Jeśli moduł nie jest włączony, API zwraca `404`.
+
+## Uprawnienia
+
+Uprawnienia API Reguł są niezależne od uprawnień w dashboardzie. Nadaj tokenowi tylko te uprawnienia, których dana integracja rzeczywiście potrzebuje.
+
+| Uprawnienie | Pozwala na |
+| --- | --- |
+| `api.rules.read` | Odczyt metadanych buildera, listy reguł, szczegółów reguł, powiązanych reguł i historii wykonań. |
+| `api.rules.manage` | Tworzenie, aktualizowanie, usuwanie i walidowanie reguł oraz skryptów reguł. |
+| `api.rules.execute` | Ręczne uruchamianie aktywnych reguł manualnych. |
+
+Endpointy zarządzające i uruchamiające nie wymagają automatycznie `api.rules.read`. Token mający tylko `api.rules.execute` może uruchomić regułę manualną, jeśli zna jej ID, ale nie może listować ani przeglądać reguł.
+
+## Zalecany przebieg pracy
+
+### Utwórz minimalny token
+
+Zdecyduj, co integracja może robić, zanim utworzysz token.
+
+- Narzędzie tylko do monitorowania zwykle potrzebuje wyłącznie `api.rules.read`.
+- Narzędzie do tworzenia reguł potrzebuje `api.rules.read` i `api.rules.manage`.
+- Dodaj `api.rules.execute` tylko wtedy, gdy integracja ma samodzielnie uruchamiać reguły manualne w docelowym kontekście runtime firmy.
+
+Jeśli to możliwe, używaj osobnych tokenów do różnych zadań. Na przykład integracja, która tylko uruchamia znaną regułę manualną, nie powinna używać tego samego tokenu co narzędzie administracyjne, które może tworzyć i usuwać reguły.
+
+### Wczytaj metadane buildera
+
+Przed zbudowaniem reguły wczytaj dostępne elementy konfiguracji organizacji:
+
+- [`GET /v1/rules/config`](/docs/pl/api/rules/get-rule-builder-config) zwraca metadane wyzwalaczy, w tym informację, które wyzwalacze wymagają obiektu własnego.
+- [`GET /v1/rules/step-types`](/docs/pl/api/rules/search-rule-step-types) zwraca typy kroków, kategorie, etykiety i możliwości dla buildera reguł.
+- [`GET /v1/rules/entity-fields`](/docs/pl/api/rules/list-rule-entity-fields) zwraca pola, których mogą używać wyzwalacze i kroki, w tym pola własne oraz dynamiczne pola rekordów.
+
+Używaj tych endpointów do budowania UI klienta albo logiki generowania reguł zamiast wpisywać na stałe założenia dotyczące wyzwalaczy, kroków i pól. Dostępne pola zależą od konfiguracji organizacji.
+
+### Zbuduj wersję roboczą reguły
+
+Wersja robocza to definicja reguły przed zapisaniem. Najpierw przygotuj ją i sprawdź po stronie klienta, a do API wyślij dopiero wtedy, gdy jest wewnętrznie spójna.
+
+Wersja robocza reguły składa się z:
+
+- metadanych, takich jak `name`, `category`, `description` i `isActive`
+- opcjonalnego `trigger`
+- uporządkowanych `steps`
+
+Wyzwalacz decyduje, kiedy reguła się uruchamia. Wyzwalacz `MANUAL` uruchamia się tylko po wywołaniu [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule). Wyzwalacze rekordów uruchamiają się po pasujących zmianach rekordów.
+
+Kroki uruchamiają się zgodnie z kolejnością `position`. Każdy krok ma typ oraz właściwy dla tego typu `config`. Kroki mogą zapisać wynik pod `contextKey`, a kolejne kroki mogą użyć tej wartości. Na przykład jeden krok może pobrać wiersze do `contextKey: "rows"`, a późniejszy krok skryptowy może odczytać `context.rows`.
+
+Twórz wersję roboczą z czytelnymi pozycjami kroków i stabilnymi kluczami kontekstu. Nie używaj tego samego klucza kontekstu do różnych znaczeń, bo utrudnia to zrozumienie późniejszych kroków i debugowanie.
+
+### Oblicz kontekst przed zapisaniem
+
+Wywołaj [`POST /v1/rules/context-schemas`](/docs/pl/api/rules/compute-rule-context-schemas) podczas budowania wersji roboczej. Ten endpoint niczego nie zapisuje. Oblicza, jaki kontekst jest dostępny przed każdym krokiem na podstawie wyzwalacza i wcześniejszych kroków w wersji roboczej.
+
+Użyj schematów kontekstu, aby:
+
+- pokazać użytkownikom dostępne ścieżki szablonów, takie jak `trigger.data.amount`
+- sprawdzić, czy późniejszy krok nie odwołuje się do wartości, która jeszcze nie istnieje
+- pomóc autorom skryptów zrozumieć, co zawiera `context` przed krokiem `RUN_SCRIPT`
+- budować reguły bezpieczniej dzięki podpowiedziom pól z wcześniejszych kroków
+
+Podstawowy kontekst zwykle obejmuje `trigger` i `organization`. Jeśli krok ma `contextKey`, ten klucz staje się dostępny dla późniejszych kroków po wykonaniu kroku. Schemat kontekstu dla kroku pokazuje kontekst przed uruchomieniem tego kroku, a nie po jego zakończeniu.
+
+Podczas edycji zapisanej reguły użyj [`GET /v1/rules/{id}/context-schema`](/docs/pl/api/rules/get-rule-context-schema), aby sprawdzić kontekst dostępny przed konkretnym krokiem.
+
+### Waliduj Skrypty
+
+Jeśli reguła używa kroków `RUN_SCRIPT`, wywołaj [`POST /v1/rules/validate-script`](/docs/pl/api/rules/validate-rule-script) z kodem JavaScript przed zapisaniem reguły. Dzięki temu nieprawidłowy albo niedozwolony kod zostanie wychwycony wcześniej, a użytkownik otrzyma precyzyjny błąd przed wysłaniem pełnego zapytania tworzącego lub aktualizującego regułę.
+
+Walidacja skryptu sprawdza sam kod. Nie gwarantuje, że każda wartość runtime będzie istnieć przy każdym wykonaniu. Używaj jej razem ze schematami kontekstu: schematy kontekstu pokazują, co powinno być dostępne, a walidacja skryptu sprawdza, czy treść skryptu jest akceptowalna.
+
+### Najpierw twórz reguły jako nieaktywne
+
+Dla nowych reguł, zwłaszcza reguł z efektami ubocznymi, zacznij od `isActive: false`.
+
+Najbezpieczniejszy przebieg tworzenia reguły wygląda tak:
+
+1. Utwórz regułę jako nieaktywną przez [`POST /v1/rules`](/docs/pl/api/rules/create-rule).
+2. Odczytaj ją przez [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule).
+3. Sprawdź, czy wyzwalacz, kolejność kroków, konfiguracje, klucze kontekstu i zachowanie rozgałęzień zostały zapisane zgodnie z oczekiwaniami.
+4. Aktywuj ją dopiero po przeglądzie i testach przez [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule).
+
+Pomaga to uniknąć przypadkowego wysłania e-maili, wywołania webhooków, aktualizacji rekordów, wygenerowania dokumentów albo uruchomienia innych reguł przed sprawdzeniem definicji.
+
+### Testuj reguły manualne z danymi wejściowymi
+
+Dla reguł z wyzwalaczem `MANUAL` wywołaj [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule) i przekaż mały obiekt `data`. Ten obiekt będzie dostępny w regule jako `trigger.data`.
+
+```json
+{
+  "data": {
+    "source": "external-system",
+    "recordId": "rec_123",
+    "amount": 12500
+  }
+}
+```
+
+W szablonach i skryptach reguła może odczytać:
+
+- `trigger.data.source`
+- `trigger.data.recordId`
+- `trigger.data.amount`
+
+Ręczne uruchomienie jest przydatne dla integracji, które zbierają dane poza Opero i chcą przekazać je do automatyzacji w Opero. Przydaje się też podczas testów, bo wywołujący kontroluje dane wejściowe.
+
+Ręczne uruchomienie działa tylko dla aktywnych reguł, których typ wyzwalacza to `MANUAL`. Dane wykonania w `data` muszą być obiektem i muszą mieścić się w limicie rozmiaru zapytania opisanym dla [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule).
+
+### Sprawdź historię wykonań
+
+Po ręcznym uruchomieniu albo podczas debugowania dowolnej reguły sprawdź historię wykonań:
+
+- [`GET /v1/rules/{id}/executions`](/docs/pl/api/rules/list-rule-executions) listuje ostatnie uruchomienia.
+- [`GET /v1/rules/{id}/executions/{execId}`](/docs/pl/api/rules/get-rule-execution) zwraca szczegóły jednego wykonania.
+
+Zacznij od `status`. W udanym wykonaniu wszystkie wymagane kroki zostały zakończone. Nieudane wykonanie zawiera `error`, a może też zawierać `failedStepId` i `failedStepPosition`.
+
+Użyj pozycji nieudanego kroku, aby dopasować wykonanie do zapisanej definicji reguły. Następnie sprawdź konfigurację tego kroku i zrzut kontekstu wykonania. Zrzut kontekstu jest przydatny, bo pokazuje, jakie dane były dostępne dla reguły w runtime, w tym dane wyzwalacza i wartości utworzone przez wcześniejsze kroki.
+
+Typowy przebieg debugowania:
+
+1. Znajdź nieudane wykonanie.
+2. Odczytaj `failedStepPosition`.
+3. Pobierz regułę przez [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule).
+4. Znajdź krok z tym samym `position`.
+5. Porównaj szablony albo skrypt tego kroku z `contextSnapshot` wykonania.
+6. Zaktualizuj regułę przez [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), zostaw ją nieaktywną, jeśli trzeba, i uruchom kolejny test manualny.
+
+### Sprawdź powiązane reguły przed zmianą struktur danych
+
+Przed usunięciem albo zmianą modułu własnego, obiektu własnego lub pola własnego użyj endpointów powiązanych reguł, aby znaleźć reguły, które od nich zależą:
+
+- [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/pl/api/rules/list-rules-related-to-custom-module)
+- [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/pl/api/rules/list-rules-related-to-custom-object)
+- [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/pl/api/rules/list-rules-related-to-custom-field)
+
+Te endpointy pomagają uniknąć ukrytych uszkodzeń. Na przykład pole własne może być użyte przez wyzwalacz, warunek, skrypt albo krok aktualizacji rekordu. Przejrzyj i zaktualizuj powiązane reguły przed zmianą bazowej struktury.
+
+## Kształt reguły
+
+Endpointy tworzenia i aktualizacji używają tego samego modelu reguły. Użyj [`POST /v1/rules`](/docs/pl/api/rules/create-rule), aby utworzyć regułę, i [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), aby ją zaktualizować.
+
+```json
+{
+  "name": "Notify sales about high value lead",
+  "category": "sales",
+  "description": "Runs when a lead record is updated.",
+  "isActive": false,
+  "scope": "ORGANIZATION",
+  "trigger": {
+    "type": "RECORD_UPDATED",
+    "objectId": "dynamic-object-id",
+    "config": {
+      "updateType": "all"
+    }
+  },
+  "steps": [
+    {
+      "type": "CONDITION",
+      "position": 0,
+      "name": "Only high value leads",
+      "config": {
+        "value1": "{{ trigger.data.value }}",
+        "operator": "GREATER_THAN",
+        "value2": "10000"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "type": "RUN_SCRIPT",
+      "position": 1,
+      "name": "Prepare message",
+      "contextKey": "message",
+      "config": {
+        "code": "return `High value lead: ${context.trigger.data.name}`;"
+      }
+    }
+  ]
+}
+```
+
+Reguły zarządzane przez External API są przypisane do organizacji. Jeśli `scope` zostanie pominięte, reguła zostanie zapisana jako `ORGANIZATION`.
+
+Pozycje kroków są liczbami i służą do ustalania kolejności oraz rozgałęzień. Jeśli `onFailure` używa `goto:N`, krok z pozycją `N` musi istnieć.
+
+Nie używaj tych zarezerwowanych kluczy kontekstu:
+
+- `trigger`
+- `organization`
+- `__depth`
+- `__ruleLineage`
+- `__error`
+- `__skip`
+
+## Format zapytań listujących
+
+Endpointy listujące obsługują `page`, `limit`, `count`, `filters`, `sort` i `columns`. Dla reguł użyj [`GET /v1/rules`](/docs/pl/api/rules/list-rules). Dla wykonań użyj [`GET /v1/rules/{id}/executions`](/docs/pl/api/rules/list-rule-executions).
+
+```http
+GET /v1/rules?page=1&limit=20&filters={"op":"AND","items":[{"field":"isActive","operator":"eq","value":true}]}&sort=[{"field":"createdAt","direction":"desc"}]
+Authorization: Bearer ek_...
+```
+
+Przydatne pola listy reguł:
+
+- `id`
+- `name`
+- `category`
+- `description`
+- `summary`
+- `isActive`
+- `scope`
+- `triggerType`
+- `triggerObjectId`
+- `stepCount`
+- `executionCount`
+- `createdAt`
+- `updatedAt`
+
+Przydatne pola listy wykonań:
+
+- `id`
+- `eventType`
+- `recordId`
+- `status`
+- `error`
+- `durationMs`
+- `failedStepId`
+- `failedStepPosition`
+- `executedAt`
+
+## Przewodnik po endpointach
+
+### Metadane buildera
+
+| Endpoint | Do czego służy |
+| --- | --- |
+| [`GET /v1/rules/config`](/docs/pl/api/rules/get-rule-builder-config) | Wczytuje zlokalizowane metadane wyzwalaczy dla buildera reguł. |
+| [`GET /v1/rules/step-types`](/docs/pl/api/rules/search-rule-step-types) | Wyszukuje dostępne typy kroków reguł. |
+| [`GET /v1/rules/entity-fields`](/docs/pl/api/rules/list-rule-entity-fields) | Zwraca listę pól dostępnych dla wyzwalaczy i kroków reguł. |
+| [`POST /v1/rules/context-schemas`](/docs/pl/api/rules/compute-rule-context-schemas) | Oblicza kontekst dostępny przed każdym krokiem w niezapisanej wersji roboczej. |
+| [`GET /v1/rules/{id}/context-schema`](/docs/pl/api/rules/get-rule-context-schema) | Oblicza kontekst dostępny przed krokiem w zapisanej regule. |
+| [`POST /v1/rules/validate-script`](/docs/pl/api/rules/validate-rule-script) | Waliduje kod JavaScript kroku reguły bez zapisywania reguły. |
+
+### Reguły
+
+| Endpoint | Do czego służy |
+| --- | --- |
+| [`GET /v1/rules`](/docs/pl/api/rules/list-rules) | Zwraca listę reguł przypisanych do organizacji. |
+| [`POST /v1/rules`](/docs/pl/api/rules/create-rule) | Tworzy regułę przypisaną do organizacji. |
+| [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule) | Odczytuje jedną zapisaną regułę z wyzwalaczem i uporządkowanymi krokami. |
+| [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule) | Aktualizuje zapisaną regułę. |
+| [`DELETE /v1/rules/{id}`](/docs/pl/api/rules/delete-rule) | Usuwa regułę. |
+| [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule) | Ręcznie uruchamia aktywną regułę manualną. |
+| [`GET /v1/rules/{id}/executions`](/docs/pl/api/rules/list-rule-executions) | Zwraca listę wykonań reguły. |
+| [`GET /v1/rules/{id}/executions/{execId}`](/docs/pl/api/rules/get-rule-execution) | Odczytuje jeden rekord wykonania. |
+
+### Powiązane reguły
+
+| Endpoint | Do czego służy |
+| --- | --- |
+| [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/pl/api/rules/list-rules-related-to-custom-module) | Znajduje reguły powiązane z modułem własnym. |
+| [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/pl/api/rules/list-rules-related-to-custom-object) | Znajduje reguły powiązane z obiektem własnym. |
+| [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/pl/api/rules/list-rules-related-to-custom-field) | Znajduje reguły powiązane z polem własnym. |
+
+## Typowe błędy
+
+| Status | Znaczenie |
+| --- | --- |
+| `400` | Nieprawidłowe ciało zapytania, nieprawidłowe parametry query, nieprawidłowa konfiguracja wyzwalacza, nieprawidłowe rozgałęzienie kroków, zarezerwowany klucz kontekstu, nieprawidłowy skrypt albo zbyt duże dane wykonania. |
+| `401` | Brakujący, niepoprawnie sformatowany, nieznany, unieważniony albo wygasły token API. |
+| `403` | Token API jest poprawny, ale nie ma wymaganego uprawnienia API Reguł. |
+| `404` | Moduł Reguły nie jest włączony, reguła nie istnieje w organizacji powiązanej z tokenem, wykonanie nie istnieje albo reguła wskazana do ręcznego uruchomienia jest nieaktywna lub nie jest regułą manualną. |
+
+## Praktyczne przykłady
+
+### Utwórz nieaktywną regułę manualną
+
+Użyj [`POST /v1/rules`](/docs/pl/api/rules/create-rule), aby najpierw utworzyć regułę jako nieaktywną.
+
+```http
+POST /v1/rules
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Manual webhook test",
+  "category": "integration",
+  "isActive": false,
+  "trigger": {
+    "type": "MANUAL"
+  },
+  "steps": [
+    {
+      "type": "CALL_WEBHOOK",
+      "position": 0,
+      "config": {
+        "url": "https://example.com/webhook",
+        "method": "POST",
+        "body": {
+          "source": "{{ trigger.data.source }}",
+          "recordId": "{{ trigger.data.recordId }}"
+        }
+      }
+    }
+  ]
+}
+```
+
+### Aktywuj regułę
+
+Użyj [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), aby włączyć regułę po przeglądzie.
+
+```http
+PATCH /v1/rules/{id}
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "isActive": true
+}
+```
+
+### Uruchom regułę manualną
+
+Użyj [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule), aby uruchomić aktywną regułę manualną z konkretnymi danymi wejściowymi.
+
+```http
+POST /v1/rules/{id}/execute
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "data": {
+    "source": "external-system",
+    "recordId": "rec_123"
+  }
+}
+```
+
+### Sprawdź ostatnie wykonania
+
+Użyj [`GET /v1/rules/{id}/executions`](/docs/pl/api/rules/list-rule-executions), aby sprawdzić ostatnie uruchomienia.
+
+```http
+GET /v1/rules/{id}/executions?page=1&limit=10&sort=[{"field":"executedAt","direction":"desc"}]
+Authorization: Bearer ek_...
+```

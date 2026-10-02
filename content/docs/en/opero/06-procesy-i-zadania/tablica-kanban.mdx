@@ -1,0 +1,33 @@
+---
+title: "The kanban board"
+description: "Tablica kanban pokazuje sprawy jednego procesu jako karty w kolumnach etapów. Widać na niej od razu, gdzie utknęła robota i czego jest za dużo."
+---
+
+## Contents of the board
+
+The kanban board is a view of a process in which every matter is a **card** and every column a **stage**. Matters stand in the column of the stage they are currently at. Thanks to this, at a glance you see the distribution of work: how many matters await approval, how many are in progress, how many are stuck.
+
+It is the same set of matters you know from the list, shown differently. The list is better for finding a specific matter, the board for grasping the whole.
+
+Kanban is one of the **list layouts**, alongside the table layout and the calendar. They are described in the separate topic on list views; here it is about working on process cards.
+
+## Moving cards
+
+A card is moved between columns to push a matter on. This is not free dragging: the move works **only where a process transition leads**, and only when you have the right to perform it. If a card cannot be dropped in a given column, it means there is no such move in the process or it does not belong to the user.
+
+Some transitions also ask for a comment or for indicating a person. Then moving a card opens the same question as the transition button on the matter's card.
+
+> **Example.** On the ticket board you see that the To verify column has grown to twenty cards while Delivery is empty. It is immediately clear where the bottleneck is, without reading a report.
+
+## Columns and colors
+
+The order and grouping of the columns are set by the administrator. Columns are sometimes grouped or colored by the kind of stage, for example waiting stages differently from completed ones. This helps read the board, but **the color does nothing**: a matter's behavior is decided by the stage, not by its color.
+
+## Limitations of the board
+
+- Matters you have no access to and matters from a company other than the one you work in.
+- Matters already completed, if the board shows only the active course. Completed ones you will find on the list with the appropriate filter.
+
+## Uses of the board
+
+The board is convenient when you run or oversee a stream of matters and want to see the load of the stages. To do one specific matter it is faster to enter from the task list, because it leads straight to what you are to do.

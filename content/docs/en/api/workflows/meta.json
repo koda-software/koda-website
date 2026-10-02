@@ -1,0 +1,18 @@
+{
+  "title": "Workflows",
+  "pages": [
+    "introduction",
+    "get-workflow-create-options",
+    "get-target-workflow-state",
+    "start-workflow-instance",
+    "get-workflow-instance",
+    "get-workflow-instance-replay",
+    "update-workflow-instance-author",
+    "execute-workflow-transition",
+    "get-workflow-instance-history",
+    "list-workflow-tasks",
+    "get-workflow-task",
+    "reassign-workflow-task",
+    "lookup-workflow-assignment-candidates"
+  ]
+}

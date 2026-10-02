@@ -1,0 +1,169 @@
+---
+title: Rozwiązywanie problemów
+description: Diagnozuj częste błędy API układów widoku oraz problemy wersji roboczych i runtime.
+---
+
+# Rozwiązywanie problemów
+
+Większość błędów API układów widoku wynika z jednej z czterech przyczyn:
+
+- token API nie ma wymaganego uprawnienia;
+- target układu nie pasuje do organizacji tokenu albo obiektu własnego;
+- wersja robocza jest strukturalnie nieprawidłowa;
+- dane rekordu runtime naruszają opublikowany układ albo zewnętrzny profil obiektu własnego.
+
+## 400 Bad Request
+
+`400` zwykle oznacza, że kształt zapytania albo żądana operacja są nieprawidłowe.
+
+Częste przyczyny:
+
+- Brakuje `surface`, `mode`, `moduleKey`, `objectKey` albo `formId` dla zapytania obiektu dynamicznego.
+- Blok ma nieobsługiwany `type` albo `source`.
+- `ref` bloku wskazuje pole albo relację, która nie istnieje.
+- Blok jest umieszczony w regionie, który nie istnieje.
+- Zagnieżdżony blok narusza reguły dzieci z katalogu.
+- Wysłane pole nie jest zapisywalne.
+- Zapytanie tabeli relacji prosi o nieobsługiwane kolumny.
+
+Co sprawdzić:
+
+1. Wywołaj `GET /v1/view-layouts/catalog` dla dokładnego targetu i trybu.
+2. Porównaj blok z `defaultBlock` z katalogu.
+3. Potwierdź, że klucz regionu istnieje w `regions` wersji roboczej.
+4. Potwierdź, że zapytania runtime obiektu dynamicznego zawierają `moduleKey` i `objectKey`.
+5. Potwierdź, że wysyłane wartości używają kluczy pól, a nie etykiet.
+
+## 401 Unauthorized
+
+`401` oznacza, że token nie mógł uwierzytelnić zapytania.
+
+Częste przyczyny:
+
+- Brak nagłówka `Authorization`.
+- Nagłówek nie używa `Bearer ek_...`.
+- Token jest nieprawidłowy.
+- Token wygasł.
+- Token został unieważniony.
+
+## 403 Forbidden
+
+`403` oznacza, że token jest prawidłowy, ale nie ma prawa wykonać tej akcji.
+
+Częste przyczyny:
+
+- Brak `api.view_layouts.read`.
+- Brak `api.view_layouts.manage` dla zmian wersji roboczej albo metadanych.
+- Brak `api.view_layouts.publish`.
+- Brak `api.custom_forms.manage` dla zmian formularzy.
+- Brak `api.custom_records.read` albo `api.custom_records.write` dla pracy runtime z obiektami dynamicznymi.
+- Zewnętrzny profil obiektu własnego nie udostępnia żądanej operacji.
+- Profil docelowy zagnieżdżonej relacji nie pozwala tworzyć, aktualizować, usuwać albo czytać.
+- Etap procesu blokuje edycję.
+
+## 404 Not Found
+
+`404` może oznaczać, że zasób nie istnieje albo nie należy do organizacji tokenu.
+
+Częste przyczyny:
+
+- Błędny `moduleKey` albo `objectKey`.
+- Błędny `formId`.
+- Błędny `layoutId`.
+- Układ jest zarchiwizowany.
+- Moduł własny, obiekt własny, formularz albo układ należy do innej organizacji.
+- Obiekt własny nie jest udostępniony przez włączony profil zewnętrzny.
+
+Co sprawdzić:
+
+1. Wylistuj formularze obiektu i zweryfikuj ID formularza.
+2. Odczytaj formularz i zweryfikuj `viewLayoutId`.
+3. Wylistuj układy dla powierzchni i targetu.
+4. Potwierdź, że token API należy do tej samej organizacji.
+5. Potwierdź, że profil obiektu własnego jest włączony.
+
+## 409 Conflict
+
+`409` zwykle oznacza konflikt z regułami domeny albo walidacją publikacji.
+
+Częste przyczyny:
+
+- Publikacja wersji roboczej z błędami walidacji.
+- Brak wymaganego bloku wbudowanego.
+- Brak wymaganego pola obiektu dynamicznego dla trybu.
+- Próba ręcznego zarządzania układem należącym do formularza w niedozwolony sposób.
+- Przygotowana zmiana pola wymaga potwierdzenia.
+- Aktualizacja typu formularza naruszyłaby reguły domyślnych formularzy.
+
+Co sprawdzić:
+
+1. Zapisz wersję roboczą i sprawdź `validation.errors`.
+2. Dodaj wymagane pola albo bloki wbudowane z katalogu.
+3. Dołącz `confirmFieldChanges` podczas publikacji potwierdzonych zmian pól.
+4. Nie twórz drugiego układu dla targetu należącego do formularza.
+5. Sprawdź ustawienia domyślnych formularzy przed usunięciem typu formularza.
+
+## Zmiany wersji roboczej nie są widoczne
+
+Zapis wersji roboczej nie zmienia działania runtime.
+
+Aby zmiany były widoczne:
+
+1. Zapisz wersję roboczą przez `PUT /v1/view-layouts/:layoutId/draft`.
+2. Potwierdź, że `validation.state` to `valid` albo akceptowalne `valid_with_warnings`.
+3. Opublikuj przez `POST /v1/view-layouts/:layoutId/publish`.
+4. Ponownie rozwiąż runtime przez `GET /v1/view-layouts/resolve`.
+
+## Wpis katalogu nie zapisuje się zgodnie z oczekiwaniem
+
+Wpisy katalogu są szablonami. Nie są blokami układu, dopóki nie zostaną dodane do wersji roboczej.
+
+Gdy używasz wpisu katalogu:
+
+- skopiuj `defaultBlock`;
+- dodaj stabilne `id`;
+- ustaw `regionKey`;
+- ustaw `displayOrder`;
+- zachowaj wymagane `type`, `source` i `ref`;
+- zachowaj wymagane bloki i wymagane pola.
+
+## Runtime obiektu dynamicznego nie może rozwiązać układu
+
+Dla resolve obiektu dynamicznego sprawdź, czy zapytanie zawiera:
+
+```text
+surface=DYNAMIC_OBJECT
+mode=CREATE|VIEW|EDIT
+moduleKey=<module key>
+objectKey=<object key>
+formId=<form id when using a form-owned layout>
+recordId=<record id for VIEW or EDIT when needed>
+```
+
+Jeśli `formId` zostanie pominięte, Opero może użyć domyślnych formularzy, gdy są dostępne. Przekazanie `formId` jest czytelniejsze, gdy klient wie, którego formularza chce użyć.
+
+## Zapisy tabel relacji kończą się błędem
+
+Zapisy tabel relacji są sprawdzane na kilku poziomach.
+
+Sprawdź:
+
+- obiekt nadrzędny jest udostępniony i pozwala na operację nadrzędną;
+- obiekt docelowy relacji jest udostępniony;
+- profil targetu relacji pozwala na operację zagnieżdżoną;
+- pola wiersza potomnego są zapisywalne w profilu targetu;
+- `clientId` jest obecne dla tworzonych wierszy potomnych;
+- aktualizowane wiersze używają istniejącego `recordId`;
+- usuwanie wierszy jest dozwolone przez profil targetu.
+
+## Koperta odpowiedzi
+
+Większość poprawnych odpowiedzi jest opakowana w `data`. Endpointy list zwracają `data` oraz metadane paginacji.
+
+Jeśli przykład w tej dokumentacji pokazuje tylko obiekt wewnętrzny, sprawdź rzeczywiste ciało odpowiedzi pod kątem zewnętrznej koperty.
+
+## Gdzie dalej
+
+- Użyj [Odkrywania bloków](/docs/pl/api/view-layout-configuration/discovering-blocks), aby porównać blok z katalogiem.
+- Użyj [Budowania układów](/docs/pl/api/view-layout-configuration/building-layouts), aby sprawdzić przepływ wersji roboczej i publikacji.
+- Użyj [Przewodnika po runtime](/docs/pl/api/view-layout-runtime/runtime), aby sprawdzić uprawnienia runtime i wymuszanie profilu.

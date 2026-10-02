@@ -1,0 +1,25 @@
+---
+title: Uwierzytelnianie
+description: Używaj tokenów Opero API z uwierzytelnianiem bearer.
+---
+
+Zapytania do Opero API są uwierzytelniane tokenami API. Tokeny używają prefiksu `ek_` i muszą być przekazywane w nagłówku `Authorization`.
+
+```txt
+Authorization: Bearer ek_...
+```
+
+## Zakres tokenu
+
+Twórz i zarządzaj tokenami API w aplikacji Opero. Traktuj każdy token jak hasło i wymień go, jeśli zostanie ujawniony.
+
+Opero ma dwa zakresy tokenów API:
+
+- Tokeny organizacji służą do API konfiguracji i raportowania na poziomie organizacji.
+- Tokeny firmy służą do API operacyjnych powiązanych z jedną firmą.
+
+Zakres tokenu wybiera się podczas tworzenia i nie zmienia się go później. Używaj najwęższego zakresu pasującego do integracji.
+
+## Playground API
+
+Opis API zawiera interaktywny playground. Wklej token w polu uwierzytelniania bearer przed wykonaniem zapytań.

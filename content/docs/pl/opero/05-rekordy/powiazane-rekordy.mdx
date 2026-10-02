@@ -1,0 +1,35 @@
+---
+title: "Powiązane rekordy"
+description: "Rekordy w Opero łączą się ze sobą: umowa wskazuje klienta, zamówienie wskazuje umowę. Powiązania pozwalają przechodzić między sprawami i widzieć je w kontekście."
+---
+
+## Powiązania między rekordami
+
+Sprawy w firmie łączą się ze sobą. Umowa dotyczy klienta, zamówienie wynika z umowy, faktura odnosi się do zamówienia. W Opero to nie są luźne notatki „to ma coś wspólnego z tamtym", tylko prawdziwe **powiązania**: rekord wskazuje inny rekord, a Ty przechodzisz między nimi jednym kliknięciem.
+
+Dzięki temu z formularza klienta widzisz jego umowy, a z umowy wracasz do klienta, nie szukając niczego po nazwie.
+
+## Prezentacja powiązań na formularzu
+
+- **Pole powiązania** pokazuje wskazany rekord jako odnośnik. Kliknięcie otwiera jego formularz. Umowa ma pole Klient; kliknięcie otwiera formularz tego klienta.
+- **Lista powiązanych** pokazuje rekordy, które wskazują na bieżący. Na formularzu klienta widzisz listę jego umów, choć to umowy „wiedzą" o kliencie, a nie odwrotnie.
+- **Powiązania są w panelu bocznym albo w sekcji obszaru głównego**, zależnie od tego, jak administrator ułożył formularz.
+
+> **Przykład.** Otwierasz formularz klienta. W sekcji Umowy widzisz trzy powiązane umowy, w sekcji Zgłoszenia pięć zgłoszeń serwisowych. Klikasz umowę i jesteś na jej formularzu; z niej wracasz do klienta jednym kliknięciem. Poruszasz się po połączonych sprawach jak po mapie.
+
+## Zastosowanie
+
+Powiązania dają trzy rzeczy naraz:
+
+- **Kontekst.** Widzisz sprawę razem z tym, z czym się łączy, a nie w oderwaniu.
+- **Nawigację.** Przechodzisz między powiązanymi rekordami bez wracania do list i szukania.
+- **Spójność.** Klient jest zapisany raz, a wszystkie jego umowy wskazują ten sam rekord, więc poprawka danych klienta jest widoczna wszędzie.
+
+## Praktyki niezalecane
+
+- **Nie dubluj danych zamiast łączyć.** Jeżeli przepisujesz nazwę i adres klienta do każdej umowy z osobna, tracisz spójność: po zmianie adresu trzeba by poprawiać w wielu miejscach. Od tego jest powiązanie, żeby dane żyły w jednym miejscu.
+- **Nie szukaj powiązanego rekordu po nazwie, skoro masz odnośnik.** Kliknięcie w pole powiązania jest szybsze i pewniejsze niż wyszukiwanie tej samej sprawy w liście.
+
+## Brak powiązania
+
+Jeżeli często potrzebujesz przejść od jednej sprawy do drugiej, a nie ma między nimi odnośnika, zgłoś to administratorowi. Dodanie pola powiązania to zmiana konfiguracji, która potem oszczędza codziennego szukania.

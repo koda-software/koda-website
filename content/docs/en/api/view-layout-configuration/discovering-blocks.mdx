@@ -1,0 +1,107 @@
+---
+title: Discovering Blocks
+description: Use discovery endpoints before building a View Layout draft.
+---
+
+# Discovering Blocks
+
+Before you save a layout draft, ask the API what is available for the surface, mode, and target you are editing. This keeps your client from hard-coding field lists, required blocks, regions, or custom field type rules.
+
+Discovery is especially important for dynamic object forms because available field blocks depend on the custom module, custom object, form, and mode.
+
+## Discovery Endpoints
+
+All discovery endpoints require an API token with View Layout read access.
+
+| Endpoint | Use it for |
+| --- | --- |
+| [`GET /v1/view-layouts/surface-capabilities`](/docs/en/api/view-layout-configuration/get-view-layout-surface-capabilities) | Which surfaces and modes exist. |
+| [`GET /v1/view-layouts/surface-definitions`](/docs/en/api/view-layout-configuration/get-view-layout-surface-definitions) | Regions, default sections, required built-in blocks, and surface metadata. |
+| [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) | Blocks the user can add for a specific surface, mode, and target. |
+| [`GET /v1/view-layouts/custom-field-types`](/docs/en/api/view-layout-configuration/get-view-layout-custom-field-type-schemas) | Field type schemas for creating or editing custom fields inside a layout draft. |
+| [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/en/api/view-layout-runtime/get-view-layout-runtime-context-variables) | Variables available to custom HTML, scripts, button URLs, and runtime conditions. |
+
+## Surface Capabilities
+
+Use capabilities to learn which modes are supported by each surface.
+
+```http
+GET /v1/view-layouts/surface-capabilities
+Authorization: Bearer ek_...
+```
+
+Common surfaces include `DYNAMIC_OBJECT`, `CONTRACTOR`, `ORGANIZATION`, `SALES_INVOICE`, `COST_INVOICE`, `USER`, and `DASHBOARD`.
+
+Common modes include `CREATE`, `VIEW`, `EDIT`, and `WORKSPACE`. `WORKSPACE` is used for dashboard layouts. Dynamic object forms normally use `CREATE`, `VIEW`, and `EDIT`.
+
+## Surface Definitions
+
+Surface definitions describe the shape of a surface. Use them to build default regions and understand required built-in blocks.
+
+```http
+GET /v1/view-layouts/surface-definitions?surface=DYNAMIC_OBJECT
+Authorization: Bearer ek_...
+```
+
+For built-in surfaces such as `ORGANIZATION` or `CONTRACTOR`, surface definitions are also where clients learn which built-in blocks must be present before publish.
+
+## Catalog
+
+The catalog is the main endpoint for a layout builder.
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=support&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+The query must include `surface` and `mode`. For dynamic object layouts, also include `moduleKey`, `objectKey`, and `formId` when editing a form-owned layout.
+
+The response includes:
+
+- categories such as dynamic fields or optional layout blocks;
+- entries for fields, sections, relation tables, buttons, and other blocks;
+- `defaultBlock`, which is a starting point for a block in your draft;
+- `configSchema`, which describes editable configuration;
+- availability information;
+- child rules for structural blocks such as tabs and sections.
+
+## Use A Catalog Entry
+
+A catalog entry is not saved by itself. Treat `defaultBlock` as a template.
+
+When adding it to a draft:
+
+1. Copy the `defaultBlock`.
+2. Add a stable `id` if the template does not already have one.
+3. Set `regionKey`.
+4. Set `displayOrder`.
+5. Adjust `grid`, `config`, or `children`.
+6. Keep required `ref`, `type`, `source`, and supported mode information intact.
+
+Block IDs should remain stable across draft saves. Client applications often use them for selection state, validation messages, and drag-and-drop updates.
+
+## Custom Field Types
+
+Use custom field type schemas before staging or editing custom fields in a draft.
+
+```http
+GET /v1/view-layouts/custom-field-types
+Authorization: Bearer ek_...
+```
+
+The response includes schemas for creating and updating field definitions. Use those schemas to build field-specific configuration instead of guessing which options are valid.
+
+## Runtime Context Variables
+
+Use runtime context variables when a layout contains custom HTML, button URL templates, script bindings, or runtime availability conditions.
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/runtime-context-variables?mode=CREATE
+Authorization: Bearer ek_...
+```
+
+This endpoint answers which variables a layout can safely reference. It does not tell you which blocks can be added. Use the catalog for block availability.
+
+## What To Do Next
+
+After discovery, use [Building Layouts](/docs/en/api/view-layout-configuration/building-layouts) to save and publish the draft. Use [Block Types](/docs/en/api/view-layout-configuration/block-types) for details on block anatomy and nesting.

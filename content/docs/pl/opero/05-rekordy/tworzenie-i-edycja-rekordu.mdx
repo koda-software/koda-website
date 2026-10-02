@@ -1,0 +1,36 @@
+---
+title: "Tworzenie i edycja rekordu"
+description: "Jak dodać nowy rekord i jak zmienić istniejący. Formularz prowadzi przez pola, pola wymagane pilnują kompletu, a zapis utrwala zmianę."
+---
+
+## Dodawanie nowego rekordu
+
+Nowy rekord zakładasz przyciskiem dodawania w liście. Otwiera się formularz, czyli zestaw pól do wypełnienia. Formularz jest ułożony tak, aby prowadzić po kolei: od danych podstawowych do szczegółów.
+
+- **Pola wymagane** są oznaczone i bez nich nie zapiszesz rekordu. To celowe: pilnują, żeby nie powstała sprawa bez najważniejszych danych.
+- **Pola wyboru** podpowiadają listę wartości, więc nie wpisujesz statusu czy kategorii z palca, tylko wybierasz z gotowych.
+- **Zapis** utrwala rekord. Dopiero po nim sprawa istnieje i jest widoczna dla innych.
+
+> **Przykład.** Dodajesz zgłoszenie serwisowe. Formularz prosi o klienta, temat i priorytet. Klient i temat są wymagane, priorytet ma listę Niski, Średni, Wysoki. Wybierasz, zapisujesz i zgłoszenie pojawia się w liście.
+
+## Edycja istniejącego rekordu
+
+Żeby zmienić rekord, otwierasz jego formularz i przechodzisz do edycji. Zmieniasz, co trzeba, i zapisujesz. Kilka rzeczy, o których warto wiedzieć:
+
+- **Zmiana obowiązuje po zapisie.** Dopóki nie zapiszesz, poprawki nie są widoczne dla innych.
+- **Rekord pamięta, co się zmieniło.** Edycja zostaje w historii: kto i kiedy zmienił pole. To nie inwigilacja, tylko sposób na odtworzenie, co się działo ze sprawą.
+- **Nie wszystkie pola podlegają zmianie.** Część pól może być tylko do odczytu albo wyliczana automatycznie. Jeżeli pole jest zablokowane, to zwykle zamierzone.
+
+## Pola wyliczane przez system
+
+Niektóre pola nie są do wpisywania: system liczy je z innych danych, na przykład wartość z ceny i ilości albo numer rekordu z szablonu. Nie próbuj ich nadpisywać; wypełnij dane źródłowe, a system wyliczy wartość.
+
+## Odrzucenie zapisu
+
+Jeżeli zapis nie przechodzi, przyczyna jest zwykle jedna z trzech:
+
+- **Puste pole wymagane.** Formularz pokaże, którego brakuje.
+- **Wartość w złym formacie.** Data albo liczba wpisana niezgodnie z oczekiwaniem.
+- **Reguła firmy.** Czasem nie da się zapisać, dopóki dane nie spełnią warunku ustawionego dla instancji, na przykład kwota powyżej limitu wymaga uzupełnienia uzasadnienia.
+
+Przeczytaj komunikat, popraw wskazane miejsce i zapisz ponownie. Jeżeli warunek jest niejasny, zapytaj administratora, co reguła ma pilnować.

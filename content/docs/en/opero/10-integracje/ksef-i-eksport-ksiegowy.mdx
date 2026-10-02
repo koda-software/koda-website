@@ -1,0 +1,64 @@
+---
+title: "KSeF and handover to accounting"
+description: "Co dzieje się z fakturą po wystawieniu i skąd biorą się faktury od dostawców: wysyłka i pobieranie przez KSeF, rola księgowości, jak czytać etap dokumentu i co robić, gdy coś się zatrzyma."
+---
+
+## Opero's scope of responsibility
+
+An invoice arises in Opero, but does not stay in it forever. The same document goes onward, in two directions at once:
+
+- **to the National e-Invoice System (KSeF)**, because that is where invoices go in the official flow,
+- **to accounting**, because that is where they are booked and settled for tax.
+
+Opero runs the **process around the document**: who issued it, what it contains, who approved it, whether it is paid, when to remind about the deadline. The booking itself and the tax settlement happen outside Opero, in an accounting program.
+
+> **Opero is not an accounting program.** You will not find a chart of accounts, VAT registers, or tax returns here. This is not a gap, but a deliberate boundary. Opero watches the document flow and the deadlines, and the settlement stays on the accounting side.
+
+## Automatic download of suppliers' invoices
+
+The exchange with KSeF works both ways. Besides sending sales invoices, **Opero downloads the invoices your suppliers issued you** and creates cost documents from them.
+
+This means one change of habit: **before you register a cost invoice by hand, check whether it is not already there**. A document downloaded from KSeF waits in the cost invoice list and only needs verification, not retyping the data from an attachment.
+
+If you nonetheless enter a second identical document, two will remain in the list. Do not delete anything on your own then; report it to the person handling invoicing.
+
+## Impact on daily work
+
+In practice, little. You issue an invoice the same way as usual: you pick the contractor, add items, check the amounts, and approve the document. The handover onward happens **after approval**, not during filling in.
+
+Three things worth knowing.
+
+1. **Approval is the boundary moment.** While the document is in preparation, you correct it freely. After approval the document goes onward and a correction stops being an ordinary edit.
+2. **A correction of an issued document is a corrective invoice**, not a change of content. An invoice that went onward already exists outside Opero, so it cannot be changed without a trace.
+3. **The document number is the common language.** When you talk with accounting or a client about a specific invoice, give the number, not a description like "the one from last week".
+
+## Reading a document's stage
+
+An invoice's stage says where the document is in the flow. The set of stages is sometimes tailored to the company, but the logic is usually the same.
+
+| Stage | Meaning |
+| --- | --- |
+| In preparation | the document is freely editable |
+| Approved | the document is issued and goes onward |
+| Handed over | the document went out to the external flow |
+| Settled | the payment was recorded |
+
+If a document stands at the same stage longer than it should, that is exactly the moment to ask. One question to the person handling invoicing is usually enough.
+
+## What to do when a matter is held up
+
+- **A client claims they did not get the invoice.** Check in Opero whether the document is approved and what contractor data it has. The most common cause is a wrong address on the contractor form, not a failure of the exchange.
+- **Accounting does not see the document.** Give the document number and the issue date. Establish whether it is a document from before the handover or one that the handover missed.
+- **Something is wrong with the content of an issued document.** Do not make the correction yourself. Report it to the person handling invoicing and agree on a corrective invoice.
+
+> **Example.** An invoice issued on Thursday, on Friday the client calls that the amount is too high. The right path is not editing the document, but a corrective invoice. The document in its original version already went out, so the history should show what happened, not make it seem the mistake never was.
+
+## The document stays in Opero
+
+Even after the handover, an invoice stays in Opero as a **process record**. It is in Opero that you can see who prepared it, who approved it, what it concerns, and which project or order it links to. The accounting program knows the amounts and the bookings, but does not know the context of the organization's work.
+
+That is why for "where is this invoice from and what does it concern" you look for answers in Opero, and for "how was it booked" in accounting.
+
+## Related
+
+Sales invoices describe issuing a document. Cost invoices describe the purchasing side. Contractors describe the recipient data on which the document's correctness depends. Processes describe the document's stages and transitions. Change history describes who changed the document and when.
