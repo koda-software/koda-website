@@ -12,4 +12,4 @@ if ! command -v npm >/dev/null 2>&1; then
 fi
 
 echo "Running pre-commit quality gate..."
-npm run quality:precommit
+pnpm run quality:precommit
