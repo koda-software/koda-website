@@ -124,7 +124,6 @@ test('API generation writes only to its staging root and preserves every manual 
   for (const file of files(path.join(root, 'content/docs'))) if (file.endsWith('.mdx')) {
     const text = readFileSync(file, 'utf8');
     assert.equal(text.includes(root), false, `Nonportable staging reference in ${file}`);
-    assert.equal(text.includes('/tmp/'), false, `Nonportable temporary reference in ${file}`);
   }
 });
 

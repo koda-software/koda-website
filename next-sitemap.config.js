@@ -41,6 +41,8 @@ const routes = [
   // /blog-sitemap.xml, which is regenerated from the CMS on revalidation.
   { page: "blog", path: "/en/blog" },
   { page: "blog", path: "/pl/blog" },
+  { page: "about", path: "/en/about" },
+  { page: "about", path: "/pl/o-nas" },
   { page: "contact", path: "/en/contact" },
   { page: "contact", path: "/pl/contact" },
   { page: "privacy", path: "/en/privacy-policy" },
@@ -72,6 +74,9 @@ const alternatePaths = {
     en: "/en/blog",
     pl: "/pl/blog",
     "x-default": "/en/blog",
+  },
+  about: {
+    en: "/en/about", pl: "/pl/o-nas", "x-default": "/en/about",
   },
   contact: {
     en: "/en/contact",

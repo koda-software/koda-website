@@ -50,7 +50,13 @@ const pages = [
   { file: ".next/server/app/pl/contact.html", route: "/pl/contact", locale: "pl", canonical: `${siteUrl}/pl/contact`, alternates: { en: `${siteUrl}/en/contact`, pl: `${siteUrl}/pl/contact`, "x-default": `${siteUrl}/en/contact` }, contact: true },
 ];
 
-const expectedSitemap = pages.map((page) => page.canonical);
+for (const [en, pl] of [["/en/about", "/pl/o-nas"], ["/en/privacy-policy", "/pl/polityka-prywatnosci"]]) {
+  for (const [locale, route] of [["en", en], ["pl", pl]]) pages.push({
+    file: `.next/server/app${route}.html`, route, locale,
+    canonical: `${siteUrl}${route}`, alternates: { en: `${siteUrl}${en}`, pl: `${siteUrl}${pl}`, "x-default": `${siteUrl}${en}` },
+  });
+}
+const expectedSitemap = pages.map((page) => page.canonical).sort();
 const failures = [];
 
 function read(relativePath) {
@@ -99,15 +105,13 @@ for (const page of pages) {
     assert(html.includes('type="email"'), `${page.route}: contact form missing email input`);
   }
 
-  assert(!html.includes("/en/about") && !html.includes("/pl/about"), `${page.route}: contains deferred About route`);
 }
 
 const sitemap = fs.existsSync(path.join(root, "public/sitemap.xml"))
   ? read("public/sitemap.xml")
   : read(".next/server/app/sitemap.xml.body");
 const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-assert(JSON.stringify(locs) === JSON.stringify(expectedSitemap), "sitemap routes do not match expected launch routes");
-assert(!sitemap.includes("/about"), "sitemap contains deferred About route");
+assert(JSON.stringify(locs.sort()) === JSON.stringify(expectedSitemap), "sitemap routes do not match expected launch routes");
 assert((sitemap.match(/hreflang="x-default"/g) ?? []).length === expectedSitemap.length, "sitemap missing x-default alternates");
 
 for (const page of pages) {
@@ -125,7 +129,7 @@ assert(robots.includes("Allow: /"), "robots.txt missing Allow rule");
 assert(robots.includes(`${siteUrl}/sitemap.xml`), "robots.txt missing sitemap URL");
 assert(robots.includes(`${siteUrl}/blog-sitemap.xml`), "robots.txt missing blog sitemap URL");
 
-const ogMetadata = await sharp(path.join(root, "public/og-image.png")).metadata();
+const ogMetadata = await sharp(path.join(root, ".next/server/app/og-image.png.body")).metadata();
 assert(ogMetadata.width === 1200 && ogMetadata.height === 630, "OG image must be 1200x630");
 assert(ogMetadata.format === "png", "OG image must be PNG");
 

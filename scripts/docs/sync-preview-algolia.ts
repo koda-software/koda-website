@@ -1,7 +1,7 @@
 import { algoliasearch } from 'algoliasearch';
 import { sync, type DocumentRecord } from 'fumadocs-core/search/algolia';
 import { locales, readJson } from './lib/content.mjs';
-import { previewIndexNames, validateSearch } from './lib/search.mjs';
+import { previewIndexNames, validateSearch, verifyAlgoliaIndex } from './lib/search.mjs';
 
 async function main() {
   const env = process.env;
@@ -30,7 +30,9 @@ async function main() {
   if (!permissions.indexes?.length || permissions.indexes.some((name) => !allowed.includes(name)))
     throw new Error('Preview writer must be restricted to the exact preview indices and their temporary names');
   for (const locale of locales) {
-    await sync(client, { indexName: names[locale], documents: records.filter((r) => r.extra_data.locale === locale) });
+    const documents = records.filter((r) => r.extra_data.locale === locale);
+    await sync(client, { indexName: names[locale], documents });
+    await verifyAlgoliaIndex(client, names[locale], documents);
   }
   console.log(`[docs] Preview indices seeded from ${deployment.origin}, content hash ${accepted.contentHash}.`);
 }
