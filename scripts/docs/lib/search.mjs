@@ -30,3 +30,20 @@ export function previewIndexNames(base, productionNames = []) {
   if (Object.values(names).some((name) => productionNames.includes(name))) throw new Error('Refusing production preview target');
   return names;
 }
+
+export async function verifyAlgoliaIndex(client, indexName, documents) {
+  const pageIds = new Set();
+  let objects = 0;
+  await client.browseObjects({
+    indexName, browseParams: { attributesToRetrieve: ['page_id'] },
+    aggregator(response) {
+      for (const hit of response.hits) {
+        if (typeof hit.page_id !== 'string') throw new Error('Algolia object lacks page_id');
+        objects++; pageIds.add(hit.page_id);
+      }
+    },
+  });
+  if (pageIds.size !== documents.length || documents.some((doc) => !pageIds.has(doc._id)))
+    throw new Error(`Incomplete Algolia index: ${indexName}`);
+  return objects;
+}
