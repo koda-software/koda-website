@@ -23,13 +23,15 @@ export async function fetchJson(url, { headers, fetcher = fetch, deadline = Date
   }
   throw new Error('Docs fetch failed');
 }
-export function validateRecords(records, ids, paths) {
+export function validateRecords(records, ids, paths, locale) {
   for (const record of records) {
     const values = record?.values;
     if (typeof record?.id !== 'string' || ids.has(record.id)) throw new Error('Missing or duplicate docs record ID');
     ids.add(record.id);
     if (!values || ['tytul', 'slug', 'sekcja'].some((key) => typeof values[key] !== 'string' || !values[key].trim()))
       throw new Error('Docs record lacks title, slug or section');
+    if (values.jawnosc !== 'publiczna' || values.status !== 'active' || record.contentLocale !== locale)
+      throw new Error('Docs response contains private, inactive or wrong-locale content');
     const section = slugify(values.sekcja), slug = slugify(values.slug);
     const output = `${section}/${slug}`;
     if (!section || !slug || slug === 'index' || paths.has(output)) throw new Error('Duplicate or invalid normalized docs path');
@@ -53,7 +55,7 @@ export async function fetchKnowledgeBase(locale, { apiBase, apiKey, ...options }
       throw new Error('Malformed or inconsistent docs pagination');
     total = body.meta.total;
     if (!body.data.length || body.data.length > 100 || records.length + body.data.length > total) throw new Error('Docs pagination makes no progress or exceeds total');
-    validateRecords(body.data, ids, paths); records.push(...body.data);
+    validateRecords(body.data, ids, paths, locale); records.push(...body.data);
     if (records.length === total) return { data: records };
   }
   throw new Error('Docs pagination exceeded 100 pages');

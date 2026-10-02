@@ -21,7 +21,7 @@ function fixture(t) {
   const manifest = createManifest(root, { fetchedAt: '2026-10-02T00:00:00Z', sourceRevision: 'test' }); writeManifest(root, manifest);
   return { root, put, manifest };
 }
-const record = (id = '1', slug = 'guide') => ({ id, values: { tytul: 'Guide', slug, sekcja: 'Section' } });
+const record = (id = '1', slug = 'guide') => ({ id, contentLocale: 'en', values: { tytul: 'Guide', slug, sekcja: 'Section', jawnosc: 'publiczna', status: 'active' } });
 const response = (data, total, page = 1) => new Response(JSON.stringify({ data, meta: { total, page, limit: 100 } }), { status: 200 });
 
 test('snapshot builds never call docs APIs and detect edited source', async (t) => {
@@ -126,4 +126,12 @@ test('API generation writes only to its staging root and preserves every manual 
     assert.equal(text.includes(root), false, `Nonportable staging reference in ${file}`);
     assert.equal(text.includes('/tmp/'), false, `Nonportable temporary reference in ${file}`);
   }
+});
+
+test('the response itself must contain only public active content in the requested locale', async () => {
+  for (const bad of [
+    { ...record(), values: { ...record().values, jawnosc: 'prywatna' } },
+    { ...record(), values: { ...record().values, status: 'inactive' } },
+    { ...record(), contentLocale: 'pl' },
+  ]) await assert.rejects(fetchKnowledgeBase('en', { apiBase: 'https://test', apiKey: 'test', fetcher: async () => response([bad], 1) }), /private, inactive or wrong-locale/);
 });
