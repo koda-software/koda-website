@@ -2,14 +2,20 @@
 
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import type { RootProviderProps } from 'fumadocs-ui/provider/next';
-import type { ReactNode } from 'react';
+import { lazy, type ReactNode } from 'react';
 
 import { locales } from '@/lib/docs/i18n';
 import { docsBasePath } from '@/lib/docs/site';
-import {
-  isAlgoliaSearchConfigured,
-  SearchDialog,
-} from '@/components/docs/search';
+const SearchDialog = lazy(() =>
+  import('@/components/docs/search').then((module) => ({ default: module.SearchDialog })),
+);
+const isAlgoliaSearchConfigured = Boolean(
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID &&
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY &&
+  (process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ||
+    process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME_EN ||
+    process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME_PL),
+);
 
 type ProvidersProps = {
   children: ReactNode;
@@ -23,6 +29,7 @@ export function Providers({ children, i18n }: ProvidersProps) {
         isAlgoliaSearchConfigured
           ? {
               SearchDialog,
+              preload: false,
             }
           : {
               enabled: false,
