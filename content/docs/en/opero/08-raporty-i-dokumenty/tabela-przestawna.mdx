@@ -1,0 +1,38 @@
+---
+title: "Pivot table"
+description: "Tabela przestawna pokazuje liczby w podziale na kategorie: wiersze i kolumny to grupy, a wartości w środku to policzone sumy albo liczności. Tak czyta się zestawienie dokładnie, liczba po liczbie."
+---
+
+## Contents of a pivot table
+
+A pivot table is a summary in which the data is **grouped into rows and columns**, and the computed numbers stand inside. Instead of a list of individual orders, you see, for example, the sum of their values for each salesperson and each month at once.
+
+This is the best form of a report when **exact numbers** matter, not just a general impression. A chart shows a trend; a table shows the specific value in every cell.
+
+## Reading the contents
+
+- **Rows** are one breakdown category, for example salespeople or regions.
+- **Columns** are the second category, for example successive months.
+- **The cell at the intersection** is the computed value for that pair, for example a given salesperson's sales in a given month.
+- **Totals** on the edges give aggregate values: a whole row, a whole column, the whole.
+
+> **Example.** In the sales table the rows are regions, the columns are quarters, and inside is the sum of order values. You look at the North row and see its result in each quarter; you look at the Q3 column and compare regions with one another. One summary answers both questions.
+
+## The meaning of a cell's value
+
+A value in a cell is not a single record, but the **result of computing** many records from that group. Most often it is:
+
+- **a sum**, for example the total value of orders,
+- **a count**, for example how many tickets came in,
+- **an average**, for example the mean handling time.
+
+The administrator sets what exactly is computed, so if you are not sure what a number in a cell means, ask or check the report's description.
+
+## Drilling down to details
+
+A table shows a summary, but often you can **drill down to the records** that make up a given number. When you see a surprisingly high value in one cell, drilling down shows the specific orders that compose it and explains where it came from.
+
+## What to keep in mind
+
+- **The numbers are computed from the available data range.** A colleague from another company or with different permissions may see different values in the same table.
+- **The table does not edit data.** You make corrections on the records' forms, and the table will show the new result the next time it is opened.

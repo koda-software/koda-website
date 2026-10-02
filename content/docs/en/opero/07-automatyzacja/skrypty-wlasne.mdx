@@ -1,0 +1,24 @@
+---
+title: "Script steps"
+description: "Część automatyzacji korzysta z krótkiego kawałka kodu napisanego przez administratora. Znajomość kodu nie jest wymagana, ale warto wiedzieć, że istnieje, oraz jakie ma to znaczenie w codziennej pracy."
+---
+
+## A script in a rule
+
+Most automation in Opero can be assembled from ready blocks: check a condition, set a field, send a notification. Sometimes, however, a rule is needed that computes something unusual or assembles data in a way the blocks cannot express. Then the administrator adds a **script**, that is, a short piece of logic written for the company.
+
+As a user you do not deal with it directly. You see only the effect: a field fills in by itself, a record gets a computed value, a matter goes to the right place. The script is under the hood, not on the dashboard.
+
+## What this means for you
+
+It is worth understanding that some of the system's behavior is written specifically for you, because it changes how problems are reported.
+
+- If something computes **differently than you expect**, it is not always a system error. Sometimes a rule computed according to a principle set at some point that needs refreshing.
+- When reporting a problem with an automatically computed value, **give the record and what the result was**, and what it should be. The administrator will read from the rule's run what was computed and why.
+- A script acts on the data it has in the record. If a source field is empty or wrong, the result will be too, even if the script itself is correct. Before you report, check the input data.
+
+> **Example.** A rule at project close computes a bonus from the sum of invoiced items and enters it in a field. When the result seems too low, it most often turns out that one item was not marked as invoiced, so the script did not count it. The result is correct against the data; the data was just incomplete.
+
+## Limitations of a script
+
+A script run by a rule acts within narrow bounds. It does not reach outside the organization, does not send data outside by itself, and has a limited running time. This is deliberate: an automation is to help with daily work, not to do things no one knows about. If a rule is to send something outside, it does so openly in a separate step that the administrator deliberately added.

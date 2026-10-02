@@ -1,0 +1,107 @@
+---
+title: Formularze obiektów własnych
+description: Używaj formularzy obiektów własnych jako zwykłego punktu startowego dla układów widoku obiektów dynamicznych.
+---
+
+# Formularze obiektów własnych
+
+Formularze obiektów własnych są zwykłym punktem startowym dla pracy z układami widoku obiektów dynamicznych. Formularz decyduje, kiedy można go użyć. Układ widoku należący do formularza decyduje, co formularz pokazuje.
+
+Na przykład obiekt `support.ticket` może mieć:
+
+- formularz `CREATE` o nazwie `Ticket intake`;
+- formularz `VIEW` o nazwie `Ticket details`;
+- formularz `EDIT` o nazwie `Ticket editor`.
+
+Każdy formularz ma dokładnie jeden własny układ widoku. Gdy tworzysz albo aktualizujesz typy formularza, Opero synchronizuje z nimi tryby układu.
+
+## Zanim zaczniesz
+
+Potrzebujesz:
+
+- klucza modułu własnego, na przykład `support`;
+- klucza obiektu własnego, na przykład `ticket`;
+- tokenu API z `api.custom_forms.read` oraz, dla zmian, `api.custom_forms.manage`;
+- `api.view_layouts.read`, `api.view_layouts.manage` i `api.view_layouts.publish`, gdy edytujesz i publikujesz należący układ.
+
+Obiekt własny nie może być obiektem podrzędnym. Obiekty podrzędne są edytowane przez układ obiektu nadrzędnego, a nie przez osobne formularze.
+
+## Typy formularzy i tryby układu
+
+Typy formularzy mapują się bezpośrednio na tryby układu widoku.
+
+| Typ formularza | Tryb układu | Użycie |
+| --- | --- | --- |
+| `CREATE` | `CREATE` | Tworzenie nowego rekordu obiektu własnego. |
+| `VIEW` | `VIEW` | Wyświetlanie istniejącego rekordu obiektu własnego. |
+| `EDIT` | `EDIT` | Edytowanie istniejącego rekordu obiektu własnego. |
+
+Gdy aktualizujesz `types` formularza, Opero aktualizuje ten sam należący układ. Nie tworzy drugiego układu dla innego trybu.
+
+## Utworzenie formularza
+
+```http
+POST /v1/custom-modules/support/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Submit a ticket",
+    "successMessage": "Ticket submitted."
+  }
+}
+```
+
+Odpowiedź zawiera ID formularza oraz ID należącego układu.
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "types": ["CREATE", "EDIT"],
+    "viewLayoutId": "layout_ticket_intake",
+    "layoutAvailability": {
+      "CREATE": { "state": "DRAFT_ONLY" },
+      "EDIT": { "state": "DRAFT_ONLY" }
+    },
+    "usableTypes": []
+  }
+}
+```
+
+Zapisz `viewLayoutId`. Użyjesz go z endpointami zapisu wersji roboczej i publikacji układu widoku.
+
+## Domyślne formularze i dostęp
+
+Domyślne formularze są wyborami zapasowymi dla obiektu własnego. Aktorzy używający tokenów API mogą korzystać z domyślnych formularzy podczas rozwiązywania układów runtime.
+
+```http
+PATCH /v1/custom-modules/support/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_details",
+  "defaultEditFormId": "form_ticket_editor"
+}
+```
+
+Domyślny formularz ustawiaj tylko na formularz obsługujący dany typ. Na przykład `defaultCreateFormId` musi wskazywać formularz z `CREATE`.
+
+Dostęp do formularza może wskazywać członków organizacji po ID członkostwa albo role po ID roli. Zastąpienie dostępu jest pełną zamianą, więc wyślij wszystkie wpisy użytkowników i ról, które mają pozostać.
+
+## Co dalej
+
+Po utworzeniu formularza:
+
+1. Użyj [Odkrywania bloków](/docs/pl/api/view-layout-configuration/discovering-blocks), aby pobrać katalog bloków dla targetu formularza.
+2. Użyj [Budowania układów](/docs/pl/api/view-layout-configuration/building-layouts), aby zapisać i opublikować należący układ.
+3. Użyj [Przewodnika po runtime](/docs/pl/api/view-layout-runtime/runtime), aby rozwiązać opublikowany układ i zapisywać rekordy.
+
+Pełny opis zarządzania formularzami znajdziesz na stronie [Zarządzanie formularzami obiektów własnych](/docs/pl/api/custom-object-forms/management).

@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "authentication",
+    "language",
+    "open-api",
+    "health",
+    "reference-data",
+    "dictionaries",
+    "custom-modules",
+    "custom-objects",
+    "custom-object-forms",
+    "queries",
+    "rules",
+    "workflows",
+    "view-layout-runtime",
+    "view-layout-configuration",
+    "languages",
+    "companies",
+    "entity-fields"
+  ],
+  "title": "API Opero"
+}

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { createMDX } from "fumadocs-mdx/next";
 
 const nextConfig: NextConfig = {
   images: {
@@ -27,20 +28,53 @@ const nextConfig: NextConfig = {
         destination: "https://www.kodasoft.pl/:path*",
         permanent: true,
       },
-    ];
-  },
-  async rewrites() {
-    return [
+      // /docs picks a language. The docs app's i18n proxy and the SaaS edge used to do this.
+      // Temporary, so browsers don't pin one language. Same test as the "/" redirect in vercel.json.
       {
         source: "/docs",
-        destination: "https://opero.kodasoft.pl/docs",
+        has: [
+          {
+            type: "header",
+            key: "accept-language",
+            value: "(^|.*,\\s*)pl(?:-|;|,|$).*",
+          },
+        ],
+        destination: "/docs/pl",
+        permanent: false,
       },
       {
+        source: "/docs",
+        destination: "/docs/en",
+        permanent: false,
+      },
+      // Old /docs/<locale>/docs/… URLs, kept from the docs app.
+      {
+        source: "/docs/:locale(en|pl)/docs",
+        destination: "/docs/:locale",
+        permanent: true,
+      },
+      {
+        source: "/docs/:locale(en|pl)/docs/:path*",
+        destination: "/docs/:locale/:path*",
+        permanent: true,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        // The SaaS edge added these to every docs response. Keep them after the move.
         source: "/docs/:path*",
-        destination: "https://opero.kodasoft.pl/docs/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        ],
       },
     ];
   },
 };
 
-export default nextConfig;
+// Compiles content/docs (MDX + meta.json) into .source/, imported as `collections/server`.
+const withMDX = createMDX();
+
+export default withMDX(nextConfig);

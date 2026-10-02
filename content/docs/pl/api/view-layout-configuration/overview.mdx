@@ -1,0 +1,97 @@
+---
+title: Przegląd
+description: Zrozum, jak układy widoku łączą formularze, wersje robocze, opublikowany runtime i zapisy rekordów.
+---
+
+# Układy widoku
+
+Układy widoku określają, jak ułożony jest ekran Opero albo formularz obiektu własnego. Układ decyduje, które pola, sekcje, zakładki, tabele relacji, przyciski i inne bloki są dostępne, gdy klient tworzy, wyświetla albo edytuje rekord.
+
+Dla obiektów własnych zacznij od formularza obiektu własnego. Formularz decyduje, kiedy można go użyć. Układ widoku należący do tego formularza decyduje, co formularz pokazuje i które pola można wysłać przez endpointy runtime.
+
+## Typowy przebieg pracy
+
+Dla większości prac z formularzem obiektu własnego:
+
+1. Utwórz albo wybierz obiekt własny, na przykład `support.ticket`.
+2. Utwórz formularz obiektu własnego z jednym lub kilkoma typami: `CREATE`, `VIEW` i `EDIT`.
+3. Odczytaj `viewLayoutId` z odpowiedzi formularza.
+4. Zapytaj katalog układów widoku, które bloki można użyć dla tego formularza i trybu.
+5. Zbuduj pełną wersję roboczą z regionami, blokami i opcjonalnymi zmianami pól własnych.
+6. Zapisz wersję roboczą na układzie należącym do formularza.
+7. Opublikuj wersję roboczą.
+8. Rozwiąż opublikowany układ podczas renderowania albo zapisywania rekordów.
+9. Utwórz albo zaktualizuj rekordy przez endpointy runtime.
+
+Nie twórz ręcznie drugiego układu widoku dla formularza obiektu własnego. Gdy tworzysz formularz, Opero tworzy układ należący do tego formularza.
+
+## Kluczowe pojęcia
+
+| Pojęcie | Znaczenie |
+| --- | --- |
+| Formularz obiektu własnego | Formularz do tworzenia, wyświetlania albo edytowania rekordów jednego obiektu własnego. |
+| Układ widoku | Wizualny i runtime kontrakt pól oraz bloków. |
+| Powierzchnia | Rodzina strony, na przykład `DYNAMIC_OBJECT`, `CONTRACTOR`, `ORGANIZATION` albo `DASHBOARD`. |
+| Tryb | Użycie układu w runtime: `CREATE`, `VIEW`, `EDIT` albo `WORKSPACE`. |
+| Target | Dodatkowy kontekst dla powierzchni. Układy obiektów dynamicznych używają `moduleKey`, `objectKey` i zwykle `formId`. |
+| Region | Nazwany obszar układu, na przykład `main` albo `sidebar`. Bloki są umieszczane w regionach. |
+| Blok | Jeden element układu, na przykład pole, sekcja, grupa zakładek, tabela relacji albo blok własnego HTML. |
+| Wersja robocza | Edytowalna wersja układu. Zapis wersji roboczej nie zmienia działania runtime. |
+| Opublikowana wersja | Wersja używana przez endpoint rozwiązywania runtime i endpointy zapisu rekordów. |
+
+## Uprawnienia
+
+Każde zapytanie używa tokenu API:
+
+```http
+Authorization: Bearer ek_...
+Content-Type: application/json
+```
+
+Użyj tokenu organizacji do konfiguracji układów View Layout i formularzy obiektów własnych. Odczyty i zapisy rekordów w runtime używają kontekstu przestrzeni firmy przeznaczonego dla integracji.
+
+Nadaj tokenowi najmniejszy zestaw uprawnień pasujący do integracji.
+
+| Uprawnienie | Potrzebne do |
+| --- | --- |
+| `api.custom_forms.read` | Listowania formularzy, odczytu szczegółów formularza, listowania dostępnych formularzy i odczytu dostępu do formularzy. |
+| `api.custom_forms.manage` | Tworzenia, aktualizacji i usuwania formularzy, aktualizacji domyślnych formularzy oraz zastępowania dostępu. |
+| `api.view_layouts.read` | Odczytu metadanych układów, endpointów odkrywania, wersji, rozwiązywania runtime i danych runtime. |
+| `api.view_layouts.manage` | Tworzenia kontenerów układów, aktualizacji metadanych, zapisu wersji roboczych, archiwizacji układów, przywracania wersji roboczych i zastępowania przypisań. |
+| `api.view_layouts.publish` | Publikowania zapisanej wersji roboczej. |
+| `api.custom_records.read` | Rozwiązywania i ładowania danych runtime obiektów dynamicznych. |
+| `api.custom_records.write` | Tworzenia i aktualizacji rekordów obiektów dynamicznych przez opublikowany układ. |
+
+## Wybór pierwszego endpointu
+
+Zacznij od celu, a potem wybierz endpoint.
+
+| Cel | Zacznij od |
+| --- | --- |
+| Utworzenie formularza obiektu własnego | [`POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms`](/docs/pl/api/custom-object-forms/create-custom-object-form) |
+| Znalezienie układu istniejącego formularza | [`GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId`](/docs/pl/api/custom-object-forms/get-custom-object-form) |
+| Sprawdzenie dostępnych bloków | [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog) |
+| Zapis zmienionego układu | [`PUT /v1/view-layouts/:layoutId/draft`](/docs/pl/api/view-layout-configuration/save-view-layout-draft) |
+| Opublikowanie wersji roboczej | [`POST /v1/view-layouts/:layoutId/publish`](/docs/pl/api/view-layout-configuration/publish-view-layout) |
+| Renderowanie opublikowanego formularza | [`GET /v1/view-layouts/resolve`](/docs/pl/api/view-layout-runtime/resolve-view-layout) |
+| Zapis rekordu przez układ | [`POST /v1/view-layouts/runtime/dynamic-object/records`](/docs/pl/api/view-layout-runtime/create-dynamic-record-through-view-layout) albo [`PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId`](/docs/pl/api/view-layout-runtime/update-dynamic-record-through-view-layout) |
+
+## Kolejność czytania
+
+1. [Formularze obiektów własnych](/docs/pl/api/view-layout-configuration/custom-object-forms) wyjaśniają pracę zaczynającą się od formularza.
+2. [Odkrywanie bloków](/docs/pl/api/view-layout-configuration/discovering-blocks) pokazuje, jak zapytać API, co można umieścić w układzie.
+3. [Budowanie układów](/docs/pl/api/view-layout-configuration/building-layouts) opisuje wersje robocze, publikowanie, wersje, przypisania i archiwizację.
+4. [Typy bloków](/docs/pl/api/view-layout-configuration/block-types) opisują strukturę bloków i zagnieżdżanie.
+5. [Pola własne](/docs/pl/api/view-layout-configuration/custom-fields) opisują istniejące i przygotowywane pola.
+6. [Przewodnik po runtime](/docs/pl/api/view-layout-runtime/runtime) opisuje rozwiązywanie układów i zapisywanie rekordów.
+7. [Przykłady](/docs/pl/api/view-layout-configuration/examples) pokazują pełny przepływ do skopiowania.
+8. [Rozwiązywanie problemów](/docs/pl/api/view-layout-configuration/troubleshooting) opisuje częste błędy.
+
+## Zasady do zapamiętania
+
+- Formularz obiektu własnego ma jeden układ widoku.
+- Zmiany w wersji roboczej nie są widoczne w runtime, dopóki wersja robocza nie zostanie opublikowana.
+- Używaj endpointów odkrywania przed budowaniem bloków.
+- Traktuj wartości `defaultBlock` z katalogu jako szablony. Przed zapisem dodaj stabilne ID i umieść bloki w regionach.
+- Zapisy rekordów obiektów własnych w runtime muszą spełniać wymagania opublikowanego układu oraz zewnętrznego profilu obiektu własnego.
+- Konfiguracja organizacji i dane runtime firmy używają różnych zakresów tokenów API.

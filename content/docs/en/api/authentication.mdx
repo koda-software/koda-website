@@ -1,0 +1,25 @@
+---
+title: Authentication
+description: Use Opero API tokens with bearer authentication.
+---
+
+Opero API requests are authenticated with API tokens. Tokens use the `ek_` prefix and must be sent in the `Authorization` header.
+
+```txt
+Authorization: Bearer ek_...
+```
+
+## Token scope
+
+Create and manage API tokens from the Opero application. Treat each token like a password and rotate it if it is exposed.
+
+Opero has two API token scopes:
+
+- Organization tokens are for organization-level configuration and reporting APIs.
+- Company tokens are for operational APIs tied to one company.
+
+The token scope is selected when the token is created and is not changed afterwards. Use the narrowest scope that fits the integration.
+
+## API playground
+
+The API reference includes an interactive playground. Paste the token into the bearer authentication field before executing requests.

@@ -1,0 +1,77 @@
+---
+title: "Podstawowe pojęcia"
+description: "Słownik słów, które wracają w całym systemie i w całej dokumentacji: obiekt, rekord, lista, pole, proces, etap, zadanie, reguła i kilka innych, wyjaśnionych bez żargonu."
+---
+
+## Zakres słownika
+
+Opero opisuje pracę kilkunastoma słowami, które wracają wszędzie: w interfejsie, w rozmowie z administratorem i w tej dokumentacji. Gdy je znasz, **reszta systemu tłumaczy się sama**, niezależnie od tego, czy patrzysz na umowy, zgłoszenia czy faktury.
+
+Ta strona jest do przejrzenia raz i wracania do niej w razie potrzeby, a nie do nauczenia się na pamięć.
+
+## Dane
+
+| Pojęcie | Co znaczy |
+| --- | --- |
+| Obiekt | rodzaj rekordu i zarazem jego definicja: ustala, jakie pola ma każdy rekord tego rodzaju. Umowa, klient, zgłoszenie to osobne obiekty |
+| Rekord | jedna rzecz albo sprawa: jedna umowa, jeden klient, jedno zgłoszenie |
+| Lista | sposób wyświetlenia rekordów jednego obiektu, otwierany z menu. Nie przechowuje danych, tylko je pokazuje |
+| Formularz | widok jednego rekordu ze wszystkim, co do niego należy |
+| Pole | pojedyncza informacja na rekordzie: data, kwota, opis |
+| Powiązanie | wskazanie z jednego rekordu na inny, na przykład z umowy na klienta |
+| Załącznik | plik dopięty do rekordu |
+
+Najważniejszy jest **obiekt**, bo to on należy do budowy systemu: ustala, jakie pola opisują rekord danego rodzaju. Rekord to pojedynczy wpis tego obiektu, lista pokazuje jego rekordy, a formularz pokazuje jeden z nich. Proces prowadzi rekord przez kolejne etapy.
+
+> **Przykład.** Klienci to obiekt. Jeden klient to rekord tego obiektu. Lista klientów pokazuje wszystkie takie rekordy. Nazwa, adres i telefon to pola. Umowa wskazująca na tego klienta to powiązanie.
+
+## Praca i obieg
+
+| Pojęcie | Co znaczy |
+| --- | --- |
+| Proces | ustalona droga, którą przechodzi sprawa od początku do końca |
+| Etap | miejsce, w którym sprawa aktualnie się znajduje |
+| Przejście | ruch sprawy z jednego etapu na następny |
+| Zadanie | czynność skierowana do konkretnej osoby, czekająca na wykonanie |
+| Akceptacja | zadanie polegające na zatwierdzeniu albo odrzuceniu |
+
+Warto zapamiętać różnicę między **etapem** a **zadaniem**. Etap opisuje, gdzie jest sprawa. Zadanie mówi, że ktoś ma coś z nią zrobić. Sprawa może stać na etapie i nie mieć żadnego zadania, jeżeli nikt nie został do niej przypisany.
+
+> **Etap, nie status.** W dokumentacji i w interfejsie konsekwentnie mówimy o etapach procesu. To ta sama rzecz, którą w innych systemach nazywa się statusem, ale słowo „etap" lepiej oddaje to, że sprawa gdzieś idzie, a nie tylko ma przyklejoną etykietkę.
+
+## Automatyzacja
+
+| Pojęcie | Co znaczy |
+| --- | --- |
+| Reguła | zestaw czynności, które system wykonuje sam, gdy spełnione zostaną konkretne warunki |
+| Wyzwalacz | zdarzenie, które uruchamia regułę |
+| Powiadomienie | wiadomość z systemu o czymś, co się wydarzyło |
+
+Regułę poznajesz zwykle po skutkach: pole wypełnia się samo, przychodzi powiadomienie, sprawa przechodzi dalej bez niczyjego kliknięcia. **Jeżeli w historii rekordu widzisz zmianę, której nikt nie wprowadził ręcznie, to zwykle zadziałała reguła.**
+
+## Struktura systemu
+
+| Pojęcie | Co znaczy |
+| --- | --- |
+| Moduł | obszar systemu grupujący powiązane obiekty, na przykład finanse |
+| Obiekt | rodzaj rekordu wewnątrz modułu; ma swoją listę i swoje rekordy |
+| Menu | spis wejść do obszarów, z którego korzystasz na co dzień |
+| Organizacja | cała instancja Opero |
+| Firma | konkretna jednostka wewnątrz organizacji, do której należą dane |
+| Rola | zakres tego, co dana osoba może w systemie robić |
+
+Podział na **organizację i firmę** wyjaśnia większość pytań o to, dlaczego coś zmieniło się wszędzie, a coś innego tylko u jednej firmy. Budowa systemu jest wspólna, dane są osobne.
+
+## Dokumenty i zestawienia
+
+| Pojęcie | Co znaczy |
+| --- | --- |
+| Szablon dokumentu | wzór wydruku, z którego powstaje np. plik PDF |
+| Raport | zestawienie liczbowe zbudowane z danych systemu |
+| Słownik | zamknięta lista wartości do wyboru, na przykład lista statusów |
+
+Słownik jest tu najczęściej mylonym pojęciem. To nie jest wyjaśnienie słów, tylko **lista dopuszczalnych wartości pola**. Dzięki niemu wszyscy wybierają z tego samego zestawu, zamiast wpisywać własne warianty.
+
+## Powiązane
+
+Pierwsze kroki opisują pierwszy dzień pracy. Orientacja w systemie opisuje układ ekranu. Obiekty własne, Lista rekordów i Formularz rekordu opisują pracę na danych. Procesy opisują etapy i przejścia. Reguły opisują automatyzację.

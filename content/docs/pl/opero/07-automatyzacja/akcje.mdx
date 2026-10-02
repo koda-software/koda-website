@@ -1,0 +1,33 @@
+---
+title: "Czynności wykonywane przez reguły"
+description: "Reguła może przeliczyć wartość, wysłać powiadomienie albo e-mail, utworzyć dokument, dopisać rekord i wykonać kilka takich kroków po kolei, zależnie od danych."
+---
+
+## Automat wykonuje kroki
+
+Reguła to nie jedno działanie, tylko **ciąg kroków**, które wykonują się po kolei, gdy zajdzie zdarzenie uruchamiające. Dzięki temu jedno zdarzenie może pociągnąć kilka rzeczy naraz: przeliczyć pole, powiadomić właściwą osobę i wygenerować dokument.
+
+## Typowe zastosowania reguł
+
+- **Przelicza i zapisuje wartość**, na przykład sumę pozycji albo liczbę dni do terminu.
+- **Wysyła powiadomienie w systemie** do właściwej osoby albo roli.
+- **Wysyła e-mail**, na przykład przypomnienie do kontrahenta.
+- **Tworzy dokument** z rekordu, gotowy plik PDF.
+- **Zakłada albo aktualizuje rekord**, na przykład dopisuje wpis do listy.
+- **Podejmuje decyzję zależnie od danych**: jeżeli kwota przekracza próg, robi jedno, w innym wypadku drugie.
+
+> **Przykład.** Po zatwierdzeniu zamówienia reguła przelicza wartość z rabatem, generuje potwierdzenie w PDF, dołącza je do rekordu i wysyła e-mail do klienta. Cztery kroki z jednego zdarzenia, bez ręcznej pracy.
+
+## Przyczyny różnic w wyniku
+
+Automat potrafi zachować się różnie zależnie od danych. Ta sama reguła może wysłać powiadomienie przy dużej kwocie, a pominąć je przy małej, bo tak została zbudowana. Jeżeli spodziewasz się działania, którego nie było, przyczyną jest zwykle warunek w regule, a nie awaria.
+
+## Spodziewany rezultat
+
+- Skutki reguły są **trwałe**: zapisana wartość, wysłany e-mail, utworzony dokument zostają.
+- Reguła działa **na danych, jakie zastała**. Na złych danych policzy zły wynik.
+- Część kroków **sięga na zewnątrz**, na przykład wysyła wiadomość. Tego nie da się cofnąć jak zwykłej edycji.
+
+## Nieprawidłowy zakres działania automatyzacji
+
+Zgłoś konkretny przypadek administratorowi: który rekord, jakie zdarzenie, co się wydarzyło, a czego oczekiwałeś. Administrator ma podgląd, które kroki reguły faktycznie się wykonały i co było w danych, więc łatwo wskazać, gdzie zachowanie odbiega od zamiaru.

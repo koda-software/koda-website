@@ -1,0 +1,2254 @@
+{
+  "formatVersion": 1,
+  "fetchedAt": "2026-10-02T00:24:28.244Z",
+  "sourceRevision": "fed9eaca844d44382bc0602ad73c5ef1c8683d28",
+  "contentHash": "29ec51f0d07e60c41ac7752dcafc1c6550ead988ee5050bead66b18fc5dc5e14",
+  "counts": {
+    "en": {
+      "pages": 200,
+      "operoPages": 64,
+      "apiOperations": 114
+    },
+    "pl": {
+      "pages": 200,
+      "operoPages": 64,
+      "apiOperations": 114
+    }
+  },
+  "urls": [
+    "/docs/en",
+    "/docs/en/api",
+    "/docs/en/api/authentication",
+    "/docs/en/api/companies/delete-companies-companyid-contractors-id",
+    "/docs/en/api/companies/delete-companies-companyid-email-drafts-messageid",
+    "/docs/en/api/companies/delete-companies-companyid-email-threads-threadid-links-linkid",
+    "/docs/en/api/companies/delete-companies-companyid-entity-attachments-id",
+    "/docs/en/api/companies/delete-companies-companyid-entity-comments-comments-id",
+    "/docs/en/api/companies/get-companies-companyid-contractors",
+    "/docs/en/api/companies/get-companies-companyid-contractors-id",
+    "/docs/en/api/companies/get-companies-companyid-contractors-id-presentation",
+    "/docs/en/api/companies/get-companies-companyid-contractors-presentation",
+    "/docs/en/api/companies/get-companies-companyid-cost-invoices-id-presentation",
+    "/docs/en/api/companies/get-companies-companyid-email-accounts",
+    "/docs/en/api/companies/get-companies-companyid-email-accounts-accountid-send-identities",
+    "/docs/en/api/companies/get-companies-companyid-email-drafts",
+    "/docs/en/api/companies/get-companies-companyid-email-folders",
+    "/docs/en/api/companies/get-companies-companyid-email-messages-messageid",
+    "/docs/en/api/companies/get-companies-companyid-email-messages-messageid-attachments-attachmentid",
+    "/docs/en/api/companies/get-companies-companyid-email-messages-messageid-inline-contentid",
+    "/docs/en/api/companies/get-companies-companyid-email-messages-messageid-raw",
+    "/docs/en/api/companies/get-companies-companyid-email-search",
+    "/docs/en/api/companies/get-companies-companyid-email-threads",
+    "/docs/en/api/companies/get-companies-companyid-email-threads-threadid-links",
+    "/docs/en/api/companies/get-companies-companyid-entity-attachments",
+    "/docs/en/api/companies/get-companies-companyid-entity-comments-comments-id",
+    "/docs/en/api/companies/get-companies-companyid-entity-comments-entitytype-entityid",
+    "/docs/en/api/companies/get-companies-companyid-files-id",
+    "/docs/en/api/companies/get-companies-companyid-files-id-download",
+    "/docs/en/api/companies/get-companies-companyid-forms-formid-relation-tables-relationfieldkey-target-layout",
+    "/docs/en/api/companies/get-companies-companyid-forms-formid-render",
+    "/docs/en/api/companies/get-companies-companyid-pages-slug",
+    "/docs/en/api/companies/get-companies-companyid-sales-invoices-id-presentation",
+    "/docs/en/api/companies/get-companies-companyid-service-catalog-items",
+    "/docs/en/api/companies/get-companies-companyid-service-catalog-items-id",
+    "/docs/en/api/companies/patch-companies-companyid-contractors-id",
+    "/docs/en/api/companies/patch-companies-companyid-contractors-id-status",
+    "/docs/en/api/companies/patch-companies-companyid-email-drafts-messageid",
+    "/docs/en/api/companies/patch-companies-companyid-email-messages-messageid",
+    "/docs/en/api/companies/patch-companies-companyid-entity-attachments-id",
+    "/docs/en/api/companies/patch-companies-companyid-entity-comments-comments-id",
+    "/docs/en/api/companies/patch-companies-companyid-forms-formid-records-recordid",
+    "/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id",
+    "/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id-archive",
+    "/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id-restore",
+    "/docs/en/api/companies/post-companies-companyid-contractors",
+    "/docs/en/api/companies/post-companies-companyid-contractors-id-presentation-runtime-data",
+    "/docs/en/api/companies/post-companies-companyid-contractors-presentation-runtime-data",
+    "/docs/en/api/companies/post-companies-companyid-cost-invoices-id-presentation-runtime-data",
+    "/docs/en/api/companies/post-companies-companyid-email-drafts",
+    "/docs/en/api/companies/post-companies-companyid-email-drafts-messageid-send",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-cancel-send",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-delete-remote",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-labels",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-move",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-reply",
+    "/docs/en/api/companies/post-companies-companyid-email-messages-messageid-resend",
+    "/docs/en/api/companies/post-companies-companyid-email-threads-threadid-links",
+    "/docs/en/api/companies/post-companies-companyid-entity-attachments",
+    "/docs/en/api/companies/post-companies-companyid-entity-comments",
+    "/docs/en/api/companies/post-companies-companyid-files-attachments",
+    "/docs/en/api/companies/post-companies-companyid-forms-formid-records",
+    "/docs/en/api/companies/post-companies-companyid-forms-formid-records-recordid-relation-tables-relationfieldkey-query",
+    "/docs/en/api/companies/post-companies-companyid-forms-formid-relation-tables-table-layout",
+    "/docs/en/api/companies/post-companies-companyid-forms-formid-runtime-data",
+    "/docs/en/api/companies/post-companies-companyid-sales-invoices-id-presentation-runtime-data",
+    "/docs/en/api/companies/post-companies-companyid-service-catalog-items",
+    "/docs/en/api/custom-modules/get-custom-module",
+    "/docs/en/api/custom-modules/get-custom-modules-field-types",
+    "/docs/en/api/custom-modules/get-custom-modules-field-types-type",
+    "/docs/en/api/custom-modules/list-custom-modules",
+    "/docs/en/api/custom-object-forms/get-custom-object-form",
+    "/docs/en/api/custom-object-forms/list-available-custom-object-forms",
+    "/docs/en/api/custom-object-forms/list-custom-object-forms",
+    "/docs/en/api/custom-object-forms/management",
+    "/docs/en/api/custom-object-forms/runtime",
+    "/docs/en/api/custom-object-forms/view-layouts",
+    "/docs/en/api/custom-objects/create-custom-record",
+    "/docs/en/api/custom-objects/delete-custom-record",
+    "/docs/en/api/custom-objects/get-custom-module-schema",
+    "/docs/en/api/custom-objects/get-custom-object",
+    "/docs/en/api/custom-objects/get-custom-object-schema",
+    "/docs/en/api/custom-objects/get-custom-record",
+    "/docs/en/api/custom-objects/get-singleton-custom-record",
+    "/docs/en/api/custom-objects/list-custom-objects",
+    "/docs/en/api/custom-objects/list-custom-records",
+    "/docs/en/api/custom-objects/update-custom-record",
+    "/docs/en/api/custom-objects/update-singleton-custom-record",
+    "/docs/en/api/dictionaries/get-dictionaries-dictionaryid-entries-entryid",
+    "/docs/en/api/dictionaries/get-dictionaries-dictionaryid-entries-export",
+    "/docs/en/api/dictionaries/get-dictionary-with-entries",
+    "/docs/en/api/dictionaries/list-dictionaries",
+    "/docs/en/api/dictionaries/list-dictionary-entries",
+    "/docs/en/api/entity-fields/get-entity-fields",
+    "/docs/en/api/health/liveness-and-database-health-check",
+    "/docs/en/api/language",
+    "/docs/en/api/languages/get-languages",
+    "/docs/en/api/open-api",
+    "/docs/en/api/queries/execute-query",
+    "/docs/en/api/queries/get-query",
+    "/docs/en/api/queries/introduction",
+    "/docs/en/api/queries/list-queries",
+    "/docs/en/api/queries/post-saved-queries-id-execute-mutation",
+    "/docs/en/api/reference-data/list-supported-currencies",
+    "/docs/en/api/rules/execute-rule",
+    "/docs/en/api/rules/get-rule",
+    "/docs/en/api/rules/get-rule-execution",
+    "/docs/en/api/rules/get-rules-id-manual-invocation",
+    "/docs/en/api/rules/introduction",
+    "/docs/en/api/rules/list-rule-executions",
+    "/docs/en/api/rules/list-rules",
+    "/docs/en/api/rules/post-rules-id-manual-invocation-options",
+    "/docs/en/api/view-layout-configuration/block-types",
+    "/docs/en/api/view-layout-configuration/building-layouts",
+    "/docs/en/api/view-layout-configuration/custom-fields",
+    "/docs/en/api/view-layout-configuration/custom-object-forms",
+    "/docs/en/api/view-layout-configuration/discovering-blocks",
+    "/docs/en/api/view-layout-configuration/examples",
+    "/docs/en/api/view-layout-configuration/overview",
+    "/docs/en/api/view-layout-configuration/troubleshooting",
+    "/docs/en/api/view-layout-runtime/runtime",
+    "/docs/en/api/workflows/execute-workflow-transition",
+    "/docs/en/api/workflows/get-target-workflow-state",
+    "/docs/en/api/workflows/get-workflow-create-options",
+    "/docs/en/api/workflows/get-workflow-instance",
+    "/docs/en/api/workflows/get-workflow-instance-history",
+    "/docs/en/api/workflows/get-workflow-instance-replay",
+    "/docs/en/api/workflows/get-workflow-task",
+    "/docs/en/api/workflows/introduction",
+    "/docs/en/api/workflows/list-workflow-tasks",
+    "/docs/en/api/workflows/lookup-workflow-assignment-candidates",
+    "/docs/en/api/workflows/reassign-workflow-task",
+    "/docs/en/api/workflows/start-workflow-instance",
+    "/docs/en/api/workflows/update-workflow-instance-author",
+    "/docs/en/getting-started",
+    "/docs/en/opero",
+    "/docs/en/opero/01-wprowadzenie/czym-jest-opero",
+    "/docs/en/opero/01-wprowadzenie/jak-czytac-dokumentacje",
+    "/docs/en/opero/02-pierwsze-kroki/codzienny-rytm-pracy",
+    "/docs/en/opero/02-pierwsze-kroki/orientacja-w-systemie",
+    "/docs/en/opero/02-pierwsze-kroki/pierwsze-kroki",
+    "/docs/en/opero/02-pierwsze-kroki/podstawowe-pojecia",
+    "/docs/en/opero/03-poruszanie-sie-po-systemie/menu-wlasne",
+    "/docs/en/opero/03-poruszanie-sie-po-systemie/moduly-wlasne",
+    "/docs/en/opero/03-poruszanie-sie-po-systemie/strony-wlasne",
+    "/docs/en/opero/04-listy-rekordow/eksport-danych",
+    "/docs/en/opero/04-listy-rekordow/lista-rekordow",
+    "/docs/en/opero/04-listy-rekordow/listy-wlasne",
+    "/docs/en/opero/04-listy-rekordow/obiekty-wlasne",
+    "/docs/en/opero/04-listy-rekordow/widoki-listy",
+    "/docs/en/opero/04-listy-rekordow/wyszukiwanie-i-filtrowanie",
+    "/docs/en/opero/05-rekordy/formularz-rekordu",
+    "/docs/en/opero/05-rekordy/formularze",
+    "/docs/en/opero/05-rekordy/historia-zmian",
+    "/docs/en/opero/05-rekordy/komentarze-i-wzmianki",
+    "/docs/en/opero/05-rekordy/komponenty-ukladu",
+    "/docs/en/opero/05-rekordy/obiekty-podrzedne",
+    "/docs/en/opero/05-rekordy/obiekty-singletonowe",
+    "/docs/en/opero/05-rekordy/panel-boczny",
+    "/docs/en/opero/05-rekordy/pola-plikow",
+    "/docs/en/opero/05-rekordy/pola-podstawowe",
+    "/docs/en/opero/05-rekordy/pola-referencyjne",
+    "/docs/en/opero/05-rekordy/pola-tekstu-sformatowanego",
+    "/docs/en/opero/05-rekordy/pola-wyboru-i-slowniki",
+    "/docs/en/opero/05-rekordy/pola-wyliczane",
+    "/docs/en/opero/05-rekordy/powiazane-rekordy",
+    "/docs/en/opero/05-rekordy/slowniki",
+    "/docs/en/opero/05-rekordy/tworzenie-i-edycja-rekordu",
+    "/docs/en/opero/05-rekordy/uklady-formularzy",
+    "/docs/en/opero/05-rekordy/zalaczniki",
+    "/docs/en/opero/06-procesy-i-zadania/historia-przebiegu",
+    "/docs/en/opero/06-procesy-i-zadania/moje-zadania",
+    "/docs/en/opero/06-procesy-i-zadania/procesy-wprowadzenie",
+    "/docs/en/opero/06-procesy-i-zadania/projektowanie-procesu",
+    "/docs/en/opero/06-procesy-i-zadania/przypisania-i-akceptacje",
+    "/docs/en/opero/06-procesy-i-zadania/tablica-kanban",
+    "/docs/en/opero/06-procesy-i-zadania/uruchamianie-procesu",
+    "/docs/en/opero/07-automatyzacja/akcje",
+    "/docs/en/opero/07-automatyzacja/powiadomienia-z-regul",
+    "/docs/en/opero/07-automatyzacja/reguly-wprowadzenie",
+    "/docs/en/opero/07-automatyzacja/skrypty-wlasne",
+    "/docs/en/opero/07-automatyzacja/testowanie-regul",
+    "/docs/en/opero/07-automatyzacja/wyzwalacze",
+    "/docs/en/opero/08-raporty-i-dokumenty/filtry-i-parametry-raportu",
+    "/docs/en/opero/08-raporty-i-dokumenty/raporty-wprowadzenie",
+    "/docs/en/opero/08-raporty-i-dokumenty/szablony-dokumentow",
+    "/docs/en/opero/08-raporty-i-dokumenty/tabela-przestawna",
+    "/docs/en/opero/08-raporty-i-dokumenty/wykresy",
+    "/docs/en/opero/09-moduly-gotowe/faktury-kosztowe",
+    "/docs/en/opero/09-moduly-gotowe/faktury-sprzedazy",
+    "/docs/en/opero/09-moduly-gotowe/katalog-uslug",
+    "/docs/en/opero/09-moduly-gotowe/kontrahenci",
+    "/docs/en/opero/10-integracje/integracje-wprowadzenie",
+    "/docs/en/opero/10-integracje/ksef-i-eksport-ksiegowy",
+    "/docs/en/opero/11-konto-i-dostep/diagnostyka-i-zgloszenia",
+    "/docs/en/opero/11-konto-i-dostep/jezyki-i-lokalizacja",
+    "/docs/en/opero/11-konto-i-dostep/role-i-uprawnienia",
+    "/docs/en/opero/11-konto-i-dostep/uzytkownicy-i-konta",
+    "/docs/en/opero/11-konto-i-dostep/wersje-robocze-i-publikacja",
+    "/docs/en/opero/11-konto-i-dostep/wielofirmowosc",
+    "/docs/pl",
+    "/docs/pl/api",
+    "/docs/pl/api/authentication",
+    "/docs/pl/api/companies/delete-companies-companyid-contractors-id",
+    "/docs/pl/api/companies/delete-companies-companyid-email-drafts-messageid",
+    "/docs/pl/api/companies/delete-companies-companyid-email-threads-threadid-links-linkid",
+    "/docs/pl/api/companies/delete-companies-companyid-entity-attachments-id",
+    "/docs/pl/api/companies/delete-companies-companyid-entity-comments-comments-id",
+    "/docs/pl/api/companies/get-companies-companyid-contractors",
+    "/docs/pl/api/companies/get-companies-companyid-contractors-id",
+    "/docs/pl/api/companies/get-companies-companyid-contractors-id-presentation",
+    "/docs/pl/api/companies/get-companies-companyid-contractors-presentation",
+    "/docs/pl/api/companies/get-companies-companyid-cost-invoices-id-presentation",
+    "/docs/pl/api/companies/get-companies-companyid-email-accounts",
+    "/docs/pl/api/companies/get-companies-companyid-email-accounts-accountid-send-identities",
+    "/docs/pl/api/companies/get-companies-companyid-email-drafts",
+    "/docs/pl/api/companies/get-companies-companyid-email-folders",
+    "/docs/pl/api/companies/get-companies-companyid-email-messages-messageid",
+    "/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-attachments-attachmentid",
+    "/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-inline-contentid",
+    "/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-raw",
+    "/docs/pl/api/companies/get-companies-companyid-email-search",
+    "/docs/pl/api/companies/get-companies-companyid-email-threads",
+    "/docs/pl/api/companies/get-companies-companyid-email-threads-threadid-links",
+    "/docs/pl/api/companies/get-companies-companyid-entity-attachments",
+    "/docs/pl/api/companies/get-companies-companyid-entity-comments-comments-id",
+    "/docs/pl/api/companies/get-companies-companyid-entity-comments-entitytype-entityid",
+    "/docs/pl/api/companies/get-companies-companyid-files-id",
+    "/docs/pl/api/companies/get-companies-companyid-files-id-download",
+    "/docs/pl/api/companies/get-companies-companyid-forms-formid-relation-tables-relationfieldkey-target-layout",
+    "/docs/pl/api/companies/get-companies-companyid-forms-formid-render",
+    "/docs/pl/api/companies/get-companies-companyid-pages-slug",
+    "/docs/pl/api/companies/get-companies-companyid-sales-invoices-id-presentation",
+    "/docs/pl/api/companies/get-companies-companyid-service-catalog-items",
+    "/docs/pl/api/companies/get-companies-companyid-service-catalog-items-id",
+    "/docs/pl/api/companies/patch-companies-companyid-contractors-id",
+    "/docs/pl/api/companies/patch-companies-companyid-contractors-id-status",
+    "/docs/pl/api/companies/patch-companies-companyid-email-drafts-messageid",
+    "/docs/pl/api/companies/patch-companies-companyid-email-messages-messageid",
+    "/docs/pl/api/companies/patch-companies-companyid-entity-attachments-id",
+    "/docs/pl/api/companies/patch-companies-companyid-entity-comments-comments-id",
+    "/docs/pl/api/companies/patch-companies-companyid-forms-formid-records-recordid",
+    "/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id",
+    "/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id-archive",
+    "/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id-restore",
+    "/docs/pl/api/companies/post-companies-companyid-contractors",
+    "/docs/pl/api/companies/post-companies-companyid-contractors-id-presentation-runtime-data",
+    "/docs/pl/api/companies/post-companies-companyid-contractors-presentation-runtime-data",
+    "/docs/pl/api/companies/post-companies-companyid-cost-invoices-id-presentation-runtime-data",
+    "/docs/pl/api/companies/post-companies-companyid-email-drafts",
+    "/docs/pl/api/companies/post-companies-companyid-email-drafts-messageid-send",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-cancel-send",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-delete-remote",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-labels",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-move",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-reply",
+    "/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-resend",
+    "/docs/pl/api/companies/post-companies-companyid-email-threads-threadid-links",
+    "/docs/pl/api/companies/post-companies-companyid-entity-attachments",
+    "/docs/pl/api/companies/post-companies-companyid-entity-comments",
+    "/docs/pl/api/companies/post-companies-companyid-files-attachments",
+    "/docs/pl/api/companies/post-companies-companyid-forms-formid-records",
+    "/docs/pl/api/companies/post-companies-companyid-forms-formid-records-recordid-relation-tables-relationfieldkey-query",
+    "/docs/pl/api/companies/post-companies-companyid-forms-formid-relation-tables-table-layout",
+    "/docs/pl/api/companies/post-companies-companyid-forms-formid-runtime-data",
+    "/docs/pl/api/companies/post-companies-companyid-sales-invoices-id-presentation-runtime-data",
+    "/docs/pl/api/companies/post-companies-companyid-service-catalog-items",
+    "/docs/pl/api/custom-modules/get-custom-module",
+    "/docs/pl/api/custom-modules/get-custom-modules-field-types",
+    "/docs/pl/api/custom-modules/get-custom-modules-field-types-type",
+    "/docs/pl/api/custom-modules/list-custom-modules",
+    "/docs/pl/api/custom-object-forms/get-custom-object-form",
+    "/docs/pl/api/custom-object-forms/list-available-custom-object-forms",
+    "/docs/pl/api/custom-object-forms/list-custom-object-forms",
+    "/docs/pl/api/custom-object-forms/management",
+    "/docs/pl/api/custom-object-forms/runtime",
+    "/docs/pl/api/custom-object-forms/view-layouts",
+    "/docs/pl/api/custom-objects/create-custom-record",
+    "/docs/pl/api/custom-objects/delete-custom-record",
+    "/docs/pl/api/custom-objects/get-custom-module-schema",
+    "/docs/pl/api/custom-objects/get-custom-object",
+    "/docs/pl/api/custom-objects/get-custom-object-schema",
+    "/docs/pl/api/custom-objects/get-custom-record",
+    "/docs/pl/api/custom-objects/get-singleton-custom-record",
+    "/docs/pl/api/custom-objects/list-custom-objects",
+    "/docs/pl/api/custom-objects/list-custom-records",
+    "/docs/pl/api/custom-objects/update-custom-record",
+    "/docs/pl/api/custom-objects/update-singleton-custom-record",
+    "/docs/pl/api/dictionaries/get-dictionaries-dictionaryid-entries-entryid",
+    "/docs/pl/api/dictionaries/get-dictionaries-dictionaryid-entries-export",
+    "/docs/pl/api/dictionaries/get-dictionary-with-entries",
+    "/docs/pl/api/dictionaries/list-dictionaries",
+    "/docs/pl/api/dictionaries/list-dictionary-entries",
+    "/docs/pl/api/entity-fields/get-entity-fields",
+    "/docs/pl/api/health/liveness-and-database-health-check",
+    "/docs/pl/api/language",
+    "/docs/pl/api/languages/get-languages",
+    "/docs/pl/api/open-api",
+    "/docs/pl/api/queries/execute-query",
+    "/docs/pl/api/queries/get-query",
+    "/docs/pl/api/queries/introduction",
+    "/docs/pl/api/queries/list-queries",
+    "/docs/pl/api/queries/post-saved-queries-id-execute-mutation",
+    "/docs/pl/api/reference-data/list-supported-currencies",
+    "/docs/pl/api/rules/execute-rule",
+    "/docs/pl/api/rules/get-rule",
+    "/docs/pl/api/rules/get-rule-execution",
+    "/docs/pl/api/rules/get-rules-id-manual-invocation",
+    "/docs/pl/api/rules/introduction",
+    "/docs/pl/api/rules/list-rule-executions",
+    "/docs/pl/api/rules/list-rules",
+    "/docs/pl/api/rules/post-rules-id-manual-invocation-options",
+    "/docs/pl/api/view-layout-configuration/block-types",
+    "/docs/pl/api/view-layout-configuration/building-layouts",
+    "/docs/pl/api/view-layout-configuration/custom-fields",
+    "/docs/pl/api/view-layout-configuration/custom-object-forms",
+    "/docs/pl/api/view-layout-configuration/discovering-blocks",
+    "/docs/pl/api/view-layout-configuration/examples",
+    "/docs/pl/api/view-layout-configuration/overview",
+    "/docs/pl/api/view-layout-configuration/troubleshooting",
+    "/docs/pl/api/view-layout-runtime/runtime",
+    "/docs/pl/api/workflows/execute-workflow-transition",
+    "/docs/pl/api/workflows/get-target-workflow-state",
+    "/docs/pl/api/workflows/get-workflow-create-options",
+    "/docs/pl/api/workflows/get-workflow-instance",
+    "/docs/pl/api/workflows/get-workflow-instance-history",
+    "/docs/pl/api/workflows/get-workflow-instance-replay",
+    "/docs/pl/api/workflows/get-workflow-task",
+    "/docs/pl/api/workflows/introduction",
+    "/docs/pl/api/workflows/list-workflow-tasks",
+    "/docs/pl/api/workflows/lookup-workflow-assignment-candidates",
+    "/docs/pl/api/workflows/reassign-workflow-task",
+    "/docs/pl/api/workflows/start-workflow-instance",
+    "/docs/pl/api/workflows/update-workflow-instance-author",
+    "/docs/pl/getting-started",
+    "/docs/pl/opero",
+    "/docs/pl/opero/01-wprowadzenie/czym-jest-opero",
+    "/docs/pl/opero/01-wprowadzenie/jak-czytac-dokumentacje",
+    "/docs/pl/opero/02-pierwsze-kroki/codzienny-rytm-pracy",
+    "/docs/pl/opero/02-pierwsze-kroki/orientacja-w-systemie",
+    "/docs/pl/opero/02-pierwsze-kroki/pierwsze-kroki",
+    "/docs/pl/opero/02-pierwsze-kroki/podstawowe-pojecia",
+    "/docs/pl/opero/03-poruszanie-sie-po-systemie/menu-wlasne",
+    "/docs/pl/opero/03-poruszanie-sie-po-systemie/moduly-wlasne",
+    "/docs/pl/opero/03-poruszanie-sie-po-systemie/strony-wlasne",
+    "/docs/pl/opero/04-listy-rekordow/eksport-danych",
+    "/docs/pl/opero/04-listy-rekordow/lista-rekordow",
+    "/docs/pl/opero/04-listy-rekordow/listy-wlasne",
+    "/docs/pl/opero/04-listy-rekordow/obiekty-wlasne",
+    "/docs/pl/opero/04-listy-rekordow/widoki-listy",
+    "/docs/pl/opero/04-listy-rekordow/wyszukiwanie-i-filtrowanie",
+    "/docs/pl/opero/05-rekordy/formularz-rekordu",
+    "/docs/pl/opero/05-rekordy/formularze",
+    "/docs/pl/opero/05-rekordy/historia-zmian",
+    "/docs/pl/opero/05-rekordy/komentarze-i-wzmianki",
+    "/docs/pl/opero/05-rekordy/komponenty-ukladu",
+    "/docs/pl/opero/05-rekordy/obiekty-podrzedne",
+    "/docs/pl/opero/05-rekordy/obiekty-singletonowe",
+    "/docs/pl/opero/05-rekordy/panel-boczny",
+    "/docs/pl/opero/05-rekordy/pola-plikow",
+    "/docs/pl/opero/05-rekordy/pola-podstawowe",
+    "/docs/pl/opero/05-rekordy/pola-referencyjne",
+    "/docs/pl/opero/05-rekordy/pola-tekstu-sformatowanego",
+    "/docs/pl/opero/05-rekordy/pola-wyboru-i-slowniki",
+    "/docs/pl/opero/05-rekordy/pola-wyliczane",
+    "/docs/pl/opero/05-rekordy/powiazane-rekordy",
+    "/docs/pl/opero/05-rekordy/slowniki",
+    "/docs/pl/opero/05-rekordy/tworzenie-i-edycja-rekordu",
+    "/docs/pl/opero/05-rekordy/uklady-formularzy",
+    "/docs/pl/opero/05-rekordy/zalaczniki",
+    "/docs/pl/opero/06-procesy-i-zadania/historia-przebiegu",
+    "/docs/pl/opero/06-procesy-i-zadania/moje-zadania",
+    "/docs/pl/opero/06-procesy-i-zadania/procesy-wprowadzenie",
+    "/docs/pl/opero/06-procesy-i-zadania/projektowanie-procesu",
+    "/docs/pl/opero/06-procesy-i-zadania/przypisania-i-akceptacje",
+    "/docs/pl/opero/06-procesy-i-zadania/tablica-kanban",
+    "/docs/pl/opero/06-procesy-i-zadania/uruchamianie-procesu",
+    "/docs/pl/opero/07-automatyzacja/akcje",
+    "/docs/pl/opero/07-automatyzacja/powiadomienia-z-regul",
+    "/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie",
+    "/docs/pl/opero/07-automatyzacja/skrypty-wlasne",
+    "/docs/pl/opero/07-automatyzacja/testowanie-regul",
+    "/docs/pl/opero/07-automatyzacja/wyzwalacze",
+    "/docs/pl/opero/08-raporty-i-dokumenty/filtry-i-parametry-raportu",
+    "/docs/pl/opero/08-raporty-i-dokumenty/raporty-wprowadzenie",
+    "/docs/pl/opero/08-raporty-i-dokumenty/szablony-dokumentow",
+    "/docs/pl/opero/08-raporty-i-dokumenty/tabela-przestawna",
+    "/docs/pl/opero/08-raporty-i-dokumenty/wykresy",
+    "/docs/pl/opero/09-moduly-gotowe/faktury-kosztowe",
+    "/docs/pl/opero/09-moduly-gotowe/faktury-sprzedazy",
+    "/docs/pl/opero/09-moduly-gotowe/katalog-uslug",
+    "/docs/pl/opero/09-moduly-gotowe/kontrahenci",
+    "/docs/pl/opero/10-integracje/integracje-wprowadzenie",
+    "/docs/pl/opero/10-integracje/ksef-i-eksport-ksiegowy",
+    "/docs/pl/opero/11-konto-i-dostep/diagnostyka-i-zgloszenia",
+    "/docs/pl/opero/11-konto-i-dostep/jezyki-i-lokalizacja",
+    "/docs/pl/opero/11-konto-i-dostep/role-i-uprawnienia",
+    "/docs/pl/opero/11-konto-i-dostep/uzytkownicy-i-konta",
+    "/docs/pl/opero/11-konto-i-dostep/wersje-robocze-i-publikacja",
+    "/docs/pl/opero/11-konto-i-dostep/wielofirmowosc"
+  ],
+  "files": {
+    "content/docs/en/api/authentication.mdx": {
+      "sha256": "71863bfdcfe645cb6613d876420c072e0c6e7e084f366615e32457f4f06d584e",
+      "owner": "manual"
+    },
+    "content/docs/en/api/companies/delete-companies-companyid-contractors-id.mdx": {
+      "sha256": "614acc1448857dd2d99c6cc5a91061c66f589439988986084ae1b93e79ce6777",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/delete-companies-companyid-email-drafts-messageid.mdx": {
+      "sha256": "c1e707ae1d534f17caf8394c18fb3d9a47dcbeb3e29dc4141e63f5c45b957e61",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/delete-companies-companyid-email-threads-threadid-links-linkid.mdx": {
+      "sha256": "7be8f85d984113b49beb409d151ecd797b2bb2934a2a77fc8901c600d0a71c83",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/delete-companies-companyid-entity-attachments-id.mdx": {
+      "sha256": "0a06a1a0749d1fd1d589a00fd1ec09a3144af3eb7748a1252818dee6d578798f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/delete-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "62f36d0d9545f13852407b8538e36b0bcab8e439e72fb1b1b4a08ef6a90fe470",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-contractors-id-presentation.mdx": {
+      "sha256": "c62b9e2de60d9fc67029df09bb698f18e81603b5f37df54b653400f211920360",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-contractors-id.mdx": {
+      "sha256": "c5edc09570819845d95acbb30bb55e625e157b46ddfae3a5535108fc2ad5528e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-contractors-presentation.mdx": {
+      "sha256": "806168e46c056799d524f43704d8a9f80069a9147a8eaa09dd34c84c5d7057af",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-contractors.mdx": {
+      "sha256": "9802647e459d51ba6fefd198319a643ef34dc3beaee5356a36f65be46a118b0b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-cost-invoices-id-presentation.mdx": {
+      "sha256": "8a92398e337c36a8044e111f83ca52b1ea1825dac7e54b513e345ffb75264327",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-accounts-accountid-send-identities.mdx": {
+      "sha256": "ebe88b80cffa20a70f0a61b4f9e1237c6d914d0e6a176a56af6127e8f450d956",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-accounts.mdx": {
+      "sha256": "01c9f0367874b1a2f41e03de6afa17726cf2a6daa72e4d4330c9b34c09b2ffa7",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-drafts.mdx": {
+      "sha256": "d5af3244755c8d3de0d4dd28a7284203529dd3d4026479605b877cfd8d87b6f1",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-folders.mdx": {
+      "sha256": "03321b3445333b71abb11c5a4376c7542a1c5f556b103b89a1e1cde87900f94b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-messages-messageid-attachments-attachmentid.mdx": {
+      "sha256": "e6e04d3d9e122d587b40f98be548b4c935ea6b12fc98b3b863904774de2e7db1",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-messages-messageid-inline-contentid.mdx": {
+      "sha256": "9353ed7bb4cca4a9b6788362def0188198b0337c89852fc7a1d4184a82d3e630",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-messages-messageid-raw.mdx": {
+      "sha256": "faa60b48e068302fb560a8d178bb487862653d0b9779722c31b5f31420a65e1e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-messages-messageid.mdx": {
+      "sha256": "85d8128bbbd52bff87e57ab5c561b50e70b28fb4a87c6255110d302bd69743f8",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-search.mdx": {
+      "sha256": "984ec094baff606216c035b9a6b3f70365c4e778232d7a19be60f2f1991de4fd",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-threads-threadid-links.mdx": {
+      "sha256": "a87eddd8cbd7c909be5270e21bfb374b5ce07cb16a01f74da7f859495531aecc",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-email-threads.mdx": {
+      "sha256": "a582450538e579115edcdef319d08d366f64fa5b7192f2bfbde94456bf47b127",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-entity-attachments.mdx": {
+      "sha256": "0a98926d1e82d208313176e6010a15320f26649e8106f461e27ba6caf55f81f9",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "945645e4118b5183b2e3530b407c04823985af194f67a79a91b714d357957847",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-entity-comments-entitytype-entityid.mdx": {
+      "sha256": "ba01ec0bf600b8bf9a7917395f6d4a4d828740870a39851b7ccc39e9d30aba96",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-files-id-download.mdx": {
+      "sha256": "90a56eae9332f7a72e86038bcfa18da0f9f8fc3fc3272939e5694064e6b4fbe5",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-files-id.mdx": {
+      "sha256": "2feccc5f7ad3c0d8181329a5c93c5eb833051cfc148d46449377e91e8986159f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-forms-formid-relation-tables-relationfieldkey-target-layout.mdx": {
+      "sha256": "4b280862f285b775797010490e3422d6c731e760a244f9308d85bf348cbd685d",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-forms-formid-render.mdx": {
+      "sha256": "2605772efdac7d6d2e2cec2a408a17b65cec1ce4948e4a6abe870df2fae34d09",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-pages-slug.mdx": {
+      "sha256": "4ea3b3eb51445e2297e4b7abc618baaa536cdc5990fbac21fb9b0191721d39ce",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-sales-invoices-id-presentation.mdx": {
+      "sha256": "7b79d0d3164b558b5efecbe8f6ccf89ec9df6f23268b251d20447c8d0470e23f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-service-catalog-items-id.mdx": {
+      "sha256": "4bc238b5bb9456acdfb202e3dad425c3e779f2e135f64b154e9d7a54d1031cf0",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/get-companies-companyid-service-catalog-items.mdx": {
+      "sha256": "65a7bd97e6e225c1e02fb48aa150344fcf4bb785b13557bdcbc1395b08810528",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/meta.json": {
+      "sha256": "1e52ef2c549ef0bb314044cb8770560ce90c506df2bc570ba4fc29fc4332208f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-contractors-id-status.mdx": {
+      "sha256": "a3ce6f101d7a969cbb31a9ed3010060ebc79eafb016af50afd124f3b749c901e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-contractors-id.mdx": {
+      "sha256": "249154bb46ab90231de582315336294210f86dd9f9e2068d9b609e1db45f5329",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-email-drafts-messageid.mdx": {
+      "sha256": "044d2250e91ae23a51d718d8c46238fe7273b1ba4b9740ae9876558e218a14e9",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-email-messages-messageid.mdx": {
+      "sha256": "6be096dc58de697fe2e4d77e785cb347520b095c5118143e80039525f87dea9f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-entity-attachments-id.mdx": {
+      "sha256": "8c244b42f25dbec0db29b8bf1376e39669dff9b04a8a4f61d4a6dd21d160dd8b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "9e229ac67c1fb604bd8b172e8d22c171e0029151475c376dedbef498c0cfc408",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-forms-formid-records-recordid.mdx": {
+      "sha256": "556237cdbc7df624ea8b0d58b223fa72e9ce7b440e3eb10f5f4cafa34255b57f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id-archive.mdx": {
+      "sha256": "e6283151abf6a1d47819d1cc5cb4b47b690cbb395639e7c203de618415f25733",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id-restore.mdx": {
+      "sha256": "f0e1a2dfd138a93fc6000cac3875ee23bd44d0373b705e7f9ff783fdcf1be4cc",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/patch-companies-companyid-service-catalog-items-id.mdx": {
+      "sha256": "7e1299f505667c1f6594ab0e24cfc54bca4ef63d396c0c0c0cd37b5d3d2a31f8",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-contractors-id-presentation-runtime-data.mdx": {
+      "sha256": "73988cf4ef5c1077213caf5b47db8b08c6827610493574bc21be8f19694da466",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-contractors-presentation-runtime-data.mdx": {
+      "sha256": "efa6ba7aa12fd363af5c8ab99cefed8db726abcd77e172d92d1d025eb929b1f8",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-contractors.mdx": {
+      "sha256": "33f4db7476a56f5acc16a5867035f22e5431daf95b1404a7ad3560cef6bdc86b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-cost-invoices-id-presentation-runtime-data.mdx": {
+      "sha256": "a2ea22d0331ba84ec55a01cff1745222d3868f5d3a48225d94487be603d49285",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-drafts-messageid-send.mdx": {
+      "sha256": "6df74e2d7a70b784d8826e323c41b039cfef5dd82dc53f1f88b42c9742c9e006",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-drafts.mdx": {
+      "sha256": "5bdcc18cdf42f14d776b0cd1cb2579e8674275a8874dbea77442ba2bfdd63948",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-cancel-send.mdx": {
+      "sha256": "6fb900f08fa738251e24c6f0dbd26e4c7a719d5cf1943f7afad701420ed20328",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-delete-remote.mdx": {
+      "sha256": "1e91fceaea64ab5cbe30ce5a6d8dc9d0017966f027babf761d8db8a1a835a2f4",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-labels.mdx": {
+      "sha256": "7d452247d3cb401c66ff9a8e64ce0a7b9c8003ff257e990a390b4035b0bfdf75",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-move.mdx": {
+      "sha256": "720be6025b7261b87e02bb33298d1bff9269e155886c357acfc096a2d40e77a6",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-reply.mdx": {
+      "sha256": "9e19a8ea1396bdd7d76ce6a04165d2b6eae4ff159bd14926932eff794312a952",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-messages-messageid-resend.mdx": {
+      "sha256": "9bce3e3455f45af535c09aab6971cb01d7799ad184347972655c846d638f125f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-email-threads-threadid-links.mdx": {
+      "sha256": "6b52d6090e67a978aea0f5d2cf4c958c8e00ac811d61fb23c03eeb7b2db94abe",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-entity-attachments.mdx": {
+      "sha256": "c991a3a2cc6304a3bed5716264af4cc98d9caf0b009a4f8208b45c570b5d56ce",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-entity-comments.mdx": {
+      "sha256": "aaf6415e908445792412e144cbf039de97742655af879e77a06f8c9877e7dc17",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-files-attachments.mdx": {
+      "sha256": "2d7894b2990af810ad218dc7b04a74e75b3ff6aaad57660b02d38fe0f49f1b25",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-forms-formid-records-recordid-relation-tables-relationfieldkey-query.mdx": {
+      "sha256": "08559ef3143b86208ef7277320a8021a0ec56e33b667aca69d823e427c69d052",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-forms-formid-records.mdx": {
+      "sha256": "00d61bb919d627349d1649cc82fd83ef402461524cda44af5e529fff384e1f7c",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-forms-formid-relation-tables-table-layout.mdx": {
+      "sha256": "9da1e0ea915db745df55dc1c67de7efd7d343109f1177ba28959926c84f41cb3",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-forms-formid-runtime-data.mdx": {
+      "sha256": "3f957bcd7414b00a0ca86806e754415543afb9226c78d8350df7cfd67bfbe588",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-sales-invoices-id-presentation-runtime-data.mdx": {
+      "sha256": "86dadbf366094494db8f74dd9e040dce6ce4809bf0fb951aca838f61dac11a6c",
+      "owner": "generated"
+    },
+    "content/docs/en/api/companies/post-companies-companyid-service-catalog-items.mdx": {
+      "sha256": "dd382431486411326338de0b783ce25e68fc80b0a0010418eba16a2aa683fb8a",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-modules/get-custom-module.mdx": {
+      "sha256": "0532d4bdae8ac8de5a65e5dfcc5ad00909787bc319d1c55bcdb6cc51267aeaea",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-modules/get-custom-modules-field-types-type.mdx": {
+      "sha256": "26c85f3b3bbd1785ea88195585bc7c26befbb77544a010f54cb41e0f4d5d2a2e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-modules/get-custom-modules-field-types.mdx": {
+      "sha256": "cecbb58c1618c41bb6cc6d70779872f1f9fa60da2ebac2ead931dadd737f23c1",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-modules/list-custom-modules.mdx": {
+      "sha256": "6af36f22a594a03a4c15263f48cae91bd0d18a40a4388e8662514f69b1fa2c43",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-modules/meta.json": {
+      "sha256": "4142417c78ca0e395a723a3d1b3e5e45c5694cd81978aa6c018e6b3bc261cdde",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-object-forms/get-custom-object-form.mdx": {
+      "sha256": "a4ef1a4bb756c91cb9d55365477a5c9a81fc8b1d2e88ebf77c0abf05724883a6",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-object-forms/list-available-custom-object-forms.mdx": {
+      "sha256": "466b6e7c50ea41747eb05750eb8f1af7738e82a14d69f720d2264e57336babcc",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-object-forms/list-custom-object-forms.mdx": {
+      "sha256": "a211b1560e739735440ebeec93797e0f2f4b2c9bbfeecc96f22408ce3c08f088",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-object-forms/management.mdx": {
+      "sha256": "a5097bc68d50e33d440158623e42879d48841e3faa3e57183056b2084b0da018",
+      "owner": "manual"
+    },
+    "content/docs/en/api/custom-object-forms/meta.json": {
+      "sha256": "7f09a8c56249b3e161d5680a4c89c5589080a0f1ce3c388624a93669f8e632bb",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-object-forms/runtime.mdx": {
+      "sha256": "24cbbd1cb993d50f3c9877c56bc25498184fb862daafbb722330487c77a32ec7",
+      "owner": "manual"
+    },
+    "content/docs/en/api/custom-object-forms/view-layouts.mdx": {
+      "sha256": "8128b629b02b283594fcb578bd41d350d1df5716a595443b7fc3d4305f2871dd",
+      "owner": "manual"
+    },
+    "content/docs/en/api/custom-objects/create-custom-record.mdx": {
+      "sha256": "940711c42f15cc5887ea6431a982ec0784756c8235d19c36e75e4998b887252b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/delete-custom-record.mdx": {
+      "sha256": "1278ccf9fb79d3be602f4f711a2ee7463be4972e20bd50de0c6e91a44e75d3c4",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/get-custom-module-schema.mdx": {
+      "sha256": "f0a1c850bfb4c0625b53a02c600a15648943fc0b5a0956d78b422ecd9a60ae6e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/get-custom-object-schema.mdx": {
+      "sha256": "8f696383d3f748e7dd7ed0de90ba2ecf15587a19efba0bb45e43362cba1018b1",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/get-custom-object.mdx": {
+      "sha256": "2846baba16dde67352f5aad6b7a0b4d89a5ef7b3b7ad390a92dcb2ebffd3728e",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/get-custom-record.mdx": {
+      "sha256": "b0b9e47b0ca82a2b74b00df1a4b94d674874fde6931043930fdd260c3766e6a0",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/get-singleton-custom-record.mdx": {
+      "sha256": "8c1051a7ac4c74ac1d4f3722d7d7f3f70d6a761fc7d1bfd60d9fd7c990aa6aa7",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/list-custom-objects.mdx": {
+      "sha256": "274d34ef04195ea11f1c2b80dbeab3ee0be9c87c6a478fc357827912e6832292",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/list-custom-records.mdx": {
+      "sha256": "e5b196a4ee7512a8dd3217091bfdc4451c4ee77fc08056b3526144c0a5d252c0",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/meta.json": {
+      "sha256": "16adb48ed6474efd3073a934aa0a80761413ba9ee0e4f7562f3b5f8453a01d70",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/update-custom-record.mdx": {
+      "sha256": "acf029d245f22aaef2ffd323f1177617372a9a6ed4efff9327504c39714d4be6",
+      "owner": "generated"
+    },
+    "content/docs/en/api/custom-objects/update-singleton-custom-record.mdx": {
+      "sha256": "0d1823cef60066d78b9761ad4b022420ada04a0ed382c60ecf93d1036b8701f7",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/get-dictionaries-dictionaryid-entries-entryid.mdx": {
+      "sha256": "5a965f47e54264d784c8308a016e676445452f9c03c0733d7e12d2340e193eca",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/get-dictionaries-dictionaryid-entries-export.mdx": {
+      "sha256": "4d1e0405b51c59924077a46595430479945fe0fce4acc1aa37cf26f47d0e015a",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/get-dictionary-with-entries.mdx": {
+      "sha256": "5e30420d6672d6b5efebe544b358e6e99b6b5de29fe1f7f522222788ab70a3c8",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/list-dictionaries.mdx": {
+      "sha256": "086e924c5ddf6386d33b6f825cb9eb82238884b7e2675f18b64a89fb4d58d4aa",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/list-dictionary-entries.mdx": {
+      "sha256": "69bf9508ec97fdc6f83ded698b641a8c33619cff798f3cec7099ffa14c2a2e20",
+      "owner": "generated"
+    },
+    "content/docs/en/api/dictionaries/meta.json": {
+      "sha256": "4b5c04f3a497c58bc121fd1a5cd72e01ea8ec3bf4a46c926515304295f16a695",
+      "owner": "generated"
+    },
+    "content/docs/en/api/entity-fields/get-entity-fields.mdx": {
+      "sha256": "3a127c4fc1304a49dedaff3c2e25ca32398982f8557096c75071941d64f1b343",
+      "owner": "generated"
+    },
+    "content/docs/en/api/entity-fields/meta.json": {
+      "sha256": "4920811559baaf607804ec8f86d23b4c298cca98454f3656d2446d10f2d2f892",
+      "owner": "generated"
+    },
+    "content/docs/en/api/health/liveness-and-database-health-check.mdx": {
+      "sha256": "3037763787f5da07d70c5d7597fbfd5101a000250718037feebe088a0662bce3",
+      "owner": "generated"
+    },
+    "content/docs/en/api/health/meta.json": {
+      "sha256": "c41254060adb91c3c6b4d8b08af445e22b2ccf20d45041f18a4e2c8893116b86",
+      "owner": "generated"
+    },
+    "content/docs/en/api/index.mdx": {
+      "sha256": "2c3b098ad6fb819d5012e95d6536e056db022f7b38ed1e9c4b73c265f548017d",
+      "owner": "generated"
+    },
+    "content/docs/en/api/language.mdx": {
+      "sha256": "0174a6727a0cf682c72c746d95aacdf13ed9d2d31a8536095189d8d7180763b4",
+      "owner": "manual"
+    },
+    "content/docs/en/api/languages/get-languages.mdx": {
+      "sha256": "53b275509768fec251c796b6ade3b9bef8fc7e9b6448a0fc17a5b0a99bc60a66",
+      "owner": "generated"
+    },
+    "content/docs/en/api/languages/meta.json": {
+      "sha256": "821bf5be3b655eef5cd794fca4fed5ec3c00f2e116247918a45e8b78f42f8ece",
+      "owner": "generated"
+    },
+    "content/docs/en/api/meta.json": {
+      "sha256": "804fc775891d8769f0293a566b20be5b8001a21c7d0ff73a816a0ce9fc03704a",
+      "owner": "generated"
+    },
+    "content/docs/en/api/open-api.mdx": {
+      "sha256": "ffad678dd84edb08990d21da9d3322bc067ef6fd9f68f055bc2ab93280b3bf66",
+      "owner": "manual"
+    },
+    "content/docs/en/api/queries/execute-query.mdx": {
+      "sha256": "93f3a433782f7f60e8383c1c3ed06d42a52b3fd189dbdd2c86a1ac86a43f9545",
+      "owner": "generated"
+    },
+    "content/docs/en/api/queries/get-query.mdx": {
+      "sha256": "0f099d2e0d08e173af8b171533c9f0d88b9416aa0134171d2e996911dd3e01e5",
+      "owner": "generated"
+    },
+    "content/docs/en/api/queries/introduction.mdx": {
+      "sha256": "19fd866723dd7fc1cb358614e95bbc21b6f558e156d59082e065ae95b2916039",
+      "owner": "manual"
+    },
+    "content/docs/en/api/queries/list-queries.mdx": {
+      "sha256": "27dda72b1a4860110320c816f584aea577d3f14c0299a7c0473e2633d75a71bd",
+      "owner": "generated"
+    },
+    "content/docs/en/api/queries/meta.json": {
+      "sha256": "a34cc9b3e7788f1bcf072e5d08b9398b89936438597adf46646aa10fbd3fdabe",
+      "owner": "generated"
+    },
+    "content/docs/en/api/queries/post-saved-queries-id-execute-mutation.mdx": {
+      "sha256": "766da078b610b06c77b411382a12899baa028596310fe69b14fe76e1806fdae5",
+      "owner": "generated"
+    },
+    "content/docs/en/api/reference-data/list-supported-currencies.mdx": {
+      "sha256": "5dea4bcef0941ef7a8ac968a2b34f45c9155eb2a5eb77dbfb3d862422e86a82d",
+      "owner": "generated"
+    },
+    "content/docs/en/api/reference-data/meta.json": {
+      "sha256": "e261200009b59aebdd4b30314d660fc3065baf99457fcbf2edd745640e6f2c01",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/execute-rule.mdx": {
+      "sha256": "980b01d22b9ec5aa983b4bfaa9c311509fcd236570681b83c81f112a82abc528",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/get-rule-execution.mdx": {
+      "sha256": "9d94262573009354cb025c097b2a520b694480c032a6e24dac9fb3ae68ea255c",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/get-rule.mdx": {
+      "sha256": "b5c0d091456aad7b64c4756cf7ed0e9f3d91b3d8a1d82679783e709c6baa9a4f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/get-rules-id-manual-invocation.mdx": {
+      "sha256": "fdf84b860876e83ecf6df13c896b6896ff2d1ce24f632ac9bb7f0acc6c255ebc",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/introduction.mdx": {
+      "sha256": "0116e43404b5a7bfb15738c173d5400f1a55a3572c3b60db0079794c31093ad7",
+      "owner": "manual"
+    },
+    "content/docs/en/api/rules/list-rule-executions.mdx": {
+      "sha256": "9d7197a6d1a1edc3a3882bc22a40b783c38cde1a022d05d4aed9f69e79ebe39f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/list-rules.mdx": {
+      "sha256": "7bb2c8cf32f4227211921565ae0ec5f962f4b06a95be7e6233e8d97585e4c528",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/meta.json": {
+      "sha256": "7b7e51837683c357f781e3ac60f216388f993d799522029e9ec15ba730c68acc",
+      "owner": "generated"
+    },
+    "content/docs/en/api/rules/post-rules-id-manual-invocation-options.mdx": {
+      "sha256": "4620b6e5dd1ea9c07559a3a2f13945cb81261793579b6efda033b3cd7959a9df",
+      "owner": "generated"
+    },
+    "content/docs/en/api/view-layout-configuration/block-types.mdx": {
+      "sha256": "d4844189c6c865cf56ccf77436eeb9de32b911204248db1174dcb42e9269edc6",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/building-layouts.mdx": {
+      "sha256": "53e779c47d0a5fe695f9a9b17a3fb309e96cc6fb2b50708cff1751c831dcc624",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/custom-fields.mdx": {
+      "sha256": "05914bcaf57f4dfa980954be4a4984023844cb541f8737424ae9ba4d3cd785e1",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/custom-object-forms.mdx": {
+      "sha256": "f212d79608a2ed2789cf9f0e5b18fdc7c05ff10c213e565941bf86aa5f810976",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/discovering-blocks.mdx": {
+      "sha256": "4f7561f7cd7760f73811d9dde6366f70e34efd8cafffca3b8979f3dd7691e96d",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/examples.mdx": {
+      "sha256": "039f2777f18b12162e9764fac8bc17d226666d87cd13b4d13398c9252686c84d",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/meta.json": {
+      "sha256": "af7a47e77330a17db11e0d11587c59d30c9f9d9bd17e3367b236ca305730df18",
+      "owner": "generated"
+    },
+    "content/docs/en/api/view-layout-configuration/overview.mdx": {
+      "sha256": "653d06c888f19f1268f79662509f3f7ccf602a24dfeac3bc56eb10638b0c5c3e",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-configuration/troubleshooting.mdx": {
+      "sha256": "e457e6e3173bebe464f7299b077cee61ae3664b2b55fc2e13c491a0ae023a1be",
+      "owner": "manual"
+    },
+    "content/docs/en/api/view-layout-runtime/meta.json": {
+      "sha256": "9c4ac6c769d02e78ad1803477afb54bf3395154a44fa0da6c76a695342430802",
+      "owner": "generated"
+    },
+    "content/docs/en/api/view-layout-runtime/runtime.mdx": {
+      "sha256": "8f4865ef0d043f43b04b08997e469755bc8f5745f910115597f48b413c235f6d",
+      "owner": "manual"
+    },
+    "content/docs/en/api/workflows/execute-workflow-transition.mdx": {
+      "sha256": "b9883c5aed940c1b9d67ae8b6e74d3f744ea2ed3794e92d14fe7bc0e58e16065",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-target-workflow-state.mdx": {
+      "sha256": "d931095c523053730d8e9aa26f9ed75ecb763b548ac0d6a334c6e289c4d63a1b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-workflow-create-options.mdx": {
+      "sha256": "5463679bcaf3c4783aa1286fa2c94a9658d97891e0e06924e24a25e3f47a1d03",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-workflow-instance-history.mdx": {
+      "sha256": "13ca3372cde2e4dc9c8c136f5e91ac55deb7dbaac15837c132a0b35aafbeb04b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-workflow-instance-replay.mdx": {
+      "sha256": "09cd7375d539081aeacabada1718fcd8d56afa70856565c268c1b8928af9dba6",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-workflow-instance.mdx": {
+      "sha256": "c51d60a95cf92d5b2dd25f0395f520b62a7bf4174dd16ecbbfa87b52e19dd144",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/get-workflow-task.mdx": {
+      "sha256": "710440d00308e94575d11c5b082f8c695f17e440720c3581034b0cfbf83b8de6",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/introduction.mdx": {
+      "sha256": "a50764441f49b1abe7dd31d0f8085b7367c3f331540e5d0406015dd3a7d77683",
+      "owner": "manual"
+    },
+    "content/docs/en/api/workflows/list-workflow-tasks.mdx": {
+      "sha256": "544ff072bf388f57440b07191d96fb8ade8e8aa0ec84d26e2f159f4f5637c64c",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/lookup-workflow-assignment-candidates.mdx": {
+      "sha256": "c806a02712b647297999dc1c01975930f9dce793b3c0668f35a90bd3b8af16d2",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/meta.json": {
+      "sha256": "085a35d8aa2fee7796c18262a0f91ebc317c51f434809f0bb59153877c755d0f",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/reassign-workflow-task.mdx": {
+      "sha256": "5747e5e3fa4d6e02527c78a9d7dc9d9ad08615fe38a390750a6b95aac59efa6b",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/start-workflow-instance.mdx": {
+      "sha256": "0fa2e913c085d328ec1a9a1e8eee63d518d225f96fda74a9c0d69767df115980",
+      "owner": "generated"
+    },
+    "content/docs/en/api/workflows/update-workflow-instance-author.mdx": {
+      "sha256": "7999cf41b017cda87edbeff4f9bd442797266fa36a36620ce76940882d62f4bd",
+      "owner": "generated"
+    },
+    "content/docs/en/getting-started.mdx": {
+      "sha256": "0d8691d87a37f53e78dc952c56af78dff55369bb954cd23baf91ed5027d1bb30",
+      "owner": "manual"
+    },
+    "content/docs/en/index.mdx": {
+      "sha256": "c9d757cb87adf265b0c3c673d3062f1c9d9a07c1b4548d95e7f7324459892eba",
+      "owner": "manual"
+    },
+    "content/docs/en/meta.json": {
+      "sha256": "f6f7c10da00107cfd7f957ad600c0b995b3ca90f704f5b70ff8ffbfe0a5aa3f3",
+      "owner": "manual"
+    },
+    "content/docs/en/opero/01-wprowadzenie/czym-jest-opero.mdx": {
+      "sha256": "6880a1ec21a72adb2c0f0e542d5652b957814700cc2e97531d63822fdc6499bb",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/01-wprowadzenie/jak-czytac-dokumentacje.mdx": {
+      "sha256": "e6d6f92b1dae1513498e3c3803e2ba322eaa03030124d0a733b8f53faca93f2c",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/01-wprowadzenie/meta.json": {
+      "sha256": "f1a191935a9f49547f0c771fed71eecf465cb2219b46c71b3fd3ed2fe4fc41cd",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/02-pierwsze-kroki/codzienny-rytm-pracy.mdx": {
+      "sha256": "8f432d1dc5017feefd27bee00d58b0e09978eda52c4262e246888a4f4a00ea8b",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/02-pierwsze-kroki/meta.json": {
+      "sha256": "29a6f931d8070fd1bf0b3b29cd19713480369ce27a2d0872bf6ad08d9bd77fd6",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/02-pierwsze-kroki/orientacja-w-systemie.mdx": {
+      "sha256": "985f292f4a4085abac530676e8983dea7c72a62b92e759f4f32af5e0326fc8fe",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/02-pierwsze-kroki/pierwsze-kroki.mdx": {
+      "sha256": "d791b83e996d2f4f1f648bdd67830432b8c9bb90355e01d960c68b7ae3a29e78",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/02-pierwsze-kroki/podstawowe-pojecia.mdx": {
+      "sha256": "fed6f549090751da1a2bf5833f9d20fcd0dc4af5701c6b48b2ded3485732b08c",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/03-poruszanie-sie-po-systemie/menu-wlasne.mdx": {
+      "sha256": "212be61e79c76c9db2dc411b84e7c3a42de3374159059a94f0b4d78e84ebebfd",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/03-poruszanie-sie-po-systemie/meta.json": {
+      "sha256": "5b7140ae28523f4b83698ad06f67dae34560c3f2d91e505139fa4b54481b13fd",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/03-poruszanie-sie-po-systemie/moduly-wlasne.mdx": {
+      "sha256": "44fd552f61c7204308e8f21caf47ce4c222fe83b795c098f76cdff7a4a40beb6",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/03-poruszanie-sie-po-systemie/strony-wlasne.mdx": {
+      "sha256": "aa8dbe5c2b593e9967cab30210c4f617a2bca57b1dd1a9036eedc8952b4e9eeb",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/eksport-danych.mdx": {
+      "sha256": "91835db5c9cf42b46562505252e2c6d604090e055e88186618bcedbdb8232f90",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/lista-rekordow.mdx": {
+      "sha256": "a4fb0664a22083da2806b30f9580523b27509544a8ab102ac65a04b49139232a",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/listy-wlasne.mdx": {
+      "sha256": "4198564160384c0f6b1ea00e3c4f011d3bddd00374c47ba9e5af2ce6aae9981c",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/meta.json": {
+      "sha256": "f6f6d92c037df40040caf4ac71d7f9af05e206dde5b39edfd9b850fb08232b63",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/obiekty-wlasne.mdx": {
+      "sha256": "d6cc62d11f1dda159aa70b67212544a11dbdb83146bf02c80f7fb2336d664d0d",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/widoki-listy.mdx": {
+      "sha256": "4796b5864710c025ee11d0729f947e0759ae0cbb82f1fdc1199f1b38bf95307e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/04-listy-rekordow/wyszukiwanie-i-filtrowanie.mdx": {
+      "sha256": "6993cbc40bac21166e16a16fcfbb4701b466d763e1647b49310e81c41ae60244",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/formularz-rekordu.mdx": {
+      "sha256": "0ce09af33fb1d29f34f7eee59416b1ba7ae6cfd13f9b5fa15aced4f5e1dc380e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/formularze.mdx": {
+      "sha256": "10910fe68a78c9decebf17ebc8eeb38a603eaf3ead9c1fbfb52f50ac79b2c1e1",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/historia-zmian.mdx": {
+      "sha256": "7e85db160df992790cc05efe1c12f445c2ebbe2df9f7ee9fb6fd989c1d474ccd",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/komentarze-i-wzmianki.mdx": {
+      "sha256": "56f3688adfe3fc348bc6a02704aefb999b429a92dd73947bcc7fea924de28a9f",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/komponenty-ukladu.mdx": {
+      "sha256": "9f454c806f0826ff35e9f54b3a7239195134e7a884240e254245128f9045f4e3",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/meta.json": {
+      "sha256": "7d4508561b13560d955ae279926034ac9ca881ba53ba35ec5ddb833219edd8a7",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/obiekty-podrzedne.mdx": {
+      "sha256": "348031a3a9c0dd091758720d35c6817c7df3d1c5401fe2722248011161712552",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/obiekty-singletonowe.mdx": {
+      "sha256": "9a2870b2b49e19b3efcdcf89cc3acc36af30983696c68c4afbd17184c5bf783e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/panel-boczny.mdx": {
+      "sha256": "465ab4bb6586595823c1fd8dc3d3997f180df54aa6bcaba9a16bbf1386ca0fbf",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-plikow.mdx": {
+      "sha256": "8cadd3479e4e986b10dd1dd72bbc55dd65ddf76eec80c01c54a9a35099462348",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-podstawowe.mdx": {
+      "sha256": "88c986340b241e7e9368294cc6982f58fafe9a49855456fcf431e9b77fdbdc34",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-referencyjne.mdx": {
+      "sha256": "f8c0385f37d073597a6e4fe479b01353ef1653f1aae8f204ea5903e1e37dad65",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-tekstu-sformatowanego.mdx": {
+      "sha256": "08bb2506eb000f2e29d26c4266b2f4c04baa67f4c59c26f93ad4d1f867dc6238",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-wyboru-i-slowniki.mdx": {
+      "sha256": "0b95a4a09562debbf78a3ed5aba8f391307d71e680eaed118c630c3b7f9a7c4c",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/pola-wyliczane.mdx": {
+      "sha256": "bf5dae7b7b57b48f8aac3e813c2cd7bc1c04bcbb419b3e86c74c1f6e39a1ff1c",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/powiazane-rekordy.mdx": {
+      "sha256": "fb9deb95f08772fc596465b81c7ea15713f6763a66a1377bc32b6dbd9e46fea0",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/slowniki.mdx": {
+      "sha256": "940e573b833fdfaf3b0aed43fa4f8071ed4b6765ded8f2280f683ca69308c88e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/tworzenie-i-edycja-rekordu.mdx": {
+      "sha256": "70fa353d199a319e76e3afa1f8ee0ca80055306eb8004be63e3cd5ea1eb593a7",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/uklady-formularzy.mdx": {
+      "sha256": "bbb6f25c17e19b142b79bcd4cb8dc29f6e10a3ffaf982ddd9e76b07f7e9a08ce",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/05-rekordy/zalaczniki.mdx": {
+      "sha256": "804bbd597d82da877bbcfad001a0acddfed828d0b961c389fbbde4eba82052c8",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/historia-przebiegu.mdx": {
+      "sha256": "1c4dd586e3a18078e87a8c2818e62db70c7dc43f71ae9299595c2435fdca6efb",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/meta.json": {
+      "sha256": "479f580eb098ab38d85ba82c7df37dea453371f3b83088190c5bf67c8426f890",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/moje-zadania.mdx": {
+      "sha256": "8a78d8b0eec1b2f09ba988a463a7c4c9fa2902e403a4cd83833cce0322a55935",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/procesy-wprowadzenie.mdx": {
+      "sha256": "b6af956df1f65f503d6360e2b2ba00438e0f0eda30626d3aa577ac7719d0e6c8",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/projektowanie-procesu.mdx": {
+      "sha256": "cd2e67af5fda070c691f2c3ba1431df2255fca02258cc753901bf9d6337ec341",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/przypisania-i-akceptacje.mdx": {
+      "sha256": "c0a16a804b27caa7076854ec72f8253d011b63e5c02f8f2022ff734d917563d0",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/tablica-kanban.mdx": {
+      "sha256": "b11d1d3120f85869434ca3a3680767855e02ae530587d2898bfbfd690320b6ee",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/06-procesy-i-zadania/uruchamianie-procesu.mdx": {
+      "sha256": "fed182198eaad4297789b69f51dcfcaf5539078a6cbb5216fd60a46242229a4e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/akcje.mdx": {
+      "sha256": "ac802cc164e9c3d2e315f03afe04a1a538e43993ae1654c0c74647477750cfc0",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/meta.json": {
+      "sha256": "1a91f4916f8afa8ed66a9b0b37175a10f498a6d4ba1a6028557a18d5e115b85a",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/powiadomienia-z-regul.mdx": {
+      "sha256": "4ac29ef51a9c299be890ffbd19ed57f4c2e5bfc8db5737ffdbc0b75a539a20c6",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/reguly-wprowadzenie.mdx": {
+      "sha256": "2af887d6d66dc41ac5939dda1ac32c4e6127c4555f7a976c3e6d0ae66c65ff73",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/skrypty-wlasne.mdx": {
+      "sha256": "e019b9edc2db6b88127976b94b6c171fc191a90e973e7930375e050d29092b6f",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/testowanie-regul.mdx": {
+      "sha256": "64820bc0959c4dcadf40890f50b1dcfa9ac1c392aa2517e551a43eaafe18896f",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/07-automatyzacja/wyzwalacze.mdx": {
+      "sha256": "1eba522ce9793fcf0558d3611792c9b97b1dee1d4edc6087370c3772760d130a",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/filtry-i-parametry-raportu.mdx": {
+      "sha256": "dd5bcb6ae9af511015e50ff1f851845a479bdb1dabb867275912fcfa185d6c4b",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/meta.json": {
+      "sha256": "9f9e0fee6617644c7bc8e22aeaec5e387899331af0dd04612067f2646e5a1bad",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/raporty-wprowadzenie.mdx": {
+      "sha256": "dca09fdcc23bdf03c82b61bac3034a24b8622cf59fc579ae229cae165f6eed37",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/szablony-dokumentow.mdx": {
+      "sha256": "6bd7c5c99158eadc14d83f604ba8826d4713964e665676a18e94350c059544ea",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/tabela-przestawna.mdx": {
+      "sha256": "40a7ec35e12090764661a4327d1d42b2168b8c493e361c706afcd5a5606b5ef6",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/08-raporty-i-dokumenty/wykresy.mdx": {
+      "sha256": "f0d317751d3228f21d58bd7797599b7d55050fdfd89ca8a308e4ba1538c8ebdb",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/09-moduly-gotowe/faktury-kosztowe.mdx": {
+      "sha256": "26065381f8b6b281db2ba773c04f54bcc48a29a3f3f0d9c4a360e48137675a1f",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/09-moduly-gotowe/faktury-sprzedazy.mdx": {
+      "sha256": "7885ec3d2b123757faae75de2bfeb1a4fde6b7192bf0e4c47f555109a04e5c65",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/09-moduly-gotowe/katalog-uslug.mdx": {
+      "sha256": "8e41d86527f5b5f0f3bc94232e65d5ff76def8709f3e71ef1b70509c858aaf14",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/09-moduly-gotowe/kontrahenci.mdx": {
+      "sha256": "51f3f21d65a1782562c8e3c010e3074c8f6eb3703ea66b63a98d8f3d390e4efc",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/09-moduly-gotowe/meta.json": {
+      "sha256": "9315fa05d4ef9fdefda5de79b58268a1266615a1c8a5319c9d48d040a06124ba",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/10-integracje/integracje-wprowadzenie.mdx": {
+      "sha256": "7fcf771cef9c823e555e72db3abc3524f0d5bedc82217ae57f8ddafae907f55e",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/10-integracje/ksef-i-eksport-ksiegowy.mdx": {
+      "sha256": "4038aa6c1f6788bf7f5406b977b1d6ab3ebb59556893458d45eaa4478bdec0a2",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/10-integracje/meta.json": {
+      "sha256": "4defbe19461d18980e630141f8904812e4d9144758f7e61b2de286e812d86a64",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/diagnostyka-i-zgloszenia.mdx": {
+      "sha256": "b9aa49187a34a578c4b7feb1d458e637a2b704f935697ba4cb02403b6125af91",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/jezyki-i-lokalizacja.mdx": {
+      "sha256": "3d9c1221c6529dacbb121b76426006cfc009d87b79caf40f3890150a69457dba",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/meta.json": {
+      "sha256": "51f42fcd137b6db822296ee9ec47b9f946586f40911abc65a514fc00440ff15a",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/role-i-uprawnienia.mdx": {
+      "sha256": "acc521718751f64a3c7fc1965bd26380f006a0c4e545c3d36a5bdeb5b0ae6bdd",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/uzytkownicy-i-konta.mdx": {
+      "sha256": "cc86cd5ece5dc43eb21a390c3e1f35cc37f766cf90f79c6a3facc0a22c9c903b",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/wersje-robocze-i-publikacja.mdx": {
+      "sha256": "fde3b038b5e3f41f2c009efbeb767486994ccec663db6920aa5eab0c6b18d9e0",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/11-konto-i-dostep/wielofirmowosc.mdx": {
+      "sha256": "b418105d0ab3af3d797117566edf81b8f352b9bfd4d77cd270dffeb959f1283b",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/index.mdx": {
+      "sha256": "94706e656173ee6f9a05cd03fc4c9c457d16619c61f37711b9bf04c870c4f7e1",
+      "owner": "generated"
+    },
+    "content/docs/en/opero/meta.json": {
+      "sha256": "c09e507f3dd3a8449899a4c2ffb13d479d68a3aa37e2f05087f9e19359878af1",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/authentication.mdx": {
+      "sha256": "239ec5c533f459fcc820ff434ad2df16c436f277c0ba44d1c2ea9180f91dec7f",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/companies/delete-companies-companyid-contractors-id.mdx": {
+      "sha256": "7a81b831b5349adebdc234c82ce25ee030f1b39a6165a892f6e2f1b05a6cb67f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/delete-companies-companyid-email-drafts-messageid.mdx": {
+      "sha256": "8bf3df3bf98491dbd40bde2604839af529b4f8ae95913db3b7f5fc8701ca7c6a",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/delete-companies-companyid-email-threads-threadid-links-linkid.mdx": {
+      "sha256": "c7c85547301e0fd63b5c40a149b72756a7bafa5da2ad3d472a616b61766b62e7",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/delete-companies-companyid-entity-attachments-id.mdx": {
+      "sha256": "d08daad3f2d6e8aa344ddbfd0365252b57fb14de9d398cb8e35512821484062b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/delete-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "4c8fa0c100fdd3dd6fca0781328a56e57b27f5e8de8e896f60f79a83454eb0d3",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-contractors-id-presentation.mdx": {
+      "sha256": "9a0a264ccd83812d5dfc3bc72d02e80c1819170a9a56c693a9ed08a3134a3093",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-contractors-id.mdx": {
+      "sha256": "24687d56dd0dc3733972c2971890c6582852088df93245a1f376715d5fd1286f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-contractors-presentation.mdx": {
+      "sha256": "a85e5670894028f495bd03d07058a7bf94a1ff5fc71f17fa1e19da8b94badc9f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-contractors.mdx": {
+      "sha256": "81cc1a56af7040462071ef345e8cc426b454a865d8411485f671d2197c3d9e93",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-cost-invoices-id-presentation.mdx": {
+      "sha256": "70fe3d36ef423e466281687f7b13e14290b0452ec713908c840bc57239567abe",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-accounts-accountid-send-identities.mdx": {
+      "sha256": "084233be9c31d6c53cd2a20faee22c7ec93c9e7f5420b3302173ea8287fc32ab",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-accounts.mdx": {
+      "sha256": "d92ac01c09c6ee3ee45052c355fb1a7f35fc89e0a92dd5d692ead9812147930f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-drafts.mdx": {
+      "sha256": "8da6608b168397ba785d44bf65868f8bd98d94ae1e27b3bd1eae173269b0da03",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-folders.mdx": {
+      "sha256": "1b91946d68293cbf304427065cdc945c3359765afbf738b0115206fa337e6a8e",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-attachments-attachmentid.mdx": {
+      "sha256": "00537dfadd8c2739b2d806ca535f2d52d9f3fea194dc193e9fbe4abd606ce62e",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-inline-contentid.mdx": {
+      "sha256": "f50f50cc30b617b75dfe2cc60470e9f1a139359f188e4143f167276ec7d99868",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-messages-messageid-raw.mdx": {
+      "sha256": "b2d8fd0f1250e0f2a7c165fa530773cf359b37150fa99f9fffeb9221110324ab",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-messages-messageid.mdx": {
+      "sha256": "171b56f38dd563841f4c77282095fef976a709651715acd1e4919f095581d2d6",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-search.mdx": {
+      "sha256": "b6785fcccdfc7000f450f3318c9a429b18da4b2b38b34b235bc840bd8cfd5650",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-threads-threadid-links.mdx": {
+      "sha256": "2df22c16bdaa6b3382b41be9bad70141e6c8f80f91f4db7c3a8308752900538c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-email-threads.mdx": {
+      "sha256": "61201f689ee27986c1fdf6286295b5f3f163f9051302bb8f794f8587d142cd3b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-entity-attachments.mdx": {
+      "sha256": "2c88bef1afca9e6a000068527d1f5ddba1dc570146786355eeabac0a56c59d27",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "761297c9693bb68d21af56db0339da8a900552ec6a2715b551d2fae1be1f36c5",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-entity-comments-entitytype-entityid.mdx": {
+      "sha256": "a8438523cee950894135874deff30348212b26bce67f0becd8c62d8da0c3e630",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-files-id-download.mdx": {
+      "sha256": "20682d00b9f96bd2e816463d1495efda38ce90f58366d5c71b37b8310f0693c4",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-files-id.mdx": {
+      "sha256": "693d55e2272a25c9e30a4cf0547138d47a189fee04a9863698c374577f971327",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-forms-formid-relation-tables-relationfieldkey-target-layout.mdx": {
+      "sha256": "afaca3c4bd23c22889f607423f9fbb07bfba0443bda436255c76e9753979ba5d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-forms-formid-render.mdx": {
+      "sha256": "e19ae43156b421cf239d591ebfb99131c4e78c3668ad1b5f8e2f8d8dd01e36ff",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-pages-slug.mdx": {
+      "sha256": "6b64fd8649d5b0abb342bb9ff1c55ab1911f19dd6441638f746d442c1bed49f3",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-sales-invoices-id-presentation.mdx": {
+      "sha256": "fb170c1c660610d60a9de4df10e3c3fcd63c0ca59c4b608ccd1b35609b548c26",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-service-catalog-items-id.mdx": {
+      "sha256": "bd14080d28201630d7385a6987ac319c563cc3675bfc4a297af91f5d55db2011",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/get-companies-companyid-service-catalog-items.mdx": {
+      "sha256": "4d63b7d1daa4ade8d22160e1dbedec92f137f9a185a3db66f9d0c85ecf8af800",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/meta.json": {
+      "sha256": "1e52ef2c549ef0bb314044cb8770560ce90c506df2bc570ba4fc29fc4332208f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-contractors-id-status.mdx": {
+      "sha256": "0bc6926418421252f2cc9d8180403b87365f030df2326fb5aa947f77887f56b6",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-contractors-id.mdx": {
+      "sha256": "fddea51fc7fe2c4aeae72bb5f9692276dd95744895df3b665e613970614384d8",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-email-drafts-messageid.mdx": {
+      "sha256": "ee966527abe3f7bb0227978c01854890f43b6b5a81a95c3446e5d9ed9e8b9b74",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-email-messages-messageid.mdx": {
+      "sha256": "f9ef1255dc4139e00ef5e0d117e8ec0db2788fdce1f89b53c62489121825b76a",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-entity-attachments-id.mdx": {
+      "sha256": "02b9a889eeea50289dd40ace86bea7abaae38b89023828f67329a60fd436fa79",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-entity-comments-comments-id.mdx": {
+      "sha256": "57aeb5dbb25b435b4aaae647ed221f04d4fac9c0000156d6ea001d50054cff0f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-forms-formid-records-recordid.mdx": {
+      "sha256": "cc9c6dd7c13cbe5c815b9051e166c8258b2fbdf44f54cbf773a829da4efb698c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id-archive.mdx": {
+      "sha256": "35f412452294e4031498b2315159b41429d4dfa8736467f51751fe1ab5040a34",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id-restore.mdx": {
+      "sha256": "1b0eb81b993d971e2854527362f34b7402a6e2f0ab7f069bd12aee7af511e659",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/patch-companies-companyid-service-catalog-items-id.mdx": {
+      "sha256": "f07b8ce50b98014871f5163b28ffc028db5e3dd1fed92045b60388410b074751",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-contractors-id-presentation-runtime-data.mdx": {
+      "sha256": "ad3a5b1672464107751f44c8ff703b92a06707307e2b09174ed4b8ffc75523b4",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-contractors-presentation-runtime-data.mdx": {
+      "sha256": "bcf92784bd949d660c6c7f81de802639d50f38d0ee9618d0d59b8849b49cb318",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-contractors.mdx": {
+      "sha256": "67ef382e1cfb5b2ac0abe33a9a7b22ef5bdcaa94df9503d328b4ce56ff14f179",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-cost-invoices-id-presentation-runtime-data.mdx": {
+      "sha256": "330b4b618f8294bec7c70460f9637a3223de5a629cdf988f3e070e17c0869c75",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-drafts-messageid-send.mdx": {
+      "sha256": "74ab12ee18a81244eec8e7cca541e4e9365276ce640d7c3aeca367024114689e",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-drafts.mdx": {
+      "sha256": "703b3655af65497086e50d81d0eeeee46cd3e8f1dcb4856de01de3334c0b2419",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-cancel-send.mdx": {
+      "sha256": "d5a459dc6685cca64c0d29d4c857812ec7f5f914aa62ddfdc67f8095a0dbfd80",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-delete-remote.mdx": {
+      "sha256": "d733218407e57e639adadd19c8948bf7683dae20d3e8834b7b0ce695d7d36017",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-labels.mdx": {
+      "sha256": "d5446a39153ee2957825fdd838a24917750cbe98ab8d3f37e87b55a289907ec0",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-move.mdx": {
+      "sha256": "a7e65d36ef5ae610d00288fc0f25b356546e8b5acc7082ab63e8d5a9106c6b3d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-reply.mdx": {
+      "sha256": "2afef1f8bef4166846f0af5f872f8772555a50422c73276e5b15226f93a1d4ac",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-messages-messageid-resend.mdx": {
+      "sha256": "c314d1e22483ea6488f449764896186eceb841e4193f9fa6e7201a8411d4d010",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-email-threads-threadid-links.mdx": {
+      "sha256": "d36035238b07bdcba6ad410f8befc87d30cd6987b04817894b882713226625d0",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-entity-attachments.mdx": {
+      "sha256": "afec0f2d9255d6d5062915b0d87342d371938da99fd955fc7924bfc8e72547ba",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-entity-comments.mdx": {
+      "sha256": "518957b8c9c0d8ef6f8a01efdb71410beea8a0a8a97c100642cb5d9403c7f940",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-files-attachments.mdx": {
+      "sha256": "6d3e52e42d610ca36c35109b551c4230b22ed6af832fe41d5aa6787120d04146",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-forms-formid-records-recordid-relation-tables-relationfieldkey-query.mdx": {
+      "sha256": "5d37ff6bb431f03295bc041b3505f622e74d41eb0bd8dcbcbf24a6531ca7b481",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-forms-formid-records.mdx": {
+      "sha256": "5283319879307f261392a63fbc97ca6acc893051025f46088f1d9a836aa996b2",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-forms-formid-relation-tables-table-layout.mdx": {
+      "sha256": "049a5d2dd4e1d7368a2d85ed0c26439ee92414ca68beeb8207c98d076b4a959a",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-forms-formid-runtime-data.mdx": {
+      "sha256": "461aa60acb39f42611668f3166648debc3e2298daebafa002efac8789c4311bd",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-sales-invoices-id-presentation-runtime-data.mdx": {
+      "sha256": "38e993ccfbfb9a6777c3be3d34258d0cc028afaa16d418b373c8dbda7a6fb9d4",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/companies/post-companies-companyid-service-catalog-items.mdx": {
+      "sha256": "0c37e765a72612ab9d35e9ae8c34254c1f918fa3af05b0926425c8ee486dbd6b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-modules/get-custom-module.mdx": {
+      "sha256": "29d409d81ef421abc9953461d79e8bf557fba80793ccc87a2964e7c904197fbb",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-modules/get-custom-modules-field-types-type.mdx": {
+      "sha256": "08420f58a7a1acd13d6244802fd8a8d5817d54afd59ef36019520feafd6f951c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-modules/get-custom-modules-field-types.mdx": {
+      "sha256": "84e489594b9a9e527acc7d7aa60184348e4a38901405023995157677dc810a42",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-modules/list-custom-modules.mdx": {
+      "sha256": "0ce1f8abc632f4453c2f227639c4aa56d08e86f2f35f8dba52ca14c0be163625",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-modules/meta.json": {
+      "sha256": "3c5e4b48b528d94b37446c55a382ec2632091819ace46782a5ce9984e44e5bf2",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-object-forms/get-custom-object-form.mdx": {
+      "sha256": "62dd473ae1eff661d68b87f1414aa191b0ccc7bc9331a9a2b5b0a6d539e19320",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-object-forms/list-available-custom-object-forms.mdx": {
+      "sha256": "9eface7b381efa88be52928c2fbc7229b50850ec1bb6f6e36773f750e560710f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-object-forms/list-custom-object-forms.mdx": {
+      "sha256": "26e9f3089a967349418ffd54000696929d04dc7aabb2e949d4454c7baa3388cf",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-object-forms/management.mdx": {
+      "sha256": "d104ed227ce1fbd2ee43d048ffacc24373f1625eeb69126e806cd6b5949751bd",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/custom-object-forms/meta.json": {
+      "sha256": "c5fb410093f3f1aa4a6f1678347b03336daa699185c05b816c7906012b4dc79c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-object-forms/runtime.mdx": {
+      "sha256": "8671024800e147bc5508bdefde8522958cfbecfc46b2d1913604779229f99e50",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/custom-object-forms/view-layouts.mdx": {
+      "sha256": "7f0ae8738aafd69e30a1214459b291d28e094734a4e9c457293d6d3d38a018b7",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/custom-objects/create-custom-record.mdx": {
+      "sha256": "283289f5ad3ca0834b06d552552cce5a3877a332e20c263746b989c9af4b87d5",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/delete-custom-record.mdx": {
+      "sha256": "6ceea4b92f759772a443a37cdfd723cd556e66a4075f290b7e86d50afec03553",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/get-custom-module-schema.mdx": {
+      "sha256": "db48394f2f52db57b38355b3cd29da3569846a10131b8cee520e4a14ce34282f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/get-custom-object-schema.mdx": {
+      "sha256": "8b4fd2bf1b6e57a37f5f2a415d6ce7027ad1da4ad872e0e43b481f0abb77ff47",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/get-custom-object.mdx": {
+      "sha256": "defbf31553e038e6ce9f5005be08b0101f2ce32a0a0ce3375f653d5e815a72de",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/get-custom-record.mdx": {
+      "sha256": "89475c2aeadc2e31eb55d362d0b17edd15c9d35f6521f83abaf56400a4430313",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/get-singleton-custom-record.mdx": {
+      "sha256": "00f9066844fb96a26afb44a59e6118f33b0600837626605a42e62f73b5fe4c35",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/list-custom-objects.mdx": {
+      "sha256": "117fbf82e26873e48bd14d5c429945424d20ac21a108f82462945551f7da03f9",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/list-custom-records.mdx": {
+      "sha256": "a97f6e8dac5d30ad54e51a424c36c3565f1ea3e5b81d3fa48aae2d7b8a82c82f",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/meta.json": {
+      "sha256": "7cbd9ed94ddef503bfc361a08c9f1cb02f822dc1066d92de92578efd61e4ecb7",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/update-custom-record.mdx": {
+      "sha256": "a76818826516d3bf7f1eb086083cc9533768b4094614e954f626b834d289542c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/custom-objects/update-singleton-custom-record.mdx": {
+      "sha256": "de4ef0f06997a0fed8ef94c7695daf1cb586e208005a593793eb4c977f474312",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/get-dictionaries-dictionaryid-entries-entryid.mdx": {
+      "sha256": "beba92d052b4854778b8e8d9a94b78d5c3c7b0c74b9275abc1752cd90775f5a3",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/get-dictionaries-dictionaryid-entries-export.mdx": {
+      "sha256": "d19c33b4143ff78ee88879df289179a7a892b736ffeefeb87c02feb50fb3311d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/get-dictionary-with-entries.mdx": {
+      "sha256": "58952731cbe718c6cd8ce96d996e56589f4d82804152bdf56fed9c02ec05126b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/list-dictionaries.mdx": {
+      "sha256": "5e207efb4e5a01ea11bd834ca4a0fa6c66175886184a46bdc73b67cf9e45788d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/list-dictionary-entries.mdx": {
+      "sha256": "f88b6e018a61f499f78ffd326da6fe86e0f1f0650dff4be289b24c47c8a9931e",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/dictionaries/meta.json": {
+      "sha256": "ffa08d99ebfaaef4f41a56da9b0319b7923c19a537441958a0174373286a9c3e",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/entity-fields/get-entity-fields.mdx": {
+      "sha256": "1ecb65d0f63defd6d930e079fa413158568ab0034cb9cf26d0f9a995ad744da8",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/entity-fields/meta.json": {
+      "sha256": "4920811559baaf607804ec8f86d23b4c298cca98454f3656d2446d10f2d2f892",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/health/liveness-and-database-health-check.mdx": {
+      "sha256": "bb73a0140189eee358d81e6c56ba12bc5b802ee84f507164942c83bcb946962a",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/health/meta.json": {
+      "sha256": "4a392a83d8c95d58504d79f94589f25033f311c29738f3863a5ccbcc987d0b0b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/index.mdx": {
+      "sha256": "e51df4118019492a7d41566ec397d13b0b71cbd93b4321d1d1d125a9fb821b97",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/language.mdx": {
+      "sha256": "9b46eb8f555bd575339707e5e6708a980662e49726ced2685ddd540c5f0cb91b",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/languages/get-languages.mdx": {
+      "sha256": "b6ab2a6c3a027db1b6c6d2d5e0f289073ab4c63138814a97582f36a0e7788672",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/languages/meta.json": {
+      "sha256": "821bf5be3b655eef5cd794fca4fed5ec3c00f2e116247918a45e8b78f42f8ece",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/meta.json": {
+      "sha256": "065d87eefe4005818425e6c056168ebf8cd65b980a1f2c9fe91c9ddb03118502",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/open-api.mdx": {
+      "sha256": "8376197a406651504c062b4a6f923167537221e0a65ff260c1deddf0a57d9743",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/queries/execute-query.mdx": {
+      "sha256": "2091fcf9015d2c9223511606465e9186555bdeab19aa8cd50835fec52ed58ed6",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/queries/get-query.mdx": {
+      "sha256": "34ce5a646e0fe3814589b29383180ac20c87760a3a322829427d2d9ae8d3ce95",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/queries/introduction.mdx": {
+      "sha256": "73e8f8e38d86a9288e852cbd087d5a5b79864c9ebb7437d5565621697e32e0b9",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/queries/list-queries.mdx": {
+      "sha256": "57ffbbfdfd081f35661c22c3e1ffc004010289903f5307c35b46471c82326909",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/queries/meta.json": {
+      "sha256": "d357ae34c179ee0e45fbc5fa1b6b80b0d227904e294811e36083dbf51b25ca9d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/queries/post-saved-queries-id-execute-mutation.mdx": {
+      "sha256": "cd3f5bb0473c0e4d5287dd38afda7674cb6bb5960364e87ab7fabdb0a88576fe",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/reference-data/list-supported-currencies.mdx": {
+      "sha256": "3631beb7c2791a96a94412d598ca4b187d6c3f0bca2ee6ddf2ef2f888e97b617",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/reference-data/meta.json": {
+      "sha256": "824822d2790d6949857e19b10f06b59c34600ebdb3a94a69b025b8d059c83efd",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/execute-rule.mdx": {
+      "sha256": "861519b19e3910e4035b696937dfd6160a6c2057b19f6afae37624ab37859dca",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/get-rule-execution.mdx": {
+      "sha256": "5a7978bebbddf1c6e085e4cad80b8157052547dc2c2ec76cd908f298864dce39",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/get-rule.mdx": {
+      "sha256": "067ec81db291fdc208d6847c074f36639656b735a7b5f56ff66bc81012202993",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/get-rules-id-manual-invocation.mdx": {
+      "sha256": "b2231573eafd53b1fcae223fe506252472968527ecd0bfbc5e461adf398f08ae",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/introduction.mdx": {
+      "sha256": "0cf87827bb85550bf2b11c5b170d3cd1a74ef29df385b412e341fa51bd030103",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/rules/list-rule-executions.mdx": {
+      "sha256": "b9eba1cdfb99de5390efc28d27ef7856640ae8e488f8c031b1f4aa2202e8f31b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/list-rules.mdx": {
+      "sha256": "4b7ff3ffdc5a84b11a12edfb9e6e00a1620eae6e78f0d1e3490b950e0aa87029",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/meta.json": {
+      "sha256": "7434afe3f04eafe09e567a5dde5512d4d7e905f22ea8675237aacd6b1923087b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/rules/post-rules-id-manual-invocation-options.mdx": {
+      "sha256": "ade25eb2004b7d861f0c84b46a671b579bb841556d9d3f8e174cffa8a72edf0c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/view-layout-configuration/block-types.mdx": {
+      "sha256": "bc7605f7e74aac4cfd6021aae5beca20c636becc4d2ed0f6d653a66168507950",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/building-layouts.mdx": {
+      "sha256": "b6273c2ae66c6c7c62bbbfd829d0a8b174b49eb3393ca53a49a45429538d3b9b",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/custom-fields.mdx": {
+      "sha256": "3cc4777157bc401076af4425d296e06e0a401d866d738873f91eec3e16208148",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/custom-object-forms.mdx": {
+      "sha256": "fefaa57b2c45d0b4661abc4a71fd6acebebe5549220ed82d4ecc56566c55a9a7",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/discovering-blocks.mdx": {
+      "sha256": "8545ba303302fb8cd14522ffaa12f5248b4807f4b78e307f065e5824a47b8128",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/examples.mdx": {
+      "sha256": "d18a5825111762f84fd4468d1a33df0aa5dddd1369a65fe17bd56f072ce75b41",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/meta.json": {
+      "sha256": "50c2b21268cc8b106decff8d28a39505375557a9f18e98b35210fb05fc33e2dd",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/view-layout-configuration/overview.mdx": {
+      "sha256": "82d6369d01b3ba987c1f9d9d35e43bbaa6f6e5a7084ed13a632cd8acceffc913",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-configuration/troubleshooting.mdx": {
+      "sha256": "03c97ca1d885df219cab3b7fe7d7c50eea48311ec8c54ba6c62e04a67d0cb26b",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/view-layout-runtime/meta.json": {
+      "sha256": "cfabb752d15ab91ecfb14bc82cea290aac60bec4f61a98b4c68ab61c477ee703",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/view-layout-runtime/runtime.mdx": {
+      "sha256": "c2fae04a36d4857aa7c43cf983141ff31272db302e46600874f425623c2b7c39",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/workflows/execute-workflow-transition.mdx": {
+      "sha256": "8353044237bb0a9c9ed6b1f23a01c2bb56f44c9332defae2931adcd75fa92f1c",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-target-workflow-state.mdx": {
+      "sha256": "6aae23b40ff43e371305ea2c794602656e3b3854cd35c4a6f003cf341447be65",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-workflow-create-options.mdx": {
+      "sha256": "1be66f28fc3eed078f767b04411a04b1e63006ef8ba60da96cf84f276b0f895b",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-workflow-instance-history.mdx": {
+      "sha256": "b793ed00d0477bccb67a8bd2f35cdccf9356b7aa0b01c7b4eee2a4d7cf483db8",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-workflow-instance-replay.mdx": {
+      "sha256": "c6ad490e7b3eb07e2240824d31a7d9e72d90e9cd4282d5b61d41bacc50a8e0af",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-workflow-instance.mdx": {
+      "sha256": "fe525ca401ddd7d4f11ffbea33736774ae04028c6bca1cbae12bbf8d3ae19df3",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/get-workflow-task.mdx": {
+      "sha256": "11da04a1fcc12343df18690e5e5e4d7075b311e1ad455127922b958125b47b80",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/introduction.mdx": {
+      "sha256": "7b7f39a041af695f1f29489f700b619c0a47e6117276d06a1a316f6966a40c20",
+      "owner": "manual"
+    },
+    "content/docs/pl/api/workflows/list-workflow-tasks.mdx": {
+      "sha256": "504f1e70ac054637327648e350b190c14efb8e7089ffa75c2cc12a3732caac3d",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/lookup-workflow-assignment-candidates.mdx": {
+      "sha256": "0f681e3c61bfcd621938b2411c456c4c150f111497b4b112b3bf003e95a69c00",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/meta.json": {
+      "sha256": "cd4b7e0614434ad84ca9f7ea4a204047e39babd7afeebe8fd8cbe0aaf25f34fa",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/reassign-workflow-task.mdx": {
+      "sha256": "04841c53eda1041a3affe0ce50a2d7edbf82780242d5bf6672cc37cd2dd56871",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/start-workflow-instance.mdx": {
+      "sha256": "2943710f25ac4e6df4881a4c4d7d92c34a0d235d60da1de7fe8f6e294dfdd3d3",
+      "owner": "generated"
+    },
+    "content/docs/pl/api/workflows/update-workflow-instance-author.mdx": {
+      "sha256": "1d7c03fff24d3a60511b57f1f154acb549d1919b9ebf65e96bba02ce71899abd",
+      "owner": "generated"
+    },
+    "content/docs/pl/getting-started.mdx": {
+      "sha256": "73fdbbfd812861dd2069bd6a9924e2692d5cf99f60e677ac27687f2bbc6442fc",
+      "owner": "manual"
+    },
+    "content/docs/pl/index.mdx": {
+      "sha256": "94c02b1ab868272d0cb9972ca39ef0d394ee70880cf3ed5b8035b1d68815a86a",
+      "owner": "manual"
+    },
+    "content/docs/pl/meta.json": {
+      "sha256": "5c459c98848a68a0ae95c60ff9867797b62f61a97dcd4ebd28dbc542c2ffac62",
+      "owner": "manual"
+    },
+    "content/docs/pl/opero/01-wprowadzenie/czym-jest-opero.mdx": {
+      "sha256": "0dd69a961111ccf2068e9643deb639babc35f08457941c1e714ec8e8611b9459",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/01-wprowadzenie/jak-czytac-dokumentacje.mdx": {
+      "sha256": "56171ec27cec925abff497d27489e68e5d1b0140851314df67fe5ea353569b63",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/01-wprowadzenie/meta.json": {
+      "sha256": "f5c12615cd3c1fce892e330def6e1a96d732675d742f71cd3d4a96703a1906ec",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/02-pierwsze-kroki/codzienny-rytm-pracy.mdx": {
+      "sha256": "1e5d7f56fb9eb4f1fc6601362730ead7ef9dee13b91c7c227cdbeaf276a22486",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/02-pierwsze-kroki/meta.json": {
+      "sha256": "29a6f931d8070fd1bf0b3b29cd19713480369ce27a2d0872bf6ad08d9bd77fd6",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/02-pierwsze-kroki/orientacja-w-systemie.mdx": {
+      "sha256": "8e16a561dda2ec43b5303421a93a001f70b403a1c75906843038eb605b4b3bdd",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/02-pierwsze-kroki/pierwsze-kroki.mdx": {
+      "sha256": "7186f4423ceee2ef6fcbc371365c4ec5b5e6d7024e7a9e22a687e9fa52063643",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/02-pierwsze-kroki/podstawowe-pojecia.mdx": {
+      "sha256": "8a1a85c1c64f1b1d7dc86bf0ec5042d8a5e964925c7f8934cf0da190dcc4e299",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/03-poruszanie-sie-po-systemie/menu-wlasne.mdx": {
+      "sha256": "6f36a48843c6be61894abd9f2a27e16e1080878401f91ae6fdac102b129606af",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/03-poruszanie-sie-po-systemie/meta.json": {
+      "sha256": "5b7140ae28523f4b83698ad06f67dae34560c3f2d91e505139fa4b54481b13fd",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/03-poruszanie-sie-po-systemie/moduly-wlasne.mdx": {
+      "sha256": "c1a01e1ca0e0c526bb52864b5da45bbd2ab7c0c45f4d94abf97361dac8df0910",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/03-poruszanie-sie-po-systemie/strony-wlasne.mdx": {
+      "sha256": "b7e364d1835591c8f92e55b2a0975cf3eacff24873cebe02a9f6b4590ea059d3",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/eksport-danych.mdx": {
+      "sha256": "ce73457572fe06fdf6ab59fbbdc560a464144bb4e857714e24a1f711b5fac532",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/lista-rekordow.mdx": {
+      "sha256": "2795576e9378a145d9be949d8f3b82b7283209f2a7f9b7839ffb53ee49ce4474",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/listy-wlasne.mdx": {
+      "sha256": "ef614409b624a059fe48cd63535fa322328ff1c60cdefce5729b9f4ccca3f896",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/meta.json": {
+      "sha256": "f6f6d92c037df40040caf4ac71d7f9af05e206dde5b39edfd9b850fb08232b63",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/obiekty-wlasne.mdx": {
+      "sha256": "3f56258874124e26f46c50a84b7702a7443186201776d0e7e060c50ddbc44f1d",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/widoki-listy.mdx": {
+      "sha256": "0738a23595e565ff050e39a6307a36253cac19664a2b46e9479623bd1e77bd1e",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/04-listy-rekordow/wyszukiwanie-i-filtrowanie.mdx": {
+      "sha256": "ae42344dda73b36c377d77a0dbfef3cb4bd95e3c35df30396a15a09da45afd66",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/formularz-rekordu.mdx": {
+      "sha256": "1f18bff66d912ffcf1d2478620a8eaff04fa518fbf0df0a164f8ae566942e823",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/formularze.mdx": {
+      "sha256": "f2ba0742192f442f61c8055439c2a478751c85c481de8a70561d79d34cabab70",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/historia-zmian.mdx": {
+      "sha256": "40de4a4a1d53a8fb495df1af4914a2f4df6c47c7d85dac288313beeb1d0bc98d",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/komentarze-i-wzmianki.mdx": {
+      "sha256": "f4b43a3328625bd1ed1acdfc722345c3aa7dafd3bfd35bc936dd50837540427f",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/komponenty-ukladu.mdx": {
+      "sha256": "57ccceff4bdee1d522323da2b9aeead4dfd4dcdb027160b2e7f91e67faf5596b",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/meta.json": {
+      "sha256": "7d4508561b13560d955ae279926034ac9ca881ba53ba35ec5ddb833219edd8a7",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/obiekty-podrzedne.mdx": {
+      "sha256": "d5f7ff25ab1a91de4ffbacd01ac9da836625027aa1cb191c15323903c398004e",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/obiekty-singletonowe.mdx": {
+      "sha256": "481c49454b064189c55ae70ccc0d6d7af82e8f2d7f4adc00244415a56619f98d",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/panel-boczny.mdx": {
+      "sha256": "a37ebddfbdbc2c7069a2558a9b687b5f72a634aeeefc8964bac6c72876873f8d",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-plikow.mdx": {
+      "sha256": "45572d5bf5b1980b559518cb1a06bfbcb5674e138834940e84244e0ffb7a8fb3",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-podstawowe.mdx": {
+      "sha256": "16d28804dc6583de8da06e1427f81580a979abf814865f61ed4aaf34dd59f8b5",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-referencyjne.mdx": {
+      "sha256": "fa58726892366e11abb9fbfa239e98318c0098c011e434098976f8f87f750335",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-tekstu-sformatowanego.mdx": {
+      "sha256": "2d09afac8f91cfaf36ddf968f6a09166b042ee5a03abe1f570178f91d67cb967",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-wyboru-i-slowniki.mdx": {
+      "sha256": "9074bd22a078c048feaa40c7cd48731d4c6004b43cebf7756552b926bbc5816e",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/pola-wyliczane.mdx": {
+      "sha256": "f847321d41f1331a36aea31a556606b92e1d919aa6900045a99263ead9b45419",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/powiazane-rekordy.mdx": {
+      "sha256": "cb8dfed42ea5b6612d3bc0771591fdb97c9e89da77c8d8a6ce07374787531349",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/slowniki.mdx": {
+      "sha256": "21c4b14f057aabcbcaaacee91319aded522497f8c5b076f83b04b5bb0fd62b5a",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/tworzenie-i-edycja-rekordu.mdx": {
+      "sha256": "6e8626076105f65b168db84a229eb90646b2c6beed617033627863321d62a538",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/uklady-formularzy.mdx": {
+      "sha256": "bbe769e1a8e1c473051c3b79874bbbebd5668511386d1668eadce97eed772184",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/05-rekordy/zalaczniki.mdx": {
+      "sha256": "a3d1ab58b384e0f7f953c91133dfcfc373396cd10f6be6d7ed5630c0be71f979",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/historia-przebiegu.mdx": {
+      "sha256": "ca2368b99dbff2a9eeb2a1ea78addf7a751e17259441ef6e8f62d1da04837279",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/meta.json": {
+      "sha256": "479f580eb098ab38d85ba82c7df37dea453371f3b83088190c5bf67c8426f890",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/moje-zadania.mdx": {
+      "sha256": "6e784102ecb607fc8ebd2ff600e5ece46a66ffd7de029cd1d4154efab066055e",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/procesy-wprowadzenie.mdx": {
+      "sha256": "5320efeb51e3acd0c513838fb31c1b09076f777a5b37b7ae5daa1679bf556d57",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/projektowanie-procesu.mdx": {
+      "sha256": "d02ad14128212364f23aa7da0287b91a732d64a8bc48278971defe5b87b17f80",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/przypisania-i-akceptacje.mdx": {
+      "sha256": "f365c73327d6de3d3a784cecd1fea729ec59d21c3a3282e02671a6bc65a4dcf3",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/tablica-kanban.mdx": {
+      "sha256": "9ef0666453907db85a44159a5c7b11e55f53d359cc97858fb00ed9b8bd9c69f9",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/06-procesy-i-zadania/uruchamianie-procesu.mdx": {
+      "sha256": "d73190d203578761723518b1954fb7a8ef4e43516add94f3f553e8be59d9ffdc",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/akcje.mdx": {
+      "sha256": "67261d7596272b55005bac211714cef7323d7b8810783d37fb400dd150daa42f",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/meta.json": {
+      "sha256": "1a91f4916f8afa8ed66a9b0b37175a10f498a6d4ba1a6028557a18d5e115b85a",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/powiadomienia-z-regul.mdx": {
+      "sha256": "8c9220af60a633e44fce2c4068bbbea6382cfd22c991b30a84b49211b600b299",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie.mdx": {
+      "sha256": "6e1b06ccdf30102adea3ca796e04ad2442decc7c44006ae2d47d30bcd3801fb0",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/skrypty-wlasne.mdx": {
+      "sha256": "bdff86cdbec1f29f7547308e21530c995242ea25248566510524d07eac5ee4d0",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/testowanie-regul.mdx": {
+      "sha256": "4991325f811807690332ddcf3b9781de62af48da053c5b14216bc5f026ed20b5",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/07-automatyzacja/wyzwalacze.mdx": {
+      "sha256": "d283ab5ac00ae3e3b46ab917f5675af54f32319ce9725936adef0af8bc233edc",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/filtry-i-parametry-raportu.mdx": {
+      "sha256": "bd338527b2efdff4cfb1aacdde40507d7f98c3948d70a2a5ff97a850f150c81c",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/meta.json": {
+      "sha256": "9f9e0fee6617644c7bc8e22aeaec5e387899331af0dd04612067f2646e5a1bad",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/raporty-wprowadzenie.mdx": {
+      "sha256": "9d46984a823b60a5849066f0f5055e8419120e8cefe4f54dfa3376c54e83b588",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/szablony-dokumentow.mdx": {
+      "sha256": "45dd3c42527e611a53aad89334499e8ce9b7bb1166544efe919d534c83f370b6",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/tabela-przestawna.mdx": {
+      "sha256": "69236d747c5af34f7d8973563892d7d853b5426b889507a35953a52f1a55dac0",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/08-raporty-i-dokumenty/wykresy.mdx": {
+      "sha256": "17b6958ce81dc8f596d57e4a7b4d5b3433ffa6e7cb8316528f306e98a0233bdc",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/09-moduly-gotowe/faktury-kosztowe.mdx": {
+      "sha256": "ccaeff27445aec864cfd514e3047ae16e278463e6a5077641d5c72ec45904b05",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/09-moduly-gotowe/faktury-sprzedazy.mdx": {
+      "sha256": "aee282b5068e04941d20a7a034422e26a6c6d6458854a9a5b34e3c682d639a7f",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/09-moduly-gotowe/katalog-uslug.mdx": {
+      "sha256": "c00a47f3a40d348120f50df1ba17a2c1b0aa87526d01288f454d0a04f87be2f5",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/09-moduly-gotowe/kontrahenci.mdx": {
+      "sha256": "ef746411b86ce3f730a120ffd95f9d18d4181fc0cae31ef9901d17f5a351d377",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/09-moduly-gotowe/meta.json": {
+      "sha256": "490c40c41193ce50610b785f07f050580a1b207eabde5923627759577ef7b90c",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/10-integracje/integracje-wprowadzenie.mdx": {
+      "sha256": "ba06ee112a3a42a9deab47b735eab3e8fed1451647237dd6a1c52fb70635b3b1",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/10-integracje/ksef-i-eksport-ksiegowy.mdx": {
+      "sha256": "be5b3216ff694e98bae93bec9be490a02757d7e3d9fca14e3b88f941a00ca703",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/10-integracje/meta.json": {
+      "sha256": "159a5f2182f311b9ad7de41fde80bd5c7ae43d352eddf4f3fa9e808f009eb87b",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/diagnostyka-i-zgloszenia.mdx": {
+      "sha256": "b9d30b83ec173125d1ffb576b707f8cfe478e6371daa48910807883f2ef55559",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/jezyki-i-lokalizacja.mdx": {
+      "sha256": "54f5964e07a1937e4a0bf196fa92cf6233ca8826d01397288c49d88d998c81de",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/meta.json": {
+      "sha256": "51f42fcd137b6db822296ee9ec47b9f946586f40911abc65a514fc00440ff15a",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/role-i-uprawnienia.mdx": {
+      "sha256": "0a3791705e481460afacbd0322654b1fa398b8517df89c7b2067e26b6992b73c",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/uzytkownicy-i-konta.mdx": {
+      "sha256": "7acb060e14d0acc829a40724610de2c3f1cc61618fa4543929fb81b51352b829",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/wersje-robocze-i-publikacja.mdx": {
+      "sha256": "3f28b47e5d1c0e4426b0423c076e4f8925664abf0e28b4e4605d8ed7fa089ec2",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/11-konto-i-dostep/wielofirmowosc.mdx": {
+      "sha256": "68660d12fadc4fb734cae4a343e1b954a475b3e20af1fd9dd74851ef98a7d4a0",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/index.mdx": {
+      "sha256": "9e528c7d834e8c60514d77afc61197d8d6ba7bb92dbb583d85cf3234b2b31788",
+      "owner": "generated"
+    },
+    "content/docs/pl/opero/meta.json": {
+      "sha256": "c09e507f3dd3a8449899a4c2ffb13d479d68a3aa37e2f05087f9e19359878af1",
+      "owner": "generated"
+    },
+    "content/openapi/external-api.en.json": {
+      "sha256": "5dcde31b3b66cec58324241b51e6ae6b70d881fc2c8e54b0ef16978f7bf24fcf",
+      "owner": "generated"
+    },
+    "content/openapi/external-api.pl.json": {
+      "sha256": "78e8848efdab13220430eb6edc4bca10e4dae355ef626c91121bf5b4990b07b3",
+      "owner": "generated"
+    }
+  }
+}

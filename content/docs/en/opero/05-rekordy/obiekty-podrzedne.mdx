@@ -1,0 +1,30 @@
+---
+title: "Subordinate tables"
+description: "Tabela podrzędna to lista wierszy wewnątrz jednego rekordu: pozycje oferty, etapy trasy, składniki wniosku. Wypełnia się ją razem z rekordem, który ją zawiera."
+---
+
+## What a subordinate table is for
+
+Some information does not fit in one field, because it has many rows. An offer has line items, a trip has route points, a cost request has a list of expenses. In Opero such data is held by a **subordinate table**: a list of rows visible on the record form, belonging solely to it.
+
+A subordinate table has no list of its own in the menu and you cannot open it separately. It exists together with the record it sits in, and is deleted together with it.
+
+> **Example.** On an offer form there is an Items table with the columns name, quantity, price, and value. You add rows directly on the offer form, and the sum of values goes to a field on the offer itself.
+
+## How to use it
+
+- Rows are added and edited **on the parent record's form**, usually with an add-row button below the table.
+- Saving the record also saves its rows.
+- The order of the columns and which of them are required are set by the administrator.
+- Summary values, for example the sum of items, are usually computed automatically and visible outside the table, on the record form.
+
+## Differences from a regular object
+
+| Subordinate | Regular object |
+| --- | --- |
+| exists only inside the parent record | has its own list in the menu |
+| edited together with the parent record | edited as a separate record |
+| has no process or permissions of its own | may have a process, permissions, and history |
+| good for items, components, calculation rows | good for things that live their own life |
+
+If something that is a table row today starts to require its own flow, deadline, or responsible person, report it to the administrator. It is a signal that it should be a separate record.

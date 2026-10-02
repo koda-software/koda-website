@@ -1,0 +1,32 @@
+---
+title: "Relation fields"
+description: "Pole powiązania wskazuje inny rekord w systemie: zgłoszenie wskazuje umowę, projekt wskazuje klienta. Dzięki temu dane nie są przepisywane po raz drugi."
+---
+
+## What relations are for
+
+The same information is sometimes needed in several places. A service ticket concerns a contract, a contract concerns a client, a project has a manager. Instead of retyping the client's name into every record, you point to a **record** that is already in the system.
+
+The gain is twofold. The data does not drift apart on a change, because there is one place of truth. From each record you can also move to the related one with a single click, without searching through lists.
+
+## How to use it
+
+A relation field is not a text field: instead of typing, you choose from a list. It is usually enough to start typing a fragment of the name or number for the list to narrow to matching records.
+
+What you see on the choice list is the **record label**, that is, the same thing that appears in its list. If records are hard to tell apart, for example several items with the same name, that is a signal to the administrator that the label needs to be supplemented with a number or a date.
+
+> **Example.** On a ticket form you choose the contract by typing its number. After saving, the contract number becomes a link: you click and you are on the contract form, with the full context of the matter.
+
+## One relation or many
+
+Relation fields come in two variants. Some accept exactly one record, for example a project's client. Others accept several, for example documents related to a matter or concepts described in an article. You can tell from the field itself: either you choose one value, or you add further items to a list.
+
+## People and contractors
+
+Pointing to an employee or a contractor looks similar, but uses separate kinds of fields, linked to the list of system users and to the list of contractors. In practice the difference is invisible: you also choose from a list, except its contents come from the register of people or contractors, not from a list built for the company.
+
+## Limitations of a relation
+
+A relation **does not copy data**. If on a ticket form you see the client's name coming from the contract, that is a preview of the value from the related record, not a copy of it. Changing the client's name changes it everywhere, and that is the point.
+
+A relation also grants no permissions. If you do not have access to contracts, pointing to a contract in a field will not open its form.

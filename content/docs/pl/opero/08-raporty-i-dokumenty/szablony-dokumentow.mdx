@@ -1,0 +1,34 @@
+---
+title: "Szablony dokumentów"
+description: "System sam składa dokumenty PDF z danych: fakturę, ofertę, protokół, pismo. Szablon to gotowy wzór, w który wskakują dane rekordu, więc powstaje jednolity dokument bez przepisywania."
+---
+
+## Dokument z szablonu
+
+Wiele dokumentów w firmie ma stały układ, a zmieniają się tylko dane: numer, kontrahent, kwoty, pozycje. W Opero taki dokument nie powstaje przez ręczne wpisywanie do Worda, tylko z **szablonu**. Szablon to gotowy wzór z zaznaczonymi miejscami na dane; system wstawia w nie wartości z rekordu i wydaje gotowy PDF.
+
+Dzięki temu każda faktura i każda oferta wygląda tak samo, ma firmowy papier i nie da się zapomnieć o polu, bo szablon pilnuje układu.
+
+## Dane pobierane do dokumentu
+
+- **Dane rekordu** wskakują w wyznaczone miejsca: numer, data, kontrahent, kwoty.
+- **Pozycje** (na przykład wiersze faktury albo oferty) układają się w tabelę automatycznie, ile ich jest, tyle wierszy.
+- **Papier firmowy** z nagłówkiem, stopką i logo jest częścią szablonu, więc dokument od razu jest firmowy.
+
+> **Przykład.** Zamykasz ofertę. Zamiast składać PDF ręcznie, uruchamiasz generowanie z szablonu Oferta. System bierze dane oferty, układa pozycje w tabelę, dokłada nagłówek z logo i wydaje gotowy plik, który dołączasz do maila do klienta.
+
+## Źródło dokumentów
+
+Dokument z szablonu powstaje na dwa sposoby, zależnie od konfiguracji instancji.
+
+- **Automatycznie**, gdy zajdzie ustalone zdarzenie, na przykład zatwierdzenie sprawy uruchamia wygenerowanie pisma. Wtedy plik pojawia się przy rekordzie.
+- **Na żądanie**, gdy sam uruchamiasz generowanie z poziomu rekordu.
+
+W obu przypadkach efektem jest **plik PDF**, który zostaje przy rekordzie jak każdy załącznik.
+
+## Różnice wobec załącznika
+
+- **Załącznik** to plik, który przyszedł z zewnątrz i wgrywasz go ręcznie, na przykład skan podpisanej umowy.
+- **Dokument z szablonu** system składa sam z danych, więc jest zawsze aktualny wobec rekordu w chwili wygenerowania i zawsze w tym samym, firmowym układzie.
+
+Jeżeli dokument, który dziś składasz ręcznie w Wordzie, powstaje zawsze tak samo i tylko dane się zmieniają, to najlepszy kandydat na szablon. Powiedz o tym administratorowi.

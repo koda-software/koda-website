@@ -1,0 +1,30 @@
+---
+title: "Reguły - wprowadzenie"
+description: "Reguła to automat, który sam robi rutynową czynność: wysyła powiadomienie, przelicza wartość, tworzy dokument. Dzięki temu nie trzeba pamiętać o powtarzalnych krokach."
+---
+
+## Czynności wykonywane przez regułę
+
+Część czynności powtarza się przy każdej sprawie: wysłać powiadomienie po akceptacji, przeliczyć sumę pozycji, oznaczyć fakturę po terminie, wygenerować dokument z rekordu. W Opero takie powtarzalne kroki wykonuje **reguła**: automat, który uruchamia się sam, gdy zajdzie ustalone zdarzenie.
+
+Efekt jest prosty: pewne rzeczy dzieją się bez udziału użytkownika i zawsze tak samo. To mniej do zapamiętania i mniej miejsc na pomyłkę.
+
+## Moment uruchomienia reguły
+
+Reguła nie działa cały czas. Rusza w reakcji na **zdarzenie**, na przykład na utworzenie rekordu, zmianę pola, wykonanie przejścia w procesie albo o ustalonej porze. Dopiero wtedy robi to, do czego została zbudowana.
+
+> **Przykład.** Po zatwierdzeniu wniosku urlopowego reguła sama wysyła powiadomienie do kadr i dopisuje urlop do kalendarza nieobecności. Nikt nie musi o tym pamiętać ani nikogo informować ręcznie.
+
+## Rozpoznanie działania reguły
+
+Zwykle po skutku: pojawiło się powiadomienie, zmieniła się wartość pola, powstał dokument, którego nie tworzyłeś ręcznie. To normalne. Jeżeli coś w rekordzie zmienia się samo, najczęściej stoi za tym reguła, a nie usterka.
+
+## Ograniczenia reguł
+
+- **Nie podejmie decyzji, która wymaga oceny człowieka.** Reguła wykonuje ustalony krok, nie zastępuje akceptacji.
+- **Nie naprawi błędnych danych.** Jeżeli policzy coś na złych danych, wynik też będzie zły.
+- **Nie działa wstecz sama z siebie.** Zmiana reguły zwykle dotyczy zdarzeń od tej chwili, nie starych rekordów.
+
+## Nieprawidłowe działanie automatyzacji
+
+Jeżeli reguła zrobiła coś nieoczekiwanego albo czegoś nie zrobiła, zgłoś to konkretnie: który rekord, kiedy, czego się spodziewałeś. Administrator ma podgląd tego, co reguła faktycznie wykonała krok po kroku, więc zwykle szybko widać, gdzie leży przyczyna.

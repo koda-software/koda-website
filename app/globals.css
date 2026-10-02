@@ -1,4 +1,13 @@
 @import "tailwindcss";
+/* The docs (app/(docs)) have their own stylesheet. Keep their content and components out of
+   this one, or Tailwind turns words in ~400 MDX pages into utilities. */
+@source not "../content/docs";
+@source not "../content/openapi";
+@source not "../content/docs-build-manifest.json";
+@source not "../components/docs";
+@source not "../lib/docs";
+@source not "../scripts/docs";
+
 
 :root {
   /* One graphite family, hue-matched to the logo blue, instead of the mix of

@@ -1,0 +1,155 @@
+---
+title: Pola własne
+description: Przygotowuj zmiany pól własnych w wersjach roboczych układów widoku i publikuj je bezpiecznie.
+---
+
+# Pola własne
+
+Układy widoku mogą pokazywać istniejące pola i przygotowywać zmiany definicji pól własnych w wersji roboczej. Dzięki temu klient API może zbudować edytor układu, który dodaje pola i aktualizuje właściwości pól przed publikacją.
+
+Dokładne zachowanie zależy od powierzchni:
+
+- Pola obiektów dynamicznych używają `source: "dynamic_field"` i identyfikują pola przez `fieldKey`.
+- Pola własne powierzchni wbudowanych używają `source: "custom_field"` i identyfikują definicje pól przez `fieldDefinitionId`.
+- Nowe albo zmienione pola własne przygotowane w bieżącej wersji roboczej używają `source: "draft_custom_field"`.
+
+## Odkrywanie schematów typów pól
+
+Przed utworzeniem albo edycją definicji pola wczytaj schematy typów pól:
+
+```http
+GET /v1/view-layouts/custom-field-types
+Authorization: Bearer ek_...
+```
+
+Użyj zwróconych schematów do zbudowania edytora pól. Nie zgaduj konfiguracji zależnej od typu. Różne typy pól mogą mieć inne wymagania przy tworzeniu i aktualizacji.
+
+## Dodanie istniejących pól
+
+Dla pola obiektu własnego dodaj blok `field` z `source: "dynamic_field"`.
+
+```json
+{
+  "id": "field_priority",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "priority" },
+  "regionKey": "main",
+  "displayOrder": 2,
+  "grid": { "colSpan": 6 },
+  "config": { "label": "Priority" },
+  "requiredPolicy": "optional",
+  "supportedModes": ["CREATE", "EDIT", "VIEW"],
+  "children": []
+}
+```
+
+Pole musi istnieć na obiekcie własnym i być prawidłowe dla wybranego trybu układu.
+
+Dla pola własnego powierzchni wbudowanej dodaj blok `field` z `source: "custom_field"` i `ref.fieldDefinitionId`. Użyj katalogu, aby znaleźć dostępne pola własne dla wybranej powierzchni i trybu.
+
+## Przygotowanie nowego pola własnego
+
+Gdy wersja robocza układu tworzy definicję pola własnego, dodaj wpis do `stagedFieldDefinitions` i odwołaj się do niego z bloku.
+
+```json
+{
+  "stagedFieldDefinitions": [
+    {
+      "draftId": "draft_priority",
+      "action": "create",
+      "existingFieldDefinitionId": null,
+      "scopeId": null,
+      "name": "Priority",
+      "key": "priority",
+      "type": "TEXT",
+      "config": { "required": false },
+      "frontendMeta": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_priority",
+      "type": "field",
+      "source": "draft_custom_field",
+      "ref": { "draftFieldDefinitionId": "draft_priority" },
+      "regionKey": "main",
+      "displayOrder": 2,
+      "grid": { "colSpan": 6 },
+      "config": { "label": "Priority" },
+      "requiredPolicy": "optional",
+      "children": []
+    }
+  ]
+}
+```
+
+Przygotowana definicja zostaje zatwierdzona podczas publikacji wersji roboczej. Przed publikacją nadal jest częścią wersji roboczej.
+
+## Aktualizacja pola własnego
+
+Użyj `action: "update"` z `existingFieldDefinitionId`.
+
+```json
+{
+  "draftId": "draft_update_priority",
+  "action": "update",
+  "existingFieldDefinitionId": "custom_field_priority",
+  "name": "Ticket priority",
+  "key": "priority",
+  "type": "TEXT",
+  "config": { "required": true },
+  "frontendMeta": null
+}
+```
+
+Jeśli zmiana może wyczyścić wartości albo zmienić typ pola, publikacja może wymagać potwierdzenia przez `confirmFieldChanges`.
+
+```json
+{
+  "clientMutationId": "publish-priority-change",
+  "draftVersionId": "version_ticket_draft_2",
+  "confirmFieldChanges": [
+    {
+      "draftId": "draft_update_priority",
+      "confirmTypeChange": true,
+      "confirmValueClear": true
+    }
+  ]
+}
+```
+
+## Odpięcie albo usunięcie
+
+Istnieje ważna różnica między usunięciem bloku a zmianą definicji pola.
+
+| Akcja | Znaczenie |
+| --- | --- |
+| Usunięcie bloku | Pole przestaje być widoczne w tej pozycji układu. Definicja pola pozostaje. |
+| Akcja `unlink` | Usuwa pole z bieżącego kontraktu układu bez usuwania definicji. |
+| Akcja `delete` | Usuwa definicję pola. Używaj tylko wtedy, gdy destrukcyjne zachowanie jest zamierzone. |
+
+Używaj `delete` tylko wtedy, gdy użytkownik wyraźnie wybrał usunięcie definicji pola, a nie tylko ukrycie go w jednym układzie.
+
+## Opcje przygotowanego pola
+
+Niektóre przygotowane definicje pól mogą udostępniać opcje dla edytora pól.
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/draft/staged-field-definitions/draft_priority/options
+Authorization: Bearer ek_...
+```
+
+Użyj tego, gdy edytor pola potrzebuje opcji dostarczonych przez serwer dla przygotowanej definicji.
+
+## Walidacja
+
+Walidacja zapisu wersji roboczej i publikacji może zgłosić:
+
+- brak wymaganych bloków pól w układzie;
+- blok odwołujący się do usuniętego albo niedostępnego pola;
+- nieobsługiwaną konfigurację typu pola;
+- przygotowane zmiany wymagające potwierdzenia;
+- brak wymaganych bloków pól własnych w publikowanym trybie.
+
+Zawsze sprawdzaj `validation.errors` i `validation.warnings` po zapisaniu wersji roboczej. Publikuj tylko wtedy, gdy wersja robocza jest poprawna albo poprawna z zaakceptowanymi ostrzeżeniami.

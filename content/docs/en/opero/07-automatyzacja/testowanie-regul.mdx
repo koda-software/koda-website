@@ -1,0 +1,31 @@
+---
+title: "Diagnosing rules"
+description: "Co zrobić, gdy automatyzacja zadziałała niezgodnie z oczekiwaniem lub nie uruchomiła się. Jak zgłosić problem, żeby dało się go szybko zdiagnozować, i czego się spodziewać."
+---
+
+## An automation can need fixing too
+
+A rule does exactly what it was set to. If it behaved differently than you expected, it usually means one of two things: either a case the rule does not cover came up, or the rule itself needs a correction. In both situations it can be fixed, and the starting point is a report.
+
+## Rules for reporting
+
+The administrator can see what the rule actually did step by step, but needs to know where to look. So give:
+
+- **Which record**, and preferably its number.
+- **When** it happened, even roughly.
+- **What happened** and **what you expected**.
+- **What you did just before**, for example you approved the matter or changed a field.
+
+The more specific, the faster the administrator finds the right run of the rule and sees where the behavior deviates from the intent.
+
+> **Example.** Instead of "the automation did not send an e-mail", write: "order ZAM/2026/88, yesterday after approval, the client did not get a confirmation, and usually does". That is enough to reconstruct the run.
+
+## How a report is handled
+
+- **Effects cannot always be undone.** If a rule sent a message, you will not recall the sending. The fix concerns future cases, and the current one is straightened out by hand.
+- **A rule correction works from the moment it is introduced.** Old records usually do not recompute themselves, unless the administrator runs it deliberately.
+- **Some reports end with an explanation that this is how it is meant to be.** A rule is sometimes narrowed deliberately, for example only to matters above an amount.
+
+## Actions that require a report
+
+Do not try to work around an automation by moving fields by hand or creating records meant to fake the rule's effect. This usually muddles the data more than it helps. It is better to report and wait for a fix.

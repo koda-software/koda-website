@@ -1,0 +1,36 @@
+---
+title: "Custom objects"
+description: "Obiekt to rodzaj rekordu i zarazem jego definicja: ustala, jakie pola ma rekord. Definiuje go organizacja, więc obiekty i pola noszą nazwy używane w firmie."
+---
+
+## Module, object, list, record
+
+Three words worth telling apart, because they recur throughout the documentation.
+
+- **An object** is a kind of thing you run in the system: a contract, a service ticket, an employee. It belongs to the system's structure and **defines the fields**, meaning it sets what information describes every record of that kind.
+- **A record** is one specific thing of that kind: contract number 14 with the Kowalski company, yesterday's ticket, employee Anna.
+- **A list** is a way of displaying the records of a single object, opened from the menu. It does not store data itself; the same records can also be shown as a kanban board or a calendar.
+
+In Opero, objects are not imposed by the vendor. The organization's administrator builds them, so the fields and names match the way the company actually works rather than a universal template.
+
+## Recognizing a record on the list
+
+Every object has a defined **record label**, that is, what you see as its name on the list, in search results, and in fields that point to that record. The label is built from field values, for example the number and the title, so it is different for each record and changes together with its content.
+
+> **Example.** Tickets have a label made of the number and the subject, so on the list you see "ZG/2026/114 Printer failure in HR", not the identifier alone.
+
+## Actions available on a record
+
+The scope depends on the permissions you hold and on whether the record is run by a process. In a typical situation you can open it, edit fields, add a comment and an attachment, and view the change history. If the record is run by a process, some fields are locked at certain stages, and a change happens through a process transition, not through ordinary editing.
+
+## Kinds of objects you will meet
+
+| Kind | How it looks in practice |
+| --- | --- |
+| Regular | a list, calendar, or kanban of records, opened from the menu, with a form for each record |
+| Subordinate | a table inside a record's form, for example offer line items, edited together with the parent record |
+| Singleton | a single form without a list, for example area settings, usually available only to administrators |
+
+## Decisions independent of the object
+
+The object describes what information you collect, but does not decide who will see it or what the screen looks like. Visibility is governed by permissions, and appearance by the form and the screen layout. The same object can be shown differently to different roles.

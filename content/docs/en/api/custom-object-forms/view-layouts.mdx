@@ -1,0 +1,221 @@
+---
+title: Editing Form View Layouts
+description: Edit and publish the View Layout owned by a custom object form.
+---
+
+Use this page after creating a custom object form. It explains how to edit the owned View Layout so the form can be rendered and used at runtime.
+
+## The Important Rule
+
+Do not create a separate View Layout and attach it to a form.
+
+When you create a form, Opero creates one owned View Layout and returns `viewLayoutId`. Use that layout ID for draft saves, publishing, version history, and runtime checks.
+
+Each form has exactly one owned View Layout. The layout's supported modes mirror the form's `types`. If you need to change the modes, update the form, not the layout metadata.
+
+The API rejects attempts to create another `DYNAMIC_OBJECT` View Layout with `target.formId`, because form-owned layouts are managed by the form.
+
+## Before You Start
+
+You need:
+
+- `api.view_layouts.read` to load builder metadata and layout details;
+- `api.view_layouts.manage` to save drafts and restore versions as drafts;
+- `api.view_layouts.publish` to publish drafts;
+- the `viewLayoutId` returned by the form.
+
+The examples use:
+
+- module key: `crm`;
+- object key: `ticket`;
+- form ID: `form_ticket_intake`;
+- layout ID: `layout_ticket_intake`.
+
+## Get Builder Metadata
+
+Load the block catalog for the form surface, mode, object, and form:
+
+```http
+GET /v1/view-layouts/catalog?surface=DYNAMIC_OBJECT&mode=CREATE&moduleKey=crm&objectKey=ticket&formId=form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+The catalog tells your client which fields and blocks can be added. Entries include labels, categories, block type, source, default block configuration, configuration schema, supported modes, and required or locked flags.
+
+Use the catalog instead of hardcoding custom object fields in your client.
+
+Load surface definitions when building a new draft or editor shell:
+
+```http
+GET /v1/view-layouts/surface-definitions?surface=DYNAMIC_OBJECT
+Authorization: Bearer ek_...
+```
+
+Surface definitions describe default regions, required blocks, and placement rules.
+
+## Save A Draft
+
+Saving a draft stores layout changes, but it does not make them live.
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_title",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "title" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Title" },
+      "modeConfig": {},
+      "requiredPolicy": "required",
+      "locked": false,
+      "removable": false,
+      "singleInstance": true,
+      "supportedModes": ["CREATE", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+The response includes the saved draft version and validation result:
+
+```json
+{
+  "data": {
+    "draftVersion": {
+      "id": "version_ticket_draft_1",
+      "status": "DRAFT"
+    },
+    "validation": {
+      "state": "valid",
+      "errors": [],
+      "warnings": []
+    }
+  }
+}
+```
+
+If validation is invalid, fix the reported errors and save again. Publishing fails until the draft is valid.
+
+## Publish The Draft
+
+Publishing makes the draft available at runtime.
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+After publishing, read the form again:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+The published modes should appear in `usableTypes`, and `layoutAvailability` should report `PUBLISHED` for those modes.
+
+Publishing can also include optimistic checks, such as `expectedPublishedVersionId`, and field-change confirmations through `confirmFieldChanges`. Use those fields when the editor needs to guard against overwriting a newer published version or when staged field changes require explicit confirmation.
+
+## Public Create Forms
+
+Public forms use a pinned published View Layout version. If the form is public and supports `CREATE`, publish with `advancePublicPinnedVersion` when the new version should become public:
+
+```json
+{
+  "clientMutationId": "ticket-layout-public-publish-001",
+  "draftVersionId": "version_ticket_draft_1",
+  "advancePublicPinnedVersion": true
+}
+```
+
+Use this only when the new published layout should replace the version currently used by public submissions.
+
+## Update Layout Metadata
+
+For form-owned layouts, the form manages:
+
+- surface;
+- target;
+- supported modes.
+
+Do not update those fields through `PATCH /v1/view-layouts/:layoutId`. Use the form update endpoint when you need to change form types.
+
+You may update safe metadata such as the layout name when that fits your process.
+
+## Versions
+
+List versions when you need to inspect previous published layouts:
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/versions
+Authorization: Bearer ek_...
+```
+
+Restore a version as a draft:
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/versions/version_ticket_draft_1/restore-draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-restore-001"
+}
+```
+
+Restoring creates a draft. Publish again when that draft should go live.
+
+## Troubleshooting
+
+### The Form Still Shows `DRAFT_ONLY`
+
+The draft has not been published. Publish the layout and then read the form again.
+
+### Publishing Returns Validation Errors
+
+The layout is missing required fields or contains unsupported blocks for the surface, mode, or public safety rules. Use the validation response to update the draft.
+
+### Creating A Layout With `target.formId` Fails
+
+That is expected. Form-owned layouts are created automatically with the form. Use the `viewLayoutId` from the form response.
+
+### The Layout Modes Are Wrong
+
+Update the form `types`. Opero syncs the owned layout modes from the form.
+
+## Related Pages
+
+- [Managing Custom Object Forms](/docs/en/api/custom-object-forms/management)
+- [Using Form Runtime Layouts](/docs/en/api/custom-object-forms/runtime)
+- [Save View Layout Draft](/docs/en/api/view-layout-configuration/save-view-layout-draft)
+- [Publish View Layout](/docs/en/api/view-layout-configuration/publish-view-layout)

@@ -1,0 +1,31 @@
+---
+title: "Numbers and computed fields"
+description: "Skąd bierze się numer rekordu, dlaczego pojawia się dopiero po zapisaniu i czemu części pól nie da się edytować, choć widać w nich wartość."
+---
+
+## The system assigns the number
+
+Records that must have an unambiguous label get it automatically: a ticket gets a ticket number, an invoice an invoice number, a contract a contract number. The number is built according to a pattern set during the implementation and usually contains a kind symbol, the year, and a sequential number, for example ZG/2026/0117.
+
+Two things follow from this directly.
+
+- **The number appears only after the record is saved.** Before the record exists, there is nothing to number, so while filling in the form the number field is empty.
+- **The number usually cannot be changed.** It is the matter's identifier in conversations, e-mails, and documents, so editing it is deliberately locked.
+
+## Numbering starts over each year
+
+If the number pattern contains the year, the counter starts from one after the year changes. This is not a fault, but standard practice: the number is meant to be short and legible within the year.
+
+> **Example.** December's last ticket is ZG/2026/0117, and January's first is ZG/2027/0001. Both are correct and both are unambiguous, because the year is part of the number.
+
+## Gaps in numbering
+
+It happens that after number 0042 the next record gets 0044. A number is sometimes reserved at the moment a record is created, so when a save fails or a record is deleted, the number stays used and does not return to the pool. This is normal behavior, not a lost document.
+
+If continuity of numbering is required by regulations at your company, report it to the administrator: this is a matter for a separate arrangement, not something that can be fixed by clicking.
+
+## Automatically computed fields
+
+Besides the number, a record usually has values that no one enters by hand: the sum of items, the number of days to a deadline, the value after a discount, a balance. The system computes them, usually on saving the record, and that is why such fields are read-only.
+
+If a computed value looks wrong, do not work around it by entering a correction elsewhere. Report it to the administrator together with the record number, because it most often concerns a condition in a rule that does not cover the given case.

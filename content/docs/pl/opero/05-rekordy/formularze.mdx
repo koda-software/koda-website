@@ -1,0 +1,34 @@
+---
+title: "Formularze"
+description: "Formularz decyduje o tym, które pola rekordu są widoczne i które podlegają zmianie. Ten sam rekord bywa pokazany inaczej przy zakładaniu, przy podglądzie i w edycji."
+---
+
+## Formularz jako widok rekordu
+
+Rekord jest zbiorem informacji, ale nie każdą trzeba widzieć w każdej chwili. Przy zakładaniu sprawy potrzebujesz kilku pól, przy podglądzie całości, a przy edycji tylko tego, co wolno zmienić. Za to odpowiada **formularz**: sposób pokazania rekordu, przygotowany przez administratora.
+
+## Trzy sytuacje, trzy widoki
+
+| Kiedy | Co zwykle widzisz |
+| --- | --- |
+| Zakładanie rekordu | pola niezbędne na starcie, bez tych wypełnianych później w procesie |
+| Podgląd | całość informacji, bez możliwości edycji |
+| Edycja | pola, które wolno zmieniać na obecnym etapie sprawy |
+
+Nie jest to ten sam ekran z zablokowanymi polami: to trzy odrębne widoki, każdy przygotowany osobno. Dlatego bywa, że pole widoczne przy podglądzie nie pojawia się przy zakładaniu.
+
+## Przyczyny różnic w zakresie widoczności
+
+Obiekt może mieć więcej niż jeden formularz, a różne role dostają różne. Przykład typowy dla kadr: pracownik widzi swój wniosek w wersji uproszczonej, a osoba z działu kadr w wersji pełnej, razem z polami rozliczeniowymi.
+
+Poza tym część pól bywa ukrywana zależnie od wartości innych pól. Wybór rodzaju sprawy potrafi odsłonić sekcję, która wcześniej nie miała sensu.
+
+> **Przykład.** Na formularzu zgłoszenia pole Numer gwarancji pojawia się dopiero po zaznaczeniu, że zgłoszenie dotyczy sprzętu na gwarancji. Wcześniej nie ma go na ekranie, bo byłoby tylko szumem.
+
+## Pola zablokowane
+
+Pole tylko do odczytu ma zwykle jeden z trzech powodów: liczy je automat, nadał je system albo etap procesu nie pozwala go zmieniać. Jeżeli musisz zmienić taką wartość, drogą jest przejście procesu albo zgłoszenie do administratora, a nie obejście przez inne pole.
+
+## Formularze publiczne
+
+Część formularzy jest udostępniana na zewnątrz, pod własnym adresem. Wypełnia je klient albo kontrahent bez konta w systemie, a z wysłanego formularza powstaje rekord w odpowiednim liście. Opisuje je osobny rozdział.

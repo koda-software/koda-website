@@ -1,0 +1,30 @@
+---
+title: "Tabele podrzędne"
+description: "Tabela podrzędna to lista wierszy wewnątrz jednego rekordu: pozycje oferty, etapy trasy, składniki wniosku. Wypełnia się ją razem z rekordem, który ją zawiera."
+---
+
+## Zastosowanie tabeli podrzędnej
+
+Część informacji nie mieści się w jednym polu, bo ma wiele wierszy. Oferta ma pozycje, przejazd ma punkty trasy, wniosek kosztowy ma listę wydatków. W Opero takie dane trzyma **tabela podrzędna**: lista wierszy widoczna na formularzu rekordu, należąca wyłącznie do niego.
+
+Tabela podrzędna nie ma własnej listy w menu i nie otworzysz jej osobno. Istnieje razem z rekordem, w którym siedzi, i razem z nim jest usuwana.
+
+> **Przykład.** Na formularzu oferty jest tabela Pozycje z kolumnami nazwa, ilość, cena i wartość. Dopisujesz wiersze bezpośrednio na formularzu oferty, a suma wartości trafia do pola na samej ofercie.
+
+## Sposób korzystania
+
+- Wiersze dodaje się i edytuje **na formularzu rekordu nadrzędnego**, zwykle przyciskiem dodania wiersza pod tabelą.
+- Zapis rekordu zapisuje również jego wiersze.
+- Kolejność kolumn i to, które z nich są wymagane, ustawia administrator.
+- Wartości podsumowujące, na przykład suma pozycji, są zwykle liczone automatycznie i widoczne poza tabelą, na formularzu rekordu.
+
+## Różnice wobec zwykłego obiektu
+
+| Podrzędny | Zwykły obiekt |
+| --- | --- |
+| istnieje tylko wewnątrz rekordu nadrzędnego | ma własną listę w menu |
+| edytowana razem z rekordem nadrzędnym | edytowany jako osobny rekord |
+| nie ma własnego procesu ani własnych uprawnień | może mieć proces, uprawnienia i historię |
+| dobra dla pozycji, składników, wierszy wyliczenia | dobry dla rzeczy, które żyją własnym życiem |
+
+Jeżeli coś, co dziś jest wierszem tabeli, zaczyna wymagać własnego obiegu, terminu albo odpowiedzialnej osoby, zgłoś to administratorowi. To sygnał, że powinien być osobnym rekordem.

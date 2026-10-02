@@ -1,0 +1,240 @@
+---
+title: Przegląd
+description: Tworzenie, konfiguracja i usuwanie formularzy obiektów własnych przez API Opero.
+---
+
+Formularze obiektów własnych określają, jak rekordy jednego obiektu własnego są tworzone, wyświetlane lub edytowane. Używaj formularzy, gdy ten sam obiekt wymaga różnych widoków lub sposobów pracy dla różnych trybów, ról, zespołów, integracji albo publicznych zgłoszeń.
+
+Formularz nie jest samym układem wizualnym. Gdy tworzysz formularz, Opero tworzy dla niego jeden powiązany układ. Formularz kontroluje dostępne tryby, wartości domyślne, dostęp publiczny i reguły dostępu w dashboardzie. Powiązany układ kontroluje pola i bloki widoczne w czasie działania.
+
+## Zanim Zaczniesz
+
+Potrzebujesz:
+
+- tokena API z `api.custom_forms.read`, aby listować i sprawdzać formularze;
+- tokena API z `api.custom_forms.manage`, aby tworzyć, aktualizować, usuwać, ustawiać wartości domyślne lub zastępować dostęp;
+- istniejącego modułu własnego;
+- obiektu własnego, który obsługuje samodzielne formularze.
+
+Podrzędne obiekty własne nie mogą mieć samodzielnych formularzy. Są edytowane w przepływie obiektu nadrzędnego.
+
+Przykłady używają:
+
+- klucza modułu: `crm`;
+- klucza obiektu: `ticket`;
+- ID formularza: `form_ticket_intake`;
+- ID układu: `layout_ticket_intake`.
+
+## Utworzenie Formularza
+
+Utwórz formularz pod obiektem własnym:
+
+```http
+POST /v1/custom-modules/crm/objects/ticket/forms
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake",
+  "types": ["CREATE", "EDIT"],
+  "isActive": true,
+  "isPublic": false,
+  "config": {
+    "title": "Submit a ticket",
+    "successMessage": "Ticket submitted."
+  }
+}
+```
+
+`types` musi zawierać co najmniej jedną unikalną wartość. Obsługiwane wartości to `CREATE`, `VIEW` i `EDIT`.
+
+Odpowiedź zawiera formularz i jego powiązany układ:
+
+```json
+{
+  "data": {
+    "id": "form_ticket_intake",
+    "name": "Ticket intake",
+    "types": ["CREATE", "EDIT"],
+    "isActive": true,
+    "isPublic": false,
+    "viewLayoutId": "layout_ticket_intake",
+    "viewLayoutName": "Ticket intake view layout",
+    "layoutAvailability": {
+      "CREATE": { "state": "DRAFT_ONLY" },
+      "EDIT": { "state": "DRAFT_ONLY" }
+    },
+    "usableTypes": []
+  }
+}
+```
+
+`DRAFT_ONLY` jest oczekiwanym stanem po utworzeniu. Edytuj i opublikuj powiązany układ, zanim użyjesz formularza w czasie działania.
+
+## Listowanie I Sprawdzanie Formularzy
+
+Pobierz listę formularzy obiektu:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms?page=1&limit=20
+Authorization: Bearer ek_...
+```
+
+Lista używa standardowego formatu zapytań listujących. Zawiera tryby formularza, flagi domyślne, liczbę wpisów dostępu, dostępność układu i informację, czy dany tryb jest gotowy do użycia.
+
+Pobierz jeden formularz:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Użyj odpowiedzi jednego formularza po publikacji układu, aby sprawdzić `layoutAvailability` i `usableTypes`.
+
+## Listowanie Dostępnych Formularzy
+
+Dostępne formularze to aktywne formularze, opcjonalnie filtrowane po typie:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/available?type=CREATE
+Authorization: Bearer ek_...
+```
+
+Ten endpoint jest przydatny dla ekranów wyboru formularza. Jeśli wywołujący potrzebuje formularza, który można faktycznie wyrenderować lub użyć do zapisu rekordów, sprawdzaj `usableTypes`, a nie tylko `isActive`.
+
+## Aktualizacja Formularza
+
+Aktualizuj metadane formularza przez `PATCH`:
+
+```http
+PATCH /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Ticket intake and edit",
+  "types": ["CREATE", "EDIT"],
+  "config": {
+    "title": "Ticket",
+    "successMessage": "Saved."
+  }
+}
+```
+
+Ważne zasady:
+
+- `types` jest pełnym zastąpieniem, gdy zostanie przesłane.
+- Brak `types` pozostawia obecne typy bez zmian.
+- `types` nie może być puste i nie może zawierać duplikatów.
+- Aktualizacja `types` synchronizuje tryby powiązanego układu.
+- Usunięcie typu usuwa też wpisy dostępu dla tego nieobsługiwanego typu.
+- Usunięcie typu, który jest aktualnie ustawiony jako domyślny, zostanie odrzucone, dopóki ta wartość domyślna nie zostanie wyczyszczona.
+- `config` jest zastępowane w całości, gdy zostanie przesłane. Przekaż `null`, aby je wyczyścić.
+- `config` służy do tekstów czasu działania, takich jak tytuł, komunikat sukcesu i opis. Struktura wizualna należy do układu.
+
+## Ustawienie Formularzy Domyślnych
+
+Wartości domyślne decydują, którego formularza Opero użyje, gdy wywołujący nie poda ID formularza dla danego trybu.
+
+```http
+PATCH /v1/custom-modules/crm/objects/ticket/forms/defaults
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "defaultCreateFormId": "form_ticket_intake",
+  "defaultEditFormId": "form_ticket_intake",
+  "defaultViewFormId": "form_ticket_view"
+}
+```
+
+Wyczyść wartość domyślną przez `null`:
+
+```json
+{
+  "defaultEditFormId": null
+}
+```
+
+API odrzuca wartości domyślne wskazujące formularz z innego obiektu, nieaktywny formularz lub formularz, który nie obsługuje wymaganego typu.
+
+## Ustawienie Dostępu Do Formularza
+
+Dostęp do formularza kontroluje, którzy członkowie organizacji lub role mogą używać formularza w przepływach dashboardu. Tokeny API nadal potrzebują własnych uprawnień `api.*`.
+
+Odczytaj aktualną macierz dostępu:
+
+```http
+GET /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake/access
+Authorization: Bearer ek_...
+```
+
+Zastąp macierz dostępu:
+
+```http
+PUT /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake/access
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "users": [
+    {
+      "membershipId": "membership_support_agent",
+      "types": ["VIEW", "EDIT"]
+    }
+  ],
+  "roles": [
+    {
+      "roleId": "role_support",
+      "types": ["CREATE", "VIEW", "EDIT"]
+    }
+  ]
+}
+```
+
+`PUT` zastępuje całą macierz dostępu. Aby usunąć wszystkie jawne wpisy dostępu, wyślij:
+
+```json
+{
+  "users": [],
+  "roles": []
+}
+```
+
+API odrzuca wpisy dostępu, które wskazują inną organizację lub typ nieobsługiwany przez formularz.
+
+## Usunięcie Formularza
+
+Usuń formularz, gdy nie powinien być już używany:
+
+```http
+DELETE /v1/custom-modules/crm/objects/ticket/forms/form_ticket_intake
+Authorization: Bearer ek_...
+```
+
+Udane usunięcie zwraca `204 No Content`.
+
+API odrzuca usunięcie formularza, gdy jest on wybrany jako domyślny. Najpierw wyczyść wartość domyślną.
+
+Po udanym usunięciu Opero usuwa formularz, jego powiązany układ oraz publiczne pliki przesłane dla tego formularza. Traktuj to jako operację powodującą utratę danych.
+
+## Mapa Endpointów
+
+| Potrzeba | Endpoint |
+| --- | --- |
+| Utworzenie formularza | `POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
+| Lista formularzy | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
+| Pobranie jednego formularza | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| Aktualizacja formularza | `PATCH /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| Usunięcie formularza | `DELETE /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId` |
+| Lista dostępnych formularzy | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/available` |
+| Aktualizacja wartości domyślnych | `PATCH /v1/custom-modules/:moduleKey/objects/:objectKey/forms/defaults` |
+| Odczyt dostępu | `GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId/access` |
+| Zastąpienie dostępu | `PUT /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId/access` |
+
+## Powiązane Strony
+
+- [Edycja układów formularzy](/docs/pl/api/custom-object-forms/view-layouts)
+- [Używanie układów formularzy w czasie działania](/docs/pl/api/custom-object-forms/runtime)
+- [Konfiguracja układów](/docs/pl/api/view-layout-configuration)
+- [Runtime układów](/docs/pl/api/view-layout-runtime)

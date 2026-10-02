@@ -1,0 +1,10 @@
+{
+  "title": "Queries",
+  "pages": [
+    "introduction",
+    "list-queries",
+    "get-query",
+    "execute-query",
+    "post-saved-queries-id-execute-mutation"
+  ]
+}

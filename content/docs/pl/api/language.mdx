@@ -1,0 +1,19 @@
+---
+title: Język
+description: Pobieraj zlokalizowane odpowiedzi API za pomocą nagłówka Accept-Language.
+---
+
+API Opero domyślnie zwraca lokalizację angielską.
+
+Aby poprosić o inny obsługiwany język, przekaż w zapytaniu nagłówek `Accept-Language`.
+
+```txt
+Accept-Language: pl
+```
+
+Obsługiwane języki:
+
+- `en`
+- `pl`
+
+Gdy wybrany język jest obsługiwany, API zwraca zlokalizowaną treść tam, gdzie dany endpoint ją udostępnia. Jeśli nagłówek zostanie pominięty albo język nie jest obsługiwany, używany jest angielski.

@@ -1,0 +1,42 @@
+---
+title: "Widoki listy: lista, kanban, kalendarz"
+description: "Te same dane można pokazać na trzy sposoby: jako tabelę, jako tablicę kart w kolumnach albo jako kalendarz. Czym się różnią, do czego nadaje się każdy z nich i co pozostaje wspólne niezależnie od widoku."
+---
+
+## Jeden zbiór danych, trzy sposoby pokazania
+
+Lista rekordów nie musi wyglądać jak tabela. Ten sam zbiór spraw można wyświetlić **jako listę, jako tablicę kanban albo jako kalendarz**. To nie są trzy różne miejsca w systemie ani trzy kopie danych: to trzy układy tego samego listy.
+
+Wybór układu zależy od konfiguracji danej listy albo listy własnej. Część miejsc ma jeden ustalony układ, w części można się przełączać.
+
+## Zastosowania poszczególnych układów
+
+| Układ | Pokazuje | Nadaje się do |
+| --- | --- | --- |
+| Lista | wiersze z kolumnami wybranych pól | szukania konkretnej sprawy, porównywania, eksportu |
+| Kanban | karty rozłożone w kolumnach | oceny, gdzie stoi praca i co się piętrzy |
+| Kalendarz | rekordy umieszczone na dniach | pracy, w której liczy się data: wizyty, terminy, harmonogram |
+
+Praktyczna zasada: **listy używasz, gdy szukasz jednej sprawy, kanbanu i kalendarza, gdy chcesz zobaczyć całość**. Kanban odpowiada na pytanie „na czym stoimy", kalendarz na pytanie „co i kiedy".
+
+> **Przykład.** Ten sam lista zgłoszeń: na liście filtrujesz po kliencie i znajdujesz konkretne zgłoszenie sprzed miesiąca. Na kanbanie widzisz, że dwadzieścia zgłoszeń czeka na weryfikację, a w realizacji nie ma nic. Na kalendarzu sprawdzasz, ile wizyt przypada na czwartek.
+
+## Elementy wspólne dla wszystkich układów
+
+To najważniejsza rzecz w tym temacie, bo oszczędza nieporozumień.
+
+- **Dane są te same.** Zmiana układu niczego nie tworzy ani nie kasuje. Rekord dopisany na kanbanie zobaczysz na liście i odwrotnie.
+- **Uprawnienia są te same.** Układ nie pokazuje niczego, do czego nie masz dostępu. Jeżeli czegoś nie widzisz na liście, na kalendarzu też się nie pojawi.
+- **Filtry zwykle działają tak samo.** Zawężenie zbioru dotyczy danych, a nie sposobu ich rysowania.
+
+> **Pusty kalendarz to zwykle brak daty, nie brak rekordów.** Kalendarz umieszcza rekord na dniu na podstawie pola daty. Rekord bez wypełnionej daty nie zostanie umieszczony w kalendarzu, mimo że na liście widać go normalnie. Gdy kalendarz wygląda na pusty, sprawdź go najpierw na liście.
+
+## Ograniczenia układu
+
+Układ jest sposobem prezentacji, więc **nie wpływa na to, co wolno zrobić ze sprawą**. Jeżeli na tablicy nie da się przesunąć karty do innej kolumny, przyczyna leży w procesie albo w uprawnieniach, a nie w tym, że patrzysz na kanban zamiast na listę.
+
+Tak samo działa to w drugą stronę: jeżeli w danej liście nie ma widoku kalendarza, to decyzja konfiguracyjna, a nie usterka.
+
+## Powiązane
+
+Lista rekordów opisuje listę i pracę na niej. Tablica kanban opisuje szczegółowo pracę na kartach i przesuwanie ich między etapami. Wyszukiwanie i filtrowanie opisuje zawężanie zbioru. Listy własne opisują zestawienia budowane pod konkretną potrzebę.

@@ -1,0 +1,202 @@
+---
+title: Typy bloków
+description: Zrozum strukturę bloków układu widoku, źródła, referencje, zagnieżdżanie i częste typy bloków.
+---
+
+# Typy bloków
+
+Bloki są elementami, z których składa się układ widoku. Blokiem może być pole, sekcja, zakładka, tabela relacji, komponent wbudowany, przycisk, blok własnego HTML, blok dashboardu albo inny obsługiwany element układu.
+
+Użyj [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog), aby pobrać obsługiwane bloki dla dokładnej powierzchni, trybu i targetu przed zapisaniem wersji roboczej.
+
+## Struktura bloku
+
+Większość bloków wersji roboczej ma taki kształt:
+
+```json
+{
+  "id": "field_title",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "title" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "grid": { "colSpan": 12 },
+  "config": { "label": "Title" },
+  "modeConfig": {},
+  "runtimeAvailability": null,
+  "requiredPolicy": "required",
+  "locked": false,
+  "removable": true,
+  "singleInstance": true,
+  "supportedModes": ["CREATE", "EDIT"],
+  "children": []
+}
+```
+
+| Pole | Znaczenie |
+| --- | --- |
+| `id` | Stabilne ID bloku widoczne dla klienta. Zachowuj je między zapisami. |
+| `type` | Rodzaj bloku. |
+| `source` | Źródło bloku, na przykład `dynamic_field`, `custom_field` albo `system`. |
+| `ref` | Identyfikator pola, komponentu, relacji albo innego elementu reprezentowanego przez blok. |
+| `regionKey` | Region, w którym znajduje się blok. |
+| `displayOrder` | Kolejność w regionie albo w rodzicu. |
+| `grid` | Ułożenie w układzie, na przykład szerokość w kolumnach. |
+| `config` | Edytowalne opcje prezentacji i zachowania. |
+| `modeConfig` | Ustawienia właściwe dla trybu. |
+| `runtimeAvailability` | Opcjonalny warunek kontrolujący dostępność runtime. |
+| `requiredPolicy` | `optional`, `required` albo `system_locked`. |
+| `children` | Zagnieżdżone bloki. |
+| `meta` | Metadane runtime zwracane przez resolve. Zapis wersji roboczej może je odesłać, ale trwały zapis ignoruje metadane wyłącznie runtime. |
+
+## Źródła
+
+| Źródło | Typowe użycie |
+| --- | --- |
+| `dynamic_field` | Pole z obiektu własnego. |
+| `dynamic_relation` | Relacja albo tabela relacji z obiektu własnego. |
+| `custom_field` | Pole własne na powierzchni wbudowanej. |
+| `draft_custom_field` | Definicja pola własnego przygotowana w bieżącej wersji roboczej układu. |
+| `built_in` | Komponent albo pole wbudowanej powierzchni. |
+| `system` | Bloki strukturalne, takie jak sekcje, zakładki, kolumny, przyciski i własny HTML. |
+| `module` | Bloki dostarczane przez moduł. |
+| `dashboard` | Bloki workspace dashboardu. |
+
+## Kształty referencji
+
+Obiekt `ref` wskazuje, do czego odnosi się blok. Częste przykłady:
+
+```json
+{ "fieldKey": "title" }
+```
+
+```json
+{ "fieldDefinitionId": "custom_field_priority" }
+```
+
+```json
+{ "draftFieldDefinitionId": "draft_priority_field" }
+```
+
+```json
+{ "relationFieldKey": "comments" }
+```
+
+```json
+{ "componentKey": "layout.section" }
+```
+
+Używaj odpowiedzi katalogu jako źródła prawdy dla oczekiwanego `ref`.
+
+## Pola
+
+Pola obiektów dynamicznych używają `source: "dynamic_field"` i identyfikują pola przez `fieldKey`.
+
+```json
+{
+  "id": "field_title",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "title" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "grid": { "colSpan": 12 },
+  "config": { "label": "Title" },
+  "requiredPolicy": "required",
+  "supportedModes": ["CREATE", "EDIT"],
+  "children": []
+}
+```
+
+Pola własne powierzchni wbudowanych używają `source: "custom_field"` i identyfikują definicje pól przez `fieldDefinitionId`.
+
+## Sekcje, kolumny i zakładki
+
+Sekcje służą do grupowania bloków pod nagłówkiem albo w obszarze układu. Kolumny są blokami strukturalnymi do dzielenia treści wewnątrz sekcji albo zgodnego rodzica. Zakładki to blok nadrzędny `tabs` zawierający jeden lub więcej bloków `tab`.
+
+Katalog publikuje reguły dzieci, takie jak minimalna liczba dzieci, maksymalna liczba dzieci, dozwolone typy i dozwolone źródła. Użyj tych reguł przed zagnieżdżaniem bloków.
+
+## Tabele relacji
+
+Tabele relacji reprezentują relacje jeden-do-wielu między obiektami własnymi.
+
+```json
+{
+  "id": "relation_comments",
+  "type": "relation_table",
+  "source": "dynamic_relation",
+  "ref": {
+    "relationFieldKey": "comments",
+    "moduleKey": "support",
+    "objectKey": "ticket_comment"
+  },
+  "regionKey": "main",
+  "displayOrder": 2,
+  "config": {
+    "columns": ["text", "created_at"],
+    "targetMode": "VIEW"
+  },
+  "supportedModes": ["VIEW", "EDIT"],
+  "children": []
+}
+```
+
+W runtime używaj endpointów tabel relacji do rozwiązywania docelowych układów wierszy i zapytań o wiersze. Zapisy tabel relacji odbywają się wewnątrz zapytania zapisu rekordu nadrzędnego.
+
+## Przyciski i własny HTML
+
+Przyciski są blokami systemowymi. Obsługiwane akcje przycisków to `open_url` i `execute_rule`.
+
+Opero renderuje i sanityzuje bloki własnego HTML.
+
+Użyj [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/pl/api/view-layout-runtime/get-view-layout-runtime-context-variables), aby sprawdzić, które zmienne mogą być użyte w szablonach URL przycisków, własnym HTML, skryptach i warunkach runtime.
+
+## Bloki wbudowane
+
+Bloki wbudowane są używane przez powierzchnie wbudowane, takie jak organizacja, kontrahent i faktury.
+
+```json
+{
+  "id": "organization_details",
+  "type": "builtin",
+  "source": "built_in",
+  "ref": { "componentKey": "organization.details" },
+  "regionKey": "main",
+  "displayOrder": 0,
+  "requiredPolicy": "required",
+  "locked": true,
+  "removable": false
+}
+```
+
+Wymagane bloki wbudowane muszą pozostać obecne, aby publikacja mogła się udać.
+
+## Dostępność runtime
+
+`runtimeAvailability` może udostępnić blok tylko wtedy, gdy warunek jest spełniony.
+
+```json
+{
+  "runtimeAvailability": {
+    "condition": {
+      "value1": "{{ workflow.stage.parameters.showAccountingSection }}",
+      "operator": "EQUALS",
+      "value2": true
+    }
+  }
+}
+```
+
+Obsługiwane operatory obejmują `EQUALS`, `NOT_EQUALS`, operatory porównania, `CONTAINS`, `NOT_CONTAINS`, `IS_EMPTY` i `IS_NOT_EMPTY`.
+
+## Zmiana bloku
+
+Aby zmienić blok, zapisz nową pełną wersję roboczą:
+
+1. Zachowaj to samo `id`, jeśli to nadal ten sam logiczny blok.
+2. Zmień `type`, `source` i `ref` tylko wtedy, gdy blok ma reprezentować coś innego.
+3. Zaktualizuj `config` dla zmian prezentacji.
+4. Przenieś blok przez zmianę `regionKey`, nadrzędnego `children` albo `displayOrder`.
+5. Zapisz wersję roboczą i sprawdź walidację.
+6. Publikuj dopiero po poprawnej walidacji.

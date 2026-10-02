@@ -1,0 +1,35 @@
+---
+title: "Related records"
+description: "Rekordy w Opero łączą się ze sobą: umowa wskazuje klienta, zamówienie wskazuje umowę. Powiązania pozwalają przechodzić między sprawami i widzieć je w kontekście."
+---
+
+## Relations between records
+
+Matters in a company link to one another. A contract concerns a client, an order arises from a contract, an invoice refers to an order. In Opero these are not loose notes "this has something to do with that", but real **relations**: a record points to another record, and you move between them with a single click.
+
+Thanks to this, from a client's form you see their contracts, and from a contract you go back to the client, without searching for anything by name.
+
+## How relations are shown on the form
+
+- **A relation field** shows the pointed-to record as a link. Clicking opens its form. A contract has a Client field; clicking opens that client's form.
+- **A related-records list** shows the records that point to the current one. On a client's form you see the list of their contracts, even though it is the contracts that "know" about the client, not the other way around.
+- **Relations are in the side panel or in a section of the main area**, depending on how the administrator arranged the form.
+
+> **Example.** You open a client's form. In the Contracts section you see three related contracts, in the Tickets section five service tickets. You click a contract and you are on its form; from it you return to the client with one click. You move around the connected matters as if on a map.
+
+## What it is for
+
+Relations give three things at once:
+
+- **Context.** You see a matter together with what it links to, not in isolation.
+- **Navigation.** You move between related records without returning to lists and searching.
+- **Consistency.** A client is saved once, and all their contracts point to the same record, so a correction to the client's data is visible everywhere.
+
+## Practices not recommended
+
+- **Do not duplicate data instead of linking.** If you retype the client's name and address into every contract separately, you lose consistency: after an address change you would have to fix it in many places. That is what a relation is for, so that data lives in one place.
+- **Do not search for a related record by name when you have a link.** Clicking a relation field is faster and more reliable than searching for the same matter in a list.
+
+## A missing relation
+
+If you often need to move from one matter to another and there is no link between them, report it to the administrator. Adding a relation field is a configuration change that later saves daily searching.

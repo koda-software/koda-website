@@ -6,14 +6,26 @@
     "prepare": "git config core.hooksPath .githooks",
     "dev": "next dev -p 3011",
     "build": "next build --webpack",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && pnpm run docs:sync-algolia:gate",
     "preview": "next start -p 3004",
     "lint": "eslint",
     "typegen": "next typegen",
-    "type-check": "tsc --noEmit --incremental false",
+    "type-check": "fumadocs-mdx && tsc --noEmit --incremental false",
     "quality:nonvisual": "node scripts/quality-nonvisual.mjs",
     "quality:lighthouse": "node scripts/quality-lighthouse.mjs",
-    "quality:precommit": "pnpm run typegen && pnpm run type-check && pnpm run lint"
+    "quality:precommit": "pnpm run typegen && pnpm run type-check && pnpm run lint && pnpm run docs:check-links",
+    "postinstall": "fumadocs-mdx",
+    "prebuild": "pnpm run docs:generate",
+    "docs:generate": "node scripts/docs/generate.mjs",
+    "docs:check-links": "node scripts/docs/check-links.mjs",
+    "docs:refresh-snapshot": "tsx scripts/docs/generate-validated.ts --refresh-snapshot",
+    "docs:verify-deployment": "node scripts/docs/verify-deployment.mjs",
+    "docs:sync-algolia": "tsx scripts/docs/sync-algolia.ts",
+    "docs:sync-algolia:gate": "node scripts/docs/sync-algolia-gate.mjs",
+    "test:docs": "node --test scripts/docs/tests/*.test.mjs",
+    "predev": "pnpm run docs:generate",
+    "docs:accept-snapshot": "tsx scripts/docs/generate-validated.ts --accept-snapshot",
+    "docs:sync-preview-algolia": "tsx scripts/docs/sync-preview-algolia.ts"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.4",
@@ -24,7 +36,16 @@
     "next": "16.2.9",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "resend": "^6.12.4"
+    "resend": "^6.12.4",
+    "@fumadocs/api-docs": "0.0.2",
+    "@scalar/api-client-react": "2.0.26",
+    "algoliasearch": "^5.55.0",
+    "fumadocs-core": "16.10.3",
+    "fumadocs-mdx": "15.0.12",
+    "fumadocs-openapi": "11.0.2",
+    "fumadocs-ui": "16.10.3",
+    "react-json-view-lite": "^2.5.0",
+    "shiki": "^4.2.0"
   },
   "devDependencies": {
     "@puppeteer/browsers": "^3.0.4",
@@ -37,7 +58,11 @@
     "lighthouse": "^12.8.2",
     "next-sitemap": "^4.2.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@next/env": "16.2.9",
+    "@types/mdx": "^2.0.13",
+    "fast-xml-parser": "^5",
+    "tsx": "^4.21.0"
   },
   "packageManager": "pnpm@11.6.0",
   "engines": {

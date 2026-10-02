@@ -1,0 +1,10 @@
+{
+  "title": "Słowniki",
+  "pages": [
+    "list-dictionaries",
+    "list-dictionary-entries",
+    "get-dictionary-with-entries",
+    "get-dictionaries-dictionaryid-entries-export",
+    "get-dictionaries-dictionaryid-entries-entryid"
+  ]
+}

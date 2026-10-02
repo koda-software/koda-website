@@ -1,0 +1,26 @@
+---
+title: "Dictionaries"
+description: "Słownik to wspólna lista dozwolonych wartości, z której korzystają pola wyboru w całym systemie. Dzięki niemu wszyscy nazywają te same rzeczy tak samo."
+---
+
+## What a dictionary is for
+
+Statuses of matters, kinds of documents, cost categories, priorities. These are values that recur in many places and must sound the same everywhere, otherwise a report stops making sense. Such a list is held by a **dictionary**: one set of values used by many select fields.
+
+The difference from a plain list at a field is practical. A value added to a dictionary appears at once in all the fields that use it, not just in one.
+
+## Recognizing a dictionary field
+
+From the user's perspective a dictionary field looks like any other select field: you expand the list and choose a value. The difference is invisible, and it is meant to be. What matters is only that the values are shared, so watching over them makes sense for the whole company, not for a single record.
+
+## Missing values
+
+If an item you need is not on the list, report it to the administrator instead of entering something approximate in another field. Adding a value to a dictionary is a change of a minute and **works immediately**, without a system update and without waiting for a publication.
+
+Keep in mind that lists are sometimes deliberately short. A category we knowingly do not add is also a decision, usually so that the summaries do not fall apart.
+
+## Order and retired values
+
+The order on the list is set by the administrator, usually so that the most frequent values are on top. If a value disappears from the list on new records but is visible on old ones, it means it has been **retired**: it can no longer be chosen, but the history stays legible.
+
+> **Example.** A new item, Warranty complaint, is added to the matter-kinds dictionary. From that moment it is visible in every list that uses this dictionary, without any additional change to the fields.

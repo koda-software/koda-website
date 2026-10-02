@@ -1,0 +1,11 @@
+{
+  "title": "Formularze obiektów własnych",
+  "pages": [
+    "management",
+    "view-layouts",
+    "runtime",
+    "list-custom-object-forms",
+    "list-available-custom-object-forms",
+    "get-custom-object-form"
+  ]
+}

@@ -1,0 +1,201 @@
+---
+title: Budowanie układów
+description: Twórz kontenery układów, zapisuj pełne wersje robocze, publikuj wersje i zarządzaj przypisaniami.
+---
+
+# Budowanie układów
+
+Budowanie układu widoku oznacza utworzenie albo znalezienie kontenera układu, zapis pełnej wersji roboczej i opublikowanie tej wersji roboczej, gdy walidacja przejdzie poprawnie.
+
+Dla formularzy obiektów własnych kontener układu zwykle powstaje automatycznie podczas tworzenia formularza. Użyj `viewLayoutId` z odpowiedzi formularza i edytuj ten układ.
+
+## Kiedy tworzyć układ bezpośrednio
+
+Użyj [`POST /v1/view-layouts`](/docs/pl/api/view-layout-configuration/create-view-layout), gdy tworzysz układ, który nie należy do formularza obiektu własnego, na przykład układ organizacji, kontrahenta, użytkownika, faktury albo dashboardu.
+
+Nie używaj go do tworzenia kolejnego układu dla formularza obiektu własnego:
+
+```json
+{
+  "surface": "DYNAMIC_OBJECT",
+  "target": {
+    "moduleKey": "support",
+    "objectKey": "ticket",
+    "formId": "form_ticket_intake"
+  }
+}
+```
+
+Ten target należy do formularza. Najpierw utwórz formularz, a potem edytuj układ, który należy do formularza.
+
+## Metadane układu
+
+Metadane układu opisują, gdzie układ ma zastosowanie.
+
+| Pole | Znaczenie |
+| --- | --- |
+| `surface` | Rodzina strony, na przykład `DYNAMIC_OBJECT`, `ORGANIZATION` albo `DASHBOARD`. |
+| `supportedModes` | Tryby obsługiwane przez układ, na przykład `CREATE`, `VIEW` albo `EDIT`. |
+| `target` | Dodatkowy kontekst powierzchni. Targety obiektów dynamicznych używają `moduleKey`, `objectKey` i zwykle `formId`. |
+| `name` | Czytelna nazwa układu. |
+| `metadata` | Opcjonalne metadane klienta. |
+
+Bezpieczne metadane możesz zaktualizować przez [`PATCH /v1/view-layouts/:layoutId`](/docs/pl/api/view-layout-configuration/update-view-layout). Dla układów należących do formularza zmieniaj typy formularza przez endpoint formularza, zamiast aktualizować `surface`, `target` albo `supportedModes` bezpośrednio.
+
+## Regiony
+
+Regiony to nazwane obszary, w których można umieszczać bloki. Prosty formularz obiektu dynamicznego może zacząć od jednego regionu `main`.
+
+```json
+[
+  {
+    "key": "main",
+    "label": "Main",
+    "layout": "grid",
+    "columns": 12,
+    "displayOrder": 0,
+    "config": {}
+  }
+]
+```
+
+Pola regionu:
+
+| Pole | Znaczenie |
+| --- | --- |
+| `key` | Stabilny identyfikator regionu używany przez bloki. |
+| `label` | Czytelna etykieta. |
+| `layout` | Styl układu: `grid`, `tabs`, `stack`, `sidebar` albo `dashboard_grid`. |
+| `columns` | Liczba kolumn siatki, gdy ma zastosowanie. |
+| `displayOrder` | Kolejność regionu. |
+| `config` | Konfiguracja właściwa dla regionu. |
+
+Użyj [`GET /v1/view-layouts/surface-definitions`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-definitions), aby poznać domyślne regiony dla powierzchni.
+
+## Zapis wersji roboczej
+
+Zapis wersji roboczej zastępuje pełną treść wersji roboczej. Wyślij wszystkie regiony, bloki, przygotowywane definicje pól, powiązania skryptów i metadane, które mają pozostać.
+
+```http
+PUT /v1/view-layouts/layout_ticket_intake/draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-draft-001",
+  "schemaVersion": 1,
+  "regions": [
+    {
+      "key": "main",
+      "label": "Main",
+      "layout": "grid",
+      "columns": 12,
+      "displayOrder": 0,
+      "config": {}
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_title",
+      "type": "field",
+      "source": "dynamic_field",
+      "ref": { "fieldKey": "title" },
+      "regionKey": "main",
+      "displayOrder": 0,
+      "grid": { "colSpan": 12 },
+      "config": { "label": "Title" },
+      "requiredPolicy": "required",
+      "supportedModes": ["CREATE", "EDIT"],
+      "children": []
+    }
+  ],
+  "stagedFieldDefinitions": [],
+  "scriptBindings": [],
+  "metadata": null
+}
+```
+
+Odpowiedź zawiera zapisaną wersję roboczą i wynik walidacji.
+
+| Stan | Znaczenie |
+| --- | --- |
+| `valid` | Wersję roboczą można opublikować. |
+| `valid_with_warnings` | Wersję roboczą można opublikować, ale odpowiedź zawiera ostrzeżenia do sprawdzenia. |
+| `invalid` | Wersji roboczej nie można opublikować, dopóki błędy nie zostaną poprawione. |
+
+## Publikacja wersji roboczej
+
+Publikacja sprawia, że wersja robocza staje się wersją runtime.
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/publish
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-publish-001",
+  "draftVersionId": "version_ticket_draft_1"
+}
+```
+
+Jeśli wersja robocza ma błędy walidacji, publikacja zwraca `409 Conflict` ze szczegółami walidacji.
+
+Gdy publikujesz przygotowane zmiany pól własnych, które mogą wyczyścić wartości albo zmienić typ pola, dołącz `confirmFieldChanges` dla wpisów wymagających potwierdzenia.
+
+## Wersje
+
+Listę wersji pobierzesz przez [`GET /v1/view-layouts/:layoutId/versions`](/docs/pl/api/view-layout-configuration/list-view-layout-versions). Jedną wersję odczytasz przez [`GET /v1/view-layouts/:layoutId/versions/:versionId`](/docs/pl/api/view-layout-configuration/get-view-layout-version).
+
+Aby przywrócić poprzednią wersję jako bieżącą wersję roboczą:
+
+```http
+POST /v1/view-layouts/layout_ticket_intake/versions/version_ticket_published_1/restore-draft
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "ticket-layout-restore-001"
+}
+```
+
+Przywrócenie tworzy albo zastępuje wersję roboczą. Nie publikuje jej automatycznie.
+
+## Przypisania
+
+Przypisania są przeznaczone dla układów należących do organizacji, które wymagają wyboru domyślnego albo zależnego od roli. Układy obiektów dynamicznych należące do formularza są zwykle wybierane przez sam formularz.
+
+```http
+PUT /v1/view-layouts/layout_org_edit/assignments
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "clientMutationId": "org-layout-assign-001",
+  "organizationDefault": true,
+  "roles": [
+    {
+      "roleId": "role_operations",
+      "priority": 10
+    }
+  ]
+}
+```
+
+Ten endpoint zastępuje zestaw przypisań układu.
+
+## Archiwizacja układu
+
+Zarchiwizowane układy są ukryte przed odczytem i rozwiązywaniem runtime.
+
+```http
+POST /v1/view-layouts/layout_org_edit/archive
+Authorization: Bearer ek_...
+```
+
+Nie archiwizuj układu należącego do formularza, jeśli chcesz zmienić zachowanie formularza. Zamiast tego edytuj albo usuń formularz.
+
+## Co dalej
+
+- Użyj [Typów bloków](/docs/pl/api/view-layout-configuration/block-types), aby budować i zagnieżdżać bloki.
+- Użyj [Pól własnych](/docs/pl/api/view-layout-configuration/custom-fields), gdy wersja robocza tworzy, aktualizuje, odpina albo usuwa definicje pól własnych.
+- Po publikacji przejdź do [Przewodnika po runtime](/docs/pl/api/view-layout-runtime/runtime).

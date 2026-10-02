@@ -1,0 +1,24 @@
+---
+title: "Kroki skryptowe"
+description: "Część automatyzacji korzysta z krótkiego kawałka kodu napisanego przez administratora. Znajomość kodu nie jest wymagana, ale warto wiedzieć, że istnieje, oraz jakie ma to znaczenie w codziennej pracy."
+---
+
+## Skrypt w regule
+
+Większość automatyzacji w Opero da się złożyć z gotowych klocków: sprawdź warunek, ustaw pole, wyślij powiadomienie. Czasem jednak potrzebna jest reguła licząca coś nietypowego albo składająca dane w sposób, którego klockami nie da się wyrazić. Wtedy administrator dokłada **skrypt**, czyli krótki fragment logiki napisany dla firmy.
+
+Jako użytkownik nie masz z nim styczności wprost. Widzisz tylko efekt: pole wypełnia się samo, rekord dostaje wyliczoną wartość, sprawa trafia we właściwe miejsce. Skrypt jest pod maską, nie na desce rozdzielczej.
+
+## Źródło informacji
+
+Warto rozumieć, że część zachowań systemu jest napisana specjalnie dla Was, bo to zmienia sposób zgłaszania problemów.
+
+- Jeżeli coś liczy się **inaczej, niż się spodziewasz**, to nie zawsze błąd systemu. Bywa, że to reguła policzyła według ustalonej kiedyś zasady, która wymaga odświeżenia.
+- Zgłaszając problem z automatycznie wyliczaną wartością, **podaj rekord i to, jaki wynik był**, a jaki powinien być. Administrator odczyta z przebiegu reguły, co się policzyło i dlaczego.
+- Skrypt działa na danych, które ma w rekordzie. Jeżeli pole źródłowe jest puste albo błędne, wynik też będzie, choćby sam skrypt był poprawny. Zanim zgłosisz, sprawdź dane wejściowe.
+
+> **Przykład.** Reguła przy zamknięciu projektu liczy premię z sumy zafakturowanych pozycji i wpisuje ją w pole. Gdy wynik wydaje się zaniżony, najczęściej okazuje się, że jedna pozycja nie została oznaczona jako zafakturowana, więc skrypt jej nie policzył. Wynik jest poprawny wobec danych, tylko dane były niepełne.
+
+## Ograniczenia skryptu
+
+Skrypt uruchamiany przez regułę działa w wąskich granicach. Nie sięga poza organizację, nie wysyła danych na zewnątrz sam z siebie i ma ograniczony czas działania. To celowe: automat ma pomagać przy codziennej pracy, a nie robić rzeczy, o których nikt nie wie. Jeżeli reguła ma wysłać coś na zewnątrz, robi to jawnie osobnym krokiem, który administrator świadomie dołożył.

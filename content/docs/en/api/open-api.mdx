@@ -1,0 +1,52 @@
+---
+title: Open API
+description: Use the Opero OpenAPI schema with typed clients, SDK generators, and API tools.
+---
+
+Opero publishes an OpenAPI schema for the API.
+
+[Open the OpenAPI schema](https://opero.kodasoft.pl/api/swagger/v1/json)
+
+```txt
+https://opero.kodasoft.pl/api/swagger/v1/json
+```
+
+The schema is also available with descriptions in English or Polish:
+
+```txt
+https://opero.kodasoft.pl/api/swagger/v1/en/json
+https://opero.kodasoft.pl/api/swagger/v1/pl/json
+```
+
+## Base URL
+
+Every API path is relative to the API base URL:
+
+- Opero cloud: `https://opero.kodasoft.pl/api`
+- Self-hosted Opero: `https://<your Opero address>/api`
+
+On a self-hosted installation, the OpenAPI schema is available at the same paths under your own base URL.
+
+Append the endpoint path to the base URL, for example `https://opero.kodasoft.pl/api/v1/ping`. Do not resolve an absolute path against the base URL: `new URL('/v1/ping', baseUrl)` drops the `/api` segment.
+
+The former `https://api.kodasoft.pl` address is no longer served. Use the base URL above.
+
+## When To Use It
+
+Use the OpenAPI schema when you want to connect Opero with tools that understand API contracts.
+
+Common uses include:
+
+- Generating strongly typed API clients.
+- Creating TypeScript types for requests and responses.
+- Importing the API into tools such as Postman, Insomnia, Swagger UI, or code generators.
+- Validating integration code against the current API contract.
+
+## Notes
+
+The schema describes the API contract. To call protected endpoints, your requests still need an Opero API token.
+
+## Related Pages
+
+- [Authentication](/docs/en/api/authentication)
+- [Language](/docs/en/api/language)

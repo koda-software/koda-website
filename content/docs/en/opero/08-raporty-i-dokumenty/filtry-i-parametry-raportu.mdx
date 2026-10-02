@@ -1,0 +1,32 @@
+---
+title: "Report filters and parameters"
+description: "Raport nie musi pokazywać wszystkiego naraz. Kontrolki u góry pozwalają zawęzić go do interesującego wycinka: jednego roku, jednego działu, jednego statusu, bez zmiany samego raportu."
+---
+
+## Narrowing a ready report
+
+A report usually computes from all the data you have access to. Rarely do you want to see everything at once. Above the report are **controls** with which you narrow it to a slice: you choose a year, a department, a status, or a date range, and the report recomputes for that choice.
+
+This is an important distinction: narrowing changes **what you see**, not the report itself. A colleague will open the same report without these settings and see the full picture.
+
+## Two kinds of controls
+
+You do not need to know the technical difference, but it is worth sensing it.
+
+- **A filter** narrows the result by a value: "show only the North region", "only the In progress status". Filters can usually be turned on and off freely while viewing.
+- **A parameter** is a choice the report takes into account from the start of computing, for example the year or the company. It is sometimes required: until you indicate it, the report has nothing to compute.
+
+In practice both look like choice fields at the top of the report. If a report asks for a choice before it shows anything, that is usually a required parameter.
+
+> **Example.** A sales report has a Year parameter you must choose, and a Region filter you can leave empty. You choose 2026, the report shows the whole year, and then with the Region filter you narrow to the South to see only that area. You remove the filter and again have the whole country.
+
+## How to use it
+
+- **Start with the required choices.** If the report is waiting, indicate what it asks for, for example the year or the company.
+- **Add filters gradually.** One filter narrows, the second narrows further. It is easier to reach a result by adding conditions one at a time than by setting everything at once.
+- **Remove the filters to return to the whole.** Narrowings can be undone; you break nothing.
+
+## What to keep in mind
+
+- **A filter will not reveal data you do not see.** Narrowing works within your access; the controls are for exploration, not for bypassing permissions.
+- **A narrowing is not saved in the report.** The settings concern the current viewing. If you want a ready, always identically narrowed report for the whole team, ask the administrator for a separate report with the range set.

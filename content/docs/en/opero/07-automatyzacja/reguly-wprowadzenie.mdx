@@ -1,0 +1,30 @@
+---
+title: "Rules - introduction"
+description: "Reguła to automat, który sam robi rutynową czynność: wysyła powiadomienie, przelicza wartość, tworzy dokument. Dzięki temu nie trzeba pamiętać o powtarzalnych krokach."
+---
+
+## Actions performed by a rule
+
+Some actions repeat on every matter: send a notification after approval, recompute the sum of items, mark an overdue invoice, generate a document from a record. In Opero such repetitive steps are performed by a **rule**: an automation that starts by itself when a set event occurs.
+
+The effect is simple: certain things happen without the user's involvement and always the same way. That is less to remember and fewer places for a mistake.
+
+## When a rule runs
+
+A rule does not run all the time. It starts in reaction to an **event**, for example the creation of a record, a change to a field, the performing of a transition in a process, or a set time. Only then does it do what it was built for.
+
+> **Example.** After a leave request is approved, a rule sends a notification to HR by itself and adds the leave to the absence calendar. No one has to remember it or inform anyone by hand.
+
+## Recognizing that a rule acted
+
+Usually by the effect: a notification appeared, a field value changed, a document was produced that you did not create by hand. This is normal. If something in a record changes by itself, a rule is most often behind it, not a fault.
+
+## Limitations of rules
+
+- **It will not make a decision that requires human judgment.** A rule performs a set step; it does not replace an approval.
+- **It will not fix wrong data.** If it computes something on bad data, the result will be bad too.
+- **It does not act retroactively by itself.** A change to a rule usually concerns events from now on, not old records.
+
+## Incorrect automation behavior
+
+If a rule did something unexpected or failed to do something, report it specifically: which record, when, what you expected. The administrator can see what the rule actually did step by step, so it is usually quick to see where the cause lies.

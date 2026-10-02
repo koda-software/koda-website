@@ -1,0 +1,192 @@
+---
+title: Wprowadzenie
+description: Dowiedz się, jak tworzyć, walidować i uruchamiać zapytania przez API Opero.
+---
+
+# Zapytania
+
+Zapytania pozwalają integracji zapisać w Opero zapytanie SQL wielokrotnego użytku, tylko do odczytu, i uruchamiać je później przez token API. Używaj ich do stabilnych eksportów, raportów, wyszukiwań i innych integracji, które potrzebują przewidywalnego kształtu wyniku.
+
+Każde zapytanie ma stabilny `key`, treść SQL, opcjonalne parametry, zakres oraz wywnioskowany `resultSchema`. Gdy inny system zacznie używać zapytania, traktuj `key`, nazwy parametrów i nazwy kolumn wyniku jak kontrakt integracyjny.
+
+## Zanim zaczniesz
+
+Endpointy zapytań korzystają z bazowej ścieżki External API:
+
+```text
+/v1/saved-queries
+```
+
+Każde żądanie HTTP musi zawierać token API:
+
+```http
+Authorization: Bearer ek_...
+```
+
+Użyj tokenu organizacji do konfiguracji zapytań i raportowania organizacji. Użyj tokenu firmy, gdy integracja uruchamia zapytania dla operacyjnej przestrzeni jednej firmy.
+
+Wykonanie zapytania ma dwa konteksty:
+
+- normalne wykonanie w przestrzeni firmy dla danych powiązanych z jedną wybraną firmą
+- jawny tryb raportowania organizacji dla raportowania między firmami
+
+Klienci nie powinni dodawać własnego filtra izolacji organizacji albo firmy do SQL, chyba że taki filtr jest częścią pytania biznesowego. Użyj zakresu tokenu i trybu wykonania przeznaczonych dla integracji.
+
+Przed napisaniem SQL wywołaj [`GET /v1/saved-queries/schema`](/docs/pl/api/queries/get-query-schema). Endpoint zwraca tabele i kolumny dostępne dla zakresu tokenu i kontekstu wykonania, w tym obsługiwane tabele wbudowane oraz tabele obiektów własnych organizacji. Używaj wartości `qualifiedName` zwróconych przez API zamiast zgadywać nazwy tabel.
+
+## Uprawnienia
+
+Uprawnienia API zapytań są niezależne od uprawnień w dashboardzie. Nadaj tokenowi tylko te uprawnienia, których dana integracja potrzebuje.
+
+| Uprawnienie | Pozwala na |
+| --- | --- |
+| `api.saved_queries.read` | Listowanie zapytań, odczyt szczegółów zapytania i sprawdzanie schematu dostępnego dla SQL. |
+| `api.saved_queries.manage` | Walidowanie SQL, tworzenie zapytań, aktualizowanie zapytań organizacji i usuwanie zapytań organizacji. |
+| `api.saved_queries.execute` | Uruchamianie zapytań. |
+
+Jedno uprawnienie nie daje automatycznie pozostałych. Token mający tylko `api.saved_queries.manage` może tworzyć i aktualizować zapytania organizacji, ale nie może ich listować ani odczytywać. Token mający tylko `api.saved_queries.execute` może uruchomić znane ID zapytania, ale nie może odnaleźć go przez endpoint listy ani szczegółów.
+
+## Zakresy zapytań
+
+Zapytania mają jeden z dwóch zakresów.
+
+| Zakres | Znaczenie | Zachowanie w External API |
+| --- | --- | --- |
+| `SYSTEM` | Wbudowane zapytanie zarządzane przez Opero. | Można je listować, odczytać i uruchomić, jeśli jest widoczne dla organizacji tokenu. Nie można go aktualizować ani usunąć przez External API. |
+| `ORGANIZATION` | Zapytanie należące do organizacji tokenu API. | Można je tworzyć, listować, odczytywać, aktualizować, uruchamiać i usuwać przy wymaganych uprawnieniach. |
+
+Klienci External API zawsze tworzą zapytania `ORGANIZATION`. Nie mogą tworzyć zapytań `SYSTEM`.
+
+## Zalecany przebieg pracy
+
+### Utwórz minimalny token
+
+Zdecyduj, co integracja może robić, zanim utworzysz token.
+
+- Narzędzie do tworzenia zapytań zwykle potrzebuje `api.saved_queries.read` i `api.saved_queries.manage`.
+- Integracja runtime firmy, która zna już ID zapytania, zwykle potrzebuje tylko `api.saved_queries.execute` na tokenie firmy.
+- Integracja, która uruchamia zapytania i musi odnaleźć zapytanie po `key`, potrzebuje `api.saved_queries.read` i `api.saved_queries.execute`.
+- Integracja raportująca między firmami powinna używać tokenu organizacji i jawnego trybu raportowania organizacji.
+
+Jeśli to możliwe, używaj osobnych tokenów do osobnych zadań. Na przykład zaplanowany eksport nie powinien używać tego samego tokenu co narzędzie administracyjne, które może zmieniać SQL zapytań.
+
+### Sprawdź schemat dla SQL
+
+Przed zbudowaniem SQL wywołaj [`GET /v1/saved-queries/schema`](/docs/pl/api/queries/get-query-schema). Odpowiedź pokazuje, które tabele i kolumny są dostępne dla integracji.
+
+Użyj odpowiedzi schematu, aby:
+
+- pokazywać poprawne podpowiedzi tabel i kolumn w edytorze zapytań
+- używać wartości `qualifiedName` dokładnie w postaci zwróconej przez API
+- unikać odwołań do tabel, które nie są udostępnione zakresowi tokenu
+- wykrywać tabele obiektów własnych organizacji, które można odpytywać
+
+### Napisz SQL tylko do odczytu
+
+SQL zapytania musi być tylko do odczytu. Użyj jednego polecenia `SELECT` albo jednego zapytania `WITH`, które kończy się poleceniem `SELECT` tylko do odczytu.
+
+Używaj nazwanych parametrów dla wartości przekazywanych w czasie uruchomienia:
+
+```sql
+select contractor.id, contractor.name, contractor.tax_id as taxId
+from "Contractor" contractor
+where contractor.tax_id = :taxId
+```
+
+Wybieraj jawne kolumny i stabilne aliasy. Unikaj `select *`, bo kolumny wyniku stają się częścią kontraktu integracyjnego.
+
+### Zadeklaruj parametry
+
+Każdy nazwany parametr SQL musi być zadeklarowany w treści żądania HTTP, a każdy zadeklarowany parametr musi być użyty w SQL.
+
+Obsługiwane typy parametrów:
+
+| Typ | Wartość w czasie uruchomienia |
+| --- | --- |
+| `string` | Wartość tekstowa. |
+| `number` | Wartość liczbowa. |
+| `date` | Data albo data z czasem akceptowana przez API. |
+| `uuid` | Tekstowy UUID. |
+| `boolean` | Wartość logiczna. |
+
+Parametry wymagane muszą być przekazane podczas wykonania. Parametry opcjonalne można pominąć; pominięte parametry opcjonalne trafiają do SQL jako `null`.
+
+Dla filtrów opcjonalnych napisz SQL obsługujący `null`:
+
+```sql
+where (:status is null or invoice.status = :status)
+```
+
+### Waliduj przed zapisaniem
+
+Podczas tworzenia zapytania wywołuj [`POST /v1/saved-queries/validate`](/docs/pl/api/queries/validate-query). Walidacja sprawdza bezpieczeństwo SQL, odwołania do tabel, deklaracje parametrów oraz to, czy PostgreSQL potrafi sparsować zapytanie. Niczego nie zapisuje.
+
+Żądania tworzenia i aktualizacji ponownie walidują SQL przed zapisem. Gdy zmieni się SQL albo parametry, Opero odświeża `resultSchema` na podstawie kolumn wyniku.
+
+### Utwórz i uruchom
+
+Utwórz zapytanie przez [`POST /v1/saved-queries`](/docs/pl/api/queries/create-query). `key` musi być unikalny wśród zapytań organizacji.
+
+Uruchom je przez [`POST /v1/saved-queries/{id}/execute`](/docs/pl/api/queries/execute-query). External API wykonuje zapytanie po `id`; jeśli integracja ma tylko `key`, najpierw odszukaj zapytanie przez listę albo filtr i ustal jego `id`.
+
+W przypadku danych operacyjnych uruchamiaj zapytanie w odpowiedniej przestrzeni firmy. Trybu raportowania organizacji używaj tylko wtedy, gdy zapytanie ma zwracać wyniki między firmami.
+
+Wykonanie zwraca wiersze, `rowCount` i `hasMore`. API stosuje domyślny limit wierszy podczas wykonywania SQL. Dodaj jawne `limit`, gdy integracja potrzebuje przewidywalnego maksymalnego rozmiaru wyniku.
+
+## Reguły SQL
+
+Dozwolone wzorce SQL:
+
+- jedno polecenie `SELECT`
+- jedno zapytanie `WITH`, które kończy się poleceniem `SELECT` tylko do odczytu
+- nazwane parametry, takie jak `:status` albo `:ownerId`
+- tabele zwrócone przez endpoint schematu
+
+Niedozwolone są między innymi:
+
+- wiele poleceń SQL
+- zmiany danych, takie jak `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE` albo `MERGE`
+- DDL, takie jak `CREATE`, `ALTER` albo `DROP`
+- zmiany uprawnień lub sesji, takie jak `GRANT`, `REVOKE`, `SET`, `RESET` albo `DISCARD`
+- bloki wykonywane po stronie serwera, takie jak `CALL`, `DO` albo dynamiczne `EXECUTE`
+- operacje na plikach, rozszerzeniach, powiadomieniach albo kontroli backendu
+
+Opero sprawdza też dostęp do tabel i wykonuje walidację PostgreSQL `EXPLAIN` przed zapisaniem zapytania.
+
+## Zarządzanie zmianami
+
+Zapytania często stają się kontraktami integracyjnymi. Przy zmianach stosuj te zasady:
+
+| Zmiana | Ryzyko |
+| --- | --- |
+| Dodanie nowej opcjonalnej kolumny wyniku. | Zwykle zgodne. |
+| Dodanie nowego opcjonalnego parametru, którego brak jest obsłużony w SQL. | Zwykle zgodne. |
+| Zmiana nazwy kolumny wyniku, zmiana typu wyniku, zmiana parametru wymaganego albo zmiana znaczenia `key`. | Ryzykowne. |
+| Usunięcie kolumny wyniku albo parametru wymaganego używanego przez klienta. | Niezgodne. |
+
+Dla zmian niezgodnych utwórz nowe zapytanie z nowym `key`, przełącz klientów na nowe zapytanie i usuń stare dopiero wtedy, gdy klienci już od niego nie zależą.
+
+## Przewodnik po endpointach
+
+| Endpoint | Do czego służy |
+| --- | --- |
+| [`GET /v1/saved-queries`](/docs/pl/api/queries/list-queries) | Listuje zapytania `SYSTEM` i zapytania organizacji widoczne dla tokenu. Odpowiedzi listy nie zawierają SQL. |
+| [`GET /v1/saved-queries/schema`](/docs/pl/api/queries/get-query-schema) | Pokazuje tabele i kolumny, których można używać w SQL zapytań. |
+| [`POST /v1/saved-queries/validate`](/docs/pl/api/queries/validate-query) | Waliduje SQL i parametry bez zapisywania zapytania. |
+| [`POST /v1/saved-queries`](/docs/pl/api/queries/create-query) | Tworzy zapytanie organizacji. |
+| [`GET /v1/saved-queries/{id}`](/docs/pl/api/queries/get-query) | Odczytuje jedno zapytanie, w tym SQL i `resultSchema`. |
+| [`PATCH /v1/saved-queries/{id}`](/docs/pl/api/queries/update-query) | Aktualizuje zapytanie organizacji. |
+| [`POST /v1/saved-queries/{id}/execute`](/docs/pl/api/queries/execute-query) | Uruchamia zapytanie z opcjonalnym `params`. |
+| [`DELETE /v1/saved-queries/{id}`](/docs/pl/api/queries/delete-query) | Usuwa zapytanie organizacji. |
+
+## Typowe błędy
+
+| Status | Znaczenie |
+| --- | --- |
+| `400` | Nieprawidłowe ciało żądania HTTP, niedozwolony SQL, niedostępna tabela, niespójne deklaracje parametrów, brak wymaganego parametru wykonania, nieprawidłowy parametr UUID albo błąd wnioskowania `resultSchema`. |
+| `401` | Brakujący albo nieprawidłowy token API. |
+| `403` | Token API nie ma wymaganego uprawnienia `api.saved_queries.*`. |
+| `404` | Zapytanie nie istnieje, nie jest widoczne dla organizacji tokenu albo klient próbował zaktualizować lub usunąć zapytanie `SYSTEM`. |
+| `409` | `key` zapytania istnieje już dla innego zapytania organizacji. |
+
+Jeśli walidacja albo tworzenie zwraca `DATABASE_READONLY_URL is not configured`, we wdrożeniu Opero brakuje połączenia do bazy danych tylko do odczytu. To problem konfiguracji serwera, a nie błąd żądania klienta.

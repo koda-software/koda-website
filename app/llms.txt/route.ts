@@ -45,6 +45,8 @@ vendor's template. Changing the configuration does not require a developer.
 - [About the company](${absoluteUrl(localizePath("en", "about"))}): who builds it and why.
 - [Contact](${absoluteUrl(localizePath("en", "contact"))}): booking a demo.
 
+- [Documentation](${absoluteUrl("/docs/en")}): Opero API reference and product guides. Language-model index: ${absoluteUrl("/docs/llms.txt")}
+
 ## Capabilities
 
 ${featureLines}
@@ -53,6 +55,7 @@ ${featureLines}
 
 - Languages: ${locales.join(", ")}. Polish pages live under /pl.
 - Built by ${siteConfig.name}, ${siteConfig.url}.
+- Documentation page list: ${absoluteUrl("/docs-sitemap.xml")}
 - Full page list: ${absoluteUrl("/sitemap.xml")}
 `;
 

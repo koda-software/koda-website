@@ -1,0 +1,46 @@
+# Opero Docs
+
+> Documentation for Opero product concepts, integrations, API tokens, and API workflows.
+
+These docs describe public Opero concepts and the external Opero API. English is the primary index. Polish documentation is available under `https://kodasoft.pl/docs/pl`.
+
+## Start Here
+
+- [Welcome](https://kodasoft.pl/docs/en): Overview of Opero docs and the recommended reading path.
+- [Getting Started](https://kodasoft.pl/docs/en/getting-started): Find the API base URL, prepare an API token, and make a first request.
+
+## API Essentials
+
+- [API Overview](https://kodasoft.pl/docs/en/api): Entry point for Opero API documentation.
+- [Authentication](https://kodasoft.pl/docs/en/api/authentication): Use Opero API tokens with bearer authentication.
+- [Language](https://kodasoft.pl/docs/en/api/language): Request localized API responses with the Accept-Language header.
+- [OpenAPI](https://kodasoft.pl/docs/en/api/open-api): Use the current OpenAPI schema with API tools and client generators.
+
+## Product Context
+
+- [Opero](https://kodasoft.pl/docs/en/opero): Browse product documentation generated from public Opero documentation records.
+- [Record Lists](https://kodasoft.pl/docs/en/opero/04-listy-rekordow/lista-rekordow): Record lists, list views, search, filtering, and export.
+- [Automation](https://kodasoft.pl/docs/en/opero/07-automatyzacja/reguly-wprowadzenie): Automation rules, triggers, actions, notifications, and custom scripts.
+
+## API Resource Guides
+
+- [Contractors](https://kodasoft.pl/docs/en/api/companies/get-companies-companyid-contractors): Work with contractors, suppliers, customers, and other business partners.
+- [Service Catalog](https://kodasoft.pl/docs/en/api/companies/get-companies-companyid-service-catalog-items): Manage reusable services, goods, and bundles.
+- [Custom Modules](https://kodasoft.pl/docs/en/api/custom-modules/list-custom-modules): List and manage custom module definitions.
+- [Custom Objects](https://kodasoft.pl/docs/en/api/custom-objects/list-custom-objects): Work with custom object schemas and records.
+- [Rules](https://kodasoft.pl/docs/en/api/rules/introduction): Manage and run Opero automation rules.
+- [View Layout Configuration](https://kodasoft.pl/docs/en/api/view-layout-configuration/overview): Build and publish View Layouts for Opero records and forms.
+- [View Layout Runtime](https://kodasoft.pl/docs/en/api/view-layout-runtime/runtime): Resolve published View Layouts, load runtime data, and save records.
+- [Files](https://kodasoft.pl/docs/en/api/companies/post-companies-companyid-files-attachments): Upload attachment files.
+- [Entity Attachments](https://kodasoft.pl/docs/en/api/companies/post-companies-companyid-entity-attachments): Attach files to Opero records.
+- [Entity Comments](https://kodasoft.pl/docs/en/api/companies/get-companies-companyid-entity-comments-entitytype-entityid): Read and manage record comments.
+
+## Machine-Readable References
+
+- [OpenAPI schema](https://opero.kodasoft.pl/api/swagger/v1/json): Current external API contract.
+- [Sitemap](https://kodasoft.pl/docs/sitemap.xml): Complete public docs URL list.
+- [Search index](https://kodasoft.pl/docs/static.json): Public structured search index with page titles, descriptions, and content excerpts.
+
+## Optional
+
+- [Polish docs](https://kodasoft.pl/docs/pl): Polish version of the documentation.

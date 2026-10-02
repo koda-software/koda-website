@@ -1,0 +1,155 @@
+---
+title: Custom Fields
+description: Stage custom field changes inside View Layout drafts and publish them safely.
+---
+
+# Custom Fields
+
+View Layouts can show existing fields and can stage custom field definition changes in a draft. This lets an API client build a layout editor that can add fields and update field properties before publishing.
+
+The exact behavior depends on the surface:
+
+- Dynamic object fields use `source: "dynamic_field"` and identify fields by `fieldKey`.
+- Built-in surface custom fields use `source: "custom_field"` and identify field definitions by `fieldDefinitionId`.
+- New or changed custom fields staged inside the current draft use `source: "draft_custom_field"`.
+
+## Discover Field Type Schemas
+
+Before creating or editing a field definition, load field type schemas:
+
+```http
+GET /v1/view-layouts/custom-field-types
+Authorization: Bearer ek_...
+```
+
+Use the returned schemas to build the field editor. Do not guess type-specific config. Field types can have different create and update requirements.
+
+## Add Existing Fields
+
+For a custom object field, add a `field` block with `source: "dynamic_field"`.
+
+```json
+{
+  "id": "field_priority",
+  "type": "field",
+  "source": "dynamic_field",
+  "ref": { "fieldKey": "priority" },
+  "regionKey": "main",
+  "displayOrder": 2,
+  "grid": { "colSpan": 6 },
+  "config": { "label": "Priority" },
+  "requiredPolicy": "optional",
+  "supportedModes": ["CREATE", "EDIT", "VIEW"],
+  "children": []
+}
+```
+
+The field must exist on the custom object and be valid for the selected layout mode.
+
+For a built-in surface custom field, add a `field` block with `source: "custom_field"` and `ref.fieldDefinitionId`. Use the catalog to find available custom fields for the selected surface and mode.
+
+## Stage A New Custom Field
+
+When a layout draft creates a custom field definition, add an entry to `stagedFieldDefinitions` and reference it from a block.
+
+```json
+{
+  "stagedFieldDefinitions": [
+    {
+      "draftId": "draft_priority",
+      "action": "create",
+      "existingFieldDefinitionId": null,
+      "scopeId": null,
+      "name": "Priority",
+      "key": "priority",
+      "type": "TEXT",
+      "config": { "required": false },
+      "frontendMeta": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "field_priority",
+      "type": "field",
+      "source": "draft_custom_field",
+      "ref": { "draftFieldDefinitionId": "draft_priority" },
+      "regionKey": "main",
+      "displayOrder": 2,
+      "grid": { "colSpan": 6 },
+      "config": { "label": "Priority" },
+      "requiredPolicy": "optional",
+      "children": []
+    }
+  ]
+}
+```
+
+The staged definition is committed when the draft is published. Before publish, it is still part of the draft.
+
+## Update A Custom Field
+
+Use `action: "update"` with `existingFieldDefinitionId`.
+
+```json
+{
+  "draftId": "draft_update_priority",
+  "action": "update",
+  "existingFieldDefinitionId": "custom_field_priority",
+  "name": "Ticket priority",
+  "key": "priority",
+  "type": "TEXT",
+  "config": { "required": true },
+  "frontendMeta": null
+}
+```
+
+If the change may clear values or change the field type, publish may require confirmation through `confirmFieldChanges`.
+
+```json
+{
+  "clientMutationId": "publish-priority-change",
+  "draftVersionId": "version_ticket_draft_2",
+  "confirmFieldChanges": [
+    {
+      "draftId": "draft_update_priority",
+      "confirmTypeChange": true,
+      "confirmValueClear": true
+    }
+  ]
+}
+```
+
+## Unlink Or Delete
+
+There is an important difference between removing a block and changing a field definition.
+
+| Action | Meaning |
+| --- | --- |
+| Remove a block | The field no longer appears in this layout position. The field definition remains. |
+| `unlink` staged action | Remove the field from the current layout contract without deleting the definition. |
+| `delete` staged action | Delete the field definition. Use only when the destructive behavior is intended. |
+
+Only use `delete` when the user has explicitly chosen to remove the field definition, not just hide it from one layout.
+
+## Staged Field Options
+
+Some staged field definitions can expose options for the field editor.
+
+```http
+GET /v1/view-layouts/layout_ticket_intake/draft/staged-field-definitions/draft_priority/options
+Authorization: Bearer ek_...
+```
+
+Use this when the field editor needs server-provided options for the staged definition.
+
+## Validation
+
+Draft save and publish validation can report:
+
+- required field blocks missing from the layout;
+- a block referencing a deleted or unavailable field;
+- unsupported field type config;
+- staged changes that require confirmation;
+- required custom field blocks missing from the mode being published.
+
+Always inspect `validation.errors` and `validation.warnings` after saving a draft. Publish only when the draft is valid or valid with acceptable warnings.

@@ -1,0 +1,36 @@
+---
+title: "Creating and editing a record"
+description: "Jak dodać nowy rekord i jak zmienić istniejący. Formularz prowadzi przez pola, pola wymagane pilnują kompletu, a zapis utrwala zmianę."
+---
+
+## Adding a new record
+
+You create a new record with the add button on the list. A form opens, that is, a set of fields to fill in. The form is arranged to lead you in order: from the basic data to the details.
+
+- **Required fields** are marked and without them you cannot save the record. This is deliberate: they ensure a matter is not created without its most important data.
+- **Select fields** offer a list of values, so you do not type a status or category by hand but choose from ready ones.
+- **Saving** makes the record permanent. Only after it does the matter exist and become visible to others.
+
+> **Example.** You add a service ticket. The form asks for the client, the subject, and the priority. The client and subject are required; the priority has the list Low, Medium, High. You choose, save, and the ticket appears in the list.
+
+## Editing an existing record
+
+To change a record, you open its form and move to editing. You change what is needed and save. A few things worth knowing:
+
+- **A change takes effect after saving.** Until you save, corrections are not visible to others.
+- **A record remembers what changed.** An edit stays in the history: who changed a field and when. This is not surveillance, but a way to reconstruct what happened with a matter.
+- **Not all fields can be changed.** Some fields may be read-only or computed automatically. If a field is locked, this is usually intended.
+
+## Fields computed by the system
+
+Some fields are not for typing: the system computes them from other data, for example a value from the price and the quantity, or a record number from a template. Do not try to overwrite them; fill in the source data and the system will compute the value.
+
+## A rejected save
+
+If a save does not go through, the cause is usually one of three:
+
+- **An empty required field.** The form will show which one is missing.
+- **A value in the wrong format.** A date or a number entered contrary to what is expected.
+- **A company rule.** Sometimes saving is impossible until the data meets a condition set for the instance, for example an amount above a limit requires a justification to be added.
+
+Read the message, fix the indicated spot, and save again. If the condition is unclear, ask the administrator what the rule is meant to watch for.

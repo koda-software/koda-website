@@ -1,0 +1,379 @@
+---
+title: Introduction
+description: Learn how to manage and run Opero automation rules.
+---
+
+# Rules
+
+Rules define automation for work in Opero. Through the External API, an integration can read, create, update, delete, validate, and manually run automation rules.
+
+Use the External API when you want to manage the same organization-level rule definitions that can be managed in Opero, but from an integration, setup script, migration tool, or customer-specific automation builder.
+
+Template filter management is not part of this External API version. Custom rule logic should be handled through rule scripts and the script validation endpoint.
+
+## Before You Start
+
+Rules endpoints use the External API base path:
+
+```text
+/v1/rules
+```
+
+Every request must include an API token:
+
+```http
+Authorization: Bearer ek_...
+```
+
+Use an organization token for rule definition and builder configuration work. Use the company workspace context intended for the integration when manually executing rules against operational data.
+
+The Rules module must be enabled for the organization associated with the token or company. If the module is not enabled, the API returns `404`.
+
+## Permissions
+
+Rules API permissions are separate from dashboard permissions. Give each token only the permissions that the integration needs.
+
+| Permission | Allows |
+| --- | --- |
+| `api.rules.read` | Read builder metadata, list rules, read rule details, read related rules, and read execution history. |
+| `api.rules.manage` | Create, update, delete, and validate rules and rule scripts. |
+| `api.rules.execute` | Manually execute active manual rules. |
+
+The manage and execute endpoints do not automatically require `api.rules.read`. A token with only `api.rules.execute` can execute a manual rule if it already knows the rule ID, but it cannot list or inspect rules.
+
+## Recommended Workflow
+
+### Create A Minimal Token
+
+Decide what the integration is allowed to do before creating the token.
+
+- A read-only monitoring tool usually needs only `api.rules.read`.
+- A rule authoring tool needs `api.rules.read` and `api.rules.manage`.
+- Add `api.rules.execute` only when the integration should run manual rules itself in the intended company runtime context.
+
+Keep separate tokens for separate jobs when possible. For example, an integration that only executes a known manual rule should use a separate token from an admin tool that can create and delete rules.
+
+### Load Builder Metadata
+
+Before building a rule, load the available building blocks from the organization:
+
+- [`GET /v1/rules/config`](/docs/en/api/rules/get-rule-builder-config) returns trigger metadata, including which triggers require a custom object.
+- [`GET /v1/rules/step-types`](/docs/en/api/rules/search-rule-step-types) returns step types, categories, labels, and capabilities for the rule builder.
+- [`GET /v1/rules/entity-fields`](/docs/en/api/rules/list-rule-entity-fields) returns fields that can be used by triggers and steps, including custom fields and dynamic record fields.
+
+Use these endpoints to drive a client UI or rule generation logic instead of hard-coding assumptions about triggers, steps, and fields. Available fields depend on the organization configuration.
+
+### Build The Rule Draft
+
+A draft is the rule definition before it is saved. Build and revise it in the client first, then send it to the API only when it is internally consistent.
+
+A rule draft is made of:
+
+- metadata such as `name`, `category`, `description`, and `isActive`
+- an optional `trigger`
+- ordered `steps`
+
+The trigger decides when the rule starts. A `MANUAL` trigger starts only when [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule) is called. Record triggers start from matching record changes.
+
+Steps run in `position` order. Each step has a type and a type-specific `config`. Steps can store their output under a `contextKey`, and later steps can use that value. For example, one step can fetch rows into `contextKey: "rows"`, and a later script step can read `context.rows`.
+
+Create the draft with clear step positions and stable context keys. Avoid reusing the same context key for different meanings, because later steps and debugging output become harder to understand.
+
+### Compute Context Before Saving
+
+Call [`POST /v1/rules/context-schemas`](/docs/en/api/rules/compute-rule-context-schemas) while building the draft. This endpoint does not save anything. It calculates what context is available before each step based on the trigger and the earlier steps in the draft.
+
+Use context schemas to:
+
+- show users which template paths are available, such as `trigger.data.amount`
+- validate that a later step is not referencing a value that does not exist yet
+- help script authors understand what `context` contains before a `RUN_SCRIPT` step
+- make rule builders safer by suggesting fields from previous steps
+
+The base context usually includes `trigger` and `organization`. If a step has a `contextKey`, that key becomes available to later steps after the step runs. The context schema for a step shows the context before that step starts, not after it finishes.
+
+When editing a saved rule, use [`GET /v1/rules/{id}/context-schema`](/docs/en/api/rules/get-rule-context-schema) to inspect the context available before a specific step.
+
+### Validate Scripts
+
+If the rule uses `RUN_SCRIPT` steps, call [`POST /v1/rules/validate-script`](/docs/en/api/rules/validate-rule-script) with the JavaScript code before saving the rule. This catches invalid or unsafe code early and gives the user a focused error before the full create or update request.
+
+Script validation checks the code itself. It does not prove that every runtime value will exist for every execution. Use it together with context schemas: context schemas explain what should be available, and script validation checks whether the script body is acceptable.
+
+### Create Rules Inactive First
+
+For new rules, especially rules with side effects, start with `isActive: false`.
+
+This is the safest authoring flow:
+
+1. Create the rule as inactive with [`POST /v1/rules`](/docs/en/api/rules/create-rule).
+2. Read it back with [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule).
+3. Confirm that the trigger, step order, configs, context keys, and branching behavior were saved as expected.
+4. Activate it only after review and testing with [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule).
+
+This avoids accidentally sending emails, calling webhooks, updating records, generating documents, or calling other rules before the definition has been checked.
+
+### Test Manual Rules With Input Data
+
+For rules with a `MANUAL` trigger, call [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule) and pass a small `data` object. That object becomes available inside the rule as `trigger.data`.
+
+```json
+{
+  "data": {
+    "source": "external-system",
+    "recordId": "rec_123",
+    "amount": 12500
+  }
+}
+```
+
+Inside templates and scripts, the rule can read:
+
+- `trigger.data.source`
+- `trigger.data.recordId`
+- `trigger.data.amount`
+
+Manual execution is useful for integrations that collect data outside Opero and want to start an Opero automation with that data. It is also useful for testing, because the caller controls the input.
+
+Manual execution only works for active rules whose trigger type is `MANUAL`. The execution `data` must be an object and must stay under the request size limit documented for [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule).
+
+### Inspect Execution History
+
+After a manual run, or when debugging any rule, inspect execution history:
+
+- [`GET /v1/rules/{id}/executions`](/docs/en/api/rules/list-rule-executions) lists recent runs.
+- [`GET /v1/rules/{id}/executions/{execId}`](/docs/en/api/rules/get-rule-execution) returns one run in detail.
+
+Start with `status`. A successful execution finished all required steps. A failed execution includes `error`, and may include `failedStepId` and `failedStepPosition`.
+
+Use the failed step position to match the execution to the saved rule definition. Then inspect that step's config and the execution context snapshot. The context snapshot is useful because it shows what the rule saw at runtime, including trigger data and values produced by earlier steps.
+
+A common debugging flow is:
+
+1. Find the failed execution.
+2. Read `failedStepPosition`.
+3. Fetch the rule with [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule).
+4. Find the step with the same `position`.
+5. Compare that step's templates or script with the execution `contextSnapshot`.
+6. Patch the rule with [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule), keep it inactive if needed, and run another manual test.
+
+### Check Related Rules Before Changing Data Structures
+
+Before deleting or changing a custom module, custom object, or custom field, use the related-rule endpoints to find rules that depend on it:
+
+- [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/en/api/rules/list-rules-related-to-custom-module)
+- [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/en/api/rules/list-rules-related-to-custom-object)
+- [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/en/api/rules/list-rules-related-to-custom-field)
+
+These endpoints help prevent unexpected breakage. For example, a custom field may be referenced by a trigger, condition, script, or record update step. Review and update related rules before changing the underlying structure.
+
+## Rule Shape
+
+The create and update endpoints use the same rule model. Use [`POST /v1/rules`](/docs/en/api/rules/create-rule) to create a rule and [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) to update it.
+
+```json
+{
+  "name": "Notify sales about high value lead",
+  "category": "sales",
+  "description": "Runs when a lead record is updated.",
+  "isActive": false,
+  "scope": "ORGANIZATION",
+  "trigger": {
+    "type": "RECORD_UPDATED",
+    "objectId": "dynamic-object-id",
+    "config": {
+      "updateType": "all"
+    }
+  },
+  "steps": [
+    {
+      "type": "CONDITION",
+      "position": 0,
+      "name": "Only high value leads",
+      "config": {
+        "value1": "{{ trigger.data.value }}",
+        "operator": "GREATER_THAN",
+        "value2": "10000"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "type": "RUN_SCRIPT",
+      "position": 1,
+      "name": "Prepare message",
+      "contextKey": "message",
+      "config": {
+        "code": "return `High value lead: ${context.trigger.data.name}`;"
+      }
+    }
+  ]
+}
+```
+
+External API-managed rules are organization-scoped. If `scope` is omitted, the rule is saved as `ORGANIZATION`.
+
+Step positions are numeric and determine ordering and branching. If `onFailure` uses `goto:N`, a step with position `N` must exist.
+
+Do not use these reserved context keys:
+
+- `trigger`
+- `organization`
+- `__depth`
+- `__ruleLineage`
+- `__error`
+- `__skip`
+
+## List Query Format
+
+List endpoints support `page`, `limit`, `count`, `filters`, `sort`, and `columns`. For rules, use [`GET /v1/rules`](/docs/en/api/rules/list-rules). For executions, use [`GET /v1/rules/{id}/executions`](/docs/en/api/rules/list-rule-executions).
+
+```http
+GET /v1/rules?page=1&limit=20&filters={"op":"AND","items":[{"field":"isActive","operator":"eq","value":true}]}&sort=[{"field":"createdAt","direction":"desc"}]
+Authorization: Bearer ek_...
+```
+
+Useful rule list fields include:
+
+- `id`
+- `name`
+- `category`
+- `description`
+- `summary`
+- `isActive`
+- `scope`
+- `triggerType`
+- `triggerObjectId`
+- `stepCount`
+- `executionCount`
+- `createdAt`
+- `updatedAt`
+
+Useful execution list fields include:
+
+- `id`
+- `eventType`
+- `recordId`
+- `status`
+- `error`
+- `durationMs`
+- `failedStepId`
+- `failedStepPosition`
+- `executedAt`
+
+## Endpoint Guide
+
+### Builder Metadata
+
+| Endpoint | Use it for |
+| --- | --- |
+| [`GET /v1/rules/config`](/docs/en/api/rules/get-rule-builder-config) | Load localized trigger metadata for the rule builder. |
+| [`GET /v1/rules/step-types`](/docs/en/api/rules/search-rule-step-types) | Search available rule step types. |
+| [`GET /v1/rules/entity-fields`](/docs/en/api/rules/list-rule-entity-fields) | List fields available to rule triggers and steps. |
+| [`POST /v1/rules/context-schemas`](/docs/en/api/rules/compute-rule-context-schemas) | Compute context available before each step for an unsaved draft. |
+| [`GET /v1/rules/{id}/context-schema`](/docs/en/api/rules/get-rule-context-schema) | Compute context available before a step in a saved rule. |
+| [`POST /v1/rules/validate-script`](/docs/en/api/rules/validate-rule-script) | Validate JavaScript rule-step code without saving a rule. |
+
+### Rules
+
+| Endpoint | Use it for |
+| --- | --- |
+| [`GET /v1/rules`](/docs/en/api/rules/list-rules) | List organization-scoped rules. |
+| [`POST /v1/rules`](/docs/en/api/rules/create-rule) | Create an organization-scoped rule. |
+| [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule) | Read one saved rule with its trigger and ordered steps. |
+| [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) | Update a saved rule. |
+| [`DELETE /v1/rules/{id}`](/docs/en/api/rules/delete-rule) | Delete a rule. |
+| [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule) | Manually execute an active manual rule. |
+| [`GET /v1/rules/{id}/executions`](/docs/en/api/rules/list-rule-executions) | List execution history for a rule. |
+| [`GET /v1/rules/{id}/executions/{execId}`](/docs/en/api/rules/get-rule-execution) | Read one execution record. |
+
+### Related Rules
+
+| Endpoint | Use it for |
+| --- | --- |
+| [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/en/api/rules/list-rules-related-to-custom-module) | Find rules related to a custom module. |
+| [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/en/api/rules/list-rules-related-to-custom-object) | Find rules related to a custom object. |
+| [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/en/api/rules/list-rules-related-to-custom-field) | Find rules related to a custom field. |
+
+## Common Errors
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request body, invalid query params, invalid trigger configuration, invalid step branching, reserved context key, invalid script, or execution data that is too large. |
+| `401` | Missing, malformed, unknown, revoked, or expired API token. |
+| `403` | The API token is valid but does not have the required Rules API permission. |
+| `404` | The Rules module is not enabled, the rule does not exist in the token organization, the execution does not exist, or a manual execution target is inactive or not a manual rule. |
+
+## Practical Examples
+
+### Create An Inactive Manual Rule
+
+Use [`POST /v1/rules`](/docs/en/api/rules/create-rule) to create the rule as inactive first.
+
+```http
+POST /v1/rules
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "name": "Manual webhook test",
+  "category": "integration",
+  "isActive": false,
+  "trigger": {
+    "type": "MANUAL"
+  },
+  "steps": [
+    {
+      "type": "CALL_WEBHOOK",
+      "position": 0,
+      "config": {
+        "url": "https://example.com/webhook",
+        "method": "POST",
+        "body": {
+          "source": "{{ trigger.data.source }}",
+          "recordId": "{{ trigger.data.recordId }}"
+        }
+      }
+    }
+  ]
+}
+```
+
+### Activate The Rule
+
+Use [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) to enable the rule after review.
+
+```http
+PATCH /v1/rules/{id}
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "isActive": true
+}
+```
+
+### Execute The Manual Rule
+
+Use [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule) to run an active manual rule with explicit input data.
+
+```http
+POST /v1/rules/{id}/execute
+Authorization: Bearer ek_...
+Content-Type: application/json
+
+{
+  "data": {
+    "source": "external-system",
+    "recordId": "rec_123"
+  }
+}
+```
+
+### Check Recent Executions
+
+Use [`GET /v1/rules/{id}/executions`](/docs/en/api/rules/list-rule-executions) to inspect recent runs.
+
+```http
+GET /v1/rules/{id}/executions?page=1&limit=10&sort=[{"field":"executedAt","direction":"desc"}]
+Authorization: Bearer ek_...
+```

@@ -1,0 +1,42 @@
+---
+title: "List views: list, kanban, calendar"
+description: "Te same dane można pokazać na trzy sposoby: jako tabelę, jako tablicę kart w kolumnach albo jako kalendarz. Czym się różnią, do czego nadaje się każdy z nich i co pozostaje wspólne niezależnie od widoku."
+---
+
+## One set of data, three ways to show it
+
+A record list does not have to look like a table. The same set of matters can be displayed **as a list, as a kanban board, or as a calendar**. These are not three different places in the system nor three copies of the data: they are three layouts of the same list.
+
+The choice of layout depends on the configuration of the given list or custom list. Some places have one fixed layout; in others you can switch.
+
+## Uses of the individual layouts
+
+| Layout | Shows | Suits |
+| --- | --- | --- |
+| List | rows with columns of selected fields | finding a specific matter, comparing, exporting |
+| Kanban | cards laid out in columns | assessing where the work stands and what is piling up |
+| Calendar | records placed on days | work where the date matters: visits, deadlines, a schedule |
+
+A practical rule: **use the list when you look for one matter, and kanban or the calendar when you want to see the whole**. Kanban answers the question "where do we stand"; the calendar answers "what and when".
+
+> **Example.** The same ticket list: on the list you filter by client and find a specific ticket from a month ago. On the kanban you see that twenty tickets await verification and nothing is in delivery. On the calendar you check how many visits fall on Thursday.
+
+## Elements common to all layouts
+
+This is the most important thing in this topic, because it saves misunderstandings.
+
+- **The data is the same.** Changing the layout creates and deletes nothing. A record added on the kanban you will see on the list and vice versa.
+- **The permissions are the same.** A layout shows nothing you do not have access to. If you do not see something on the list, it will not appear on the calendar either.
+- **Filters usually work the same.** Narrowing the set concerns the data, not the way it is drawn.
+
+> **An empty calendar is usually a missing date, not missing records.** The calendar places a record on a day based on a date field. A record without a date filled in will not be placed on the calendar, even though it appears normally on the list. When the calendar looks empty, check it on the list first.
+
+## Limitations of a layout
+
+A layout is a way of presenting, so it **does not affect what may be done with a matter**. If a card cannot be moved to another column on the board, the reason lies in the process or in the permissions, not in the fact that you are looking at a kanban instead of a list.
+
+The same works the other way around: if a given list has no calendar view, that is a configuration decision, not a fault.
+
+## Related
+
+Record list describes the list and working on it. The kanban board describes in detail working on cards and moving them between stages. Searching and filtering describes narrowing the set. Custom lists describe summaries built for a specific need.

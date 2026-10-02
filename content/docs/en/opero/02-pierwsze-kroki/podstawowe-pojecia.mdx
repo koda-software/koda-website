@@ -1,0 +1,77 @@
+---
+title: "Basic concepts"
+description: "Słownik słów, które wracają w całym systemie i w całej dokumentacji: obiekt, rekord, lista, pole, proces, etap, zadanie, reguła i kilka innych, wyjaśnionych bez żargonu."
+---
+
+## Scope of the glossary
+
+Opero describes work with a dozen or so words that recur everywhere: in the interface, in a conversation with the administrator, and in this documentation. Once you know them, **the rest of the system explains itself**, regardless of whether you are looking at contracts, tickets, or invoices.
+
+This page is for reading through once and returning to when needed, not for learning by heart.
+
+## Data
+
+| Concept | What it means |
+| --- | --- |
+| Object | a kind of record and, at the same time, its definition: it sets which fields every record of that kind has. A contract, a client, a ticket are separate objects |
+| Record | one thing or matter: one contract, one client, one ticket |
+| List | a way of displaying the records of a single object, opened from the menu. It does not store data, it only shows it |
+| Form | the view of a single record with everything that belongs to it |
+| Field | a single piece of information on a record: a date, an amount, a description |
+| Relation | a pointer from one record to another, for example from a contract to a client |
+| Attachment | a file pinned to a record |
+
+The most important is the **object**, because it belongs to the system's structure: it sets which fields describe a record of a given kind. A record is a single entry of that object, a list shows its records, and a form shows one of them. A process leads a record through successive stages.
+
+> **Example.** Clients are an object. One client is a record of that object. The client list shows all such records. The name, address, and phone are fields. A contract pointing to that client is a relation.
+
+## Work and flow
+
+| Concept | What it means |
+| --- | --- |
+| Process | a fixed path a matter takes from start to finish |
+| Stage | the place a matter is currently at |
+| Transition | the movement of a matter from one stage to the next |
+| Task | an action directed to a specific person, waiting to be done |
+| Approval | a task consisting of approving or rejecting |
+
+It is worth remembering the difference between a **stage** and a **task**. A stage describes where a matter is. A task says that someone is to do something with it. A matter may sit at a stage and have no task, if no one has been assigned to it.
+
+> **Stage, not status.** In the documentation and the interface we consistently speak of process stages. It is the same thing that other systems call a status, but the word "stage" better conveys that a matter is going somewhere, rather than just having a label stuck on it.
+
+## Automation
+
+| Concept | What it means |
+| --- | --- |
+| Rule | a set of actions the system performs by itself when specific conditions are met |
+| Trigger | an event that starts a rule |
+| Notification | a message from the system about something that happened |
+
+You usually recognize a rule by its effects: a field fills in by itself, a notification arrives, a matter moves on without anyone's click. **If in a record's history you see a change that no one entered by hand, a rule usually acted.**
+
+## System structure
+
+| Concept | What it means |
+| --- | --- |
+| Module | an area of the system grouping related objects, for example finance |
+| Object | a kind of record inside a module; it has its own list and its own records |
+| Menu | the list of entries into areas that you use day to day |
+| Organization | the whole Opero instance |
+| Company | a specific unit within the organization to which data belongs |
+| Role | the scope of what a given person may do in the system |
+
+The split into **organization and company** explains most questions about why something changed everywhere while something else changed only at one company. The system's structure is shared; the data is separate.
+
+## Documents and summaries
+
+| Concept | What it means |
+| --- | --- |
+| Document template | a print pattern from which, for example, a PDF file is produced |
+| Report | a numeric summary built from the system's data |
+| Dictionary | a closed list of values to choose from, for example a list of statuses |
+
+The dictionary is the most often confused concept here. It is not an explanation of words, but a **list of a field's allowed values**. Thanks to it, everyone chooses from the same set instead of typing their own variants.
+
+## Related
+
+First steps describes the first day of work. Getting oriented in the system describes the screen layout. Custom objects, Record list, and The record form describe working with data. Processes describe stages and transitions. Rules describe automation.

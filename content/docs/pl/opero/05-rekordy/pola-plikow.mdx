@@ -1,0 +1,38 @@
+---
+title: "Pola plików i podpis"
+description: "Jak dołączać dokumenty do rekordu, czym różni się pole jednego pliku od pola wielu plików i jak działa pole podpisu odręcznego."
+---
+
+## Dokumenty przy rekordzie
+
+Sprawa rzadko kończy się na wypełnieniu pól. Do zgłoszenia dochodzi zdjęcie usterki, do umowy skan podpisanego egzemplarza, do wniosku faktura. W Opero takie dokumenty trzyma się **przy rekordzie**, a nie na dysku sieciowym, dzięki czemu są zawsze razem ze sprawą, której dotyczą.
+
+## Jeden plik czy wiele
+
+| Rodzaj pola | Zachowanie |
+| --- | --- |
+| Pole jednego pliku | mieści dokładnie jeden dokument; wgranie nowego zastępuje poprzedni |
+| Pole wielu plików | mieści listę dokumentów w ustalonej kolejności, dokładasz je pojedynczo |
+
+Administrator może ograniczyć rodzaj dokumentów przyjmowanych przez pole, na przykład do plików PDF albo obrazów. Jeżeli system nie przyjmuje pliku, to zwykle właśnie ten powód, a nie usterka.
+
+## Miejsce wgrania pliku
+
+Jeżeli pole ma nazwę mówiącą o konkretnym dokumencie, na przykład Skan umowy, wgrywaj tam tylko ten dokument. Reszta materiałów należy do ogólnego pola załączników. Porządek w tym miejscu decyduje o tym, czy da się później cokolwiek znaleźć, i o tym, czy szablon dokumentu sięgnie po właściwy plik.
+
+## Pole podpisu
+
+Pole podpisu to miejsce na **podpis odręczny złożony palcem albo rysikiem**, przydatne przy protokołach odbioru, potwierdzeniach wydania i zgodach zbieranych na miejscu u klienta. Razem z samym podpisem zapisywana jest data i godzina złożenia oraz imię i nazwisko osoby podpisującej.
+
+Dwie rzeczy warto wiedzieć.
+
+- Podpis zwykle **zamyka się po złożeniu**: nie da się go nadpisać kolejnym. To celowe, bo inaczej dokument z podpisem nie byłby nic wart.
+- Podpis odręczny w polu **nie jest podpisem kwalifikowanym**. Do dokumentów wymagających skutku prawnego podpisu elektronicznego służy osobny mechanizm, opisany w rozdziale o podpisie elektronicznym.
+
+> **Przykład.** Monter kończy montaż, wypełnia protokół w telefonie, klient podpisuje palcem na ekranie, a protokół z podpisem i datą zostaje przy zleceniu. Nikt nie wozi papieru do biura.
+
+## Na co uważać
+
+- **Nazwa pliku ma znaczenie.** Dokument o nazwie skan\_2.pdf jest bezużyteczny dla osoby, która otworzy sprawę za rok.
+- **Nie dubluj dokumentów** wgrywanych już w innym miejscu procesu. Jeden dokument, jedno miejsce.
+- **Dane wrażliwe** trafiające do załączników podlegają tym samym zasadom, co reszta danych osobowych w firmie. Jeżeli nie musisz ich wgrywać, nie wgrywaj.

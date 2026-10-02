@@ -1,0 +1,97 @@
+---
+title: Overview
+description: Understand how View Layouts connect forms, layout drafts, published runtime layouts, and record saves.
+---
+
+# View Layouts
+
+View Layouts define how an Opero screen or custom object form is arranged. A layout decides which fields, sections, tabs, relation tables, buttons, and other blocks are available when a client creates, views, or edits a record.
+
+For custom objects, start from the custom object form. The form decides when the form can be used. The View Layout owned by that form decides what the form shows and which fields can be submitted through the runtime endpoints.
+
+## Typical Workflow
+
+For most custom object form work:
+
+1. Create or choose a custom object, such as `support.ticket`.
+2. Create a custom object form with one or more types: `CREATE`, `VIEW`, and `EDIT`.
+3. Read `viewLayoutId` from the form response.
+4. Ask the View Layout catalog which blocks can be used for that form and mode.
+5. Build a full draft with regions, blocks, and optional staged custom field changes.
+6. Save the draft on the form-owned layout.
+7. Publish the draft.
+8. Resolve the published layout when rendering or saving records.
+9. Create or update records through the runtime endpoints.
+
+Do not manually create a second View Layout for a custom object form. When you create a form, Opero creates the owned layout for that form.
+
+## Key Concepts
+
+| Concept | Meaning |
+| --- | --- |
+| Custom object form | A form for creating, viewing, or editing records for one custom object. |
+| View Layout | The visual and runtime contract for fields and blocks. |
+| Surface | The page family being laid out, such as `DYNAMIC_OBJECT`, `CONTRACTOR`, `ORGANIZATION`, or `DASHBOARD`. |
+| Mode | The runtime use of the layout: `CREATE`, `VIEW`, `EDIT`, or `WORKSPACE`. |
+| Target | Extra context for the surface. Dynamic object layouts use `moduleKey`, `objectKey`, and usually `formId`. |
+| Region | A named area of the layout, such as `main` or `sidebar`. Blocks are placed into regions. |
+| Block | One item in the layout, such as a field, section, tabs group, relation table, or custom HTML block. |
+| Draft | An editable layout version. Saving a draft does not change runtime behavior. |
+| Published version | The version used by runtime resolve and record save endpoints. |
+
+## Permissions
+
+Every request uses an API token:
+
+```http
+Authorization: Bearer ek_...
+Content-Type: application/json
+```
+
+Use an organization token for View Layout and custom object form configuration. Runtime record reads and saves use the company workspace context intended for the integration.
+
+Use the smallest permission set that matches the integration.
+
+| Permission | Needed for |
+| --- | --- |
+| `api.custom_forms.read` | List forms, read form details, list available forms, and read form access. |
+| `api.custom_forms.manage` | Create, update, delete forms, update defaults, and replace form access. |
+| `api.view_layouts.read` | Read layout metadata, discovery endpoints, versions, runtime resolve, and runtime data. |
+| `api.view_layouts.manage` | Create layout containers, update metadata, save drafts, archive layouts, restore drafts, and replace assignments. |
+| `api.view_layouts.publish` | Publish a saved draft. |
+| `api.custom_records.read` | Resolve and load dynamic object runtime data. |
+| `api.custom_records.write` | Create and update dynamic object records through a published layout. |
+
+## Choose The First Endpoint
+
+Start with the goal, then choose the endpoint.
+
+| Goal | Start with |
+| --- | --- |
+| Create a custom object form | [`POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms`](/docs/en/api/custom-object-forms/create-custom-object-form) |
+| Find the layout for an existing form | [`GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId`](/docs/en/api/custom-object-forms/get-custom-object-form) |
+| Learn which blocks are available | [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) |
+| Save a changed layout | [`PUT /v1/view-layouts/:layoutId/draft`](/docs/en/api/view-layout-configuration/save-view-layout-draft) |
+| Make a draft live | [`POST /v1/view-layouts/:layoutId/publish`](/docs/en/api/view-layout-configuration/publish-view-layout) |
+| Render a published form | [`GET /v1/view-layouts/resolve`](/docs/en/api/view-layout-runtime/resolve-view-layout) |
+| Save a record through the layout | [`POST /v1/view-layouts/runtime/dynamic-object/records`](/docs/en/api/view-layout-runtime/create-dynamic-record-through-view-layout) or [`PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId`](/docs/en/api/view-layout-runtime/update-dynamic-record-through-view-layout) |
+
+## Reading Order
+
+1. [Custom Object Forms](/docs/en/api/view-layout-configuration/custom-object-forms) explains the form-first workflow.
+2. [Discovering Blocks](/docs/en/api/view-layout-configuration/discovering-blocks) explains how to ask the API what can be placed in a layout.
+3. [Building Layouts](/docs/en/api/view-layout-configuration/building-layouts) explains drafts, publishing, versions, assignments, and archiving.
+4. [Block Types](/docs/en/api/view-layout-configuration/block-types) explains block structure and nesting.
+5. [Custom Fields](/docs/en/api/view-layout-configuration/custom-fields) explains existing and staged fields.
+6. [Runtime Guide](/docs/en/api/view-layout-runtime/runtime) explains resolving layouts and saving records.
+7. [Examples](/docs/en/api/view-layout-configuration/examples) gives a full copyable flow.
+8. [Troubleshooting](/docs/en/api/view-layout-configuration/troubleshooting) explains common failures.
+
+## Rules To Remember
+
+- A custom object form owns one View Layout.
+- Draft changes are not live until the draft is published.
+- Use discovery endpoints before building blocks.
+- Treat catalog `defaultBlock` values as templates. Add stable IDs and place them into regions before saving.
+- Runtime custom object saves must satisfy both the published layout and the external custom object profile.
+- Organization configuration and company runtime data use different API token scopes.

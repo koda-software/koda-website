@@ -1,0 +1,33 @@
+---
+title: "Rule triggers"
+description: "Automatyzacje nie działają cały czas, tylko reagują na konkretne zdarzenia: utworzenie rekordu, zmianę pola, ruch w procesie albo porę dnia."
+---
+
+## The automation waits for an event
+
+A rule does not run in the background nonstop. It starts only when the **event** it was set for occurs. As long as nothing of the sort happens, the rule does nothing.
+
+That is why the same action can perform at one moment and not at another: what counts is whether the event that starts it occurred.
+
+## The most common events
+
+| Event | What triggers it |
+| --- | --- |
+| Record creation | creating a new request, ticket, contract |
+| Record change | saving a change in an existing record |
+| Change to a specific field | setting or changing the value of a chosen field |
+| A move in a process | performing a transition or ending a matter |
+| Time of day | running at a set hour, for example a daily report |
+| Manual start | clicking a button that fires the automation |
+
+## Why a rule runs late
+
+- **The event has not happened yet.** An automation on a field change will not start until you save the change to that field.
+- **Another condition applied.** A rule is sometimes narrowed, for example only to invoices above an amount. Below the threshold it does nothing, and this is intended.
+- **The rule runs on a schedule.** A morning-report automation starts at its hour, not at the moment you need it.
+
+> **Example.** A rule sending a reminder about an unpaid invoice runs once a day in the morning. If the invoice was issued in the afternoon, the reminder starts only the next day, not right away.
+
+## Manual start
+
+Some automations fire with a button: on a record form, on a list, or on a dashboard. Then it is you who decides when the action is to perform. Before you click, make sure what the button does, because some such actions change data or send something.

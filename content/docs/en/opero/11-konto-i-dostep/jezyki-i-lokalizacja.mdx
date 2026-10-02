@@ -1,0 +1,41 @@
+---
+title: "Languages and content versions"
+description: "Różnica między językiem interfejsu a językiem danych, źródło wyświetlanej wersji treści oraz postępowanie, gdy rekord pojawia się w innym języku niż oczekiwany."
+---
+
+## Two different things called language
+
+In the system "language" means two independent things, and it is worth separating them, because they confuse everyone.
+
+| What | What it concerns | Who decides it |
+| --- | --- | --- |
+| Interface language | buttons, menu, the system's messages | you, in your profile |
+| Content language | data entered by the team | the person who entered the record |
+
+Changing the language in the profile switches the **wrapping**, not the content. A contract described in Polish stays in Polish even when you work on an English interface.
+
+## Choosing a content language version
+
+If the organization keeps content in several languages, a record may have **language versions of selected fields**, most often the name and the description. Then the system shows the version matching the user's language, and when there is none, it shows the original version.
+
+That is why items in two languages can sit side by side on one list. This is not a fault, but information that a translation has not yet been made for some records.
+
+> **A missing translation does not hide a record.** A record without a version in the chosen language is still visible, in its original wording. The system displays the content in the source language rather than skipping the record.
+
+## What to do with the wrong language
+
+- **Check the language setting in your profile.** This is the first and most common cause.
+- **If the interface is in the chosen language but the content is not**, it means there is no version of this record in the chosen language. Report it to the person running that area.
+- **Do not translate a record by overwriting the original.** Overwriting deletes the source version for everyone else. A translation is added as a separate version, not instead of.
+
+> **Example.** A colleague from a foreign branch sees the service catalog in Polish, even though they work on an English interface. The correct reaction is to report the missing translation of the catalog item, not to change the Polish names to English by hand, because that would take the Polish version away from the rest of the team.
+
+## Data format
+
+Besides language, formats also differ: the way a date is written, the decimal separator, the currency symbol. They follow the system's settings and do not change the value itself. The same amount written once looks different in two formats, but remains the same amount.
+
+When entering data, keep to the format the field suggests. If a field expects a date, choose it from the calendar instead of typing it by hand: this eliminates mistakes between the day and month.
+
+## Related
+
+User account and profile describes setting the interface language. Creating and editing a record describes entering data. Basic fields describe date and number formats. Record list describes the lists on which content versions are visible.

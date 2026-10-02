@@ -1,0 +1,157 @@
+---
+title: Wprowadzenie
+description: Zarządzaj definicjami procesów, instancjami runtime, zadaniami i przypisaniami przez zewnętrzne API.
+---
+
+# Procesy
+
+Zarządzanie procesami przez zewnętrzne API pozwala integracji korzystającej z tokenu API obsługiwać ten sam cykl życia procesów, z którego administratorzy korzystają w Opero. Integracja może tworzyć procesy, edytować wersje robocze, publikować zmiany, uruchamiać procesy dla rekordów, wykonywać przejścia, odczytywać historię i zarządzać zadaniami procesu.
+
+Używaj tych endpointów, gdy inny system jest źródłem konfiguracji procesu albo gdy integracja musi synchronizować procesy Opero z zewnętrznymi akceptacjami, obsługą dokumentów, rozliczeniami, onboardingiem lub inną pracą operacyjną.
+
+## Zanim zaczniesz
+
+Utwórz token API i nadaj mu tylko te uprawnienia do procesów, których potrzebuje integracja. Przekazuj token w każdym zapytaniu:
+
+```http
+Authorization: Bearer ek_...
+```
+
+Endpointy procesów w zewnętrznym API używają wersji `v1`. Definicje procesów są konfiguracją na poziomie organizacji i używają tokenów organizacji. Instancje procesów, historia runtime i zadania są danymi operacyjnymi i używają kontekstu przestrzeni firmy przeznaczonej dla integracji.
+
+Token firmy powinien pracować tylko z danymi runtime swojej firmy. Raportowanie procesów między firmami należy do jawnych powierzchni raportowania organizacji, a nie do zwykłych ekranów zadań lub instancji runtime.
+
+Używaj uprawnień definicji procesów do pracy konfiguracyjnej, uprawnień runtime do pracy z aktywnymi instancjami procesów oraz uprawnień zadań do kolejek zadań.
+
+## Uprawnienia
+
+| Uprawnienie | Pozwala |
+| --- | --- |
+| `api.workflows.read` | Odczytywać definicje procesów, wersje robocze, publikacje i szablony procesów. |
+| `api.workflows.manage` | Tworzyć procesy, aktualizować metadane procesów, zapisywać lub odrzucać wersje robocze, odtwarzać wersje robocze z publikacji i tworzyć procesy z szablonów. |
+| `api.workflows.publish` | Publikować wersje robocze procesów. |
+| `api.workflows.runtime.read` | Odczytywać opcje tworzenia procesu, stan procesu dla rekordu, instancje procesów, dane odtworzenia i historię. |
+| `api.workflows.runtime.execute` | Uruchamiać instancje procesów, aktualizować autora instancji i wykonywać zwykłe przejścia. |
+| `api.workflows.runtime.override` | Wykonywać przez API ograniczone przejścia, które bez tego byłyby blokowane przez ograniczenia ról dashboardu albo bieżącej osoby przypisanej. |
+| `api.workflows.tasks.read` | Wyświetlać listę i szczegóły zadań procesu. |
+| `api.workflows.tasks.manage` | Zmieniać przypisanie otwartych zadań procesu. |
+| `api.workflows.bypassMutationGuard` | Omijać ograniczenia edycji etapu procesu podczas modyfikowania rekordów przez API. To uprawnienie jest osobne od wykonywania runtime procesu. |
+
+Wyszukiwanie kandydatów do przypisania jest dostępne dla tokenów, które mają dowolne z tych uprawnień: `api.workflows.read`, `api.workflows.manage`, `api.workflows.runtime.execute` albo `api.workflows.tasks.manage`.
+
+## Zarządzanie definicjami procesów
+
+Proces ma edytowalne metadane oraz edytowalną wersję roboczą. Wersja robocza zawiera projekt procesu, w tym etapy i przejścia.
+
+Gdy zapisujesz wersję roboczą przez `PUT /v1/workflows/{workflowId}/draft`, Opero zastępuje całą edytowalną definicję wersji roboczej treścią, którą wyślesz. Przekaż pełny zamierzony stan wersji roboczej, a nie tylko częściową zmianę przejścia albo etapu. Najpierw odczytaj bieżącą wersję roboczą, jeśli integracja ma zmienić tylko jeden fragment.
+
+Podczas publikacji Opero waliduje wersję roboczą. Jeśli wersja robocza jest niepełna albo nieprawidłowa, zapytanie publikacji zwraca błąd konfliktu. Popraw wersję roboczą i opublikuj ją ponownie.
+
+Opublikowane wersje są przechowywane jako publikacje procesu. Możesz je wyświetlić i utworzyć nową wersję roboczą z wcześniejszej publikacji, gdy trzeba odtworzyć poprzednią wersję.
+
+## Przepływ definicji
+
+W typowej integracji zarządzającej definicją procesu:
+
+1. Wyświetl szablony procesów albo istniejące procesy.
+2. Utwórz proces bezpośrednio albo z szablonu.
+3. Odczytaj edytowalną wersję roboczą.
+4. Zapisz pełną wersję roboczą, w tym etapy i przejścia.
+5. Opublikuj wersję roboczą.
+6. Odczytaj proces albo listę publikacji, aby potwierdzić aktywną wersję.
+
+| Metoda | Ścieżka | Cel |
+| --- | --- | --- |
+| `GET` | `/v1/workflows` | Wyświetla listę procesów. |
+| `POST` | `/v1/workflows` | Tworzy proces. |
+| `GET` | `/v1/workflows/{workflowId}` | Pobiera szczegóły procesu. |
+| `PATCH` | `/v1/workflows/{workflowId}` | Aktualizuje metadane procesu. |
+| `GET` | `/v1/workflows/{workflowId}/draft` | Pobiera edytowalną wersję roboczą. |
+| `PUT` | `/v1/workflows/{workflowId}/draft` | Zastępuje edytowalną wersję roboczą, w tym etapy i przejścia. |
+| `POST` | `/v1/workflows/{workflowId}/publish` | Publikuje bieżącą wersję roboczą. |
+| `POST` | `/v1/workflows/{workflowId}/discard-draft` | Odrzuca bieżącą wersję roboczą. |
+| `GET` | `/v1/workflows/{workflowId}/publications` | Wyświetla opublikowane wersje. |
+| `POST` | `/v1/workflows/{workflowId}/publications/{publicationId}/create-draft` | Tworzy wersję roboczą z publikacji. |
+| `GET` | `/v1/workflow-templates` | Wyświetla szablony procesów. |
+| `POST` | `/v1/workflow-templates/{templateId}/create-workflow` | Tworzy proces z szablonu. |
+
+## Praca z instancjami runtime
+
+Endpointy runtime służą do pracy z instancjami procesów. Instancja procesu to aktywny cykl życia procesu dla konkretnego rekordu.
+
+Przed uruchomieniem procesu sprawdź stan procesu dla rekordu albo opcje tworzenia. Rekord może mieć tylko jedną aktywną instancję procesu. Jeśli aktywna instancja już istnieje, uruchomienie kolejnej instancji nie powiedzie się.
+
+Po uruchomieniu instancji integracja może odczytywać instancję, dane odtworzenia i historię. Może wykonać przejście, gdy bieżący etap pozwala na wybrane przejście i wszystkie warunki przejścia są spełnione. Warunki przejść nadal obowiązują przy wywołaniach zewnętrznego API.
+
+Jeśli przejście jest ograniczone do konkretnych ról dashboardu albo do bieżącej osoby przypisanej, sam token API nie spełnia warunków zależnych od użytkownika. Nadaj tokenowi `api.workflows.runtime.override` tylko wtedy, gdy integracja jest zaufana i może wykonywać takie ograniczone przejścia.
+
+Ograniczenia tylko do odczytu i ograniczenia edycji etapu dla modyfikacji rekordów są obsługiwane osobno. Endpointy zapisu rekordów nadal używają `api.workflows.bypassMutationGuard`, gdy token ma edytować rekord chroniony przez bieżący etap procesu.
+
+## Przepływ runtime
+
+W typowej integracji runtime:
+
+1. Odczytaj opcje tworzenia albo stan procesu dla rekordu.
+2. Uruchom instancję procesu dla rekordu.
+3. Odczytaj instancję, dane odtworzenia albo historię na potrzeby synchronizacji.
+4. Wykonaj dozwolone przejście, gdy zewnętrzny proces przejdzie do następnego kroku.
+5. Ponownie odczytaj instancję albo historię, aby potwierdzić nowy etap.
+
+| Metoda | Ścieżka | Cel |
+| --- | --- | --- |
+| `GET` | `/v1/workflows/runtime/create-options` | Pobiera opcje procesu dla tworzonego rekordu. |
+| `GET` | `/v1/workflows/runtime/targets/{targetType}/{targetId}` | Pobiera stan procesu dla rekordu. |
+| `POST` | `/v1/workflows/runtime/targets/{targetType}/{targetId}/instances` | Uruchamia instancję procesu dla rekordu. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}` | Pobiera jedną instancję procesu. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}/replay` | Pobiera dane wizualnego odtworzenia instancji. |
+| `PATCH` | `/v1/workflows/runtime/instances/{instanceId}/author` | Aktualizuje autora instancji. |
+| `POST` | `/v1/workflows/runtime/instances/{instanceId}/transitions/{transitionId}` | Wykonuje przejście. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}/history` | Pobiera historię cyklu życia instancji. |
+
+Dla rekordu obiektu własnego zawsze dołączaj klucze modułu i obiektu, gdy `targetType` ma wartość `DYNAMIC_OBJECT_RECORD`:
+
+```http
+GET /v1/workflows/runtime/targets/DYNAMIC_OBJECT_RECORD/rec_123?moduleKey=sales&objectKey=deal
+Authorization: Bearer ek_...
+```
+
+## Zadania i przypisanie
+
+Endpointy zadań procesu pomagają integracjom budować kolejki zadań albo synchronizować przypisania.
+
+Użyj `api.workflows.tasks.read`, aby wyświetlać listę i szczegóły zadań. Użyj `api.workflows.tasks.manage`, aby zmienić przypisanie otwartego zadania. Zmiana przypisania aktualizuje zadanie oraz przypisanie powiązanej instancji procesu, a zmiana pojawia się w historii procesu.
+
+Przed przypisaniem albo zmianą przypisania użyj wyszukiwania kandydatów. Zwraca ono członków albo role, których można użyć w danym kontekście przypisania w procesie.
+
+| Metoda | Ścieżka | Cel |
+| --- | --- | --- |
+| `GET` | `/v1/workflows/tasks` | Wyświetla listę zadań procesu. |
+| `GET` | `/v1/workflows/tasks/{taskId}` | Pobiera jedno zadanie procesu. |
+| `POST` | `/v1/workflows/tasks/{taskId}/reassign` | Zmienia przypisanie otwartego zadania procesu. |
+| `GET` | `/v1/workflows/assignment-candidates/lookup` | Wyszukuje prawidłowych kandydatów do przypisania. |
+
+## Audyt, historia i automatyzacja
+
+Zewnętrzne działania na procesach są zapisywane jako działania tokenu API. Historia i wpisy audytu pokazują, że działanie wykonał token API, a nie użytkownik dashboardu.
+
+Automatyzacja procesów może reagować na przejścia i zakończenia wywołane przez zewnętrzne API. Źródło zdarzenia identyfikuje token API, więc reguły i logi mogą odróżniać zmiany wykonane przez API od zmian wykonanych w dashboardzie.
+
+Odczyt stanu procesu zależy od tego, kto go wykonuje. Zewnętrzne endpointy `GET` dla procesów celowo nie używają współdzielonego cache HTTP.
+
+## Rozwiązywanie problemów
+
+| Problem | Co sprawdzić |
+| --- | --- |
+| `401 Unauthorized` | Brakuje tokenu, token jest nieprawidłowy, wygasł albo został unieważniony. Utwórz lub zrotuj token i spróbuj ponownie. |
+| `403 Forbidden` | Token nie ma wymaganego uprawnienia do procesu. Dodaj tylko to uprawnienie, którego wymaga dana akcja. Ograniczone przejścia wymagają jednocześnie `api.workflows.runtime.execute` i `api.workflows.runtime.override`. |
+| `400 Bad Request` | Brakuje wymaganych danych albo są nieprawidłowe. Dla runtime obiektów własnych sprawdź, czy przekazano `moduleKey` i `objectKey`. |
+| `404 Not Found` | Proces, publikacja, instancja, zadanie albo rekord nie istnieje w organizacji tokenu. |
+| Konflikt przy publikacji | Wersja robocza nie przeszła walidacji. Odczytaj ją, popraw nieprawidłowe etapy lub przejścia i opublikuj ponownie. |
+| Konflikt przy uruchamianiu instancji | Rekord ma już aktywną instancję procesu. Odczytaj stan procesu dla rekordu zamiast uruchamiać duplikat. |
+
+## Powiązane strony
+
+- [Tokeny API](/docs/pl/opero/people-and-access/api-tokens)
+- [Bezpieczeństwo tokenów](/docs/pl/opero/people-and-access/token-security)
+- [Uwierzytelnianie](/docs/pl/api/authentication)
+- [OpenAPI](/docs/pl/api/open-api)

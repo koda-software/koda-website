@@ -1,0 +1,157 @@
+---
+title: Introduction
+description: Manage workflow definitions, runtime instances, tasks, and assignments through the External API.
+---
+
+# Workflows
+
+Workflow management through the External API lets an API-token integration manage workflows through the same lifecycle that admins use in Opero. An integration can create workflows, edit drafts, publish changes, start workflows for records, move records through transitions, read history, and manage workflow tasks.
+
+Use these endpoints when another system defines the process configuration, or when an integration needs to keep Opero workflows aligned with external approvals, document handling, billing, onboarding, or other operational work.
+
+## Before You Start
+
+Create an API token and give it only the workflow permissions it needs. Send the token with every request:
+
+```http
+Authorization: Bearer ek_...
+```
+
+External API workflow endpoints use version `v1`. Workflow definitions are organization-level configuration and use organization tokens. Workflow instances, runtime history, and tasks are operational data and use the company workspace context intended for the integration.
+
+A company token should only work with runtime data for its company. Cross-company workflow reporting belongs to explicit organization reporting surfaces, not ordinary runtime task or instance screens.
+
+Use workflow definition permissions for configuration work, runtime permissions for active workflow instances, and task permissions for task queues.
+
+## Permissions
+
+| Permission | Allows |
+| --- | --- |
+| `api.workflows.read` | Read workflow definitions, drafts, publications, and workflow templates. |
+| `api.workflows.manage` | Create workflows, update workflow metadata, save or discard drafts, restore drafts from publications, and create workflows from templates. |
+| `api.workflows.publish` | Publish workflow drafts. |
+| `api.workflows.runtime.read` | Read workflow create options, target workflow state, workflow instances, replay data, and history. |
+| `api.workflows.runtime.execute` | Start workflow instances, update instance authors, and execute normal transitions. |
+| `api.workflows.runtime.override` | Execute restricted transitions from the API when dashboard role or current-assignee restrictions would otherwise block the token. |
+| `api.workflows.tasks.read` | List and read workflow tasks. |
+| `api.workflows.tasks.manage` | Reassign open workflow tasks. |
+| `api.workflows.bypassMutationGuard` | Bypass workflow stage edit restrictions when mutating records through the API. This is separate from workflow runtime execution. |
+
+Assignment candidate lookup is available to tokens that have at least one of these permissions: `api.workflows.read`, `api.workflows.manage`, `api.workflows.runtime.execute`, or `api.workflows.tasks.manage`.
+
+## Manage Workflow Definitions
+
+A workflow has editable metadata and an editable draft. The draft contains the workflow design, including stages and transitions.
+
+When you save a draft with `PUT /v1/workflows/{workflowId}/draft`, Opero replaces the entire editable draft definition with the content you send. Send the intended full draft state, not only a partial transition or stage change. Read the current draft first if the integration only plans to change one part.
+
+Publishing validates the draft. If the draft is incomplete or invalid, the publish request returns a conflict error. Fix the draft and publish again.
+
+Published versions are kept as workflow publications. You can list them and create a new draft from a previous publication when you need to restore an earlier version.
+
+## Definition Flow
+
+For most workflow definition integrations:
+
+1. List workflow templates or existing workflows.
+2. Create a workflow directly, or create one from a template.
+3. Read the editable draft.
+4. Save the full draft, including stages and transitions.
+5. Publish the draft.
+6. Read the workflow or publication list to confirm the active version.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/v1/workflows` | List workflows. |
+| `POST` | `/v1/workflows` | Create a workflow. |
+| `GET` | `/v1/workflows/{workflowId}` | Get workflow details. |
+| `PATCH` | `/v1/workflows/{workflowId}` | Update workflow metadata. |
+| `GET` | `/v1/workflows/{workflowId}/draft` | Get the editable draft. |
+| `PUT` | `/v1/workflows/{workflowId}/draft` | Replace the editable draft, including stages and transitions. |
+| `POST` | `/v1/workflows/{workflowId}/publish` | Publish the current draft. |
+| `POST` | `/v1/workflows/{workflowId}/discard-draft` | Discard the current draft. |
+| `GET` | `/v1/workflows/{workflowId}/publications` | List published versions. |
+| `POST` | `/v1/workflows/{workflowId}/publications/{publicationId}/create-draft` | Create a draft from a publication. |
+| `GET` | `/v1/workflow-templates` | List workflow templates. |
+| `POST` | `/v1/workflow-templates/{templateId}/create-workflow` | Create a workflow from a template. |
+
+## Work With Runtime Instances
+
+Runtime endpoints work with workflow instances. A workflow instance tracks the active workflow lifecycle for a target record.
+
+Before starting a workflow, check the target workflow state or create options. A target can have only one active workflow instance at a time. If an active instance already exists for the target, starting another instance fails.
+
+After an instance starts, the integration can read the instance, its replay data, and its history. It can execute a transition when the current stage allows the selected transition and all transition conditions pass. Transition conditions still run for external API calls.
+
+If a transition is restricted to specific dashboard roles or to the current assignee, an API token cannot satisfy those user checks on its own. Give the token `api.workflows.runtime.override` only when the integration is trusted to perform those restricted transitions.
+
+Stage read-only and edit restrictions for record mutation are handled separately. Record write endpoints still use `api.workflows.bypassMutationGuard` when a token needs to edit a record that is protected by its current workflow stage.
+
+## Runtime Flow
+
+For most runtime integrations:
+
+1. Read create options or the target workflow state.
+2. Start a workflow instance for the target record.
+3. Read the instance, replay, or history for synchronization.
+4. Execute an allowed transition when the external process reaches the next step.
+5. Re-read the instance or history to confirm the new stage.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/v1/workflows/runtime/create-options` | Get workflow options for creating a target record. |
+| `GET` | `/v1/workflows/runtime/targets/{targetType}/{targetId}` | Get workflow state for a target record. |
+| `POST` | `/v1/workflows/runtime/targets/{targetType}/{targetId}/instances` | Start a workflow instance for a target record. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}` | Get one workflow instance. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}/replay` | Get visual replay data for an instance. |
+| `PATCH` | `/v1/workflows/runtime/instances/{instanceId}/author` | Update the instance author. |
+| `POST` | `/v1/workflows/runtime/instances/{instanceId}/transitions/{transitionId}` | Execute a transition. |
+| `GET` | `/v1/workflows/runtime/instances/{instanceId}/history` | Get instance lifecycle history. |
+
+For a custom object record, include the module and object keys whenever `targetType` is `DYNAMIC_OBJECT_RECORD`:
+
+```http
+GET /v1/workflows/runtime/targets/DYNAMIC_OBJECT_RECORD/rec_123?moduleKey=sales&objectKey=deal
+Authorization: Bearer ek_...
+```
+
+## Tasks And Assignment
+
+Workflow task endpoints help integrations build task queues or synchronize assignments.
+
+Use `api.workflows.tasks.read` to list and read tasks. Use `api.workflows.tasks.manage` to reassign an open task. Reassignment updates the task and the related workflow instance assignment, and the change appears in workflow history.
+
+Use assignment candidate lookup before assigning or reassigning work. It returns the members or roles that are valid for the workflow assignment context.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/v1/workflows/tasks` | List workflow tasks. |
+| `GET` | `/v1/workflows/tasks/{taskId}` | Get one workflow task. |
+| `POST` | `/v1/workflows/tasks/{taskId}/reassign` | Reassign an open workflow task. |
+| `GET` | `/v1/workflows/assignment-candidates/lookup` | Look up valid assignment candidates. |
+
+## Audit, History, And Automation
+
+External workflow actions are recorded as API-token actions. History and audit entries show that the API token performed the action rather than a dashboard user.
+
+Workflow automation can react to transitions and completions caused by external API calls. The event source identifies the API token, so rules and logs can distinguish API-driven changes from dashboard-driven changes.
+
+Workflow state reads are actor-sensitive. External workflow `GET` endpoints intentionally do not use shared HTTP caching.
+
+## Troubleshooting
+
+| Problem | What to check |
+| --- | --- |
+| `401 Unauthorized` | The token is missing, invalid, expired, or revoked. Create or rotate the token and retry. |
+| `403 Forbidden` | The token does not have the required workflow permission. Add only the permission needed for the action. Restricted transitions need both `api.workflows.runtime.execute` and `api.workflows.runtime.override`. |
+| `400 Bad Request` | Required request data is missing or invalid. For dynamic object runtime targets, check that `moduleKey` and `objectKey` are present. |
+| `404 Not Found` | The workflow, publication, instance, task, or target record does not exist in the token's organization. |
+| Conflict while publishing | The draft did not pass validation. Read the draft, fix the invalid stages or transitions, and publish again. |
+| Conflict while starting an instance | The target already has an active workflow instance. Read the target workflow state instead of starting a duplicate instance. |
+
+## Related Pages
+
+- [API Tokens](/docs/en/opero/people-and-access/api-tokens)
+- [Token Security](/docs/en/opero/people-and-access/token-security)
+- [Authentication](/docs/en/api/authentication)
+- [OpenAPI](/docs/en/api/open-api)
