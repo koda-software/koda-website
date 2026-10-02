@@ -21,7 +21,7 @@ The blog needs `OPERO_API_KEY` and `OPERO_API_BASE` (default `https://opero.koda
 
 For intentional manual edits, review the diff and run `pnpm docs:accept-snapshot`. This accepts the complete local baseline and must never run in CI. `manual-api-pages.json` explicitly lists authored API guides; new guides must be added there. The current schema imports use `EXTERNAL_API_OPENAPI_URL_EN` and `_PL`, defaulting to `/api/swagger/v1/{locale}/json`.
 
-After snapshot cutover verification, switch `content-policy.json` to `live` in a separate reviewed change. Live builds on Vercel/CI require the docs key and fail on API or validation errors. Local live builds without a key validate the accepted snapshot. Accepted manifests remain the review baseline; live builds do not silently bless URL removals.
+The 2026-10-02 cutover stays in `snapshot` mode; automatic/nightly refresh is deferred by the owner. A future refresh rollout may switch `content-policy.json` to `live` in a separate reviewed change. Live builds on Vercel/CI require the docs key and fail on API or validation errors. Local live builds without a key validate the accepted snapshot. Accepted manifests remain the review baseline; live builds do not silently bless URL removals.
 
 The `mdast-util-to-markdown` override in `pnpm-workspace.yaml` preserves the docs renderer's working 2.1.2 behavior: 2.1.3 causes recursive stringification with the pinned Fumadocs release. Upgrade these together with runtime checks.
 
@@ -42,4 +42,6 @@ pnpm docs:verify-deployment
 
 Optional `BYPASS` handles Vercel protection. The verifier fetches the union of old and new URLs, checks status, canonical links, language alternates, unprefixed internal links, sitemap alias parity, and the content hash. URL exceptions require exact paths and reasons in `cutover-url-exceptions.json`.
 
-`/docs/build.json` exposes only the content hash, fetch timestamp, counts, content mode, Git revision, and deployment URL. The companion Jenkins repository contains disabled refresh and freshness jobs. Enable them after a successful live production refresh; they track an exact deployment ID, require production promotion and its fresh manifest, and alert through the existing Discord build channel. A separate daily check rejects docs older than 48 hours.
+`/docs/build.json` exposes only the content hash, fetch timestamp, counts, content mode, Git revision, and deployment URL. Companion Jenkins PR #1 proposes disabled refresh and freshness jobs and remains draft/unmerged. No nightly refresh, Deploy Hook, refresh token or freshness alerts are required for the current snapshot cutover. For a future rollout, merge and enable them only after a successful live production refresh; they track an exact deployment ID, require production promotion and its fresh manifest, and alert through the existing Discord build channel. A separate daily check rejects docs older than 48 hours.
+
+The old edge docs container stays healthy as the rollback target. Observe its docs traffic through 2026-10-09; retire the old repository, pipelines and credentials in the deployment retirement plan’s later cleanup phase. New manual content changes belong in this repository.
