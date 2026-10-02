@@ -3,7 +3,7 @@ title: Update record through Dynamic Form
 full: true
 _openapi:
   preload:
-    - /tmp/phase-a-current-snapshot/content/openapi/external-api.en.json
+    - ./content/openapi/external-api.en.json
   method: PATCH
   webhook: false
   toc: []
@@ -21,7 +21,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="/tmp/phase-a-current-snapshot/content/openapi/external-api.en.json" operations={[{"path":"/v1/companies/{companyId}/forms/{formId}/records/{recordId}","method":"patch"}]} showDescription />
+      <Comp document="./content/openapi/external-api.en.json" operations={[{"path":"/v1/companies/{companyId}/forms/{formId}/records/{recordId}","method":"patch"}]} showDescription />
     </>
   );
 }

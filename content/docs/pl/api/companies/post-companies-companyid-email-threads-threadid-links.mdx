@@ -3,7 +3,7 @@ title: Powiąż wątek e-mail z encją firmy
 full: true
 _openapi:
   preload:
-    - /tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json
+    - ./content/openapi/external-api.pl.json
   method: POST
   webhook: false
   toc: []
@@ -21,7 +21,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="/tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json" operations={[{"path":"/v1/companies/{companyId}/email/threads/{threadId}/links","method":"post"}]} showDescription />
+      <Comp document="./content/openapi/external-api.pl.json" operations={[{"path":"/v1/companies/{companyId}/email/threads/{threadId}/links","method":"post"}]} showDescription />
     </>
   );
 }

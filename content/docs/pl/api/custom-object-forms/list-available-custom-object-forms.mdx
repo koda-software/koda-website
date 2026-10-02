@@ -3,7 +3,7 @@ title: Lista dostępnych formularzy obiektu własnego
 full: true
 _openapi:
   preload:
-    - /tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json
+    - ./content/openapi/external-api.pl.json
   method: GET
   webhook: false
   toc: []
@@ -24,7 +24,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="/tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json" operations={[{"path":"/v1/custom-modules/{moduleKey}/objects/{objectKey}/forms/available","method":"get"}]} showDescription />
+      <Comp document="./content/openapi/external-api.pl.json" operations={[{"path":"/v1/custom-modules/{moduleKey}/objects/{objectKey}/forms/available","method":"get"}]} showDescription />
     </>
   );
 }

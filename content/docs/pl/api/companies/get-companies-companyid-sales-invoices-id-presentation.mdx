@@ -3,7 +3,7 @@ title: Rozwiąż prezentację faktury sprzedaży
 full: true
 _openapi:
   preload:
-    - /tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json
+    - ./content/openapi/external-api.pl.json
   method: GET
   webhook: false
   toc: []
@@ -21,7 +21,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="/tmp/phase-a-current-snapshot/content/openapi/external-api.pl.json" operations={[{"path":"/v1/companies/{companyId}/sales-invoices/{id}/presentation","method":"get"}]} showDescription />
+      <Comp document="./content/openapi/external-api.pl.json" operations={[{"path":"/v1/companies/{companyId}/sales-invoices/{id}/presentation","method":"get"}]} showDescription />
     </>
   );
 }
