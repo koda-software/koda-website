@@ -38,7 +38,7 @@ export function GET() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- satori renders
             this to a PNG at build time; next/image has no meaning here. */}
-        <img alt="" src={`data:image/svg+xml;base64,${wordmark}`} width={620} height={109} />
+        <img alt="" src={`data:image/svg+xml;base64,${wordmark}`} width={620} height={164} />
         <div
           style={{
             width: 260,

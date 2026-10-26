@@ -19,7 +19,7 @@ import Rows3Icon from "lucide-react/dist/esm/icons/rows-3.mjs";
 import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
 import Table2Icon from "lucide-react/dist/esm/icons/table-2.mjs";
 import TextCursorInputIcon from "lucide-react/dist/esm/icons/text-cursor-input.mjs";
-import { HexIndex } from "./BrandMark";
+import { CubeIndex } from "./BrandMark";
 import { BrowserFrame } from "./BrowserFrame";
 import { mutedCopyClass, sectionDescriptionClass } from "./LandingPrimitives";
 import styles from "./PillarSections.module.css";
@@ -1122,7 +1122,7 @@ export function PillarSections({ items }: PillarSectionsProps) {
             <Reveal className={visualFirst ? "order-first max-[900px]:order-1" : "order-2 max-[900px]:order-1"} from={visualFirst ? "right" : "left"}>
               <article>
                 <div className="mb-5 flex items-center gap-3">
-                  <HexIndex index={index} />
+                  <CubeIndex index={index} />
                   <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(56,182,255,0.35),rgba(11,17,22,0.08),transparent)]" />
                 </div>
                 <h3 className="m-0 text-[clamp(1.6rem,2.6vw,2.28rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[var(--color-ink)]">

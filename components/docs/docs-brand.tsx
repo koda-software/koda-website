@@ -10,16 +10,16 @@ export function DocsBrand() {
         <Image
           src={`${docsBasePath}/_assets/branding/opero-logo.svg`}
           alt=""
-          width={560}
-          height={208}
+          width={739}
+          height={224}
           className="h-full w-full object-contain dark:hidden"
           priority
         />
         <Image
           src={`${docsBasePath}/_assets/branding/opero-logo-white.svg`}
           alt=""
-          width={560}
-          height={208}
+          width={739}
+          height={224}
           className="hidden h-full w-full object-contain dark:block"
           priority
         />

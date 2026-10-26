@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { PhotoBackdrop, type PhotoName } from "@/components/layout/PhotoBackdrop";
+import { KodaSoftMarkAccent } from "./BrandMark";
 import { GsapRevealRoot } from "./GsapRevealRoot";
 
 type LandingSectionProps = {
@@ -149,9 +150,9 @@ function HeroDescription({ description }: { description?: string }) {
         <Image
           alt="opero"
           className="h-[1.38em] w-auto opacity-95"
-          height={153}
+          height={224}
           src="/branding/opero-logo-white.svg"
-          width={490}
+          width={739}
         />
       </span>
       {match[1]}
@@ -236,9 +237,8 @@ export function DarkPanel({ children, className = "" }: DarkPanelProps) {
 }
 
 /**
- * A section label. Every one of them carries the Opero hexagon as its node -
- * the single device that ties the sections together, in place of the assorted
- * icons the cards used to open with.
+ * A section label. The brand device lives on the cards instead - the numbered
+ * Opero cube in `CubeIndex` (components/landing/BrandMark.tsx).
  */
 export function Eyebrow({ children, invert = false }: { children: ReactNode; invert?: boolean }) {
   return (
@@ -413,37 +413,24 @@ export function PageHero({
 }
 
 /**
- * The KodaSoft ring, used as a background motif rather than as a logo.
+ * The KodaSoft mark, used as a background motif rather than as a logo.
  *
  * Decorative geometry on the page was previously generic - squares, dots,
  * abstract glows - which is exactly what makes a layout look like it could
  * belong to anyone. Reusing the mark the company already owns costs nothing
  * and makes the same surfaces specific.
  *
- * Inline rather than an <img>: it is two paths, so embedding avoids a request
- * and lets the arc carry the brand blue while the ring stays neutral. Kept to
- * the closing panel alone - repeated on every section it would stop reading as
- * an accent and start reading as wallpaper.
+ * Drawn inline by `KodaSoftMarkAccent` so the cursor can carry the brand blue
+ * while the tile and "k" stay neutral. Kept to the closing panel alone -
+ * repeated on every section it would stop reading as an accent and start
+ * reading as wallpaper.
  */
 function BrandMarkMotif() {
   return (
-    <svg
+    <KodaSoftMarkAccent
       className="pointer-events-none absolute -right-16 -top-20 h-[34rem] w-[34rem] max-[809px]:-right-24 max-[809px]:h-[22rem] max-[809px]:w-[22rem]"
-      viewBox="0 0 183 183"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M156.784 31.2161C141.62 16.0518 123.83 7.46718 103.356 5.46222V24.467C118.86 26.359 132.217 32.9951 143.427 44.3189C157.208 58.0995 164.098 74.6475 164.098 93.9911C164.098 113.137 157.208 129.629 143.427 143.409C129.958 157.02 113.41 163.826 93.7553 163.826C74.2422 163.826 57.6942 157.02 44.0831 143.409C32.7593 131.803 26.1514 118.446 24.2594 103.338H5.42407C7.37255 123.896 15.8725 141.687 30.9803 156.766C48.2907 174.246 69.2157 183 93.7553 183C118.295 183 139.305 174.246 156.784 156.766C174.095 139.456 182.764 118.531 182.764 93.9911C182.764 69.4515 174.095 48.5265 156.784 31.2161Z"
-        fill="#ffffff"
-        fillOpacity="0.045"
-      />
-      <path
-        d="M83.94 0.514029C62.3373 2.56135 43.3354 11.722 27.4877 27.7194C11.7135 43.4625 2.64316 62.3656 0.53089 83.9062L0 89.3309H28.6173L29.1623 85.0047C30.9329 70.9107 37.1313 58.3924 47.5853 47.8028C58.1297 37.2641 70.7101 31.0657 84.9877 29.3742L89.3478 28.8602V8.34336e-05L83.94 0.514029Z"
-        fill="var(--color-brand-blue)"
-        fillOpacity="0.14"
-      />
-    </svg>
+      accentOpacity={0.14}
+    />
   );
 }
 

@@ -8,7 +8,7 @@ import './docs.css';
 import { Providers } from '@/components/docs/providers';
 import { baseOptions, createI18nProvider } from '@/lib/docs/layout.shared';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
-import { getSiteUrl, siteDescription, siteName } from '@/lib/docs/site';
+import { docsBasePath, getSiteUrl, siteDescription, siteName } from '@/lib/docs/site';
 import { source } from '@/lib/docs/source';
 
 export const dynamicParams = false;
@@ -24,6 +24,16 @@ export const metadata: Metadata = {
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
+  // The docs document Opero, so they carry the product's cube rather than the
+  // KodaSoft tile the marketing pages use. `app/favicon.ico` still applies here
+  // as the legacy fallback; browsers that read these prefer them.
+  icons: {
+    icon: [
+      { url: `${docsBasePath}/_assets/branding/opero-favicon-96x96.png`, type: 'image/png', sizes: '96x96' },
+      { url: `${docsBasePath}/_assets/branding/opero-favicon.svg`, type: 'image/svg+xml' },
+    ],
+    apple: { url: `${docsBasePath}/_assets/branding/opero-apple-touch-icon.png`, sizes: '180x180' },
+  },
   openGraph: {
     type: 'website',
     siteName,

@@ -1,5 +1,5 @@
 import type { FeaturePillar, HomeStep, UseCaseCard } from "@/content/types";
-import { HexIndex } from "./BrandMark";
+import { CubeIndex } from "./BrandMark";
 import { mutedCopyClass } from "./LandingPrimitives";
 import { Reveal } from "./Reveal";
 
@@ -15,7 +15,7 @@ import { Reveal } from "./Reveal";
  * actually said something.
  *
  * What is left is the device the numbered grid already used and the rest did
- * not: an index in the Opero hexagon, a rule running out from it, then the
+ * not: an index on the Opero cube, a rule running out from it, then the
  * words. No fill, no border, no shadow. The four grids now differ only in what
  * they contain, which is the point - they are the same component of the page
  * seen in four places, and they should read that way.
@@ -56,7 +56,7 @@ function CardRule({ invert = false }: { invert?: boolean }) {
 export function CardHead({ index, invert = false }: { index: number; invert?: boolean }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <HexIndex index={index} invert={invert} />
+      <CubeIndex index={index} invert={invert} />
       <CardRule invert={invert} />
     </div>
   );

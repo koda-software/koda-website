@@ -64,10 +64,10 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
         <div>
           <Link className="inline-block" href={localizePath(locale, "home")} aria-label={content.brand}>
             <Image
-              className="h-6 w-auto"
+              className="h-8 w-auto"
               src="/branding/kodasoft-logo-white.svg"
-              width={1404}
-              height={247}
+              width={848}
+              height={224}
               alt=""
               aria-hidden="true"
             />

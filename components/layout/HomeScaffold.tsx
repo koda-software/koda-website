@@ -15,7 +15,7 @@ import {
   sectionTitleClass,
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
-import { HexIndex, KodaSoftRing } from "@/components/landing/BrandMark";
+import { CubeIndex, KodaSoftMarkAccent } from "@/components/landing/BrandMark";
 import { HeroDashboardMock } from "@/components/landing/HeroDashboardMock";
 import { Reveal } from "@/components/landing/Reveal";
 import { SolutionScreenshotMock } from "@/components/landing/SolutionScreenshotMock";
@@ -103,9 +103,9 @@ export function HomeScaffold({
               <Image
                 alt="Opero"
                 className="mb-5 h-16 w-auto"
-                height={153}
+                height={224}
                 src="/branding/opero-logo-white.svg"
-                width={490}
+                width={739}
               />
               <h2 className={`${sectionTitleClass} text-white`}>{content.solution.title}</h2>
               <p className={`${sectionDescriptionClass} max-w-[34rem] text-white/82`}>
@@ -117,7 +117,7 @@ export function HomeScaffold({
               {content.solution.points.map((point, index) => (
                 <Reveal delay={index * 90} key={point}>
                   <article className="grid grid-cols-[auto_1fr] items-center gap-4">
-                    <HexIndex index={index} invert />
+                    <CubeIndex index={index} invert />
                     <p className="m-0 self-center text-[clamp(1rem,1.18vw,1.08rem)] font-light leading-[1.56] text-white/86">
                       {point}
                     </p>
@@ -152,7 +152,7 @@ export function HomeScaffold({
 
       <section className="relative overflow-hidden bg-[var(--color-surface-dark)] [background:radial-gradient(circle_at_84%_16%,rgba(56,182,255,0.22),transparent_32%),radial-gradient(circle_at_14%_80%,rgba(20,112,184,0.2),transparent_36%),linear-gradient(145deg,#09131d_0%,#0d263f_52%,#081018_100%)] px-[var(--page-gutter)] py-[clamp(5rem,9vw,8rem)] text-white">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.42),rgba(56,182,255,0.38),transparent)]" aria-hidden="true" />
-        <KodaSoftRing className="pointer-events-none absolute -right-28 top-10 h-[34rem] w-[34rem]" />
+        <KodaSoftMarkAccent className="pointer-events-none absolute -right-28 top-10 h-[34rem] w-[34rem]" />
 
         <div className={`${landingShellClass} relative z-[1] grid items-start gap-[clamp(3rem,7vw,7rem)] grid-cols-[minmax(0,0.82fr)_minmax(26rem,1fr)] max-[980px]:grid-cols-1`}>
           <div className="sticky top-[clamp(6rem,14vh,9rem)] max-[980px]:static">
