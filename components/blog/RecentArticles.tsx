@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
+import { Cube } from "@/components/landing/BrandMark";
 import { LandingSection, SectionIntro } from "@/components/landing/LandingPrimitives";
 import { Reveal } from "@/components/landing/Reveal";
 import { blogBundle } from "@/lib/blog/bundle";
@@ -8,7 +9,6 @@ import { blogImageSrc } from "@/lib/blog/images";
 import { getArticles } from "@/lib/blog/queries";
 import { articlePath, blogIndexPath } from "@/lib/blog/routes";
 import type { ArticleListRow, BlogLocale } from "@/lib/blog/types";
-import { blogMetaClass } from "./primitives";
 
 const recentCount = 4;
 
@@ -33,8 +33,6 @@ export async function RecentArticles({ locale }: { locale: BlogLocale }) {
 
   const { ui } = blogBundle(locale);
   const articles = rows.slice(0, recentCount);
-  // Mixed rows (some covers, some not) misalign the titles, so covers show only when every entry has one.
-  const showImages = articles.every((article) => blogImageSrc(article.obraz_glowny));
 
   return (
     <LandingSection>
@@ -56,7 +54,6 @@ export async function RecentArticles({ locale }: { locale: BlogLocale }) {
           }
           description={ui.recent.description}
           eyebrow={ui.recent.eyebrow}
-          split
           title={ui.recent.title}
         />
       </Reveal>
@@ -64,7 +61,7 @@ export async function RecentArticles({ locale }: { locale: BlogLocale }) {
       <ul className="m-0 mt-[clamp(2rem,4vw,3.25rem)] grid list-none grid-cols-4 gap-x-8 p-0 max-[1200px]:grid-cols-2 max-[640px]:grid-cols-1">
         {articles.map((article) => (
           <li className="border-t border-[rgba(2,2,13,0.12)]" key={article.id}>
-            <RecentArticle article={article} locale={locale} minRead={ui.labels.minRead} showImage={showImages} />
+            <RecentArticle article={article} locale={locale} minRead={ui.labels.minRead} />
           </li>
         ))}
       </ul>
@@ -72,19 +69,20 @@ export async function RecentArticles({ locale }: { locale: BlogLocale }) {
   );
 }
 
-type RecentArticleProps = { article: ArticleListRow; locale: BlogLocale; minRead: string; showImage: boolean };
+type RecentArticleProps = { article: ArticleListRow; locale: BlogLocale; minRead: string };
 
-function RecentArticle({ article, locale, minRead, showImage }: RecentArticleProps) {
-  const image = showImage ? blogImageSrc(article.obraz_glowny) : null;
+function RecentArticle({ article, locale, minRead }: RecentArticleProps) {
+  const image = blogImageSrc(article.obraz_glowny);
 
   return (
     <Link
       className="group grid gap-5 py-7 max-[640px]:grid-cols-[6.5rem_minmax(0,1fr)] max-[640px]:items-start max-[640px]:gap-4 max-[640px]:py-6"
       href={articlePath(locale, article.slug)}
     >
-      {image ? (
-        <span className="relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] bg-[rgba(2,2,13,0.04)]">
-          {/* eslint-disable-next-line @next/next/no-img-element -- CMS files are served through the authenticated proxy; next/image optimization is off site-wide */}
+      {/* Every entry keeps the same cover frame so titles line up; a missing cover gets the Opero cube instead. */}
+      <span className="relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] bg-[rgba(2,2,13,0.04)]">
+        {image ? (
+          // eslint-disable-next-line @next/next/no-img-element -- CMS files are served through the authenticated proxy; next/image optimization is off site-wide
           <img
             alt=""
             className="block size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
@@ -92,21 +90,15 @@ function RecentArticle({ article, locale, minRead, showImage }: RecentArticlePro
             loading="lazy"
             src={image}
           />
-        </span>
-      ) : null}
+        ) : (
+          <span className="grid size-full place-items-center bg-[linear-gradient(145deg,#f7fbff_0%,#eaf4fb_100%)]">
+            <Cube className="h-[clamp(2.25rem,22%,3.5rem)] w-auto text-[var(--color-blue)] opacity-70 transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
+          </span>
+        )}
+      </span>
 
-      <span className={`block ${image ? "" : "max-[640px]:col-span-2"}`}>
-        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <time className={blogMetaClass} dateTime={article.data_publikacji}>
-            {formatDate(article.data_publikacji, locale)}
-          </time>
-          {article.kategoria_nazwa ? (
-            <span className="text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)] max-[640px]:hidden">
-              {article.kategoria_nazwa}
-            </span>
-          ) : null}
-        </span>
-        <h3 className="m-0 mt-3 text-[1.2rem] font-medium leading-[1.3] text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-blue)] max-[640px]:mt-2 max-[640px]:text-[1.05rem]">
+      <span className="block">
+        <h3 className="m-0 text-[1.2rem] font-medium leading-[1.3] text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-blue)] max-[640px]:mt-2 max-[640px]:text-[1.05rem]">
           {article.tytul}
         </h3>
         {article.zajawka ? (
@@ -114,11 +106,22 @@ function RecentArticle({ article, locale, minRead, showImage }: RecentArticlePro
             {article.zajawka}
           </span>
         ) : null}
-        {article.czas_czytania ? (
-          <span className="mt-4 block text-[0.88rem] text-[var(--color-muted)] max-[640px]:mt-2">
-            {article.czas_czytania} {minRead}
-          </span>
-        ) : null}
+        {/* Plain sentence-case byline under the text, not an uppercase eyebrow above it. */}
+        <span className="mt-4 block text-[0.88rem] leading-[1.5] text-[var(--color-muted)] max-[640px]:mt-2">
+          {article.kategoria_nazwa ? <span className="text-[var(--color-ink)]">{article.kategoria_nazwa}</span> : null}
+          {article.kategoria_nazwa ? <span aria-hidden="true"> · </span> : null}
+          <time className="whitespace-nowrap" dateTime={article.data_publikacji}>
+            {formatDate(article.data_publikacji, locale)}
+          </time>
+          {article.czas_czytania ? (
+            <>
+              <span aria-hidden="true"> · </span>
+              <span className="whitespace-nowrap">
+                {article.czas_czytania} {minRead}
+              </span>
+            </>
+          ) : null}
+        </span>
       </span>
     </Link>
   );
