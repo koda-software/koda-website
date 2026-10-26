@@ -19,25 +19,27 @@
  * a reason to be there.
  *
  * The geometry is the mark from `public/branding/opero-mark.svg`, halved into
- * a 24x24 box: three faces with the same narrow gap between each, and the
- * outer corners rounded off by a circle (r = 9.6, i.e. 40% of the box; the mark
- * uses a clipPath, here a CSS `clip-path` so repeated badges need no ids). The
- * logo tells the faces apart by colour (dark, mid-grey, blue); here each face
- * takes `currentColor` at its own opacity instead, so one definition works on
- * light and dark surfaces. The stroke in the face's own colour with round
- * joins is the mark's softened corners.
+ * a 24x24 box: three faces with the same narrow gap between each, the front
+ * corner cut away so the cube reads as an "o", and the outer corners rounded
+ * off by a circle (r = 9.6, i.e. 40% of the box). The mark uses a clipPath and
+ * a mask; here the cut-away corner is drawn into each face (two overlapping
+ * strips, filled as one shape) and the rounding is a CSS `clip-path`, so
+ * repeated badges need no ids. The logo tells the faces apart by colour (dark,
+ * mid-grey, blue); here each face takes `currentColor` at its own opacity
+ * instead, so one definition works on light and dark surfaces. The stroke in
+ * the face's own colour with round joins is the mark's softened corners.
  */
 
-const CUBE_LEFT = "4.02,8.92 10.68,12.77 10.68,20.46 4.02,16.61";
-const CUBE_RIGHT = "13.33,12.77 19.99,8.92 19.99,16.61 13.33,20.46";
-const CUBE_TOP = "12,2.78 18.66,6.63 12,10.47 5.34,6.63";
+const CUBE_LEFT = "M4.02 14.66L10.68 18.51L10.68 20.46L4.02 16.61ZM4.02 16.61L4.02 8.92L5.7 9.89L5.7 17.58Z";
+const CUBE_RIGHT = "M18.3 9.9L19.99 8.92L19.99 16.61L18.3 17.59ZM13.33 18.5L19.99 14.66L19.99 16.61L13.33 20.46Z";
+const CUBE_TOP = "M5.34 6.63L12 2.78L13.69 3.76L7.03 7.6ZM12 2.78L18.66 6.63L16.97 7.6L10.31 3.76Z";
 const CUBE_CLIP = { clipPath: "circle(40% at 50% 50%)" };
 
-function CubeFace({ points, opacity, className }: { points: string; opacity: number; className?: string }) {
+function CubeFace({ d, opacity, className }: { d: string; opacity: number; className?: string }) {
   return (
-    <polygon
+    <path
       className={className}
-      points={points}
+      d={d}
       fill="currentColor"
       stroke="currentColor"
       strokeWidth={1.4}
@@ -64,16 +66,16 @@ export function Cube({
 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" style={CUBE_CLIP} aria-hidden="true">
-      <CubeFace points={CUBE_LEFT} opacity={faded ? 0.2 : 0.85} />
-      <CubeFace points={CUBE_RIGHT} opacity={faded ? 0.1 : 0.5} />
-      <CubeFace points={CUBE_TOP} opacity={faded ? 0.55 : 1} className={lidClassName} />
+      <CubeFace d={CUBE_LEFT} opacity={faded ? 0.2 : 0.85} />
+      <CubeFace d={CUBE_RIGHT} opacity={faded ? 0.1 : 0.5} />
+      <CubeFace d={CUBE_TOP} opacity={faded ? 0.55 : 1} className={lidClassName} />
     </svg>
   );
 }
 
 /**
- * The card badge: the cube, faded, with the card's position set on its side
- * faces just under the lid.
+ * The card badge: the cube, faded, with the card's position set in the
+ * cut-away corner - the number sits inside the "o".
  *
  * Decorative, so it is hidden from screen readers - the number repeats nothing
  * a reader needs, and the cards already carry their own headings in order.
@@ -98,7 +100,7 @@ export function CubeIndex({
         lidClassName={invert ? "text-[var(--color-cyan)]" : undefined}
       />
       <span
-        className={`relative translate-y-[0.32rem] font-sans text-[0.78rem] font-semibold leading-none ${
+        className={`relative font-sans text-[0.78rem] font-semibold leading-none ${
           invert ? "text-[var(--color-cyan)]" : "text-[var(--color-blue)]"
         }`}
       >
