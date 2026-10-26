@@ -31,6 +31,12 @@ export const blogContent: BlogUiContent = {
     page: "Page",
     breadcrumbHome: "Home",
   },
+  recent: {
+    eyebrow: "Blog",
+    title: "Latest from the blog.",
+    description:
+      "Notes from the team building Opero on process design, workflow automation and running BPM in real operations.",
+  },
   archives: {
     categoryEyebrow: "Category",
     tagEyebrow: "Tag",

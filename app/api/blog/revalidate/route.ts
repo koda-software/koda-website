@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { BLOG_TAG } from "@/lib/blog/tags";
-import { articlePath, blogIndexPath, blogLocales, toBlogLocale } from "@/lib/blog/routes";
+import { articlePath, blogIndexPath, blogLocales, toBlogLocale, toSiteLocale } from "@/lib/blog/routes";
+import { localizePath } from "@/lib/i18n/routes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -83,6 +84,11 @@ export async function POST(request: Request) {
     const indexPath = blogIndexPath(locale);
     revalidatePath(indexPath);
     revalidated.push(indexPath);
+
+    // The homepage embeds the latest articles, so a publish must refresh it too.
+    const homePath = localizePath(toSiteLocale(locale), "home");
+    revalidatePath(homePath);
+    revalidated.push(homePath);
 
     if (slug) {
       const path = articlePath(locale, slug);

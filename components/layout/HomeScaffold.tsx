@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import type { HomeContent } from "@/content/types";
 import { NumberedPointGrid } from "@/components/landing/LandingCards";
 import { ComparisonSlider } from "@/components/landing/ComparisonSlider";
@@ -25,6 +26,8 @@ type HomeScaffoldProps = {
   content: HomeContent;
   primaryHref: string;
   secondaryHref: string;
+  /** Server-rendered latest-articles strip, injected so the scaffold stays synchronous. */
+  recentArticles?: ReactNode;
 };
 
 
@@ -32,6 +35,7 @@ export function HomeScaffold({
   content,
   primaryHref,
   secondaryHref,
+  recentArticles,
 }: HomeScaffoldProps) {
   return (
     <>
@@ -209,6 +213,8 @@ export function HomeScaffold({
           </Reveal>
         </div>
       </section>
+
+      {recentArticles}
 
       <LandingSection className="my-[clamp(3rem,6vw,5.5rem)] pt-0">
         <Reveal>

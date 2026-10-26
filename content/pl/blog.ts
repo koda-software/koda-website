@@ -31,6 +31,12 @@ export const blogContent: BlogUiContent = {
     page: "Strona",
     breadcrumbHome: "Start",
   },
+  recent: {
+    eyebrow: "Blog",
+    title: "Najnowsze na blogu.",
+    description:
+      "Notatki zespołu, który tworzy Opero: o projektowaniu procesów, automatyzacji pracy i wdrażaniu BPM w codziennym działaniu firm.",
+  },
   archives: {
     categoryEyebrow: "Kategoria",
     tagEyebrow: "Tag",

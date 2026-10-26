@@ -955,6 +955,12 @@ export type BlogUiContent = {
     page: string;
     breadcrumbHome: string;
   };
+  /** The "latest articles" strip embedded on marketing pages such as the homepage. */
+  recent: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
   archives: {
     categoryEyebrow: string;
     tagEyebrow: string;
