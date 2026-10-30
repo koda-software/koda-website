@@ -4,7 +4,7 @@ import { blogCategoryMetadata } from "@/lib/blog/page-meta";
 import { categoryParams } from "@/lib/blog/static-params";
 
 export function generateStaticParams() {
-  return categoryParams();
+  return categoryParams("pl");
 }
 
 export async function generateMetadata({ params }: PageProps<"/pl/blog/kategoria/[slug]">): Promise<Metadata> {

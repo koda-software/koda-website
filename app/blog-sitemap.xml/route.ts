@@ -23,11 +23,10 @@ function xmlEscape(value: string) {
 type Entry = { lastmod: string; alternates?: Record<string, string> };
 
 /**
- * Taxonomy URLs share one slug across locales, so their hreflang set is
- * deterministic. Article slugs are translated per language and live in the CMS
- * translation group, which `blog_sitemap` does not expose — those carry
- * page-level `<link rel="alternate">` instead, which search engines treat as
- * equally authoritative.
+ * Taxonomy rows carry their slug in every locale, so their hreflang set is
+ * known here. Article rows do not — those carry page-level
+ * `<link rel="alternate">` instead, which search engines treat as equally
+ * authoritative.
  */
 function taxonomyAlternates(row: SitemapRow): Record<string, string> | undefined {
   const build: Partial<Record<SitemapRow["typ"], (locale: BlogLocale, slug: string) => string>> = {
@@ -39,9 +38,10 @@ function taxonomyAlternates(row: SitemapRow): Record<string, string> | undefined
 
   if (!toPath) return undefined;
 
-  const alternates = Object.fromEntries(blogLocales.map((locale) => [locale, absoluteUrl(toPath(locale, row.slug))]));
+  const slugOf = (locale: BlogLocale) => row.slugs?.[locale] ?? row.slug;
+  const alternates = Object.fromEntries(blogLocales.map((locale) => [locale, absoluteUrl(toPath(locale, slugOf(locale)))]));
 
-  return { ...alternates, "x-default": absoluteUrl(toPath("en", row.slug)) };
+  return { ...alternates, "x-default": absoluteUrl(toPath("en", slugOf("en"))) };
 }
 
 function indexAlternates(): Record<string, string> {

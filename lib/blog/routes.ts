@@ -102,8 +102,7 @@ export function toSiteLocale(locale: BlogLocale): Locale {
 }
 
 /**
- * Absolute-path list for one sitemap row. Taxonomy rows carry `jezyk: null`
- * because a category/tag/author is shared across languages — those expand into
+ * Absolute-path list for one sitemap row. A row with `jezyk: null` expands into
  * one path per published locale.
  */
 export function sitemapRowPaths(row: SitemapRow): string[] {

@@ -32,9 +32,10 @@ export async function blogIndexMetadata(locale: BlogLocale, page = 1): Promise<M
 
 export async function blogCategoryMetadata(locale: BlogLocale, slug: string): Promise<Metadata> {
   const { ui } = blogBundle(locale);
-  const category = await getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug, locale);
 
-  if (!category) return {};
+  // A slug from another locale redirects, so only the canonical one gets metadata.
+  if (!category || category.slug !== slug) return {};
 
   const name = category.nazwa;
 
@@ -45,7 +46,7 @@ export async function blogCategoryMetadata(locale: BlogLocale, slug: string): Pr
       category.meta_description ?? category.opis ?? fillTemplate(ui.seoTemplates.categoryDescription, { name }),
     ),
     path: categoryPath(locale, slug),
-    languages: symmetricAlternates({ en: categoryPath("en", slug), pl: categoryPath("pl", slug) }),
+    languages: symmetricAlternates({ en: categoryPath("en", category.slugs.en), pl: categoryPath("pl", category.slugs.pl) }),
     noIndex: category.noindex === true,
     image: await blogDefaultOgImage(),
   });
@@ -53,9 +54,9 @@ export async function blogCategoryMetadata(locale: BlogLocale, slug: string): Pr
 
 export async function blogTagMetadata(locale: BlogLocale, slug: string): Promise<Metadata> {
   const { ui } = blogBundle(locale);
-  const tag = await getTagBySlug(slug);
+  const tag = await getTagBySlug(slug, locale);
 
-  if (!tag) return {};
+  if (!tag || tag.slug !== slug) return {};
 
   const name = tag.nazwa;
 
@@ -64,17 +65,17 @@ export async function blogTagMetadata(locale: BlogLocale, slug: string): Promise
     title: fillTemplate(ui.seoTemplates.tagTitle, { name }),
     description: truncateDescription(tag.opis ?? fillTemplate(ui.seoTemplates.tagDescription, { name })),
     path: tagPath(locale, slug),
-    languages: symmetricAlternates({ en: tagPath("en", slug), pl: tagPath("pl", slug) }),
+    languages: symmetricAlternates({ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }),
     image: await blogDefaultOgImage(),
   });
 }
 
 export async function blogAuthorMetadata(locale: BlogLocale, slug: string): Promise<Metadata> {
   const { ui } = blogBundle(locale);
-  const author = await getAuthorBySlug(slug);
+  const author = await getAuthorBySlug(slug, locale);
 
   // An inactive author renders the 404 page, so nothing about them may leak into its head.
-  if (!author || author.aktywny === false) return {};
+  if (!author || author.aktywny === false || author.slug !== slug) return {};
 
   const name = author.imie_nazwisko;
   const bio = tiptapPlainText(author.bio);
@@ -84,7 +85,7 @@ export async function blogAuthorMetadata(locale: BlogLocale, slug: string): Prom
     title: fillTemplate(ui.seoTemplates.authorTitle, { name }),
     description: truncateDescription(bio || fillTemplate(ui.seoTemplates.authorDescription, { name })),
     path: authorPath(locale, slug),
-    languages: symmetricAlternates({ en: authorPath("en", slug), pl: authorPath("pl", slug) }),
+    languages: symmetricAlternates({ en: authorPath("en", author.slugs.en), pl: authorPath("pl", author.slugs.pl) }),
     image: await blogDefaultOgImage(),
   });
 }

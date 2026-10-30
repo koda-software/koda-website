@@ -99,12 +99,13 @@ export type AuthorArticleRow = ArticleListRow & {
  */
 export type SitemapRow = {
   typ: "artykul" | "kategoria" | "tag" | "autor";
-  /** Localized slug for `jezyk`; taxonomy slugs are shared across locales. */
+  /** Localized slug for `jezyk`. */
   slug: string;
-  /** `null` for taxonomy, which is not localizable in the CMS. */
   jezyk: BlogLocale | null;
   lastmod: string;
   data_publikacji: string | null;
+  /** Taxonomy only: the record's slug in every locale, for hreflang. */
+  slugs?: Record<BlogLocale, string>;
 };
 
 export type RedirectRow = {
@@ -156,6 +157,13 @@ export type AuthorRecord = {
   url_x: string | null;
   aktywny: boolean | null;
 };
+
+/**
+ * A category, tag or author resolved to one locale. `slugs` holds its slug in
+ * every published locale, for hreflang and for redirecting a slug from another
+ * locale to this one's.
+ */
+export type Localized<T> = T & { slugs: Record<BlogLocale, string> };
 
 /** A page of articles plus the unpaginated total, used to build pagination. */
 export type ArticlePage = {

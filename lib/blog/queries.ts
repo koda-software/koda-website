@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { executeSavedQuery, getRecords, getRecordsWithMeta, getSingletonValues } from "./opero";
+import { type BlogRecord, executeSavedQuery, getRecordsWithMeta, getSingletonValues } from "./opero";
 import { BLOG_TAG, blogTag } from "./tags";
 import type {
   ArticleFullRow,
@@ -10,11 +10,12 @@ import type {
   BlogLocale,
   BlogSettings,
   CategoryRecord,
+  Localized,
   RedirectRow,
   SitemapRow,
   TagRecord,
 } from "./types";
-import { blogLocales } from "./routes";
+import { blogLocales, sourceLocale } from "./routes";
 
 /**
  * Every read is wrapped in `unstable_cache` and tagged, so pages prerender at
@@ -206,20 +207,26 @@ async function readSitemapEntries(): Promise<SitemapRow[]> {
         data_publikacji: article.data_publikacji,
       });
     }
-  }
 
-  for (const category of categories) {
-    if (category.values.noindex === true) continue;
-    rows.push({ typ: "kategoria", slug: category.values.slug, jezyk: null, lastmod: category.updatedAt, data_publikacji: null });
-  }
+    // Taxonomy slugs are translated, so each locale lists its own.
+    const taxonomy = (typ: SitemapRow["typ"], record: BlogRecord<{ slug: string }>): SitemapRow => {
+      const { slug, slugs } = localize(record, jezyk);
+      return { typ, slug, slugs, jezyk, lastmod: record.updatedAt, data_publikacji: null };
+    };
 
-  for (const tag of tags) {
-    rows.push({ typ: "tag", slug: tag.values.slug, jezyk: null, lastmod: tag.updatedAt, data_publikacji: null });
-  }
+    for (const category of categories) {
+      if (category.values.noindex === true) continue;
+      rows.push(taxonomy("kategoria", category));
+    }
 
-  for (const author of authors) {
-    if (author.values.aktywny === false) continue;
-    rows.push({ typ: "autor", slug: author.values.slug, jezyk: null, lastmod: author.updatedAt, data_publikacji: null });
+    for (const tag of tags) {
+      rows.push(taxonomy("tag", tag));
+    }
+
+    for (const author of authors) {
+      if (author.values.aktywny === false) continue;
+      rows.push(taxonomy("autor", author));
+    }
   }
 
   return rows;
@@ -283,49 +290,82 @@ export const getRedirects = unstable_cache(
   { tags: [BLOG_TAG, blogTag("redirects")] },
 );
 
-export const getCategories = unstable_cache(
-  async (): Promise<CategoryRecord[]> => {
-    const categories = await getRecords<CategoryRecord>("kategoria");
+/**
+ * Categories, tags and authors are translated in the CMS: the base values hold
+ * the source language (pl) and `i18n` holds the rest. Each object is fetched
+ * once and resolved per locale here, falling back to the source value wherever
+ * a translation is missing.
+ */
+function localize<T extends { slug: string }>(record: BlogRecord<T>, locale: BlogLocale): Localized<T> {
+  const translated = (target: BlogLocale) =>
+    target === sourceLocale
+      ? {}
+      : Object.fromEntries(
+          Object.entries(record.i18n[target] ?? {}).filter(([, value]) => value !== null && value !== undefined && value !== ""),
+        );
 
-    return categories.sort((a, b) => (a.pozycja ?? Number.MAX_SAFE_INTEGER) - (b.pozycja ?? Number.MAX_SAFE_INTEGER));
-  },
+  const slugs = Object.fromEntries(
+    blogLocales.map((target) => [target, (translated(target).slug as string | undefined) ?? record.values.slug]),
+  ) as Record<BlogLocale, string>;
+
+  return { ...record.values, ...translated(locale), slugs } as Localized<T>;
+}
+
+const fetchCategories = unstable_cache(
+  async () => getRecordsWithMeta<CategoryRecord>("kategoria"),
   ["blog", "kategorie"],
   { tags: [BLOG_TAG, blogTag("kategorie")] },
 );
 
-export const getTags = unstable_cache(
-  async (): Promise<TagRecord[]> => {
-    const tags = await getRecords<TagRecord>("tag");
+const fetchTags = unstable_cache(async () => getRecordsWithMeta<TagRecord>("tag"), ["blog", "tagi"], {
+  tags: [BLOG_TAG, blogTag("tagi")],
+});
 
-    return tags.sort((a, b) => a.nazwa.localeCompare(b.nazwa));
-  },
-  ["blog", "tagi"],
-  { tags: [BLOG_TAG, blogTag("tagi")] },
-);
+const fetchAuthors = unstable_cache(async () => getRecordsWithMeta<AuthorRecord>("autor"), ["blog", "autorzy"], {
+  tags: [BLOG_TAG, blogTag("autorzy")],
+});
 
-export const getAuthors = unstable_cache(
-  async (): Promise<AuthorRecord[]> => {
-    const authors = await getRecords<AuthorRecord>("autor");
+export async function getCategories(locale: BlogLocale): Promise<Array<Localized<CategoryRecord>>> {
+  const categories = (await fetchCategories()).map((record) => localize(record, locale));
 
-    return authors.sort((a, b) => a.imie_nazwisko.localeCompare(b.imie_nazwisko));
-  },
-  ["blog", "autorzy"],
-  { tags: [BLOG_TAG, blogTag("autorzy")] },
-);
-
-export async function getCategoryBySlug(slug: string): Promise<CategoryRecord | null> {
-  const categories = await getCategories();
-  return categories.find((category) => category.slug === slug) ?? null;
+  return categories.sort((a, b) => (a.pozycja ?? Number.MAX_SAFE_INTEGER) - (b.pozycja ?? Number.MAX_SAFE_INTEGER));
 }
 
-export async function getTagBySlug(slug: string): Promise<TagRecord | null> {
-  const tags = await getTags();
-  return tags.find((tag) => tag.slug === slug) ?? null;
+export async function getTags(locale: BlogLocale): Promise<Array<Localized<TagRecord>>> {
+  const tags = (await fetchTags()).map((record) => localize(record, locale));
+
+  return tags.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
 }
 
-export async function getAuthorBySlug(slug: string): Promise<AuthorRecord | null> {
-  const authors = await getAuthors();
-  return authors.find((author) => author.slug === slug) ?? null;
+export async function getAuthors(locale: BlogLocale): Promise<Array<Localized<AuthorRecord>>> {
+  const authors = (await fetchAuthors()).map((record) => localize(record, locale));
+
+  return authors.sort((a, b) => a.imie_nazwisko.localeCompare(b.imie_nazwisko, locale));
+}
+
+/**
+ * Matches this locale's slug first, then a slug from any other locale. A record
+ * whose `slug` differs from the requested one was found the second way, and the
+ * caller redirects to its slug in this locale.
+ */
+function findBySlug<T extends { slug: string; slugs: Record<BlogLocale, string> }>(records: T[], slug: string) {
+  return (
+    records.find((record) => record.slug === slug) ??
+    records.find((record) => Object.values(record.slugs).includes(slug)) ??
+    null
+  );
+}
+
+export async function getCategoryBySlug(slug: string, locale: BlogLocale) {
+  return findBySlug(await getCategories(locale), slug);
+}
+
+export async function getTagBySlug(slug: string, locale: BlogLocale) {
+  return findBySlug(await getTags(locale), slug);
+}
+
+export async function getAuthorBySlug(slug: string, locale: BlogLocale) {
+  return findBySlug(await getAuthors(locale), slug);
 }
 
 /** Resolves a requested blog path against the CMS redirect table. */

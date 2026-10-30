@@ -214,7 +214,7 @@ type SavedQueryExecuteResponse<T> = {
 };
 
 type RecordListResponse<T> = {
-  data: Array<{ id: string; createdAt: string; updatedAt: string; values: T }>;
+  data: Array<{ id: string; createdAt: string; updatedAt: string; values: T; i18n?: RecordTranslations<T> }>;
   meta?: { total?: number };
 };
 
@@ -257,18 +257,26 @@ export async function executeSavedQuery<T>(key: string, params: Record<string, u
 const recordPageLimit = 100;
 const recordPageCap = 20;
 
-export type BlogRecord<T> = { values: T; updatedAt: string };
+/** Translated field values keyed by content locale; the base `values` hold the source language. */
+export type RecordTranslations<T> = Record<string, Partial<T>>;
 
-/** Records with their `updatedAt`, which the sitemap needs for `<lastmod>`. */
+export type BlogRecord<T> = { values: T; updatedAt: string; i18n: RecordTranslations<T> };
+
+/**
+ * Records with their `updatedAt`, which the sitemap needs for `<lastmod>`, and
+ * their stored translations, so one request serves every locale.
+ */
 export async function getRecordsWithMeta<T>(objectKey: string): Promise<Array<BlogRecord<T>>> {
   const records: Array<BlogRecord<T>> = [];
 
   for (let page = 1; page <= recordPageCap; page += 1) {
     const response = await operoJson<RecordListResponse<T>>(
-      `/v1/custom-modules/blog/objects/${objectKey}/records?limit=${recordPageLimit}&page=${page}`,
+      `/v1/custom-modules/blog/objects/${objectKey}/records?limit=${recordPageLimit}&page=${page}&includeI18n=true`,
     );
 
-    records.push(...response.data.map((record) => ({ values: record.values, updatedAt: record.updatedAt })));
+    records.push(
+      ...response.data.map((record) => ({ values: record.values, updatedAt: record.updatedAt, i18n: record.i18n ?? {} })),
+    );
 
     if (response.data.length < recordPageLimit) {
       break;
@@ -276,10 +284,6 @@ export async function getRecordsWithMeta<T>(objectKey: string): Promise<Array<Bl
   }
 
   return records;
-}
-
-export async function getRecords<T>(objectKey: string): Promise<T[]> {
-  return (await getRecordsWithMeta<T>(objectKey)).map((record) => record.values);
 }
 
 export async function getSingletonValues<T>(objectKey: string): Promise<T | null> {

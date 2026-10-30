@@ -77,17 +77,22 @@ export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale;
 
 export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
   const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
-  const category = await getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug, locale);
 
   if (!category) {
     notFound();
+  }
+
+  // Taxonomy slugs are translated: a slug from another locale moves to this one's.
+  if (category.slug !== slug) {
+    permanentRedirect(categoryPath(locale, category.slug));
   }
 
   const { rows } = await getArticles({ jezyk: locale, kategoriaSlug: slug, pageSize: archivePageSize });
 
   return (
     <PageShell
-      alternatePaths={{ en: categoryPath("en", slug), pl: categoryPath("pl", slug) }}
+      alternatePaths={{ en: categoryPath("en", category.slugs.en), pl: categoryPath("pl", category.slugs.pl) }}
       locale={toSiteLocale(locale)}
       navItems={navItems}
       page="blog"
@@ -114,17 +119,21 @@ export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; 
 
 export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
   const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
-  const tag = await getTagBySlug(slug);
+  const tag = await getTagBySlug(slug, locale);
 
   if (!tag) {
     notFound();
+  }
+
+  if (tag.slug !== slug) {
+    permanentRedirect(tagPath(locale, tag.slug));
   }
 
   const { rows } = await getArticlesByTag({ tagSlug: slug, jezyk: locale, pageSize: archivePageSize });
 
   return (
     <PageShell
-      alternatePaths={{ en: tagPath("en", slug), pl: tagPath("pl", slug) }}
+      alternatePaths={{ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }}
       locale={toSiteLocale(locale)}
       navItems={navItems}
       page="blog"
@@ -151,10 +160,14 @@ export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug:
 
 export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
   const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
-  const record = await getAuthorBySlug(slug);
+  const record = await getAuthorBySlug(slug, locale);
 
   if (!record || record.aktywny === false) {
     notFound();
+  }
+
+  if (record.slug !== slug) {
+    permanentRedirect(authorPath(locale, record.slug));
   }
 
   const { rows } = await getArticlesByAuthor({ autorSlug: slug, jezyk: locale, pageSize: archivePageSize });
@@ -173,7 +186,7 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
 
   return (
     <PageShell
-      alternatePaths={{ en: authorPath("en", slug), pl: authorPath("pl", slug) }}
+      alternatePaths={{ en: authorPath("en", record.slugs.en), pl: authorPath("pl", record.slugs.pl) }}
       locale={toSiteLocale(locale)}
       navItems={navItems}
       page="blog"

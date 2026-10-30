@@ -17,7 +17,6 @@ async function slugsOfType(typ: "artykul" | "kategoria" | "tag" | "autor", local
     ...new Set(
       rows
         .filter((row) => row.typ === typ)
-        // Taxonomy rows carry no language and therefore exist in both locales.
         .filter((row) => !locale || row.jezyk === null || toBlogLocale(row.jezyk) === locale)
         .map((row) => row.slug),
     ),
@@ -28,16 +27,16 @@ export async function articleParams(locale: BlogLocale) {
   return (await slugsOfType("artykul", locale)).map((slug) => ({ slug }));
 }
 
-export async function categoryParams() {
-  return (await slugsOfType("kategoria")).map((slug) => ({ slug }));
+export async function categoryParams(locale: BlogLocale) {
+  return (await slugsOfType("kategoria", locale)).map((slug) => ({ slug }));
 }
 
-export async function tagParams() {
-  return (await slugsOfType("tag")).map((slug) => ({ slug }));
+export async function tagParams(locale: BlogLocale) {
+  return (await slugsOfType("tag", locale)).map((slug) => ({ slug }));
 }
 
-export async function authorParams() {
-  return (await slugsOfType("autor")).map((slug) => ({ slug }));
+export async function authorParams(locale: BlogLocale) {
+  return (await slugsOfType("autor", locale)).map((slug) => ({ slug }));
 }
 
 /** Pages 2..n of the main index; page 1 is the index route itself. */

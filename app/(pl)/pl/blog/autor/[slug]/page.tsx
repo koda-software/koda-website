@@ -4,7 +4,7 @@ import { blogAuthorMetadata } from "@/lib/blog/page-meta";
 import { authorParams } from "@/lib/blog/static-params";
 
 export function generateStaticParams() {
-  return authorParams();
+  return authorParams("pl");
 }
 
 export async function generateMetadata({ params }: PageProps<"/pl/blog/autor/[slug]">): Promise<Metadata> {

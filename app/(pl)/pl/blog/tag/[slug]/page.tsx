@@ -4,7 +4,7 @@ import { blogTagMetadata } from "@/lib/blog/page-meta";
 import { tagParams } from "@/lib/blog/static-params";
 
 export function generateStaticParams() {
-  return tagParams();
+  return tagParams("pl");
 }
 
 export async function generateMetadata({ params }: PageProps<"/pl/blog/tag/[slug]">): Promise<Metadata> {
