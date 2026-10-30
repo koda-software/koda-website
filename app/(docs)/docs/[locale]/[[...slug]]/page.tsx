@@ -10,7 +10,7 @@ import {
 import { OpenAPIPage } from '@/components/docs/api-page';
 import { getMDXComponents } from '@/components/docs/mdx';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
-import { openapi } from '@/lib/docs/openapi';
+import { preloadOperations } from '@/lib/docs/openapi';
 import { getPublicUrl, siteName } from '@/lib/docs/site';
 import { source } from '@/lib/docs/source';
 
@@ -91,7 +91,7 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
           components={getMDXComponents({
             OpenAPIPage: async (props) => (
               <OpenAPIPage
-                {...(await openapi.preloadOpenAPIPage(page))}
+                {...(await preloadOperations(page, props.operations))}
                 {...props}
               />
             ),
