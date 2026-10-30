@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const integrationsFeature: FeaturePageContent = {
   seo: {
-    title: "Integracje i zgodność: KSeF, e-Doręczenia | Opero",
+    title: "Integracje i zgodność: KSeF, e-Doręczenia",
     description:
       "KSeF, e-Doręczenia, kursy NBP i weryfikacja VAT wprost z systemu. Otwarte API łączy Opero z narzędziami firmy. Zgodność bez dodatkowych aplikacji.",
   },

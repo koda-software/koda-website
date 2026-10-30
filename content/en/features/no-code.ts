@@ -2,7 +2,7 @@ import type { FeaturePageContent, NoCodePageContent } from "@/content/types";
 
 export const noCodeFeature: FeaturePageContent = {
   seo: {
-    title: "The No-Code System Your Company Needs | Opero",
+    title: "The No-Code System Your Company Needs",
     description:
       "Build custom business applications without code: model your data with custom objects and fields, design forms and layouts, configure menus and dashboards, and publish safely.",
   },

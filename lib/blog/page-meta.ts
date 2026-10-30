@@ -9,8 +9,8 @@ import type { BlogLocale } from "./types";
 
 /**
  * `generateMetadata` bodies for every blog route. Listing and archive pages use
- * the root layout's `%s | KodaSoft` title template; article pages take their
- * title verbatim from the CMS (with the CMS suffix) to avoid a double suffix.
+ * the root layout's title template, as do article pages. The CMS title
+ * suffix setting (`sufiks_title`) is no longer used.
  */
 
 export async function blogIndexMetadata(locale: BlogLocale, page = 1): Promise<Metadata> {

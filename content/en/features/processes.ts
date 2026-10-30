@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const processesFeature: FeaturePageContent = {
   seo: {
-    title: "Workflow and BPM Process System | Opero",
+    title: "Workflow and BPM Process System",
     description:
       "Design a flow of work as a process: stages, transitions, tasks and kanban. Automate approvals and procedures without code. See workflow in Opero.",
   },

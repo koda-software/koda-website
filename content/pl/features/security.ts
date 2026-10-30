@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const securityFeature: FeaturePageContent = {
   seo: {
-    title: "Bezpieczeństwo, role i uprawnienia | Opero",
+    title: "Bezpieczeństwo, role i uprawnienia",
     description:
       "Role, uprawnienia do modułów i pól, wiele spółek, tokeny API i MFA. Kontroluj dostęp do danych firmy na poziomie oczekiwanym przez IT.",
   },

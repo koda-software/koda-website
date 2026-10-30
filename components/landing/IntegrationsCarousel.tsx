@@ -46,7 +46,7 @@ function IntegrationCard({ item }: { item: HomeIntegrationItem }) {
             : `${styles.iconMark} ${toneClass[item.tone]}`
         }`}>
           {item.logoSrc ? (
-            <Image alt="" className={styles.logoImage} height={37} src={item.logoSrc} width={116} />
+            <Image alt={item.name} className={styles.logoImage} height={37} src={item.logoSrc} width={116} />
           ) : (
             <Icon className="h-4 w-4" strokeWidth={1.7} />
           )}

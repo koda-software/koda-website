@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const aiFeature: FeaturePageContent = {
   seo: {
-    title: "Contextual AI for Business | Opero",
+    title: "Contextual AI for Business",
     description:
       "An AI assistant that knows the structure and data of your system. Consultants build configuration with it, users ask about data in natural language.",
   },

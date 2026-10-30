@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const integrationsFeature: FeaturePageContent = {
   seo: {
-    title: "Integrations and Compliance: KSeF, e-Delivery | Opero",
+    title: "Integrations and Compliance: KSeF, e-Delivery",
     description:
       "KSeF, e-Delivery, NBP exchange rates and VAT checks straight from the system. An open API connects Opero with your tools, no extra software needed.",
   },

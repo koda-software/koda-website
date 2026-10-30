@@ -31,8 +31,6 @@ type BlogMetadataInput = {
   title: string;
   description: string;
   path: string;
-  /** Absolute title bypasses the root layout's `%s | KodaSoft` template. */
-  absoluteTitle?: string;
   image?: string;
   noIndex?: boolean;
   languages?: Record<string, string>;
@@ -49,7 +47,6 @@ export function createBlogMetadata({
   title,
   description,
   path,
-  absoluteTitle,
   image,
   noIndex,
   languages,
@@ -57,17 +54,16 @@ export function createBlogMetadata({
 }: BlogMetadataInput): Metadata {
   const url = absoluteUrl(path);
   const ogImage = image ?? absoluteUrl(siteConfig.defaultOgImage);
-  const socialTitle = absoluteTitle ?? title;
 
   return {
-    title: absoluteTitle ? { absolute: absoluteTitle } : title,
+    title,
     description,
     alternates: {
       canonical: url,
       ...(languages ? { languages } : {}),
     },
     openGraph: {
-      title: socialTitle,
+      title,
       description,
       url,
       siteName: siteConfig.name,
@@ -84,11 +80,11 @@ export function createBlogMetadata({
             tags: article.tags,
           }
         : {}),
-      images: [{ url: ogImage, width: 1200, height: 630, alt: socialTitle }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
-      title: socialTitle,
+      title,
       description,
       images: [ogImage],
     },
@@ -142,13 +138,11 @@ export async function createArticleMetadata(article: ArticleFullRow, locale: Blo
   const settings = await getSettings();
   const { languages } = getArticleAlternates(article, locale);
   const title = article.meta_title ?? article.tytul;
-  const suffix = settings?.sufiks_title ?? "";
   const description = truncate(article.meta_description ?? article.zajawka ?? "");
 
   return createBlogMetadata({
     locale,
     title,
-    absoluteTitle: `${title}${suffix}`,
     description,
     path: articlePath(locale, article.slug),
     languages,

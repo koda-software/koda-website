@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const lowCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Automatyzacja procesów i low-code | Opero",
+    title: "Automatyzacja procesów i low-code",
     description:
       "Automatyzuj decyzje regułami, skryptami i zapytaniami SQL. Silnik reguł „warunek to akcja” bez budowy osobnego systemu. Low-code w Opero.",
   },

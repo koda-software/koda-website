@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const lowCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Process Automation and Low-Code | Opero",
+    title: "Process Automation and Low-Code",
     description:
       "Automate decisions with rules, scripts and SQL queries. A \"condition, then action\" rule engine without building a separate system. Low-code in Opero.",
   },

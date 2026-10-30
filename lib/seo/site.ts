@@ -4,6 +4,11 @@ import type { Locale } from "@/lib/i18n/config";
 export const siteConfig = {
   name: "KodaSoft",
   productName: "Opero",
+  /**
+   * Ends every page title. "Opero" alone competes with an unrelated US product,
+   * so the product and company names travel together.
+   */
+  titleSuffix: "Opero by KodaSoft",
   url: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "https://www.kodasoft.pl"),
   defaultOgImage: "/og-image.png",
   logo: "/branding/kodasoft-logo.svg",

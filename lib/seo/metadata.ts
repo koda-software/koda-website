@@ -35,12 +35,7 @@ export function createPageMetadata({ locale, page, title, description, noIndex }
   });
 }
 
-/**
- * Same envelope as `createPageMetadata`, for the feature pages nested under
- * /opero. Their titles already end in "| Opero" (product branding, not
- * company branding), so this bypasses the root layout's "%s | KodaSoft"
- * template - otherwise the two suffixes would stack into "... | Opero | KodaSoft".
- */
+/** Same envelope as `createPageMetadata`, for the feature pages nested under /opero. */
 export function createFeaturePageMetadata({ locale, feature, title, description }: FeatureSeoInput): Metadata {
   return buildMetadata({
     locale,
@@ -48,7 +43,6 @@ export function createFeaturePageMetadata({ locale, feature, title, description 
     alternates: getFeatureAlternatePaths(feature),
     title,
     description,
-    absoluteTitle: true,
   });
 }
 
@@ -59,7 +53,6 @@ function buildMetadata({
   title,
   description,
   noIndex,
-  absoluteTitle,
 }: {
   locale: Locale;
   path: string;
@@ -67,15 +60,16 @@ function buildMetadata({
   title: string;
   description: string;
   noIndex?: boolean;
-  /** Bypasses the root layout's title template for a title that already carries its own suffix. */
-  absoluteTitle?: boolean;
 }): Metadata {
   const languages = Object.fromEntries(
     Object.entries(alternates).map(([key, value]) => [key, absoluteUrl(value)]),
   );
 
   return {
-    title: absoluteTitle ? { absolute: title } : title,
+    // Spelled out rather than left to the layout's title template: the English
+    // homepage sits in the same segment as its root layout, and a template only
+    // reaches pages below the layout that defines it.
+    title: { absolute: `${title} | ${siteConfig.titleSuffix}` },
     description,
     alternates: {
       canonical: absoluteUrl(path),

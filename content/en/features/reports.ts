@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const reportsFeature: FeaturePageContent = {
   seo: {
-    title: "Reports, Dashboards and Data Analytics | Opero",
+    title: "Reports, Dashboards and Data Analytics",
     description:
       "Build reports, charts and dashboards on live data. Drill down from a metric to a record with no export to spreadsheets. Business analytics in Opero.",
   },

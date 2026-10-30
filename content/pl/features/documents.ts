@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const documentsFeature: FeaturePageContent = {
   seo: {
-    title: "Elektroniczny obieg dokumentów (EOD) i DMS | Opero",
+    title: "Elektroniczny obieg dokumentów (EOD) i DMS",
     description:
       "Rejestruj dokumenty, prowadź je przez obieg akceptacji i trzymaj wersje plików przy sprawie. System EOD i DMS w jednej platformie Opero.",
   },

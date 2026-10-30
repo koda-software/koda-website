@@ -2,7 +2,7 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const documentsFeature: FeaturePageContent = {
   seo: {
-    title: "Document Workflow and File Management (DMS) | Opero",
+    title: "Document Workflow and File Management (DMS)",
     description:
       "Register documents, route them through approval and keep file versions with the case. Document workflow and DMS in one platform: Opero.",
   },

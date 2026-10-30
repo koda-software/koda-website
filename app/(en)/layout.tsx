@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
+    template: `%s | ${siteConfig.titleSuffix}`,
   },
   description: "KodaSoft builds Opero, a low-code BPM platform for company processes, documents and data.",
   applicationName: siteConfig.name,
