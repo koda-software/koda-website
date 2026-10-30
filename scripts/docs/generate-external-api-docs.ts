@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import { generateFiles } from 'fumadocs-openapi';
 import { createOpenAPI } from 'fumadocs-openapi/server';
+import { withApiPageDescription } from './lib/api-page-description.mjs';
 import type {
   OperationOutput,
   PageOutput,
@@ -722,7 +723,8 @@ async function generateLocaleApiDocs(locale: Locale) {
     if (!file.endsWith('.mdx')) continue;
     const output = path.join(apiDocsOutputDir, file);
     const text = await readFile(output, 'utf8');
-    await writeFile(output, text.replaceAll(schemaInputPath, `./content/openapi/external-api.${locale}.json`));
+    const portable = text.replaceAll(schemaInputPath, `./content/openapi/external-api.${locale}.json`);
+    await writeFile(output, withApiPageDescription(portable, locale));
   }
   await restoreManualApiPages(apiDocsOutputDir, manualApiPages);
   await updateApiRootMeta(locale);
