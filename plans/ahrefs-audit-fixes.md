@@ -136,10 +136,9 @@ rendered in `components/blog/AuthorBox.tsx` with `rel="… nofollow"`. On
 
 ### 6. Apex domain redirects (Vercel settings, not code)
 
-**Status: still open, needs you.** The Vercel project currently redirects `kodasoft.pl` to `www.kodasoft.pl`
-with a 307. Claude's attempt to change it through the Vercel API was blocked as a domain setting. In Vercel go to
-Project → Settings → Domains → `kodasoft.pl` → Edit and choose "308 Permanent Redirect". `http://` → `https://`
-stays a separate first hop, because Vercel always does that one itself.
+**Status: fixed (2026-10-30).** In Vercel the `kodasoft.pl` → `www.kodasoft.pl` redirect is now 308 Permanent,
+and `curl -sI https://kodasoft.pl/` returns 308. `http://` → `https://` stays a separate first hop, because
+Vercel always does that one itself.
 
 - `https://kodasoft.pl/` → `https://www.kodasoft.pl/` is **307** (temporary) → make it **308**.
 - `http://kodasoft.pl/` → `https://kodasoft.pl/` → `https://www.` is a 2-hop chain → set the apex
@@ -254,7 +253,8 @@ docs-specific one compressed with `tools/get-low`). Also add `twitter:card`.
 - Blog `page/2`: left as is. With two pages, only page 1 links to page 2. A third page will add a second link.
 - Found in passing: tag slugs `wdrozenia` and `firmy-uslugowe` each have two Opero records. Articles use only
   the newer ones (`37b25617…`, `997cd6a1…`). The tag list and the blog sitemap now drop duplicates by slug.
-  The unused records `2549c18d…` and `7e80f24f…` can be deleted in Opero.
+  The unused records `2549c18d…` and `7e80f24f…` can be deleted in Opero. The "Low-Code i No-Code" category description typo
+  ("rozwiązać") is fixed in Opero.
 
 Mostly blog `page/2` and deep docs pages. Will mostly resolve after #1 and #7; additionally link
 related API pages from their section intro and add prev/next pagination links on the blog index.
