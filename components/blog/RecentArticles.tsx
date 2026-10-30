@@ -1,6 +1,5 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import { Cube } from "@/components/landing/BrandMark";
 import { LandingSection, SectionIntro } from "@/components/landing/LandingPrimitives";
 import { Reveal } from "@/components/landing/Reveal";
 import { blogBundle } from "@/lib/blog/bundle";
@@ -79,7 +78,7 @@ function RecentArticle({ article, locale, minRead }: RecentArticleProps) {
       className="group grid gap-5 py-7 max-[640px]:grid-cols-[6.5rem_minmax(0,1fr)] max-[640px]:items-start max-[640px]:gap-4 max-[640px]:py-6"
       href={articlePath(locale, article.slug)}
     >
-      {/* Every entry keeps the same cover frame so titles line up; a missing cover gets the Opero cube instead. */}
+      {/* Every entry keeps the same cover frame so titles line up; a missing cover gets a plain tinted frame. */}
       <span className="relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] bg-[rgba(2,2,13,0.04)]">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element -- CMS files are served through the authenticated proxy; next/image optimization is off site-wide
@@ -91,9 +90,7 @@ function RecentArticle({ article, locale, minRead }: RecentArticleProps) {
             src={image}
           />
         ) : (
-          <span className="grid size-full place-items-center bg-[linear-gradient(145deg,#f7fbff_0%,#eaf4fb_100%)]">
-            <Cube className="h-[clamp(2.25rem,22%,3.5rem)] w-auto text-[var(--color-blue)] opacity-70 transition-transform duration-500 ease-out group-hover:scale-[1.04]" />
-          </span>
+          <span className="block size-full bg-[linear-gradient(145deg,#f7fbff_0%,#eaf4fb_100%)]" />
         )}
       </span>
 

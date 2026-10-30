@@ -9,6 +9,7 @@ import { IntegrationsCarousel } from "@/components/landing/IntegrationsCarousel"
 import { PillarSections } from "@/components/landing/PillarSections";
 import {
   FinalCtaPanel,
+  IndexNumber,
   LandingHero,
   LandingSection,
   landingShellClass,
@@ -16,7 +17,7 @@ import {
   sectionTitleClass,
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
-import { CubeIndex, KodaSoftMarkAccent } from "@/components/landing/BrandMark";
+import { KodaSoftMarkAccent } from "@/components/landing/BrandMark";
 import { HeroDashboardMock } from "@/components/landing/HeroDashboardMock";
 import { Reveal } from "@/components/landing/Reveal";
 import { SolutionScreenshotMock } from "@/components/landing/SolutionScreenshotMock";
@@ -121,7 +122,7 @@ export function HomeScaffold({
               {content.solution.points.map((point, index) => (
                 <Reveal delay={index * 90} key={point}>
                   <article className="grid grid-cols-[auto_1fr] items-center gap-4">
-                    <CubeIndex index={index} invert />
+                    <IndexNumber index={index} invert />
                     <p className="m-0 self-center text-[clamp(1rem,1.18vw,1.08rem)] font-light leading-[1.56] text-white/86">
                       {point}
                     </p>

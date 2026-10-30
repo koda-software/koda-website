@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import { CubeIndex } from "@/components/landing/BrandMark";
 import { CardHead, IconTextGrid } from "@/components/landing/LandingCards";
 import { FeatureDemo } from "./demos/FeatureDemo";
-import { PageHero } from "@/components/landing/LandingPrimitives";
+import { IndexNumber, PageHero } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
@@ -105,7 +104,7 @@ function SplitBlocks({ items }: { items: FeatureBlock[] }) {
           className="grid grid-cols-[auto_minmax(0,0.5fr)_minmax(0,1fr)] items-start gap-8 border-t border-[rgba(11,17,22,0.12)] py-9 max-[900px]:grid-cols-[auto_1fr] max-[900px]:gap-x-5 max-[900px]:gap-y-4"
           key={item.title}
         >
-          <CubeIndex index={index} />
+          <IndexNumber className="self-center" index={index} />
           <h3 className="m-0 self-center text-[1.5rem] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-ink)] max-[900px]:self-center">
             {item.title}
           </h3>

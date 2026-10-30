@@ -1,6 +1,5 @@
 import type { FeaturePillar, HomeStep, UseCaseCard } from "@/content/types";
-import { CubeIndex } from "./BrandMark";
-import { mutedCopyClass } from "./LandingPrimitives";
+import { IndexNumber, mutedCopyClass } from "./LandingPrimitives";
 import { Reveal } from "./Reveal";
 
 /**
@@ -56,7 +55,7 @@ function CardRule({ invert = false }: { invert?: boolean }) {
 export function CardHead({ index, invert = false }: { index: number; invert?: boolean }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <CubeIndex index={index} invert={invert} />
+      <IndexNumber index={index} invert={invert} />
       <CardRule invert={invert} />
     </div>
   );

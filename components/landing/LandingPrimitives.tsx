@@ -236,10 +236,35 @@ export function DarkPanel({ children, className = "" }: DarkPanelProps) {
   );
 }
 
+/** A section label. */
 /**
- * A section label. The brand device lives on the cards instead - the numbered
- * Opero cube in `CubeIndex` (components/landing/BrandMark.tsx).
+ * A card's position as a plain two-digit number - the opening mark of every
+ * numbered card and list. Decorative, so hidden from screen readers: the cards
+ * already carry their own headings in order.
  */
+export function IndexNumber({
+  index,
+  invert = false,
+  className = "",
+}: {
+  /** Zero-based position; rendered one-based and zero-padded. */
+  index: number;
+  /** For cards on a dark surface. */
+  invert?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`${className} shrink-0 font-sans text-[0.95rem] font-medium leading-none tabular-nums ${
+        invert ? "text-[var(--color-cyan)]" : "text-[var(--color-blue)]"
+      }`}
+    >
+      {String(index + 1).padStart(2, "0")}
+    </span>
+  );
+}
+
 export function Eyebrow({ children, invert = false }: { children: ReactNode; invert?: boolean }) {
   return (
     <p className={invert ? darkEyebrowClass : eyebrowClass}>{children}</p>

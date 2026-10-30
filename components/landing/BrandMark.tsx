@@ -10,13 +10,9 @@
  * unrelated pictograms is one of the clearest signals that a layout was
  * assembled rather than designed.
  *
- * They are replaced by one shape the company already owns: the numbered badge
- * that opens every card in a grid. (It also used to sit as the node in front of
- * every section label; that node was dropped, and `Cube` stays exported here
- * so it can come back from one definition.) Four identical cubes in a row
- * would have been just as empty as four unrelated icons, which is why the
- * badge carries the index - it gives the eye an order to follow and the shape
- * a reason to be there.
+ * Cards now open with a plain index number (`IndexNumber` in
+ * LandingPrimitives) - the logo is kept for brand surfaces, not UI chrome.
+ * `Cube` stays exported here so the mark has one definition.
  *
  * The geometry is the mark from `public/branding/opero-mark.svg`, halved into
  * a 24x24 box: three faces with the same narrow gap between each, the front
@@ -70,43 +66,6 @@ export function Cube({
       <CubeFace d={CUBE_RIGHT} opacity={faded ? 0.1 : 0.5} />
       <CubeFace d={CUBE_TOP} opacity={faded ? 0.55 : 1} className={lidClassName} />
     </svg>
-  );
-}
-
-/**
- * The card badge: the cube, faded, with the card's position set in the
- * cut-away corner - the number sits inside the "o".
- *
- * Decorative, so it is hidden from screen readers - the number repeats nothing
- * a reader needs, and the cards already carry their own headings in order.
- */
-export function CubeIndex({
-  index,
-  invert = false,
-}: {
-  /** Zero-based position in the grid; rendered one-based and zero-padded. */
-  index: number;
-  /** For cards on a dark surface. */
-  invert?: boolean;
-}) {
-  return (
-    <span
-      className="relative grid h-11 w-11 shrink-0 place-items-center"
-      aria-hidden="true"
-    >
-      <Cube
-        faded
-        className={`absolute inset-0 h-full w-full ${invert ? "text-white" : "text-[var(--color-blue)]"}`}
-        lidClassName={invert ? "text-[var(--color-cyan)]" : undefined}
-      />
-      <span
-        className={`relative font-sans text-[0.78rem] font-semibold leading-none ${
-          invert ? "text-[var(--color-cyan)]" : "text-[var(--color-blue)]"
-        }`}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </span>
-    </span>
   );
 }
 
