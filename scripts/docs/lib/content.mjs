@@ -116,10 +116,26 @@ export function validateCandidate(candidate, accepted, exceptions, maxDrop = 10)
 }
 export function checkLinks(root) {
   const problems = [];
-  for (const file of files(path.join(root, 'content/docs'))) if (/\.(mdx?|json)$/.test(file)) {
+  const docsRoot = path.join(root, 'content/docs');
+  const all = files(docsRoot);
+  const urls = new Set(all.filter((file) => /\.mdx?$/.test(file)).map((file) => {
+    const slug = path.relative(docsRoot, file).replaceAll('\\', '/').replace(/\.mdx?$/, '').replace(/(^|\/)index$/, '');
+    return `/docs/${slug}`;
+  }));
+  for (const file of all) if (/\.(mdx?|json)$/.test(file)) {
     const lines = readFileSync(file, 'utf8').split('\n');
-    for (const [index, line] of lines.entries()) if (/(\]\(|href=\{?["'`])\/(en|pl)(?=[/?#)"'`]|$)/.test(line))
-      problems.push(`${file}:${index + 1}: docs link lacks /docs prefix`);
+    let fenced = false;
+    for (const [index, line] of lines.entries()) {
+      if (/^\s*(```|~~~)/.test(line)) fenced = !fenced;
+      // The page template renders the frontmatter title as the only H1.
+      if (!fenced && /\.mdx?$/.test(file) && /^# /.test(line))
+        problems.push(`${file}:${index + 1}: body H1 duplicates the page title H1; use ## or the frontmatter title`);
+      if (/(\]\(|href=\{?["'`])\/(en|pl)(?=[/?#)"'`]|$)/.test(line))
+        problems.push(`${file}:${index + 1}: docs link lacks /docs prefix`);
+      // Every internal docs link must land on a page that exists, so crawlers never find a 404.
+      for (const [, target] of line.matchAll(/(?:\]\(|href=\{?["'`])(\/docs\/(?:en|pl)[^\s)"'`#?]*)/g))
+        if (!urls.has(target.replace(/\/$/, ''))) problems.push(`${file}:${index + 1}: docs link to missing page ${target}`);
+    }
   }
   if (problems.length) throw new Error(problems.join('\n'));
 }

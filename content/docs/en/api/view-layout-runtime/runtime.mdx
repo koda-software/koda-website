@@ -1,9 +1,7 @@
 ---
-title: Runtime Guide
-description: Resolve published View Layouts, load runtime data, and save custom object records.
+title: View layout runtime guide
+description: "Resolve published View Layouts, load runtime data, and create or update custom object records, including relation table and subordinate object saves."
 ---
-
-# View Layout Runtime
 
 Runtime endpoints use published View Layouts. They are for rendering a layout, loading lazy block data, and creating or updating custom object records through the published layout contract.
 
@@ -166,9 +164,9 @@ Use relation table runtime endpoints when a UI needs relation rows or target row
 
 | Need | Endpoint |
 | --- | --- |
-| Resolve the target row layout for create or edit UI | [`GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout`](/docs/en/api/view-layout-runtime/resolve-relation-table-target-layout) |
-| Read selected relation table rows through the target row layout | [`POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout`](/docs/en/api/view-layout-runtime/get-relation-table-row-layout-data) |
-| Query a relation table for a parent record | [`POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query`](/docs/en/api/view-layout-runtime/query-relation-table-rows-through-view-layout) |
+| Resolve the target row layout for create or edit UI | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Read selected relation table rows through the target row layout | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Query a relation table for a parent record | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
 
 The query endpoint path includes the parent `recordId` because relation rows are read in the context of that parent record.
 

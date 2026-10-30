@@ -1,9 +1,7 @@
 ---
-title: Przewodnik po runtime
-description: Rozwiązuj opublikowane układy widoku, ładuj dane runtime i zapisuj rekordy obiektów własnych.
+title: Przewodnik po runtime układów widoku
+description: "Rozwiązuj opublikowane układy widoku, ładuj dane runtime oraz twórz i aktualizuj rekordy obiektów własnych, w tym tabele relacji i obiekty podrzędne."
 ---
-
-# Runtime układów widoku
 
 Endpointy runtime używają opublikowanych układów widoku. Służą do renderowania układu, ładowania danych bloków ładowanych później oraz tworzenia albo aktualizacji rekordów obiektów własnych przez opublikowany kontrakt układu.
 
@@ -166,9 +164,9 @@ Używaj endpointów runtime tabel relacji, gdy UI potrzebuje wierszy relacji alb
 
 | Potrzeba | Endpoint |
 | --- | --- |
-| Rozwiązanie docelowego układu wiersza dla UI tworzenia albo edycji | [`GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout`](/docs/pl/api/view-layout-runtime/resolve-relation-table-target-layout) |
-| Odczyt wybranych wierszy tabeli relacji przez docelowy układ wiersza | [`POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout`](/docs/pl/api/view-layout-runtime/get-relation-table-row-layout-data) |
-| Zapytanie o tabelę relacji dla rekordu nadrzędnego | [`POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query`](/docs/pl/api/view-layout-runtime/query-relation-table-rows-through-view-layout) |
+| Rozwiązanie docelowego układu wiersza dla UI tworzenia albo edycji | `GET /v1/view-layouts/runtime/dynamic-object/relation-tables/:relationFieldKey/target-layout` |
+| Odczyt wybranych wierszy tabeli relacji przez docelowy układ wiersza | `POST /v1/view-layouts/runtime/dynamic-object/relation-tables/table-layout` |
+| Zapytanie o tabelę relacji dla rekordu nadrzędnego | `POST /v1/view-layouts/runtime/dynamic-object/records/:recordId/relation-tables/:relationFieldKey/query` |
 
 Ścieżka endpointu zapytania zawiera nadrzędne `recordId`, ponieważ wiersze relacji są odczytywane w kontekście tego rekordu nadrzędnego.
 

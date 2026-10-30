@@ -2,6 +2,7 @@ import Link from "next/link";
 import GlobeIcon from "lucide-react/dist/esm/icons/globe.mjs";
 import type { BlogUiContent } from "@/content/types";
 import { blogImageSrc } from "@/lib/blog/images";
+import { siteConfig } from "@/lib/seo/site";
 import { authorPath } from "@/lib/blog/routes";
 import { renderTiptap } from "@/lib/blog/tiptap";
 import type { BlogLocale, TiptapPayload } from "@/lib/blog/types";
@@ -39,11 +40,27 @@ function XGlyph() {
   );
 }
 
+const ownHosts = new Set(["kodasoft.pl", "www.kodasoft.pl", new URL(siteConfig.url).hostname]);
+
+/**
+ * An author "www" on this site (the CMS stores the apex `https://kodasoft.pl/`)
+ * becomes a same-site path, so it is followed and skips the apex → www redirect.
+ */
+function ownSitePath(href: string) {
+  try {
+    const url = new URL(href);
+    return ownHosts.has(url.hostname) ? `${url.pathname}${url.search}${url.hash}` : null;
+  } catch {
+    return null;
+  }
+}
+
 /** `invert` switches the borders and ink for the dark author-archive header. */
 export function AuthorLinks({ author, invert = false, className = "mt-5" }: { author: BlogAuthor; invert?: boolean; className?: string }) {
   if (!author.linkedin && !author.x && !author.www) return null;
 
   const linkClass = invert ? socialLinkDarkClass : socialLinkLightClass;
+  const wwwPath = author.www ? ownSitePath(author.www) : null;
 
   return (
     <div className={`${className} flex gap-2`}>
@@ -57,7 +74,11 @@ export function AuthorLinks({ author, invert = false, className = "mt-5" }: { au
           <XGlyph />
         </a>
       ) : null}
-      {author.www ? (
+      {wwwPath ? (
+        <Link className={linkClass} href={wwwPath} aria-label={`${author.nazwa} - www`}>
+          <GlobeIcon className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
+        </Link>
+      ) : author.www ? (
         <a className={linkClass} href={author.www} rel="noopener noreferrer nofollow" target="_blank" aria-label={`${author.nazwa} - www`}>
           <GlobeIcon className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
         </a>

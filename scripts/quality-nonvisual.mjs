@@ -6,7 +6,7 @@ const root = process.cwd();
 const siteUrl = "https://www.kodasoft.pl";
 const ogImage = `${siteUrl}/og-image.png`;
 
-// Mirrors featureSlugs in lib/i18n/features.ts and next-sitemap.config.js.
+// Mirrors featureSlugs in lib/i18n/features.ts.
 const featureSlugs = {
   processes: { en: "process-workflow", pl: "procesy-workflow" },
   documents: { en: "document-management", pl: "eod-dms" },
@@ -38,8 +38,8 @@ const featurePages = Object.values(featureSlugs).flatMap((slugs) => {
 const pages = [
   { file: ".next/server/app/index.html", route: "/", locale: "en", canonical: siteUrl, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
   { file: ".next/server/app/pl.html", route: "/pl", locale: "pl", canonical: `${siteUrl}/pl`, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
-  { file: ".next/server/app/en/opero.html", route: "/en/opero", locale: "en", canonical: `${siteUrl}/en/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, software: true },
-  { file: ".next/server/app/pl/opero.html", route: "/pl/opero", locale: "pl", canonical: `${siteUrl}/pl/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, software: true },
+  { file: ".next/server/app/en/opero.html", route: "/en/opero", locale: "en", canonical: `${siteUrl}/en/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, service: true },
+  { file: ".next/server/app/pl/opero.html", route: "/pl/opero", locale: "pl", canonical: `${siteUrl}/pl/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, service: true },
   ...featurePages,
   { file: ".next/server/app/en/solutions.html", route: "/en/solutions", locale: "en", canonical: `${siteUrl}/en/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
   { file: ".next/server/app/pl/solutions.html", route: "/pl/solutions", locale: "pl", canonical: `${siteUrl}/pl/solutions`, alternates: { en: `${siteUrl}/en/solutions`, pl: `${siteUrl}/pl/solutions`, "x-default": `${siteUrl}/en/solutions` } },
@@ -56,7 +56,8 @@ for (const [en, pl] of [["/en/about", "/pl/o-nas"], ["/en/privacy-policy", "/pl/
     canonical: `${siteUrl}${route}`, alternates: { en: `${siteUrl}${en}`, pl: `${siteUrl}${pl}`, "x-default": `${siteUrl}${en}` },
   });
 }
-const expectedSitemap = pages.map((page) => page.canonical).sort();
+// Blog URLs, the index included, are listed only in blog-sitemap.xml.
+const expectedSitemap = pages.filter((page) => !page.route.endsWith("/blog")).map((page) => page.canonical).sort();
 const failures = [];
 
 function read(relativePath) {
@@ -91,9 +92,9 @@ for (const page of pages) {
     assert(/\salt=/.test(img), `${page.route}: image without alt attribute`);
   }
 
-  if (page.software) {
-    assert(html.includes('"@type":"SoftwareApplication"'), `${page.route}: missing SoftwareApplication JSON-LD`);
-    assert(html.includes('"applicationCategory":"BusinessApplication"'), `${page.route}: missing SoftwareApplication category`);
+  if (page.service) {
+    assert(html.includes('"@type":"Service"') && html.includes('"@type":"OfferCatalog"'), `${page.route}: missing Opero Service JSON-LD`);
+    assert(!html.includes('"@type":"SoftwareApplication"'), `${page.route}: SoftwareApplication JSON-LD needs a price and rating we don't publish`);
   }
 
   if (page.breadcrumb) {
@@ -107,14 +108,12 @@ for (const page of pages) {
 
 }
 
-const sitemap = fs.existsSync(path.join(root, "public/sitemap.xml"))
-  ? read("public/sitemap.xml")
-  : read(".next/server/app/sitemap.xml.body");
+const sitemap = read(".next/server/app/sitemap.xml.body");
 const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
 assert(JSON.stringify(locs.sort()) === JSON.stringify(expectedSitemap), "sitemap routes do not match expected launch routes");
 assert((sitemap.match(/hreflang="x-default"/g) ?? []).length === expectedSitemap.length, "sitemap missing x-default alternates");
 
-for (const page of pages) {
+for (const page of pages.filter((page) => !page.route.endsWith("/blog"))) {
   for (const [locale, href] of Object.entries(page.alternates)) {
     assert(
       sitemap.includes(`hreflang="${locale}" href="${href}"`),

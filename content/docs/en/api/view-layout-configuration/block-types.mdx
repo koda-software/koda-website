@@ -1,13 +1,11 @@
 ---
 title: Block Types
-description: Understand View Layout block anatomy, sources, references, nesting, and common block types.
+description: "View Layout block anatomy in the Opero API: sources, reference shapes, fields, sections, columns, tabs, relation tables, buttons and custom HTML."
 ---
-
-# Block Types
 
 Blocks are the building units of a View Layout. A block can be a field, section, tab, relation table, built-in component, button, custom HTML block, dashboard block, or another supported layout item.
 
-Use [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) to get supported blocks for the exact surface, mode, and target before saving a draft.
+Use `GET /v1/view-layouts/catalog` to get supported blocks for the exact surface, mode, and target before saving a draft.
 
 ## Block Anatomy
 
@@ -150,7 +148,7 @@ Buttons are system blocks. Supported button actions are `open_url` and `execute_
 
 Opero renders and sanitizes custom HTML blocks.
 
-Use [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/en/api/view-layout-runtime/get-view-layout-runtime-context-variables) to learn which variables can be used in button URL templates, custom HTML, scripts, and runtime conditions.
+Use `GET /v1/view-layouts/:layoutId/runtime-context-variables` to learn which variables can be used in button URL templates, custom HTML, scripts, and runtime conditions.
 
 ## Built-In Blocks
 

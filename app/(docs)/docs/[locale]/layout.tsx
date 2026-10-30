@@ -8,7 +8,7 @@ import './docs.css';
 import { Providers } from '@/components/docs/providers';
 import { baseOptions, createI18nProvider } from '@/lib/docs/layout.shared';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
-import { docsBasePath, getSiteUrl, siteDescription, siteName } from '@/lib/docs/site';
+import { docsBasePath, docsOgImage, getSiteUrl, siteDescription, siteName } from '@/lib/docs/site';
 import { source } from '@/lib/docs/source';
 
 export const dynamicParams = false;
@@ -39,6 +39,11 @@ export const metadata: Metadata = {
     siteName,
     title: siteName,
     description: siteDescription,
+    images: [docsOgImage],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [docsOgImage.url],
   },
 };
 

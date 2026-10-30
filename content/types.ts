@@ -977,6 +977,8 @@ export type BlogUiContent = {
     tagDescription: string;
     authorTitle: string;
     authorDescription: string;
+    /** Added after a short category/tag/author description when there is room in a search result. */
+    descriptionTopics: string;
     /** `{page}` is replaced with the page number. */
     pageTitle: string;
     pageDescription: string;

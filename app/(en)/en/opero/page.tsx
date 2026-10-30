@@ -7,7 +7,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { featurePages } from "@/content/en/features";
 import { featureKeys } from "@/lib/i18n/features";
-import { SoftwareApplicationJsonLd } from "@/lib/seo/json-ld";
+import { OperoServiceJsonLd } from "@/lib/seo/json-ld";
 
 export const metadata: Metadata = createPageMetadata({
   locale: "en",
@@ -18,7 +18,7 @@ export const metadata: Metadata = createPageMetadata({
 export default function EnOperoPage() {
   return (
     <>
-      <SoftwareApplicationJsonLd
+      <OperoServiceJsonLd
         description={operoProductContent.seo.description}
         featureList={featureKeys.map((key) => featurePages[key].navLabel)}
         locale="en"

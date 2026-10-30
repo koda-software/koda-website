@@ -42,6 +42,14 @@ export function getRoutePath(page: PageKey, locale: Locale) {
   return localizePath(locale, page);
 }
 
+/**
+ * Drops a brand ending an editor already typed (e.g. a CMS meta title ending in "| Opero"),
+ * since the layout template appends `titleSuffix` and the brand would otherwise appear twice.
+ */
+export function withoutBrandSuffix(title: string) {
+  return title.replace(/\s+[|–—-]\s+(?:Opero by KodaSoft|Opero|KodaSoft)\s*$/i, "").trim() || title;
+}
+
 export function absoluteUrl(path: string) {
   return new URL(path, siteConfig.url).toString();
 }

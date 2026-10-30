@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl, siteConfig } from "@/lib/seo/site";
+import { absoluteUrl, siteConfig, withoutBrandSuffix } from "@/lib/seo/site";
 import type { Locale } from "@/lib/i18n/config";
 import { blogImagePath, isFileId } from "./images";
 import { getSettings } from "./queries";
@@ -22,8 +22,12 @@ function resolveOgImage(...candidates: Array<string | null | undefined>): string
   return absoluteUrl(siteConfig.defaultOgImage);
 }
 
-function truncate(value: string, max = 320) {
-  return value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value;
+/** Cut at a word to what a search result shows (~160 characters); the page itself keeps the full text. */
+function truncate(value: string, max = 160) {
+  if (value.length <= max) return value;
+
+  const cut = value.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,.;:–—-]+$/, "")}…`;
 }
 
 type BlogMetadataInput = {
@@ -44,7 +48,7 @@ type BlogMetadataInput = {
 
 export function createBlogMetadata({
   locale,
-  title,
+  title: rawTitle,
   description,
   path,
   image,
@@ -54,6 +58,7 @@ export function createBlogMetadata({
 }: BlogMetadataInput): Metadata {
   const url = absoluteUrl(path);
   const ogImage = image ?? absoluteUrl(siteConfig.defaultOgImage);
+  const title = withoutBrandSuffix(rawTitle);
 
   return {
     title,

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, renameSync } from 'node:fs';
-import { createManifest, validateSnapshot, validateInventory, validateCandidate, writeManifest } from '../lib/content.mjs';
+import { checkLinks, createManifest, validateSnapshot, validateInventory, validateCandidate, writeManifest } from '../lib/content.mjs';
 import { fetchJson, fetchKnowledgeBase } from '../lib/fetch.mjs';
 import { generate, replaceGenerated } from '../lib/generate.mjs';
 import { validateSearch, previewIndexNames } from '../lib/search.mjs';
@@ -38,6 +38,20 @@ test('manual pages must exist and unknown authored API files are preserved by re
   assert.equal(readFileSync(path.join(root, 'content/docs/en/api/new-guide.mdx'), 'utf8'), 'new authored page');
   rmSync(path.join(root, 'content/docs/en/api/authentication.mdx'));
   assert.throws(() => validateInventory(root, manifest), /Missing manual/);
+});
+test('docs links must point at pages that exist', (t) => {
+  const { root, put } = fixture(t);
+  put('content/docs/en/api/authentication.mdx', 'See [`GET /v1/health`](/docs/en/api/health/liveness-and-database-health-check#ok) and [Guide](/docs/en/opero/section/guide/).');
+  checkLinks(root);
+  put('content/docs/pl/api/authentication.mdx', 'Use [`POST /v1/rules`](/docs/pl/api/rules/create-rule).');
+  assert.throws(() => checkLinks(root), /missing page \/docs\/pl\/api\/rules\/create-rule/);
+});
+test('docs bodies must not add a second H1, except inside code blocks', (t) => {
+  const { root, put } = fixture(t);
+  put('content/docs/en/api/authentication.mdx', '---\ntitle: Auth\n---\n\n```bash\n# a shell comment\n```\n\n## Section');
+  checkLinks(root);
+  put('content/docs/en/api/authentication.mdx', '---\ntitle: Auth\n---\n\n# Auth');
+  assert.throws(() => checkLinks(root), /body H1/);
 });
 test('duplicate normalized slugs and malformed records fail', async () => {
   for (const data of [[record('1', 'Same'), record('2', 'same')], [{ id: '1', values: {} }], [record(), record()]]) {

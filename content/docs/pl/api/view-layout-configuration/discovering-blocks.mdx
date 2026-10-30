@@ -1,9 +1,7 @@
 ---
 title: Odkrywanie bloków
-description: Używaj endpointów odkrywania przed zbudowaniem wersji roboczej układu widoku.
+description: "Używaj endpointów odkrywania przed zbudowaniem wersji roboczej układu widoku: możliwości i definicje powierzchni, katalog bloków i typy pól własnych."
 ---
-
-# Odkrywanie bloków
 
 Zanim zapiszesz wersję roboczą układu, zapytaj API, co jest dostępne dla edytowanej powierzchni, trybu i targetu. Dzięki temu klient nie musi wpisywać na stałe list pól, wymaganych bloków, regionów ani reguł typów pól własnych.
 
@@ -15,11 +13,11 @@ Wszystkie endpointy odkrywania wymagają dostępu do odczytu układów widoku.
 
 | Endpoint | Do czego służy |
 | --- | --- |
-| [`GET /v1/view-layouts/surface-capabilities`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-capabilities) | Sprawdzenie, które powierzchnie i tryby istnieją. |
-| [`GET /v1/view-layouts/surface-definitions`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-definitions) | Regiony, domyślne sekcje, wymagane bloki wbudowane i metadane powierzchni. |
-| [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog) | Bloki, które użytkownik może dodać dla konkretnej powierzchni, trybu i targetu. |
-| [`GET /v1/view-layouts/custom-field-types`](/docs/pl/api/view-layout-configuration/get-view-layout-custom-field-type-schemas) | Schematy typów pól do tworzenia albo edytowania pól własnych w wersji roboczej układu. |
-| [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/pl/api/view-layout-runtime/get-view-layout-runtime-context-variables) | Zmienne dostępne dla własnego HTML, skryptów, URL przycisków i warunków runtime. |
+| `GET /v1/view-layouts/surface-capabilities` | Sprawdzenie, które powierzchnie i tryby istnieją. |
+| `GET /v1/view-layouts/surface-definitions` | Regiony, domyślne sekcje, wymagane bloki wbudowane i metadane powierzchni. |
+| `GET /v1/view-layouts/catalog` | Bloki, które użytkownik może dodać dla konkretnej powierzchni, trybu i targetu. |
+| `GET /v1/view-layouts/custom-field-types` | Schematy typów pól do tworzenia albo edytowania pól własnych w wersji roboczej układu. |
+| `GET /v1/view-layouts/:layoutId/runtime-context-variables` | Zmienne dostępne dla własnego HTML, skryptów, URL przycisków i warunków runtime. |
 
 ## Możliwości powierzchni
 

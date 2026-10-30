@@ -23,7 +23,8 @@ function entriesFor(paths: Record<string, string>, alternates: Record<string, st
 }
 
 function buildEntries(): Entry[] {
-  const pages = pageKeys.flatMap((page) => {
+  // The blog index is listed in blog-sitemap.xml with its CMS lastmod; listing it here too put it in two sitemaps.
+  const pages = pageKeys.filter((page) => page !== "blog").flatMap((page) => {
     const alternates = getAlternatePaths(page);
     const paths = Object.fromEntries(locales.map((locale) => [locale, localizePath(locale, page)]));
 

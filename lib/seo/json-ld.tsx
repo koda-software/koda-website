@@ -81,14 +81,15 @@ export function BreadcrumbJsonLd({ items }: { items: Array<{ name: string; path:
 }
 
 export type ArticleJsonLdInput = {
-  type: "BlogPosting" | "Article" | "NewsArticle";
+  type: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle";
   headline: string;
   description: string;
   /** Absolute image URL; falls back to the site OG image upstream. */
   image: string;
   url: string;
-  datePublished: string;
-  dateModified: string;
+  /** Optional for docs pages, which carry no trustworthy per-page dates. */
+  datePublished?: string;
+  dateModified?: string;
   inLanguage: string;
   author?: {
     name: string;
@@ -119,8 +120,8 @@ export function ArticleJsonLd({
         description,
         image: [image],
         url,
-        datePublished,
-        dateModified,
+        ...(datePublished ? { datePublished } : {}),
+        ...(dateModified ? { dateModified } : {}),
         inLanguage,
         mainEntityOfPage: {
           "@type": "WebPage",
@@ -151,7 +152,11 @@ export function ArticleJsonLd({
   );
 }
 
-export function SoftwareApplicationJsonLd({
+/**
+ * Opero as a Service, not a SoftwareApplication: Google's Software App rich result
+ * requires a price and a rating, and we publish neither (sales go through a demo).
+ */
+export function OperoServiceJsonLd({
   description,
   featureList,
   locale,
@@ -165,20 +170,22 @@ export function SoftwareApplicationJsonLd({
     <JsonLd
       data={{
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
+        "@type": "Service",
         name: siteConfig.productName,
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web",
-        applicationSubCategory: "Business Process Management",
-        inLanguage: locale,
+        serviceType: "Business Process Management software",
+        category: "BusinessApplication",
         url: absoluteUrl(localizePath(locale, "opero")),
         description,
-        featureList,
-        screenshot: absoluteUrl(siteConfig.defaultOgImage),
+        image: absoluteUrl(siteConfig.defaultOgImage),
         provider: {
           "@type": "Organization",
           name: siteConfig.name,
           url: siteConfig.url,
+        },
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: siteConfig.productName,
+          itemListElement: featureList.map((name) => ({ "@type": "Service", name })),
         },
       }}
     />

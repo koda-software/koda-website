@@ -15,6 +15,7 @@ import {
   getPageSize,
   getSettings,
   getTagBySlug,
+  getTags,
 } from "@/lib/blog/queries";
 import {
   articlePath,
@@ -35,6 +36,7 @@ import { ArticlePage } from "./ArticlePage";
 import { AuthorLinks, type BlogAuthor } from "./AuthorBox";
 import { BlogListPage } from "./BlogListPage";
 import { BlogNotFound } from "./BlogNotFound";
+import { TagChips } from "./TagChips";
 
 /**
  * Locale-agnostic page bodies. The per-locale `page.tsx` files stay thin
@@ -51,7 +53,11 @@ function totalPagesOf(total: number, pageSize: number) {
 export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale; page?: number }) {
   const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
   const pageSize = await getPageSize();
-  const { rows, total } = await getArticles({ jezyk: locale, page, pageSize });
+  // Most tags hold one article; listing them all here gives each tag page a second link.
+  const [{ rows, total }, tags] = await Promise.all([
+    getArticles({ jezyk: locale, page, pageSize }),
+    getTags(locale),
+  ]);
   const totalPages = totalPagesOf(total, pageSize);
 
   // Page 1 renders even when empty; deeper pages beyond the range do not exist.
@@ -64,6 +70,7 @@ export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale;
       <BlogListPage
         buildHref={(target) => blogPagePath(locale, target)}
         ctaHrefs={ctaHrefs}
+        footer={<TagChips locale={locale} tags={tags} ui={ui} />}
         heading={{ eyebrow: ui.index.eyebrow, title: ui.index.title, description: ui.index.description }}
         locale={locale}
         page={page}

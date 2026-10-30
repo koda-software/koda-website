@@ -1,9 +1,7 @@
 ---
 title: Custom Fields
-description: Stage custom field changes inside View Layout drafts and publish them safely.
+description: "Stage custom field changes inside View Layout drafts: discover field type schemas, add or update fields, unlink or delete them, and publish safely."
 ---
-
-# Custom Fields
 
 View Layouts can show existing fields and can stage custom field definition changes in a draft. This lets an API client build a layout editor that can add fields and update field properties before publishing.
 
@@ -26,7 +24,7 @@ Use the returned schemas to build the field editor. Do not guess type-specific c
 
 ## Add Existing Fields
 
-For a custom object field, add a `field` block with `source: "dynamic_field"`.
+For a custom object field, add a `field` block with `source: "dynamic_field"`. To see which field keys an object already has, call [List entity fields](/docs/en/api/entity-fields/get-entity-fields) with its `moduleKey` and `objectKey`.
 
 ```json
 {

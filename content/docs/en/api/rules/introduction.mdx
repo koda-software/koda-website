@@ -1,9 +1,7 @@
 ---
-title: Introduction
-description: Learn how to manage and run Opero automation rules.
+title: Rules API introduction
+description: "Manage and run Opero automation rules through the API: permissions, the recommended workflow, rule shape, list query format and common errors."
 ---
-
-# Rules
 
 Rules define automation for work in Opero. Through the External API, an integration can read, create, update, delete, validate, and manually run automation rules.
 
@@ -57,9 +55,9 @@ Keep separate tokens for separate jobs when possible. For example, an integratio
 
 Before building a rule, load the available building blocks from the organization:
 
-- [`GET /v1/rules/config`](/docs/en/api/rules/get-rule-builder-config) returns trigger metadata, including which triggers require a custom object.
-- [`GET /v1/rules/step-types`](/docs/en/api/rules/search-rule-step-types) returns step types, categories, labels, and capabilities for the rule builder.
-- [`GET /v1/rules/entity-fields`](/docs/en/api/rules/list-rule-entity-fields) returns fields that can be used by triggers and steps, including custom fields and dynamic record fields.
+- `GET /v1/rules/config` returns trigger metadata, including which triggers require a custom object.
+- `GET /v1/rules/step-types` returns step types, categories, labels, and capabilities for the rule builder.
+- `GET /v1/rules/entity-fields` returns fields that can be used by triggers and steps, including custom fields and dynamic record fields.
 
 Use these endpoints to drive a client UI or rule generation logic instead of hard-coding assumptions about triggers, steps, and fields. Available fields depend on the organization configuration.
 
@@ -81,7 +79,7 @@ Create the draft with clear step positions and stable context keys. Avoid reusin
 
 ### Compute Context Before Saving
 
-Call [`POST /v1/rules/context-schemas`](/docs/en/api/rules/compute-rule-context-schemas) while building the draft. This endpoint does not save anything. It calculates what context is available before each step based on the trigger and the earlier steps in the draft.
+Call `POST /v1/rules/context-schemas` while building the draft. This endpoint does not save anything. It calculates what context is available before each step based on the trigger and the earlier steps in the draft.
 
 Use context schemas to:
 
@@ -92,11 +90,11 @@ Use context schemas to:
 
 The base context usually includes `trigger` and `organization`. If a step has a `contextKey`, that key becomes available to later steps after the step runs. The context schema for a step shows the context before that step starts, not after it finishes.
 
-When editing a saved rule, use [`GET /v1/rules/{id}/context-schema`](/docs/en/api/rules/get-rule-context-schema) to inspect the context available before a specific step.
+When editing a saved rule, use `GET /v1/rules/{id}/context-schema` to inspect the context available before a specific step.
 
 ### Validate Scripts
 
-If the rule uses `RUN_SCRIPT` steps, call [`POST /v1/rules/validate-script`](/docs/en/api/rules/validate-rule-script) with the JavaScript code before saving the rule. This catches invalid or unsafe code early and gives the user a focused error before the full create or update request.
+If the rule uses `RUN_SCRIPT` steps, call `POST /v1/rules/validate-script` with the JavaScript code before saving the rule. This catches invalid or unsafe code early and gives the user a focused error before the full create or update request.
 
 Script validation checks the code itself. It does not prove that every runtime value will exist for every execution. Use it together with context schemas: context schemas explain what should be available, and script validation checks whether the script body is acceptable.
 
@@ -106,10 +104,10 @@ For new rules, especially rules with side effects, start with `isActive: false`.
 
 This is the safest authoring flow:
 
-1. Create the rule as inactive with [`POST /v1/rules`](/docs/en/api/rules/create-rule).
+1. Create the rule as inactive with `POST /v1/rules`.
 2. Read it back with [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule).
 3. Confirm that the trigger, step order, configs, context keys, and branching behavior were saved as expected.
-4. Activate it only after review and testing with [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule).
+4. Activate it only after review and testing with `PATCH /v1/rules/{id}`.
 
 This avoids accidentally sending emails, calling webhooks, updating records, generating documents, or calling other rules before the definition has been checked.
 
@@ -155,21 +153,21 @@ A common debugging flow is:
 3. Fetch the rule with [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule).
 4. Find the step with the same `position`.
 5. Compare that step's templates or script with the execution `contextSnapshot`.
-6. Patch the rule with [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule), keep it inactive if needed, and run another manual test.
+6. Patch the rule with `PATCH /v1/rules/{id}`, keep it inactive if needed, and run another manual test.
 
 ### Check Related Rules Before Changing Data Structures
 
 Before deleting or changing a custom module, custom object, or custom field, use the related-rule endpoints to find rules that depend on it:
 
-- [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/en/api/rules/list-rules-related-to-custom-module)
-- [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/en/api/rules/list-rules-related-to-custom-object)
-- [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/en/api/rules/list-rules-related-to-custom-field)
+- `GET /v1/rules/related/custom-modules/{moduleKey}`
+- `GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`
+- `GET /v1/rules/related/custom-fields/{fieldDefinitionId}`
 
 These endpoints help prevent unexpected breakage. For example, a custom field may be referenced by a trigger, condition, script, or record update step. Review and update related rules before changing the underlying structure.
 
 ## Rule Shape
 
-The create and update endpoints use the same rule model. Use [`POST /v1/rules`](/docs/en/api/rules/create-rule) to create a rule and [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) to update it.
+The create and update endpoints use the same rule model. Use `POST /v1/rules` to create a rule and `PATCH /v1/rules/{id}` to update it.
 
 ```json
 {
@@ -266,22 +264,22 @@ Useful execution list fields include:
 
 | Endpoint | Use it for |
 | --- | --- |
-| [`GET /v1/rules/config`](/docs/en/api/rules/get-rule-builder-config) | Load localized trigger metadata for the rule builder. |
-| [`GET /v1/rules/step-types`](/docs/en/api/rules/search-rule-step-types) | Search available rule step types. |
-| [`GET /v1/rules/entity-fields`](/docs/en/api/rules/list-rule-entity-fields) | List fields available to rule triggers and steps. |
-| [`POST /v1/rules/context-schemas`](/docs/en/api/rules/compute-rule-context-schemas) | Compute context available before each step for an unsaved draft. |
-| [`GET /v1/rules/{id}/context-schema`](/docs/en/api/rules/get-rule-context-schema) | Compute context available before a step in a saved rule. |
-| [`POST /v1/rules/validate-script`](/docs/en/api/rules/validate-rule-script) | Validate JavaScript rule-step code without saving a rule. |
+| `GET /v1/rules/config` | Load localized trigger metadata for the rule builder. |
+| `GET /v1/rules/step-types` | Search available rule step types. |
+| `GET /v1/rules/entity-fields` | List fields available to rule triggers and steps. |
+| `POST /v1/rules/context-schemas` | Compute context available before each step for an unsaved draft. |
+| `GET /v1/rules/{id}/context-schema` | Compute context available before a step in a saved rule. |
+| `POST /v1/rules/validate-script` | Validate JavaScript rule-step code without saving a rule. |
 
 ### Rules
 
 | Endpoint | Use it for |
 | --- | --- |
 | [`GET /v1/rules`](/docs/en/api/rules/list-rules) | List organization-scoped rules. |
-| [`POST /v1/rules`](/docs/en/api/rules/create-rule) | Create an organization-scoped rule. |
+| `POST /v1/rules` | Create an organization-scoped rule. |
 | [`GET /v1/rules/{id}`](/docs/en/api/rules/get-rule) | Read one saved rule with its trigger and ordered steps. |
-| [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) | Update a saved rule. |
-| [`DELETE /v1/rules/{id}`](/docs/en/api/rules/delete-rule) | Delete a rule. |
+| `PATCH /v1/rules/{id}` | Update a saved rule. |
+| `DELETE /v1/rules/{id}` | Delete a rule. |
 | [`POST /v1/rules/{id}/execute`](/docs/en/api/rules/execute-rule) | Manually execute an active manual rule. |
 | [`GET /v1/rules/{id}/executions`](/docs/en/api/rules/list-rule-executions) | List execution history for a rule. |
 | [`GET /v1/rules/{id}/executions/{execId}`](/docs/en/api/rules/get-rule-execution) | Read one execution record. |
@@ -290,9 +288,9 @@ Useful execution list fields include:
 
 | Endpoint | Use it for |
 | --- | --- |
-| [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/en/api/rules/list-rules-related-to-custom-module) | Find rules related to a custom module. |
-| [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/en/api/rules/list-rules-related-to-custom-object) | Find rules related to a custom object. |
-| [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/en/api/rules/list-rules-related-to-custom-field) | Find rules related to a custom field. |
+| `GET /v1/rules/related/custom-modules/{moduleKey}` | Find rules related to a custom module. |
+| `GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}` | Find rules related to a custom object. |
+| `GET /v1/rules/related/custom-fields/{fieldDefinitionId}` | Find rules related to a custom field. |
 
 ## Common Errors
 
@@ -307,7 +305,7 @@ Useful execution list fields include:
 
 ### Create An Inactive Manual Rule
 
-Use [`POST /v1/rules`](/docs/en/api/rules/create-rule) to create the rule as inactive first.
+Use `POST /v1/rules` to create the rule as inactive first.
 
 ```http
 POST /v1/rules
@@ -340,7 +338,7 @@ Content-Type: application/json
 
 ### Activate The Rule
 
-Use [`PATCH /v1/rules/{id}`](/docs/en/api/rules/update-rule) to enable the rule after review.
+Use `PATCH /v1/rules/{id}` to enable the rule after review.
 
 ```http
 PATCH /v1/rules/{id}

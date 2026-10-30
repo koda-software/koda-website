@@ -1,9 +1,7 @@
 ---
-title: Introduction
-description: Learn how to create, validate, and execute Queries through the Opero API.
+title: Queries API introduction
+description: "Create, validate and execute Opero Queries through the API: permissions, query scopes, SQL rules, change management and a guide to every endpoint."
 ---
-
-# Queries
 
 Queries let integrations store a reusable, read-only SQL query in Opero and execute it later through an API token. Use them for stable exports, reports, lookups, and other integrations that need a predictable result shape.
 
@@ -32,7 +30,7 @@ Query execution has two contexts:
 
 Clients should not add their own organization or company isolation filter to the SQL unless that filter is part of the business question. Use the token scope and execution mode intended for the integration.
 
-Before writing SQL, call [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema). It returns the tables and columns available to the token scope and execution context, including supported built-in tables and organization-owned custom object tables. Use the returned `qualifiedName` values instead of guessing table names.
+Before writing SQL, call `GET /v1/saved-queries/schema`. It returns the tables and columns available to the token scope and execution context, including supported built-in tables and organization-owned custom object tables. Use the returned `qualifiedName` values instead of guessing table names.
 
 ## Permissions
 
@@ -72,7 +70,7 @@ Keep separate tokens for separate jobs when possible. For example, a scheduled e
 
 ### Inspect the Query Schema
 
-Call [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema) before building SQL. The response tells the integration which tables and columns are available.
+Call `GET /v1/saved-queries/schema` before building SQL. The response tells the integration which tables and columns are available.
 
 Use the schema response to:
 
@@ -119,13 +117,13 @@ where (:status is null or invoice.status = :status)
 
 ### Validate Before Saving
 
-Call [`POST /v1/saved-queries/validate`](/docs/en/api/queries/validate-query) while authoring. Validation checks SQL safety, referenced tables, declared parameters, and whether PostgreSQL can parse the query. It does not save anything.
+Call `POST /v1/saved-queries/validate` while authoring. Validation checks SQL safety, referenced tables, declared parameters, and whether PostgreSQL can parse the query. It does not save anything.
 
 Create and update requests validate the SQL again before saving. When SQL or parameters change, Opero refreshes `resultSchema` from the query result columns.
 
 ### Create and Execute
 
-Create the Query with [`POST /v1/saved-queries`](/docs/en/api/queries/create-query). The `key` must be unique among organization Queries.
+Create the Query with `POST /v1/saved-queries`. The `key` must be unique among organization Queries.
 
 Execute with [`POST /v1/saved-queries/{id}/execute`](/docs/en/api/queries/execute-query). The External API executes Queries by `id`; if your integration starts from a `key`, list or filter Queries first to resolve the `id`.
 
@@ -171,13 +169,13 @@ For incompatible changes, create a new Query with a new `key`, update clients to
 | Endpoint | Use it for |
 | --- | --- |
 | [`GET /v1/saved-queries`](/docs/en/api/queries/list-queries) | List `SYSTEM` Queries and organization Queries visible to the token. List responses do not include SQL. |
-| [`GET /v1/saved-queries/schema`](/docs/en/api/queries/get-query-schema) | Inspect tables and columns that can be referenced in Query SQL. |
-| [`POST /v1/saved-queries/validate`](/docs/en/api/queries/validate-query) | Validate SQL and parameters without saving a Query. |
-| [`POST /v1/saved-queries`](/docs/en/api/queries/create-query) | Create an organization Query. |
+| `GET /v1/saved-queries/schema` | Inspect tables and columns that can be referenced in Query SQL. |
+| `POST /v1/saved-queries/validate` | Validate SQL and parameters without saving a Query. |
+| `POST /v1/saved-queries` | Create an organization Query. |
 | [`GET /v1/saved-queries/{id}`](/docs/en/api/queries/get-query) | Read one Query, including SQL and `resultSchema`. |
-| [`PATCH /v1/saved-queries/{id}`](/docs/en/api/queries/update-query) | Update an organization Query. |
+| `PATCH /v1/saved-queries/{id}` | Update an organization Query. |
 | [`POST /v1/saved-queries/{id}/execute`](/docs/en/api/queries/execute-query) | Execute a Query with optional `params`. |
-| [`DELETE /v1/saved-queries/{id}`](/docs/en/api/queries/delete-query) | Delete an organization Query. |
+| `DELETE /v1/saved-queries/{id}` | Delete an organization Query. |
 
 ## Common Errors
 

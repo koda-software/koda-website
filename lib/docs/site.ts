@@ -27,3 +27,22 @@ export function withDocsBasePath(path = ''): string {
 export function getPublicUrl(path = ''): string {
   return new URL(withDocsBasePath(path), getSiteUrl()).toString();
 }
+
+/**
+ * The page intro, cut at a word to fit a search result. Knowledge-base summaries run to
+ * 200 characters; the page itself still shows them in full.
+ */
+export function metaDescription(text: string | undefined, max = 160): string | undefined {
+  if (!text || text.length <= max) return text;
+
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,.;:–—-]+$/, '')}…`;
+}
+
+/** The site-wide 1200×630 share card; docs pages had none, so shared links rendered bare. */
+export const docsOgImage = {
+  url: new URL(siteConfig.defaultOgImage, siteConfig.url).toString(),
+  width: 1200,
+  height: 630,
+  alt: `${siteConfig.name} and ${siteConfig.productName}`,
+};

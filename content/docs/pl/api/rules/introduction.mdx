@@ -1,9 +1,7 @@
 ---
-title: Wprowadzenie
-description: Dowiedz się, jak zarządzać regułami automatyzacji Opero i jak je uruchamiać.
+title: Wprowadzenie do API reguł
+description: "Zarządzaj regułami automatyzacji Opero i uruchamiaj je przez API: uprawnienia, zalecany przebieg pracy, kształt reguły, format zapytań i typowe błędy."
 ---
-
-# Reguły
 
 Reguły definiują automatyzację pracy w Opero. Za pomocą External API integracja może odczytywać, tworzyć, aktualizować, usuwać, walidować i ręcznie uruchamiać reguły automatyzacji.
 
@@ -57,9 +55,9 @@ Jeśli to możliwe, używaj osobnych tokenów do różnych zadań. Na przykład 
 
 Przed zbudowaniem reguły wczytaj dostępne elementy konfiguracji organizacji:
 
-- [`GET /v1/rules/config`](/docs/pl/api/rules/get-rule-builder-config) zwraca metadane wyzwalaczy, w tym informację, które wyzwalacze wymagają obiektu własnego.
-- [`GET /v1/rules/step-types`](/docs/pl/api/rules/search-rule-step-types) zwraca typy kroków, kategorie, etykiety i możliwości dla buildera reguł.
-- [`GET /v1/rules/entity-fields`](/docs/pl/api/rules/list-rule-entity-fields) zwraca pola, których mogą używać wyzwalacze i kroki, w tym pola własne oraz dynamiczne pola rekordów.
+- `GET /v1/rules/config` zwraca metadane wyzwalaczy, w tym informację, które wyzwalacze wymagają obiektu własnego.
+- `GET /v1/rules/step-types` zwraca typy kroków, kategorie, etykiety i możliwości dla buildera reguł.
+- `GET /v1/rules/entity-fields` zwraca pola, których mogą używać wyzwalacze i kroki, w tym pola własne oraz dynamiczne pola rekordów.
 
 Używaj tych endpointów do budowania UI klienta albo logiki generowania reguł zamiast wpisywać na stałe założenia dotyczące wyzwalaczy, kroków i pól. Dostępne pola zależą od konfiguracji organizacji.
 
@@ -81,7 +79,7 @@ Twórz wersję roboczą z czytelnymi pozycjami kroków i stabilnymi kluczami kon
 
 ### Oblicz kontekst przed zapisaniem
 
-Wywołaj [`POST /v1/rules/context-schemas`](/docs/pl/api/rules/compute-rule-context-schemas) podczas budowania wersji roboczej. Ten endpoint niczego nie zapisuje. Oblicza, jaki kontekst jest dostępny przed każdym krokiem na podstawie wyzwalacza i wcześniejszych kroków w wersji roboczej.
+Wywołaj `POST /v1/rules/context-schemas` podczas budowania wersji roboczej. Ten endpoint niczego nie zapisuje. Oblicza, jaki kontekst jest dostępny przed każdym krokiem na podstawie wyzwalacza i wcześniejszych kroków w wersji roboczej.
 
 Użyj schematów kontekstu, aby:
 
@@ -92,11 +90,11 @@ Użyj schematów kontekstu, aby:
 
 Podstawowy kontekst zwykle obejmuje `trigger` i `organization`. Jeśli krok ma `contextKey`, ten klucz staje się dostępny dla późniejszych kroków po wykonaniu kroku. Schemat kontekstu dla kroku pokazuje kontekst przed uruchomieniem tego kroku, a nie po jego zakończeniu.
 
-Podczas edycji zapisanej reguły użyj [`GET /v1/rules/{id}/context-schema`](/docs/pl/api/rules/get-rule-context-schema), aby sprawdzić kontekst dostępny przed konkretnym krokiem.
+Podczas edycji zapisanej reguły użyj `GET /v1/rules/{id}/context-schema`, aby sprawdzić kontekst dostępny przed konkretnym krokiem.
 
 ### Waliduj Skrypty
 
-Jeśli reguła używa kroków `RUN_SCRIPT`, wywołaj [`POST /v1/rules/validate-script`](/docs/pl/api/rules/validate-rule-script) z kodem JavaScript przed zapisaniem reguły. Dzięki temu nieprawidłowy albo niedozwolony kod zostanie wychwycony wcześniej, a użytkownik otrzyma precyzyjny błąd przed wysłaniem pełnego zapytania tworzącego lub aktualizującego regułę.
+Jeśli reguła używa kroków `RUN_SCRIPT`, wywołaj `POST /v1/rules/validate-script` z kodem JavaScript przed zapisaniem reguły. Dzięki temu nieprawidłowy albo niedozwolony kod zostanie wychwycony wcześniej, a użytkownik otrzyma precyzyjny błąd przed wysłaniem pełnego zapytania tworzącego lub aktualizującego regułę.
 
 Walidacja skryptu sprawdza sam kod. Nie gwarantuje, że każda wartość runtime będzie istnieć przy każdym wykonaniu. Używaj jej razem ze schematami kontekstu: schematy kontekstu pokazują, co powinno być dostępne, a walidacja skryptu sprawdza, czy treść skryptu jest akceptowalna.
 
@@ -106,10 +104,10 @@ Dla nowych reguł, zwłaszcza reguł z efektami ubocznymi, zacznij od `isActive:
 
 Najbezpieczniejszy przebieg tworzenia reguły wygląda tak:
 
-1. Utwórz regułę jako nieaktywną przez [`POST /v1/rules`](/docs/pl/api/rules/create-rule).
+1. Utwórz regułę jako nieaktywną przez `POST /v1/rules`.
 2. Odczytaj ją przez [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule).
 3. Sprawdź, czy wyzwalacz, kolejność kroków, konfiguracje, klucze kontekstu i zachowanie rozgałęzień zostały zapisane zgodnie z oczekiwaniami.
-4. Aktywuj ją dopiero po przeglądzie i testach przez [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule).
+4. Aktywuj ją dopiero po przeglądzie i testach przez `PATCH /v1/rules/{id}`.
 
 Pomaga to uniknąć przypadkowego wysłania e-maili, wywołania webhooków, aktualizacji rekordów, wygenerowania dokumentów albo uruchomienia innych reguł przed sprawdzeniem definicji.
 
@@ -155,21 +153,21 @@ Typowy przebieg debugowania:
 3. Pobierz regułę przez [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule).
 4. Znajdź krok z tym samym `position`.
 5. Porównaj szablony albo skrypt tego kroku z `contextSnapshot` wykonania.
-6. Zaktualizuj regułę przez [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), zostaw ją nieaktywną, jeśli trzeba, i uruchom kolejny test manualny.
+6. Zaktualizuj regułę przez `PATCH /v1/rules/{id}`, zostaw ją nieaktywną, jeśli trzeba, i uruchom kolejny test manualny.
 
 ### Sprawdź powiązane reguły przed zmianą struktur danych
 
 Przed usunięciem albo zmianą modułu własnego, obiektu własnego lub pola własnego użyj endpointów powiązanych reguł, aby znaleźć reguły, które od nich zależą:
 
-- [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/pl/api/rules/list-rules-related-to-custom-module)
-- [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/pl/api/rules/list-rules-related-to-custom-object)
-- [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/pl/api/rules/list-rules-related-to-custom-field)
+- `GET /v1/rules/related/custom-modules/{moduleKey}`
+- `GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`
+- `GET /v1/rules/related/custom-fields/{fieldDefinitionId}`
 
 Te endpointy pomagają uniknąć ukrytych uszkodzeń. Na przykład pole własne może być użyte przez wyzwalacz, warunek, skrypt albo krok aktualizacji rekordu. Przejrzyj i zaktualizuj powiązane reguły przed zmianą bazowej struktury.
 
 ## Kształt reguły
 
-Endpointy tworzenia i aktualizacji używają tego samego modelu reguły. Użyj [`POST /v1/rules`](/docs/pl/api/rules/create-rule), aby utworzyć regułę, i [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), aby ją zaktualizować.
+Endpointy tworzenia i aktualizacji używają tego samego modelu reguły. Użyj `POST /v1/rules`, aby utworzyć regułę, i `PATCH /v1/rules/{id}`, aby ją zaktualizować.
 
 ```json
 {
@@ -266,22 +264,22 @@ Przydatne pola listy wykonań:
 
 | Endpoint | Do czego służy |
 | --- | --- |
-| [`GET /v1/rules/config`](/docs/pl/api/rules/get-rule-builder-config) | Wczytuje zlokalizowane metadane wyzwalaczy dla buildera reguł. |
-| [`GET /v1/rules/step-types`](/docs/pl/api/rules/search-rule-step-types) | Wyszukuje dostępne typy kroków reguł. |
-| [`GET /v1/rules/entity-fields`](/docs/pl/api/rules/list-rule-entity-fields) | Zwraca listę pól dostępnych dla wyzwalaczy i kroków reguł. |
-| [`POST /v1/rules/context-schemas`](/docs/pl/api/rules/compute-rule-context-schemas) | Oblicza kontekst dostępny przed każdym krokiem w niezapisanej wersji roboczej. |
-| [`GET /v1/rules/{id}/context-schema`](/docs/pl/api/rules/get-rule-context-schema) | Oblicza kontekst dostępny przed krokiem w zapisanej regule. |
-| [`POST /v1/rules/validate-script`](/docs/pl/api/rules/validate-rule-script) | Waliduje kod JavaScript kroku reguły bez zapisywania reguły. |
+| `GET /v1/rules/config` | Wczytuje zlokalizowane metadane wyzwalaczy dla buildera reguł. |
+| `GET /v1/rules/step-types` | Wyszukuje dostępne typy kroków reguł. |
+| `GET /v1/rules/entity-fields` | Zwraca listę pól dostępnych dla wyzwalaczy i kroków reguł. |
+| `POST /v1/rules/context-schemas` | Oblicza kontekst dostępny przed każdym krokiem w niezapisanej wersji roboczej. |
+| `GET /v1/rules/{id}/context-schema` | Oblicza kontekst dostępny przed krokiem w zapisanej regule. |
+| `POST /v1/rules/validate-script` | Waliduje kod JavaScript kroku reguły bez zapisywania reguły. |
 
 ### Reguły
 
 | Endpoint | Do czego służy |
 | --- | --- |
 | [`GET /v1/rules`](/docs/pl/api/rules/list-rules) | Zwraca listę reguł przypisanych do organizacji. |
-| [`POST /v1/rules`](/docs/pl/api/rules/create-rule) | Tworzy regułę przypisaną do organizacji. |
+| `POST /v1/rules` | Tworzy regułę przypisaną do organizacji. |
 | [`GET /v1/rules/{id}`](/docs/pl/api/rules/get-rule) | Odczytuje jedną zapisaną regułę z wyzwalaczem i uporządkowanymi krokami. |
-| [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule) | Aktualizuje zapisaną regułę. |
-| [`DELETE /v1/rules/{id}`](/docs/pl/api/rules/delete-rule) | Usuwa regułę. |
+| `PATCH /v1/rules/{id}` | Aktualizuje zapisaną regułę. |
+| `DELETE /v1/rules/{id}` | Usuwa regułę. |
 | [`POST /v1/rules/{id}/execute`](/docs/pl/api/rules/execute-rule) | Ręcznie uruchamia aktywną regułę manualną. |
 | [`GET /v1/rules/{id}/executions`](/docs/pl/api/rules/list-rule-executions) | Zwraca listę wykonań reguły. |
 | [`GET /v1/rules/{id}/executions/{execId}`](/docs/pl/api/rules/get-rule-execution) | Odczytuje jeden rekord wykonania. |
@@ -290,9 +288,9 @@ Przydatne pola listy wykonań:
 
 | Endpoint | Do czego służy |
 | --- | --- |
-| [`GET /v1/rules/related/custom-modules/{moduleKey}`](/docs/pl/api/rules/list-rules-related-to-custom-module) | Znajduje reguły powiązane z modułem własnym. |
-| [`GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}`](/docs/pl/api/rules/list-rules-related-to-custom-object) | Znajduje reguły powiązane z obiektem własnym. |
-| [`GET /v1/rules/related/custom-fields/{fieldDefinitionId}`](/docs/pl/api/rules/list-rules-related-to-custom-field) | Znajduje reguły powiązane z polem własnym. |
+| `GET /v1/rules/related/custom-modules/{moduleKey}` | Znajduje reguły powiązane z modułem własnym. |
+| `GET /v1/rules/related/custom-objects/{moduleKey}/{objectKey}` | Znajduje reguły powiązane z obiektem własnym. |
+| `GET /v1/rules/related/custom-fields/{fieldDefinitionId}` | Znajduje reguły powiązane z polem własnym. |
 
 ## Typowe błędy
 
@@ -307,7 +305,7 @@ Przydatne pola listy wykonań:
 
 ### Utwórz nieaktywną regułę manualną
 
-Użyj [`POST /v1/rules`](/docs/pl/api/rules/create-rule), aby najpierw utworzyć regułę jako nieaktywną.
+Użyj `POST /v1/rules`, aby najpierw utworzyć regułę jako nieaktywną.
 
 ```http
 POST /v1/rules
@@ -340,7 +338,7 @@ Content-Type: application/json
 
 ### Aktywuj regułę
 
-Użyj [`PATCH /v1/rules/{id}`](/docs/pl/api/rules/update-rule), aby włączyć regułę po przeglądzie.
+Użyj `PATCH /v1/rules/{id}`, aby włączyć regułę po przeglądzie.
 
 ```http
 PATCH /v1/rules/{id}

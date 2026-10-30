@@ -1,9 +1,7 @@
 ---
 title: Discovering Blocks
-description: Use discovery endpoints before building a View Layout draft.
+description: "Call the View Layout discovery endpoints before building a draft: surface capabilities and definitions, the block catalog and custom field types."
 ---
-
-# Discovering Blocks
 
 Before you save a layout draft, ask the API what is available for the surface, mode, and target you are editing. This keeps your client from hard-coding field lists, required blocks, regions, or custom field type rules.
 
@@ -15,11 +13,11 @@ All discovery endpoints require an API token with View Layout read access.
 
 | Endpoint | Use it for |
 | --- | --- |
-| [`GET /v1/view-layouts/surface-capabilities`](/docs/en/api/view-layout-configuration/get-view-layout-surface-capabilities) | Which surfaces and modes exist. |
-| [`GET /v1/view-layouts/surface-definitions`](/docs/en/api/view-layout-configuration/get-view-layout-surface-definitions) | Regions, default sections, required built-in blocks, and surface metadata. |
-| [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) | Blocks the user can add for a specific surface, mode, and target. |
-| [`GET /v1/view-layouts/custom-field-types`](/docs/en/api/view-layout-configuration/get-view-layout-custom-field-type-schemas) | Field type schemas for creating or editing custom fields inside a layout draft. |
-| [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/en/api/view-layout-runtime/get-view-layout-runtime-context-variables) | Variables available to custom HTML, scripts, button URLs, and runtime conditions. |
+| `GET /v1/view-layouts/surface-capabilities` | Which surfaces and modes exist. |
+| `GET /v1/view-layouts/surface-definitions` | Regions, default sections, required built-in blocks, and surface metadata. |
+| `GET /v1/view-layouts/catalog` | Blocks the user can add for a specific surface, mode, and target. |
+| `GET /v1/view-layouts/custom-field-types` | Field type schemas for creating or editing custom fields inside a layout draft. |
+| `GET /v1/view-layouts/:layoutId/runtime-context-variables` | Variables available to custom HTML, scripts, button URLs, and runtime conditions. |
 
 ## Surface Capabilities
 

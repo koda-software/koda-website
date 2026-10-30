@@ -11,8 +11,9 @@ import { OpenAPIPage } from '@/components/docs/api-page';
 import { getMDXComponents } from '@/components/docs/mdx';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
 import { preloadOperations } from '@/lib/docs/openapi';
-import { getPublicUrl, siteName } from '@/lib/docs/site';
+import { docsOgImage, getPublicUrl, metaDescription, siteDescription, siteName } from '@/lib/docs/site';
 import { source } from '@/lib/docs/source';
+import { ArticleJsonLd } from '@/lib/seo/json-ld';
 
 export const dynamicParams = false;
 
@@ -50,19 +51,28 @@ export async function generateMetadata({
     return {};
   }
 
+  const description = metaDescription(page.data.description);
+
   return {
     title: page.data.title,
-    description: page.data.description,
+    description,
     alternates: {
       canonical: getPublicUrl(page.url),
       languages: getLanguageAlternates(slug),
     },
     openGraph: {
       title: `${page.data.title} | ${siteName}`,
-      description: page.data.description,
+      description,
       url: getPublicUrl(page.url),
       siteName,
       type: 'article',
+      images: [docsOgImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${page.data.title} | ${siteName}`,
+      description,
+      images: [docsOgImage.url],
     },
   };
 }
@@ -84,6 +94,14 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
+      <ArticleJsonLd
+        type="TechArticle"
+        headline={page.data.title}
+        description={page.data.description ?? siteDescription}
+        image={docsOgImage.url}
+        url={getPublicUrl(page.url)}
+        inLanguage={locale}
+      />
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>

@@ -4,7 +4,7 @@ export const noCodeFeature: FeaturePageContent = {
   seo: {
     title: "The No-Code System Your Company Needs",
     description:
-      "Build custom business applications without code: model your data with custom objects and fields, design forms and layouts, configure menus and dashboards, and publish safely.",
+      "Build business applications without code: model data with custom objects and fields, design forms and layouts, and configure menus and dashboards.",
   },
   navLabel: "No-code platform",
   hero: {

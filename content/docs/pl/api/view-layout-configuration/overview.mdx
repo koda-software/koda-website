@@ -1,9 +1,7 @@
 ---
-title: Przegląd
-description: Zrozum, jak układy widoku łączą formularze, wersje robocze, opublikowany runtime i zapisy rekordów.
+title: Przegląd układów widoku
+description: "Jak układy widoku Opero łączą formularze, wersje robocze, opublikowany runtime i zapisy rekordów, wraz z uprawnieniami i pierwszym endpointem."
 ---
-
-# Układy widoku
 
 Układy widoku określają, jak ułożony jest ekran Opero albo formularz obiektu własnego. Układ decyduje, które pola, sekcje, zakładki, tabele relacji, przyciski i inne bloki są dostępne, gdy klient tworzy, wyświetla albo edytuje rekord.
 
@@ -68,13 +66,13 @@ Zacznij od celu, a potem wybierz endpoint.
 
 | Cel | Zacznij od |
 | --- | --- |
-| Utworzenie formularza obiektu własnego | [`POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms`](/docs/pl/api/custom-object-forms/create-custom-object-form) |
+| Utworzenie formularza obiektu własnego | `POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
 | Znalezienie układu istniejącego formularza | [`GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId`](/docs/pl/api/custom-object-forms/get-custom-object-form) |
-| Sprawdzenie dostępnych bloków | [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog) |
-| Zapis zmienionego układu | [`PUT /v1/view-layouts/:layoutId/draft`](/docs/pl/api/view-layout-configuration/save-view-layout-draft) |
-| Opublikowanie wersji roboczej | [`POST /v1/view-layouts/:layoutId/publish`](/docs/pl/api/view-layout-configuration/publish-view-layout) |
-| Renderowanie opublikowanego formularza | [`GET /v1/view-layouts/resolve`](/docs/pl/api/view-layout-runtime/resolve-view-layout) |
-| Zapis rekordu przez układ | [`POST /v1/view-layouts/runtime/dynamic-object/records`](/docs/pl/api/view-layout-runtime/create-dynamic-record-through-view-layout) albo [`PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId`](/docs/pl/api/view-layout-runtime/update-dynamic-record-through-view-layout) |
+| Sprawdzenie dostępnych bloków | `GET /v1/view-layouts/catalog` |
+| Zapis zmienionego układu | `PUT /v1/view-layouts/:layoutId/draft` |
+| Opublikowanie wersji roboczej | `POST /v1/view-layouts/:layoutId/publish` |
+| Renderowanie opublikowanego formularza | `GET /v1/view-layouts/resolve` |
+| Zapis rekordu przez układ | `POST /v1/view-layouts/runtime/dynamic-object/records` albo `PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId` |
 
 ## Kolejność czytania
 

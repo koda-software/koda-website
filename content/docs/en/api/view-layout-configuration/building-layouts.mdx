@@ -1,9 +1,7 @@
 ---
 title: Building Layouts
-description: Create layout containers, save full drafts, publish versions, and manage assignments.
+description: "Create View Layout containers through the Opero API, set metadata and regions, save full drafts, publish versions and manage layout assignments."
 ---
-
-# Building Layouts
 
 Building a View Layout means creating or finding a layout container, saving a full draft, and publishing that draft when validation passes.
 
@@ -11,7 +9,7 @@ For custom object forms, the layout container is normally created for you when t
 
 ## When To Create A Layout Directly
 
-Use [`POST /v1/view-layouts`](/docs/en/api/view-layout-configuration/create-view-layout) when you are creating a layout that is not owned by a custom object form, such as an organization, contractor, user, invoice, or dashboard layout.
+Use `POST /v1/view-layouts` when you are creating a layout that is not owned by a custom object form, such as an organization, contractor, user, invoice, or dashboard layout.
 
 Do not use it to create another layout for a custom object form:
 
@@ -40,7 +38,7 @@ Layout metadata describes where the layout applies.
 | `name` | Human-readable name for the layout. |
 | `metadata` | Optional client-owned metadata. |
 
-You can update safe metadata with [`PATCH /v1/view-layouts/:layoutId`](/docs/en/api/view-layout-configuration/update-view-layout). For form-owned layouts, change form types through the form endpoint instead of updating `surface`, `target`, or `supportedModes` directly.
+You can update safe metadata with `PATCH /v1/view-layouts/:layoutId`. For form-owned layouts, change form types through the form endpoint instead of updating `surface`, `target`, or `supportedModes` directly.
 
 ## Regions
 
@@ -70,7 +68,7 @@ Region fields:
 | `displayOrder` | Region order. |
 | `config` | Region-specific settings. |
 
-Use [`GET /v1/view-layouts/surface-definitions`](/docs/en/api/view-layout-configuration/get-view-layout-surface-definitions) to learn the default regions for a surface.
+Use `GET /v1/view-layouts/surface-definitions` to learn the default regions for a surface.
 
 ## Save A Draft
 
@@ -144,7 +142,7 @@ When publishing staged custom field changes that may clear values or change fiel
 
 ## Versions
 
-List versions with [`GET /v1/view-layouts/:layoutId/versions`](/docs/en/api/view-layout-configuration/list-view-layout-versions). Read one version with [`GET /v1/view-layouts/:layoutId/versions/:versionId`](/docs/en/api/view-layout-configuration/get-view-layout-version).
+List versions with `GET /v1/view-layouts/:layoutId/versions`. Read one version with `GET /v1/view-layouts/:layoutId/versions/:versionId`.
 
 To restore a previous version as the current draft:
 

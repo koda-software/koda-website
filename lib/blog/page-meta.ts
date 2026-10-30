@@ -13,6 +13,27 @@ import type { BlogLocale } from "./types";
  * suffix setting (`sufiks_title`) is no longer used.
  */
 
+/**
+ * A CMS description, padded when it is a single short line (most tag descriptions are under 100
+ * characters): the first of `fallbacks` that brings it to 110–160 characters is added after it.
+ */
+function describe(own: string | null | undefined, fallbacks: string[]) {
+  const text = own?.trim();
+  if (!text) return truncateDescription(fallbacks[0]);
+  if (text.length >= 110) return truncateDescription(text);
+
+  const sentence = /[.!?…]$/.test(text) ? text : `${text}.`;
+  const fitting = fallbacks.map((fallback) => `${sentence} ${fallback}`).filter((value) => value.length <= 160);
+  return fitting.find((value) => value.length >= 110) ?? fitting.sort((a, b) => b.length - a.length)[0] ?? text;
+}
+
+/** The template sentence with the topic line, then each on its own. */
+function fallbacksFor(ui: ReturnType<typeof blogBundle>["ui"], template: string, name: string) {
+  const sentence = fillTemplate(template, { name });
+  const topics = ui.seoTemplates.descriptionTopics;
+  return [`${sentence} ${topics}`, sentence, topics];
+}
+
 export async function blogIndexMetadata(locale: BlogLocale, page = 1): Promise<Metadata> {
   const { ui } = blogBundle(locale);
   const isFirstPage = page <= 1;
@@ -42,8 +63,9 @@ export async function blogCategoryMetadata(locale: BlogLocale, slug: string): Pr
   return createBlogMetadata({
     locale,
     title: category.meta_title ?? fillTemplate(ui.seoTemplates.categoryTitle, { name }),
-    description: truncateDescription(
-      category.meta_description ?? category.opis ?? fillTemplate(ui.seoTemplates.categoryDescription, { name }),
+    description: describe(
+      category.meta_description ?? category.opis,
+      fallbacksFor(ui, ui.seoTemplates.categoryDescription, name),
     ),
     path: categoryPath(locale, slug),
     languages: symmetricAlternates({ en: categoryPath("en", category.slugs.en), pl: categoryPath("pl", category.slugs.pl) }),
@@ -63,7 +85,7 @@ export async function blogTagMetadata(locale: BlogLocale, slug: string): Promise
   return createBlogMetadata({
     locale,
     title: fillTemplate(ui.seoTemplates.tagTitle, { name }),
-    description: truncateDescription(tag.opis ?? fillTemplate(ui.seoTemplates.tagDescription, { name })),
+    description: describe(tag.opis, fallbacksFor(ui, ui.seoTemplates.tagDescription, name)),
     path: tagPath(locale, slug),
     languages: symmetricAlternates({ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }),
     image: await blogDefaultOgImage(),
@@ -83,7 +105,7 @@ export async function blogAuthorMetadata(locale: BlogLocale, slug: string): Prom
   return createBlogMetadata({
     locale,
     title: fillTemplate(ui.seoTemplates.authorTitle, { name }),
-    description: truncateDescription(bio || fillTemplate(ui.seoTemplates.authorDescription, { name })),
+    description: describe(bio, fallbacksFor(ui, ui.seoTemplates.authorDescription, name)),
     path: authorPath(locale, slug),
     languages: symmetricAlternates({ en: authorPath("en", author.slugs.en), pl: authorPath("pl", author.slugs.pl) }),
     image: await blogDefaultOgImage(),

@@ -168,8 +168,8 @@ function groupPagesBySection(locale: Locale, pages: DocumentationPage[]) {
 function renderOperoIndex(locale: Locale, sections: DocumentationSection[]): string {
   const description =
     locale === 'pl'
-      ? 'Dokumentacja produktu Opero generowana z publicznych stron bazy wiedzy.'
-      : 'Opero product documentation generated from public knowledge-base pages.';
+      ? 'Dokumentacja produktu Opero z publicznej bazy wiedzy: pierwsze kroki, nawigacja po systemie, listy rekordów, rekordy, procesy, zadania i automatyzacja.'
+      : 'Opero product documentation from the public knowledge base: getting started, navigating the system, record lists, records, processes, tasks and automation.';
   const intro =
     locale === 'pl'
       ? 'Wybierz sekcje dokumentacji, aby przejść do stron wygenerowanych z Opero.'

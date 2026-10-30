@@ -5,7 +5,7 @@ export const operoProductContent: OperoProductContent = {
   seo: {
     title: "Opero - low-code BPM and document workflow",
     description:
-      "Opero makes your company’s way of working visible, repeatable and easier to improve as the business changes.",
+      "Opero, the low-code BPM platform, makes your company’s way of working visible, repeatable and easier to improve as the business changes.",
   },
   hero: {
     eyebrow: "Meet Opero",

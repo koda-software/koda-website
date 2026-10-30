@@ -1,13 +1,11 @@
 ---
 title: Typy bloków
-description: Zrozum strukturę bloków układu widoku, źródła, referencje, zagnieżdżanie i częste typy bloków.
+description: "Struktura bloków układu widoku w API Opero: źródła, kształty referencji, pola, sekcje, kolumny, zakładki, tabele relacji, przyciski i własny HTML."
 ---
-
-# Typy bloków
 
 Bloki są elementami, z których składa się układ widoku. Blokiem może być pole, sekcja, zakładka, tabela relacji, komponent wbudowany, przycisk, blok własnego HTML, blok dashboardu albo inny obsługiwany element układu.
 
-Użyj [`GET /v1/view-layouts/catalog`](/docs/pl/api/view-layout-configuration/get-view-layout-block-catalog), aby pobrać obsługiwane bloki dla dokładnej powierzchni, trybu i targetu przed zapisaniem wersji roboczej.
+Użyj `GET /v1/view-layouts/catalog`, aby pobrać obsługiwane bloki dla dokładnej powierzchni, trybu i targetu przed zapisaniem wersji roboczej.
 
 ## Struktura bloku
 
@@ -150,7 +148,7 @@ Przyciski są blokami systemowymi. Obsługiwane akcje przycisków to `open_url` 
 
 Opero renderuje i sanityzuje bloki własnego HTML.
 
-Użyj [`GET /v1/view-layouts/:layoutId/runtime-context-variables`](/docs/pl/api/view-layout-runtime/get-view-layout-runtime-context-variables), aby sprawdzić, które zmienne mogą być użyte w szablonach URL przycisków, własnym HTML, skryptach i warunkach runtime.
+Użyj `GET /v1/view-layouts/:layoutId/runtime-context-variables`, aby sprawdzić, które zmienne mogą być użyte w szablonach URL przycisków, własnym HTML, skryptach i warunkach runtime.
 
 ## Bloki wbudowane
 

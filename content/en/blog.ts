@@ -52,6 +52,7 @@ export const blogContent: BlogUiContent = {
     tagDescription: "Articles tagged {name} from the team building Opero at KodaSoft.",
     authorTitle: "{name} - Blog",
     authorDescription: "Articles written by {name} for the KodaSoft blog.",
+    descriptionTopics: "Notes on processes, documents and automation.",
     pageTitle: "{title} - page {page}",
     pageDescription: "{description} Page {page}.",
   },

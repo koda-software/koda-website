@@ -1,9 +1,7 @@
 ---
 title: Budowanie układów
-description: Twórz kontenery układów, zapisuj pełne wersje robocze, publikuj wersje i zarządzaj przypisaniami.
+description: "Twórz kontenery układów widoku przez API Opero, ustawiaj metadane i regiony, zapisuj wersje robocze, publikuj wersje i zarządzaj przypisaniami."
 ---
-
-# Budowanie układów
 
 Budowanie układu widoku oznacza utworzenie albo znalezienie kontenera układu, zapis pełnej wersji roboczej i opublikowanie tej wersji roboczej, gdy walidacja przejdzie poprawnie.
 
@@ -11,7 +9,7 @@ Dla formularzy obiektów własnych kontener układu zwykle powstaje automatyczni
 
 ## Kiedy tworzyć układ bezpośrednio
 
-Użyj [`POST /v1/view-layouts`](/docs/pl/api/view-layout-configuration/create-view-layout), gdy tworzysz układ, który nie należy do formularza obiektu własnego, na przykład układ organizacji, kontrahenta, użytkownika, faktury albo dashboardu.
+Użyj `POST /v1/view-layouts`, gdy tworzysz układ, który nie należy do formularza obiektu własnego, na przykład układ organizacji, kontrahenta, użytkownika, faktury albo dashboardu.
 
 Nie używaj go do tworzenia kolejnego układu dla formularza obiektu własnego:
 
@@ -40,7 +38,7 @@ Metadane układu opisują, gdzie układ ma zastosowanie.
 | `name` | Czytelna nazwa układu. |
 | `metadata` | Opcjonalne metadane klienta. |
 
-Bezpieczne metadane możesz zaktualizować przez [`PATCH /v1/view-layouts/:layoutId`](/docs/pl/api/view-layout-configuration/update-view-layout). Dla układów należących do formularza zmieniaj typy formularza przez endpoint formularza, zamiast aktualizować `surface`, `target` albo `supportedModes` bezpośrednio.
+Bezpieczne metadane możesz zaktualizować przez `PATCH /v1/view-layouts/:layoutId`. Dla układów należących do formularza zmieniaj typy formularza przez endpoint formularza, zamiast aktualizować `surface`, `target` albo `supportedModes` bezpośrednio.
 
 ## Regiony
 
@@ -70,7 +68,7 @@ Pola regionu:
 | `displayOrder` | Kolejność regionu. |
 | `config` | Konfiguracja właściwa dla regionu. |
 
-Użyj [`GET /v1/view-layouts/surface-definitions`](/docs/pl/api/view-layout-configuration/get-view-layout-surface-definitions), aby poznać domyślne regiony dla powierzchni.
+Użyj `GET /v1/view-layouts/surface-definitions`, aby poznać domyślne regiony dla powierzchni.
 
 ## Zapis wersji roboczej
 
@@ -144,7 +142,7 @@ Gdy publikujesz przygotowane zmiany pól własnych, które mogą wyczyścić war
 
 ## Wersje
 
-Listę wersji pobierzesz przez [`GET /v1/view-layouts/:layoutId/versions`](/docs/pl/api/view-layout-configuration/list-view-layout-versions). Jedną wersję odczytasz przez [`GET /v1/view-layouts/:layoutId/versions/:versionId`](/docs/pl/api/view-layout-configuration/get-view-layout-version).
+Listę wersji pobierzesz przez `GET /v1/view-layouts/:layoutId/versions`. Jedną wersję odczytasz przez `GET /v1/view-layouts/:layoutId/versions/:versionId`.
 
 Aby przywrócić poprzednią wersję jako bieżącą wersję roboczą:
 

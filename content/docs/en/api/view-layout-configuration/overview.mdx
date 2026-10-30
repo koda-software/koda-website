@@ -1,9 +1,7 @@
 ---
-title: Overview
-description: Understand how View Layouts connect forms, layout drafts, published runtime layouts, and record saves.
+title: View layouts overview
+description: "How Opero View Layouts connect forms, layout drafts, published runtime layouts and record saves, with the permissions and the first endpoint to call."
 ---
-
-# View Layouts
 
 View Layouts define how an Opero screen or custom object form is arranged. A layout decides which fields, sections, tabs, relation tables, buttons, and other blocks are available when a client creates, views, or edits a record.
 
@@ -68,13 +66,13 @@ Start with the goal, then choose the endpoint.
 
 | Goal | Start with |
 | --- | --- |
-| Create a custom object form | [`POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms`](/docs/en/api/custom-object-forms/create-custom-object-form) |
+| Create a custom object form | `POST /v1/custom-modules/:moduleKey/objects/:objectKey/forms` |
 | Find the layout for an existing form | [`GET /v1/custom-modules/:moduleKey/objects/:objectKey/forms/:formId`](/docs/en/api/custom-object-forms/get-custom-object-form) |
-| Learn which blocks are available | [`GET /v1/view-layouts/catalog`](/docs/en/api/view-layout-configuration/get-view-layout-block-catalog) |
-| Save a changed layout | [`PUT /v1/view-layouts/:layoutId/draft`](/docs/en/api/view-layout-configuration/save-view-layout-draft) |
-| Make a draft live | [`POST /v1/view-layouts/:layoutId/publish`](/docs/en/api/view-layout-configuration/publish-view-layout) |
-| Render a published form | [`GET /v1/view-layouts/resolve`](/docs/en/api/view-layout-runtime/resolve-view-layout) |
-| Save a record through the layout | [`POST /v1/view-layouts/runtime/dynamic-object/records`](/docs/en/api/view-layout-runtime/create-dynamic-record-through-view-layout) or [`PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId`](/docs/en/api/view-layout-runtime/update-dynamic-record-through-view-layout) |
+| Learn which blocks are available | `GET /v1/view-layouts/catalog` |
+| Save a changed layout | `PUT /v1/view-layouts/:layoutId/draft` |
+| Make a draft live | `POST /v1/view-layouts/:layoutId/publish` |
+| Render a published form | `GET /v1/view-layouts/resolve` |
+| Save a record through the layout | `POST /v1/view-layouts/runtime/dynamic-object/records` or `PATCH /v1/view-layouts/runtime/dynamic-object/records/:recordId` |
 
 ## Reading Order
 

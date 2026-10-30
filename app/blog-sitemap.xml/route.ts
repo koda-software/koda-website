@@ -1,5 +1,5 @@
-import { filterPublishedRows, getSitemapEntries } from "@/lib/blog/queries";
-import { authorPath, blogIndexPath, blogLocales, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
+import { filterPublishedRows, getArticles, getPageSize, getSitemapEntries } from "@/lib/blog/queries";
+import { authorPath, blogIndexPath, blogLocales, blogPagePath, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
 import type { BlogLocale, SitemapRow } from "@/lib/blog/types";
 import { absoluteUrl } from "@/lib/seo/site";
 
@@ -59,12 +59,21 @@ export async function GET() {
     .filter((row) => row.typ === "artykul")
     .reduce<string | null>((newest, row) => (!newest || row.lastmod > newest ? row.lastmod : newest), null);
 
+  const pageSize = await getPageSize();
+
   for (const locale of blogLocales) {
-    entries.set(absoluteUrl(blogIndexPath(locale)), {
-      // The index changes when its newest article does, not when we deploy.
-      lastmod: newestArticle ?? new Date().toISOString(),
-      alternates: indexAlternates(),
-    });
+    // The index changes when its newest article does, not when we deploy.
+    const lastmod = newestArticle ?? new Date().toISOString();
+
+    entries.set(absoluteUrl(blogIndexPath(locale)), { lastmod, alternates: indexAlternates() });
+
+    // Pages 2..n are indexable, so they are listed too; the count comes from the
+    // same list query the index renders from. Locales paginate differently, so no hreflang.
+    const { total } = await getArticles({ jezyk: locale, pageSize });
+
+    for (let page = 2; page <= Math.ceil(total / pageSize); page++) {
+      entries.set(absoluteUrl(blogPagePath(locale, page)), { lastmod });
+    }
   }
 
   for (const row of rows) {

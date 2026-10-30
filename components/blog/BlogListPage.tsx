@@ -19,6 +19,8 @@ type BlogListPageProps = {
   ctaHrefs: { primary: string; secondary: string };
   /** Shown above the list on archive pages, linking back to the full index. */
   showBackLink?: boolean;
+  /** Rendered under the pagination, e.g. the index's list of every tag. */
+  footer?: ReactNode;
 };
 
 /** Shared layout for the blog index, pagination pages and every archive. */
@@ -33,6 +35,7 @@ export function BlogListPage({
   buildHref,
   ctaHrefs,
   showBackLink = false,
+  footer,
 }: BlogListPageProps) {
   return (
     <>
@@ -60,6 +63,7 @@ export function BlogListPage({
         )}
 
         <Pagination buildHref={buildHref} page={page} totalPages={totalPages} ui={ui} />
+        {footer}
       </section>
 
       <BlogFinalCta

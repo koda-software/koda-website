@@ -1,9 +1,7 @@
 ---
 title: Pola własne
-description: Przygotowuj zmiany pól własnych w wersjach roboczych układów widoku i publikuj je bezpiecznie.
+description: "Przygotowuj zmiany pól własnych w wersjach roboczych układów widoku: schematy typów pól, dodawanie, aktualizacja, odpinanie i bezpieczna publikacja."
 ---
-
-# Pola własne
 
 Układy widoku mogą pokazywać istniejące pola i przygotowywać zmiany definicji pól własnych w wersji roboczej. Dzięki temu klient API może zbudować edytor układu, który dodaje pola i aktualizuje właściwości pól przed publikacją.
 
@@ -26,7 +24,7 @@ Użyj zwróconych schematów do zbudowania edytora pól. Nie zgaduj konfiguracji
 
 ## Dodanie istniejących pól
 
-Dla pola obiektu własnego dodaj blok `field` z `source: "dynamic_field"`.
+Dla pola obiektu własnego dodaj blok `field` z `source: "dynamic_field"`. Klucze pól, które obiekt już ma, zwraca [lista pól encji](/docs/pl/api/entity-fields/get-entity-fields) wywołana z jego `moduleKey` i `objectKey`.
 
 ```json
 {

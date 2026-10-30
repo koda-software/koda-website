@@ -219,8 +219,12 @@ async function readSitemapEntries(): Promise<SitemapRow[]> {
       rows.push(taxonomy("kategoria", category));
     }
 
+    const tagSlugs = new Set<string>();
     for (const tag of tags) {
-      rows.push(taxonomy("tag", tag));
+      const row = taxonomy("tag", tag);
+      if (tagSlugs.has(row.slug)) continue;
+      tagSlugs.add(row.slug);
+      rows.push(row);
     }
 
     for (const author of authors) {
@@ -333,8 +337,10 @@ export async function getCategories(locale: BlogLocale): Promise<Array<Localized
 
 export async function getTags(locale: BlogLocale): Promise<Array<Localized<TagRecord>>> {
   const tags = (await fetchTags()).map((record) => localize(record, locale));
+  // The CMS holds two records for some slugs; they render the same page, so list it once.
+  const unique = [...new Map(tags.map((tag) => [tag.slug, tag])).values()];
 
-  return tags.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
+  return unique.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
 }
 
 export async function getAuthors(locale: BlogLocale): Promise<Array<Localized<AuthorRecord>>> {
