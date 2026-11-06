@@ -781,7 +781,6 @@ export type AiPageContent = {
     title: string;
     description: string;
     primaryCta: string;
-    secondaryCta: string;
     trust: string[];
     demo: AiHeroDemoContent;
   };

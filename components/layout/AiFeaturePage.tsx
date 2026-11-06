@@ -60,7 +60,7 @@ function ConfigureActSection({ act }: { act: AiConfigureAct }) {
 export function AiFeaturePage({ content, locale, primaryHref }: AiFeaturePageProps) {
   return (
     <>
-      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} secondaryCta={content.hero.secondaryCta} secondaryHref="#signature-demo" sectionClassName="items-end pb-0 max-[980px]:pb-0 min-[981px]:pb-0" shellClassName="gap-[clamp(2rem,4vw,4rem)] min-[981px]:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
+      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="items-end pb-0 max-[980px]:pb-0 min-[981px]:pb-0" shellClassName="gap-[clamp(2rem,4vw,4rem)] min-[981px]:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
         <AiHeroDemo demo={content.hero.demo} />
       </PageHero>
 

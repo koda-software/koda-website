@@ -40,7 +40,6 @@ export const aiPage: AiPageContent = {
     description:
       "Contextual AI for your business system: connect Claude or any other MCP agent to Opero and describe a view, a rule or a report in plain words. It works with your real objects, fields and permissions, so what it builds lands inside your system and stays there.",
     primaryCta: "Book a demo",
-    secondaryCta: "Watch it build a block",
     trust: ["Your choice of AI model", "Acts with your own permissions", "Validated before it saves", "No code to write"],
     demo: {
       sentence: [

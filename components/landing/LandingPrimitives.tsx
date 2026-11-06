@@ -361,7 +361,7 @@ export function PageHero({
   titleClassName = "",
   visualClassName = "",
 }: PageHeroProps) {
-  const hasActions = primaryCta && primaryHref && secondaryCta && secondaryHref;
+  const hasActions = primaryCta && primaryHref;
   const hasVisual = Boolean(children);
 
   return (
@@ -400,7 +400,7 @@ export function PageHero({
               <CtaRow
                 actions={[
                   { href: primaryHref, label: primaryCta },
-                  { href: secondaryHref, label: secondaryCta, variant: "darkGhost" },
+                  ...(secondaryCta && secondaryHref ? [{ href: secondaryHref, label: secondaryCta, variant: "darkGhost" as const }] : []),
                 ]}
               />
             </div>
