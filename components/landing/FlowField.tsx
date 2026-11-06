@@ -7,10 +7,12 @@ import styles from "./FlowField.module.css";
  * The backdrop of the home hero: a faint map of a process.
  *
  * Stages sit on a loose grid, joined by right-angled connections the way the
- * process designer in Opero draws them, and a few records travel along those
- * connections from stage to stage, as a short brighter stretch of the line. When
- * one arrives, its stage fills in for a moment and the record moves on. It is what the product does, drawn at the
- * volume of a watermark: never brighter than the copy, thinned out towards
+ * process designer in Opero draws them, and a few small signals travel along
+ * those connections. A signal never jumps. It slows at the edge of a stage and
+ * waits while the stage fills with power, then passes behind it and comes out of
+ * the far side. A stage with nowhere to send it keeps the signal, and another
+ * stage powers up and sends out a new one. It is what the product does, drawn at
+ * the volume of a watermark: never brighter than the copy, thinned out towards
  * the headline by a mask, and still when the reader asks for less motion.
  *
  * Canvas rather than SVG, because a hundred moving parts in the DOM cost more
@@ -18,15 +20,32 @@ import styles from "./FlowField.module.css";
  * the tab is hidden.
  */
 
-type Stage = { x: number; y: number; w: number; lit: number; out: number[] };
+type Stage = { x: number; y: number; w: number; lit: number; fill: number; out: number[] };
 type Edge = { from: number; to: number; points: Array<[number, number]>; length: number };
-type Token = { edge: number; at: number; speed: number };
+type Signal = {
+  edge: number;
+  at: number;
+  speed: number;
+  phase: "travel" | "charge" | "cross";
+  /** The stage it is at, its place on that stage, and how far the charge has got. */
+  node: number;
+  x: number;
+  clock: number;
+  /** Where it leaves for, or null when the stage takes it in. */
+  next: number | null;
+};
+type FlowMap = ReturnType<typeof build>;
 
 const GRID = 132;
 const NODE_H = 16;
-/** How long a pulse is, in pixels, and how finely it follows a corner. */
-const PULSE = 26;
-const PULSE_STEPS = 6;
+const SIGNAL_RADIUS = 1.6;
+const GLOW_RADIUS = 7;
+/** Seconds a stage takes to power up, and how much quicker a signal crosses it than a line. */
+const CHARGE = 0.5;
+const CROSS_SPEED = 1.5;
+/** How many pixels from a stage a signal starts to slow, and the share of its speed it arrives at. */
+const SLOW_ZONE = 24;
+const ARRIVAL_SPEED = 0.4;
 
 /* A small seeded generator: the same map on every visit and every render. */
 function random(seed: number) {
@@ -55,6 +74,7 @@ function build(width: number, height: number) {
         y: r * GRID + (rnd() - 0.5) * 24,
         w: 34 + Math.round(rnd() * 3) * 10,
         lit: 0,
+        fill: 0,
         out: [],
       });
     }
@@ -94,12 +114,21 @@ function build(width: number, height: number) {
     }
   });
 
-  const tokens: Token[] = [];
+  const signals: Signal[] = [];
   const count = Math.min(14, Math.round(edges.length / 4));
   for (let i = 0; i < count && edges.length; i++) {
-    tokens.push({ edge: Math.floor(rnd() * edges.length), at: rnd(), speed: 34 + rnd() * 26 });
+    signals.push({
+      edge: Math.floor(rnd() * edges.length),
+      at: rnd(),
+      speed: 34 + rnd() * 26,
+      phase: "travel",
+      node: 0,
+      x: 0,
+      clock: 0,
+      next: null,
+    });
   }
-  return { nodes, edges, tokens, rnd };
+  return { nodes, edges, signals, rnd };
 }
 
 function pointAt(edge: Edge, t: number): [number, number] {
@@ -115,6 +144,57 @@ function pointAt(edge: Edge, t: number): [number, number] {
     left -= seg;
   }
   return edge.points[edge.points.length - 1];
+}
+
+/* A new signal starts hidden inside a stage that has somewhere to send it. */
+function send(map: FlowMap, signal: Signal) {
+  const edge = Math.floor(map.rnd() * map.edges.length);
+  const node = map.edges[edge].from;
+  signal.edge = edge;
+  signal.next = edge;
+  signal.node = node;
+  signal.x = map.nodes[node].x;
+  signal.phase = "charge";
+  signal.clock = 0;
+}
+
+function advance(map: FlowMap, signal: Signal, dt: number) {
+  if (signal.phase === "travel") {
+    const edge = map.edges[signal.edge];
+    const left = (1 - signal.at) * edge.length;
+    const pace = Math.min(1, ARRIVAL_SPEED + ((1 - ARRIVAL_SPEED) * left) / SLOW_ZONE);
+    signal.at += (dt * signal.speed * pace) / edge.length;
+    if (signal.at < 1) return;
+
+    const node = map.nodes[edge.to];
+    signal.phase = "charge";
+    signal.node = edge.to;
+    signal.x = node.x - node.w / 2;
+    signal.clock = 0;
+    signal.next = node.out.length ? node.out[Math.floor(map.rnd() * node.out.length)] : null;
+    return;
+  }
+
+  const node = map.nodes[signal.node];
+  if (signal.phase === "charge") {
+    signal.clock = Math.min(1, signal.clock + dt / CHARGE);
+    const power = signal.clock * (2 - signal.clock);
+    node.lit = Math.max(node.lit, power);
+    node.fill = Math.max(node.fill, power);
+    if (signal.clock === 1) signal.phase = "cross";
+    return;
+  }
+
+  node.lit = 1;
+  signal.x += dt * signal.speed * CROSS_SPEED;
+  if (signal.x < (signal.next === null ? node.x : node.x + node.w / 2)) return;
+  if (signal.next === null) {
+    send(map, signal);
+    return;
+  }
+  signal.edge = signal.next;
+  signal.at = 0;
+  signal.phase = "travel";
 }
 
 function roundedPath(ctx: CanvasRenderingContext2D, points: Array<[number, number]>, radius: number) {
@@ -168,36 +248,56 @@ export function FlowField() {
 
       for (const node of map.nodes) {
         node.lit = Math.max(0, node.lit - dt * 0.9);
+        if (!node.lit) node.fill = 0;
+      }
+      for (const signal of map.signals) advance(map, signal, dt);
+
+      /* A small point with a slight glow, in the same blue the stages power up in. */
+      for (const signal of map.signals) {
+        const [x, y] =
+          signal.phase === "travel"
+            ? pointAt(map.edges[signal.edge], signal.at)
+            : [signal.x, map.nodes[signal.node].y];
+        const glow = ctx.createRadialGradient(x, y, SIGNAL_RADIUS, x, y, GLOW_RADIUS);
+        glow.addColorStop(0, "rgba(56, 182, 255, 0.3)");
+        glow.addColorStop(1, "rgba(56, 182, 255, 0)");
         ctx.beginPath();
-        ctx.roundRect(node.x - node.w / 2, node.y - NODE_H / 2, node.w, NODE_H, NODE_H / 2);
-        ctx.fillStyle = `rgba(56, 182, 255, ${0.03 + node.lit * 0.16})`;
+        ctx.arc(x, y, GLOW_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
         ctx.fill();
-        ctx.strokeStyle = `rgba(${node.lit > 0.02 ? "56, 182, 255" : "242, 245, 247"}, ${0.11 + node.lit * 0.5})`;
-        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x, y, SIGNAL_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(140, 200, 235, 0.8)";
+        ctx.fill();
       }
 
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "rgba(242, 245, 247, 0.6)";
-      for (const token of map.tokens) {
-        const edge = map.edges[token.edge];
-        token.at += (dt * token.speed) / edge.length;
-        if (token.at >= 1) {
-          const node = map.nodes[edge.to];
-          node.lit = 1;
-          const next = node.out.length ? node.out[Math.floor(map.rnd() * node.out.length)] : Math.floor(map.rnd() * map.edges.length);
-          token.edge = next;
-          token.at = 0;
-          continue;
-        }
-        /* A short stretch of the connection itself, brighter than the rest. No dot and no halo. */
-        const back = Math.max(0, token.at - PULSE / edge.length);
+      /* Stages are cut out of everything drawn so far, so a signal goes behind them, never over. */
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      for (const node of map.nodes) {
+        ctx.roundRect(node.x - node.w / 2, node.y - NODE_H / 2, node.w, NODE_H, NODE_H / 2);
+      }
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+
+      for (const node of map.nodes) {
+        const left = node.x - node.w / 2;
+        const top = node.y - NODE_H / 2;
         ctx.beginPath();
-        for (let step = 0; step <= PULSE_STEPS; step++) {
-          const [x, y] = pointAt(edge, back + ((token.at - back) * step) / PULSE_STEPS);
-          if (step) ctx.lineTo(x, y);
-          else ctx.moveTo(x, y);
-        }
+        ctx.roundRect(left, top, node.w, NODE_H, NODE_H / 2);
+        ctx.fillStyle = "rgba(56, 182, 255, 0.03)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(242, 245, 247, 0.11)";
         ctx.stroke();
+        if (!node.lit) continue;
+
+        /* The outline brightens while the power fills the stage from the side the signal reached. */
+        ctx.strokeStyle = `rgba(56, 182, 255, ${node.lit * 0.5})`;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.roundRect(left, top, node.w * node.fill, NODE_H, NODE_H / 2);
+        ctx.fillStyle = `rgba(56, 182, 255, ${node.lit * 0.22})`;
+        ctx.fill();
       }
     };
 
