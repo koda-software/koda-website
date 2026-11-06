@@ -1,12 +1,16 @@
 /**
- * Polish typography: a one-letter word (a, i, o, u, w, z) never ends a line.
+ * Polish typography: a one-letter word (a, i, o, u, w, z) never ends a line,
+ * and a one-letter prefix with a hyphen (e-Doręczenia, e-mail) never breaks
+ * from its word.
  * The scene generator in KodaSoft-Marketing does the same with `sieroty()`;
  * here every string in the page's copy goes through it once, at definition,
  * so no component has to remember.
  */
 export function polish<T>(value: T): T {
   if (typeof value === "string") {
-    return value.replace(/(^|[\s\u00a0])([aiouwzAIOUWZ]) /g, "$1$2\u00a0") as T;
+    return value
+      .replace(/(^|[\s\u00a0])([aiouwzAIOUWZ]) /g, "$1$2\u00a0")
+      .replace(/(^|[\s\u00a0(„])([a-zA-Z])-(?=\p{L})/gu, "$1$2\u2011") as T;
   }
   if (Array.isArray(value)) return value.map(polish) as T;
   if (value && typeof value === "object") {

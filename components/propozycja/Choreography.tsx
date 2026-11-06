@@ -210,33 +210,42 @@ function cuts(gsap: Gsap, root: HTMLElement) {
         break;
 
       case "wipe":
+        /* Done by the time the section's top is a little above the middle,
+           so the diagonal never cuts through text that is being read. */
         gsap.fromTo(
           frame,
           { clipPath: "polygon(0% 0%, 0% 0%, -30% 100%, -30% 100%)" },
-          { clipPath: "polygon(0% 0%, 130% 0%, 100% 100%, 0% 100%)", ease: "none", scrollTrigger: { ...enter, end: "top 12%" } },
+          { clipPath: "polygon(0% 0%, 130% 0%, 100% 100%, 0% 100%)", ease: "none", scrollTrigger: { ...enter, end: "top 40%" } },
         );
         break;
 
       case "curtain": {
-        /* The scene above stays behind: it sinks and dims while this one
-           slides over it, so it reads as one layer laid on another. */
-        const previous = q(scenes[index - 1], ".scene__inner");
+        /* The scene slides over the one above with a shadow on its edge.
+           Only a full-screen staged scene also sinks and dims behind it: a
+           section of text would be dimmed while its last lines are still
+           being read, which is exactly what made the long texts look greyed
+           out. */
+        const above = scenes[index - 1];
         section.classList.add("has-curtain");
-        gsap.to(previous, {
-          y: () => window.innerHeight * 0.32,
-          autoAlpha: 0.25,
-          scale: 0.96,
-          ease: "none",
-          scrollTrigger: { ...enter, invalidateOnRefresh: true },
-        });
+        if (above.dataset.stage !== undefined) {
+          gsap.to(q(above, ".scene__inner"), {
+            y: () => window.innerHeight * 0.32,
+            autoAlpha: 0.25,
+            scale: 0.96,
+            ease: "none",
+            scrollTrigger: { ...enter, invalidateOnRefresh: true },
+          });
+        }
         break;
       }
 
       case "fade":
         /* The section is painted in the previous scene's colour; fading the
-           frame in over it changes the colour of the page itself. */
-        gsap.fromTo(frame, { autoAlpha: 0 }, { autoAlpha: 1, ease: "none", scrollTrigger: { ...enter, start: "top 85%", end: "top 25%" } });
-        gsap.fromTo(inner, { y: 70 }, { y: 0, ease: "none", scrollTrigger: { ...enter, start: "top 85%", end: "top 25%" } });
+           frame in over it changes the colour of the page itself. It is
+           complete before the section reaches the middle of the window, so
+           nothing is read through a half-transparent veil. */
+        gsap.fromTo(frame, { autoAlpha: 0 }, { autoAlpha: 1, ease: "none", scrollTrigger: { ...enter, start: "top 95%", end: "top 55%" } });
+        gsap.fromTo(inner, { y: 50 }, { y: 0, ease: "none", scrollTrigger: { ...enter, start: "top 95%", end: "top 55%" } });
         break;
 
       case "iris":

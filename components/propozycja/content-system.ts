@@ -4,14 +4,14 @@ import { polish } from "./polish";
  * The System section: one entry per area of Opero.
  *
  * The facts come from the feature pages of the current site (what each part
- * of the product actually does), rewritten in the vocabulary of the November
- * positioning: modules, stages, rules, foundation, control - never "low-code",
- * "BPM", "workflow" or "EOD" in the visible copy. Every area opens with what
- * changes in the organisation, not with what the feature is called.
+ * of the product actually does), in the vocabulary of the November
+ * positioning: modules, stages, rules, foundation, control. The slugs are the
+ * current site's, and the search phrases - DMS, EOD, workflow, BPM, no-code,
+ * low-code - live in each landing's title, headline and long text
+ * (content-landings), not in the names of the menu.
  *
- * `showcase` picks the interactive scene the page is built around; the four
- * big ones are shared with the home page, the rest are product cards drawn
- * for their own page.
+ * `showcase` picks the animated scene from the home page a landing may use;
+ * areas without one are told with real screens only.
  */
 
 export type Showcase =
@@ -41,7 +41,7 @@ export type SystemArea = {
 
 export const systemAreas: SystemArea[] = polish([
   {
-    slug: "moduly",
+    slug: "no-code",
     nav: "Własne moduły",
     blurb: "Pola, formularze i widoki dla tego, co działa u Was inaczej",
     title: ["Aplikacja dla Waszego obszaru,", "zbudowana w konfiguracji."],
@@ -72,10 +72,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy zbudowanie modułu wymaga programisty?", a: "Nie. Obiekty, pola, formularze i widoki układa się w konfiguracji. Skrypty i zapytania SQL są dostępne dopiero tam, gdzie konfiguracja przestaje wystarczać." },
       { q: "Co się dzieje z modułem, kiedy firma się zmieni?", a: "Zmienia się go w tym samym miejscu, w którym powstał. Nowe pole czy inny układ formularza to konfiguracja, nie wdrożenie." },
     ],
-    related: ["procesy", "reguly", "raporty"],
+    related: ["procesy-workflow", "low-code-automatyzacje", "raporty"],
   },
   {
-    slug: "procesy",
+    slug: "procesy-workflow",
     nav: "Procesy i etapy",
     blurb: "Etapy, przejścia, zadania i terminy dla każdej sprawy",
     title: ["Każda sprawa wie,", "na jakim jest etapie."],
@@ -110,11 +110,11 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Do czego można przypiąć proces?", a: "Do dowolnego modułu: umowy, wniosku, zgłoszenia, faktury. Obiegiem obejmujecie dokładnie te dane, które macie." },
       { q: "Czy proces da się zmienić w trakcie pracy?", a: "Tak. Zmiana przechodzi przez wersję roboczą i publikację, a sprawy w toku zachowują swoją historię." },
     ],
-    related: ["dokumenty", "reguly", "kontrola"],
+    related: ["eod-dms", "low-code-automatyzacje", "bezpieczenstwo-uprawnienia"],
   },
   {
-    slug: "dokumenty",
-    nav: "Dokumenty",
+    slug: "eod-dms",
+    nav: "Obieg dokumentów (DMS)",
     blurb: "Obieg, wersje plików i szablony przy każdej sprawie",
     title: ["Dokument jest sprawą,", "nie plikiem na dysku."],
     lead: "Pismo, faktura czy umowa ma w Opero swoją kartotekę, ścieżkę akceptacji i komplet plików z wersjami. Szablony tworzą dokumenty wprost z danych sprawy, zawsze w aktualnej wersji.",
@@ -143,10 +143,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy dokumenty można generować automatycznie?", a: "Tak. Szablon łączy stałą treść ze zmiennymi z rekordu i tworzy gotowe pismo albo umowę." },
       { q: "Kto widzi pliki przy sprawie?", a: "Ci, którzy mają do niej uprawnienia. Dostęp do plików wynika z tej samej roli, co dostęp do danych." },
     ],
-    related: ["procesy", "integracje", "kontrola"],
+    related: ["procesy-workflow", "integracje-zgodnosc", "bezpieczenstwo-uprawnienia"],
   },
   {
-    slug: "reguly",
+    slug: "low-code-automatyzacje",
     nav: "Reguły i automatyzacje",
     blurb: "Warunek i kroki, które wykonują się same",
     title: ["Powtarzalna praca", "wykonuje się sama."],
@@ -173,10 +173,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy automatyzacje wymagają programisty?", a: "Reguły układa się w konfiguracji. Skrypty i SQL są opcjonalne i przydają się przy bardziej złożonej logice." },
       { q: "Co się stanie, jeśli reguła zadziała źle?", a: "Każde jej działanie zostaje w rejestrze zdarzeń, a regułę testuje się przed włączeniem." },
     ],
-    related: ["procesy", "integracje", "ai"],
+    related: ["procesy-workflow", "integracje-zgodnosc", "kontekstowe-ai"],
   },
   {
-    slug: "integracje",
+    slug: "integracje-zgodnosc",
     nav: "Integracje i zgodność",
     blurb: "KSeF, e-Doręczenia, kursy NBP, weryfikacja VAT, otwarte API",
     title: ["Wymogi państwa i Wasze systemy", "w jednym obiegu danych."],
@@ -207,7 +207,7 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy Opero obsługuje KSeF?", a: "Tak. Opero integruje się z Krajowym Systemem e-Faktur i obsługuje wysyłkę oraz odbiór faktur ustrukturyzowanych." },
       { q: "Czy Opero zastępuje ERP?", a: "Nie. Opero nie jest systemem ERP ani księgowym. Prowadzi procesy, dokumenty i dane wokół nich i wymienia dane z ERP przez API." },
     ],
-    related: ["dokumenty", "reguly", "aplikacje"],
+    related: ["eod-dms", "low-code-automatyzacje", "gotowe-aplikacje"],
   },
   {
     slug: "raporty",
@@ -236,10 +236,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy raporty pokazują aktualne dane?", a: "Tak. Raporty i pulpity działają na żywych danych systemu, bez ręcznego odświeżania." },
       { q: "Czym jest drążenie danych?", a: "Przejściem od wartości zbiorczej do rekordów, które ją tworzą. Klikasz liczbę i widzisz konkretne sprawy." },
     ],
-    related: ["moduly", "procesy", "ai"],
+    related: ["no-code", "procesy-workflow", "kontekstowe-ai"],
   },
   {
-    slug: "ai",
+    slug: "kontekstowe-ai",
     nav: "AI w ramach",
     blurb: "Asystent na tych samych elementach i uprawnieniach",
     title: ["Asystent, który zna", "Wasz system."],
@@ -265,10 +265,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy AI może zmienić system bez wiedzy administratora?", a: "Nie. Asystent proponuje zmianę, przechodzi ona walidację, a wprowadza ją człowiek." },
       { q: "Skąd AI zna nasz system?", a: "Łączy się z konfiguracją i danymi Waszej instancji przez kontrolowany mechanizm, z uprawnieniami użytkownika, który pyta." },
     ],
-    related: ["kontrola", "moduly", "reguly"],
+    related: ["bezpieczenstwo-uprawnienia", "no-code", "low-code-automatyzacje"],
   },
   {
-    slug: "kontrola",
+    slug: "bezpieczenstwo-uprawnienia",
     nav: "Bezpieczeństwo i kontrola",
     blurb: "Role, uprawnienia do pól, MFA, SSO, rejestr zdarzeń",
     title: ["Każdy widzi tyle,", "ile powinien."],
@@ -300,10 +300,10 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Jak działają uprawnienia w Opero?", a: "Dostęp nadaje się przez role, a te określają widoczność i edycję modułu, obiektu i pola. Można go też ograniczać w ramach spółek." },
       { q: "Czy uprawnienia obowiązują także AI?", a: "Tak. Asystent widzi i zmienia dokładnie tyle, ile rola użytkownika, który z niego korzysta." },
     ],
-    related: ["ai", "procesy", "integracje"],
+    related: ["kontekstowe-ai", "procesy-workflow", "integracje-zgodnosc"],
   },
   {
-    slug: "aplikacje",
+    slug: "gotowe-aplikacje",
     nav: "Gotowe aplikacje",
     blurb: "Faktury z KSeF, kontrahenci, e-Doręczenia, zgłoszenia, czas pracy",
     title: ["Gotowe tam,", "gdzie błąd kosztuje najwięcej."],
@@ -330,7 +330,7 @@ export const systemAreas: SystemArea[] = polish([
       { q: "Czy gotowe aplikacje można dopasować?", a: "Tak. Są zbudowane z tych samych elementów co własne moduły, więc pola, etapy i reguły można zmieniać." },
       { q: "Czy Opero zastępuje system księgowy?", a: "Nie. Opero nie jest systemem księgowym ani ERP. Prowadzi obieg dokumentów i spraw wokół nich." },
     ],
-    related: ["integracje", "moduly", "dokumenty"],
+    related: ["integracje-zgodnosc", "no-code", "eod-dms"],
   },
 ]);
 

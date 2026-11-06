@@ -4282,3 +4282,510 @@ html.menu-open {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------ landings */
+
+/* Banner, stage layout: the copy centred, the product large under it. */
+.page-hero--stage {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: clamp(40px, 6vh, 64px);
+  text-align: center;
+}
+
+.page-hero--stage .page-hero__copy {
+  justify-items: center;
+  max-width: 60rem;
+}
+
+.page-hero--stage .lead {
+  max-width: 44em;
+}
+
+.page-hero--stage .display--page {
+  font-size: clamp(2.1rem, 4.2vw, 4.2rem);
+  text-wrap: balance;
+}
+
+.page-hero--stage .page-hero__aside {
+  width: min(100%, 1180px);
+}
+
+.page-hero--stage .screen__caption {
+  margin-inline: auto;
+}
+
+/* Cards: what an area covers. */
+.l-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.l-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 26px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  box-shadow: var(--shadow-on-light);
+}
+
+.on-dark .l-card {
+  background: var(--mist-06);
+  box-shadow: inset 0 0 0 1px var(--mist-12);
+}
+
+.l-card__title {
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.l-card__text {
+  line-height: 1.55;
+  color: var(--ink-72);
+}
+
+.on-dark .l-card__text {
+  color: var(--mist-72);
+}
+
+/* Service tiles: the name large, like a sign on the door. */
+.l-cards--tiles .l-card {
+  gap: 14px;
+  min-height: 190px;
+  align-content: space-between;
+}
+
+.l-cards--tiles .l-card__title {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+/* If/then: the condition quiet, the outcome loud, joined by the rule's own words. */
+.l-cards--ifThen .l-card {
+  gap: 14px;
+}
+
+.l-card__when {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--ink-24);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--ink-72);
+}
+
+.l-card__key {
+  justify-self: start;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--ink-06);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-72);
+}
+
+.l-card__key--then {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: 3px;
+  background: var(--blue);
+  color: var(--ink);
+}
+
+/* Tabs over one large screen. */
+.screen-tabs {
+  display: grid;
+  gap: 28px;
+}
+
+.screen-tabs__list {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px;
+  margin: -4px;
+}
+
+.screen-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink-06);
+  color: var(--ink-72);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.on-dark .screen-tabs__tab {
+  background: var(--mist-06);
+  color: var(--mist-72);
+}
+
+.screen-tabs__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.screen-tabs__tab[aria-selected="true"] {
+  background: var(--blue);
+  color: var(--ink);
+}
+
+.screen-tabs__tab[aria-selected="true"] .screen-tabs__dot {
+  background: currentColor;
+}
+
+.screen-tabs__panels {
+  display: grid;
+}
+
+.screen-tabs__panel {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.7s var(--ease),
+    visibility 0s linear 0.45s;
+}
+
+.screen-tabs__panel.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.7s var(--ease);
+}
+
+.screen-tabs__copy {
+  display: grid;
+  gap: 12px;
+}
+
+.screen-tabs__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.screen-tabs__text {
+  font-size: 1.04rem;
+  line-height: 1.6;
+  color: var(--ink-72);
+}
+
+.on-dark .screen-tabs__text {
+  color: var(--mist-72);
+}
+
+.screen-tabs__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Rows: screen and sentence, the side alternating. */
+.l-rows {
+  display: grid;
+  gap: clamp(56px, 9vw, 120px);
+}
+
+.l-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.l-row:nth-child(even) .l-row__copy {
+  order: 2;
+}
+
+.l-row:nth-child(even) {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+}
+
+.l-row__copy {
+  display: grid;
+  gap: 12px;
+}
+
+.l-row__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.l-row__text {
+  font-size: 1.04rem;
+  line-height: 1.6;
+  color: var(--ink-72);
+}
+
+.on-dark .l-row__text {
+  color: var(--mist-72);
+}
+
+/* Pins: a screen marked up with numbered points. */
+.l-pins {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.l-pins__screen {
+  position: relative;
+}
+
+.l-pins__screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.l-pin {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow:
+    0 0 0 6px rgba(56, 182, 255, 0.22),
+    0 10px 24px -6px rgba(11, 17, 22, 0.4);
+}
+
+.l-pin--static {
+  position: static;
+  flex: none;
+  margin: 2px 0 0;
+}
+
+.l-pins__list {
+  display: grid;
+  gap: 28px;
+}
+
+.l-pins__list li {
+  display: flex;
+  gap: 18px;
+}
+
+.l-pins__list > li > div {
+  display: grid;
+  gap: 8px;
+}
+
+/* Compare: the old way quiet, Opero marked. */
+.l-compare {
+  overflow-x: auto;
+}
+
+.l-compare table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.l-compare th,
+.l-compare td {
+  padding: 20px 18px;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--ink-12);
+}
+
+.l-compare thead th {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink-58);
+}
+
+.l-compare tbody th {
+  width: 20%;
+  font-family: var(--f-display);
+  font-weight: 600;
+}
+
+.l-compare td {
+  color: var(--ink-58);
+}
+
+.l-compare .l-compare__ours {
+  color: var(--ink);
+  background: rgba(56, 182, 255, 0.07);
+}
+
+.l-compare thead .l-compare__ours {
+  color: var(--ink);
+  border-radius: 12px 12px 0 0;
+}
+
+.l-compare__check {
+  display: inline-flex;
+  margin-right: 8px;
+  color: var(--blue);
+  vertical-align: -3px;
+}
+
+.l-compare__check svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Statement: one sentence, large, on its own plane. */
+.l-statement {
+  align-content: center;
+  gap: 28px;
+}
+
+.l-statement__text {
+  max-width: 22ch;
+  font-family: var(--f-display);
+  font-size: clamp(2.2rem, 5vw, 4.8rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.l-statement__note {
+  max-width: 52ch;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--mist-72);
+}
+
+/* Article: the long text a search for the phrase is looking for. */
+.l-article {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+}
+
+.l-article__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.l-article__body {
+  display: grid;
+  gap: 32px;
+  max-width: 66ch;
+}
+
+.l-article__body section {
+  display: grid;
+  gap: 12px;
+}
+
+.l-article__body h3 {
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.l-article__body p {
+  font-size: 1.04rem;
+  line-height: 1.7;
+  color: var(--ink-72);
+}
+
+.on-dark .l-article__body p {
+  color: var(--mist-72);
+}
+
+@media (min-width: 1024px) {
+  .l-article__title {
+    position: sticky;
+    top: 120px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .l-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .screen-tabs__panel,
+  .l-row,
+  .l-row:nth-child(even),
+  .l-pins,
+  .l-article {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .l-row:nth-child(even) .l-row__copy {
+    order: 0;
+  }
+
+  .l-pin {
+    width: 26px;
+    height: 26px;
+    margin: -13px 0 0 -13px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .l-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .l-cards--tiles .l-card {
+    min-height: 0;
+  }
+}
+
+/* The stage banner shows the top of the product and lets the rest run off,
+   so the banner stays about one screen tall. */
+.page-hero--stage .screen__frame {
+  max-height: min(58svh, 620px);
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  border-radius: 14px 14px 0 0;
+}
+
+.page-hero--stage .screen__caption {
+  margin-top: 4px;
+}

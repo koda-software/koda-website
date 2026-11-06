@@ -43,22 +43,31 @@ export function TwoTone({ lines, as: Tag = "h2", className = "title", reveal = t
 export function PageHero({
   actions = true,
   aside,
+  layout = "split",
   lead,
   screen,
   title,
 }: {
   actions?: boolean;
   aside?: ReactNode;
+  /** `split`: the screen beside the copy. `stage`: the copy centred, the screen large under it. */
+  layout?: "split" | "stage";
   lead: string;
   screen?: { name: ScreenName; caption: string };
   title: [string, string];
 }) {
   const visual = screen ? (
-    <Screen caption={screen.caption} className="page-hero__screen" name={screen.name} priority sizes="(min-width: 1024px) 52vw, 100vw" />
+    <Screen
+      caption={screen.caption}
+      className="page-hero__screen"
+      name={screen.name}
+      priority
+      sizes={layout === "stage" ? "(min-width: 1360px) 1200px, 100vw" : "(min-width: 1024px) 52vw, 100vw"}
+    />
   ) : (
     aside
   );
-  const modifier = screen ? "page-hero--screen" : aside ? "page-hero--aside" : "";
+  const modifier = screen ? (layout === "stage" ? "page-hero--stage" : "page-hero--screen") : aside ? "page-hero--aside" : "";
   return (
     <Scene backdrop={<FlowField />} className={`page-hero ${modifier}`.trim()} id="start" kind="page-hero" prev="dark" tone="dark">
       <div className="page-hero__copy">
@@ -91,20 +100,6 @@ export function PageHero({
         </div>
       ) : null}
     </Scene>
-  );
-}
-
-/** The index in a page banner: what this page covers. */
-export function HeroIndex({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="hero-index">
-      <p className="hero-index__title">{title}</p>
-      <ol>
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ol>
-    </div>
   );
 }
 
@@ -157,45 +152,6 @@ export function Outcomes({
           ))}
         </ul>
       </div>
-    </Scene>
-  );
-}
-
-/** What an area is made of: the real screen where there is one, then each element with one sentence. */
-export function Elements({
-  children,
-  cut = "none",
-  id,
-  items,
-  prev,
-  screen,
-  title,
-  tone,
-}: {
-  children?: ReactNode;
-  cut?: Cut;
-  id: string;
-  items: Array<{ title: string; text: string }>;
-  screen?: { name: ScreenName; caption: string };
-  prev: Tone;
-  title: [string, string];
-  tone: Tone;
-}) {
-  return (
-    <Scene className="section" cut={cut} id={id} prev={prev} tone={tone}>
-      <div className="section__head">
-        <TwoTone lines={title} />
-      </div>
-      {screen ? <Screen caption={screen.caption} className="screen--wide" name={screen.name} sizes="(min-width: 1360px) 1360px, 100vw" /> : null}
-      <ol className="elements">
-        {items.map((item) => (
-          <li className="element" key={item.title}>
-            <h3 className="element__title">{item.title}</h3>
-            <p className="element__text">{item.text}</p>
-          </li>
-        ))}
-      </ol>
-      {children}
     </Scene>
   );
 }

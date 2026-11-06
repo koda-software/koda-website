@@ -1,46 +1,35 @@
 import { ClosingCall, Faq, Outcomes, PageHero, Related, TwoTone } from "../blocks";
+import { landings, type LandingSection } from "../content-landings";
 import { routes } from "../content-nav";
 import { type SystemArea, systemArea } from "../content-system";
 import { areaStories } from "../content-stories";
-import { Scene } from "../Scene";
+import { LandingArticle, LandingCards, LandingCompare, LandingPins, LandingRows, LandingStatement, LandingTabs } from "../landing";
+import { type Cut, Scene } from "../Scene";
 import { Ai } from "../scenes/Ai";
 import { Build } from "../scenes/Build";
 import { Control } from "../scenes/Control";
 import { Process } from "../scenes/Process";
-import { showcaseCards } from "../ShowcaseCards";
-import { Story } from "../Story";
 import { ProposalPage } from "../shell/ProposalPage";
+import { Story } from "../Story";
 
-/** Scenes from the home page that a system area is built around, and their tone. */
-const sceneTones = { process: "light", build: "dark", ai: "light", control: "dark" } as const;
+type Tone = "dark" | "light";
+
+/* The cuts alternate down the page, so no two arrivals in a row look the
+   same. Both keep the arriving section fully opaque: a fade between graphite
+   and mist passes through grey, which on a page of text reads as a fault. */
+const cuts: Cut[] = ["card", "wipe"];
 
 /**
- * One area of the system, as a page.
+ * One area of Opero, as a landing page of its own.
  *
- * It opens on a real screen of the area and then tells it as a story, step
- * by step on the screens where each step happens. After the story come the
- * animated showcase, what changes for the organisation, and the questions.
- * The planes alternate graphite and mist: since four of the showcases are
- * fixed-tone scenes from the home page, the order of the showcase and the
- * comparison follows from them, so two planes of the same tone never meet.
+ * The banner and the questions at the end are the frame every page shares.
+ * What is between them comes from the page's own list in content-landings,
+ * so every area is told with the sections that suit it, in its own order.
+ * The tones alternate from the graphite banner down; the lists are written
+ * so that the last section before the questions is mist.
  */
 export function SystemAreaPage({ area }: { area: SystemArea }) {
-  const story = areaStories[area.slug];
-  const sceneTone = area.showcase in sceneTones ? sceneTones[area.showcase as keyof typeof sceneTones] : "light";
-  const showcaseFirst = sceneTone === "dark";
-
-  const showcase = <Showcase area={area} prev={showcaseFirst ? "light" : "dark"} />;
-  const outcomes = (
-    <Outcomes
-      cut={showcaseFirst ? "card" : "fade"}
-      id="zmiana"
-      items={area.outcomes}
-      prev={showcaseFirst ? "dark" : "light"}
-      title={["Tak wygląda to dziś.", "Tak wygląda w Opero."]}
-      tone={showcaseFirst ? "light" : "dark"}
-    />
-  );
-
+  const landing = landings[area.slug];
   const related = area.related
     .map((slug) => systemArea(slug))
     .filter((item): item is SystemArea => Boolean(item))
@@ -48,17 +37,18 @@ export function SystemAreaPage({ area }: { area: SystemArea }) {
 
   return (
     <ProposalPage>
-      <PageHero lead={area.lead} screen={story?.hero} title={area.title} />
-      {story ? (
-        <Scene className="section" cut="card" id="opowiesc" prev="dark" tone="light">
-          <div className="section__head">
-            <TwoTone lines={story.title} />
-          </div>
-          <Story steps={story.steps} />
-        </Scene>
-      ) : null}
-      {showcaseFirst ? showcase : outcomes}
-      {showcaseFirst ? outcomes : showcase}
+      <PageHero
+        layout={landing.hero.layout}
+        lead={landing.hero.lead}
+        screen={{ name: landing.hero.screen, caption: landing.hero.caption }}
+        title={landing.hero.title}
+      />
+      {landing.sections.map((section, index) => {
+        const tone: Tone = index % 2 === 0 ? "light" : "dark";
+        const prev: Tone = tone === "light" ? "dark" : "light";
+        const frame = { id: `s${index + 1}`, cut: cuts[index % cuts.length], prev, tone };
+        return <Section area={area} frame={frame} key={frame.id} section={section} />;
+      })}
       <Scene className="section section--split" cut="curtain" id="pytania" prev="light" tone="dark">
         <Faq items={area.faq} />
         <Related items={related} title="Następne obszary" />
@@ -68,33 +58,62 @@ export function SystemAreaPage({ area }: { area: SystemArea }) {
   );
 }
 
-function Showcase({ area, prev }: { area: SystemArea; prev: "dark" | "light" }) {
+function Section({
+  area,
+  frame,
+  section,
+}: {
+  area: SystemArea;
+  frame: { id: string; cut: Cut; prev: Tone; tone: Tone };
+  section: LandingSection;
+}) {
+  switch (section.kind) {
+    case "story": {
+      const story = areaStories[area.slug];
+      return story ? (
+        <Scene className="section" {...frame}>
+          <div className="section__head">
+            <TwoTone lines={story.title} />
+          </div>
+          <Story steps={story.steps} />
+        </Scene>
+      ) : null;
+    }
+    case "showcase":
+      return <Showcase area={area} frame={frame} />;
+    case "outcomes":
+      return <Outcomes {...frame} items={area.outcomes} title={["Tak wygląda to dziś.", "Tak wygląda w Opero."]} />;
+    case "cards":
+      return <LandingCards frame={frame} section={section} />;
+    case "tabs":
+      return <LandingTabs frame={frame} section={section} />;
+    case "rows":
+      return <LandingRows frame={frame} section={section} />;
+    case "pins":
+      return <LandingPins frame={frame} section={section} />;
+    case "compare":
+      return <LandingCompare frame={frame} section={section} />;
+    case "statement":
+      return <LandingStatement frame={frame} section={section} />;
+    case "article":
+      return <LandingArticle frame={frame} section={section} />;
+  }
+}
+
+/* The animated scenes from the home page have a fixed tone; the landing lists
+   put them where the alternation already wants that tone. */
+function Showcase({ area, frame }: { area: SystemArea; frame: { id: string; cut: Cut; prev: Tone } }) {
+  const { id, cut, prev } = frame;
   switch (area.showcase) {
     case "process":
-      return <Process cut="card" id="pokaz" prev={prev} />;
+      return <Process cut={cut} id={id} prev={prev} />;
     case "build":
-      return <Build cut="curtain" id="pokaz" prev={prev} />;
+      return <Build cut={cut} id={id} prev={prev} />;
     case "ai":
-      return <Ai cut="card" id="pokaz" prev={prev} />;
+      return <Ai cut={cut} id={id} prev={prev} />;
     case "control":
-      return <Control cut="curtain" id="pokaz" prev={prev} />;
-    default: {
-      const Card = showcaseCards[area.showcase];
-      return (
-        <Scene className="section showcase-scene" cut="card" id="pokaz" prev={prev} tone="light">
-          <div className="showcase-scene__copy">
-            <p className="showcase-scene__lead" data-reveal>
-              {area.outcomes[0].after}
-            </p>
-            <p className="showcase-scene__note" data-reveal>
-              Dane pokazowe z organizacji Demo Firma.
-            </p>
-          </div>
-          <div className="showcase-scene__card">
-            <Card />
-          </div>
-        </Scene>
-      );
-    }
+      return <Control cut={cut} id={id} prev={prev} />;
+    default:
+      return null;
   }
 }

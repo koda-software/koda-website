@@ -13,7 +13,7 @@ import { icons } from "../ui";
  * person approve it, and the dashed proposal becomes a real stage. The one
  * blue thing in the chapter is that stage, at the moment it is accepted.
  */
-export function Ai({ id = "ai", cut = "fade", prev = "dark" }: { id?: string; cut?: Cut; prev?: "dark" | "light" } = {}) {
+export function Ai({ id = "ai", cut = "wipe", prev = "dark" }: { id?: string; cut?: Cut; prev?: "dark" | "light" } = {}) {
   const before = contract.stages.slice(0, 3);
   const after = contract.stages.slice(3);
 
