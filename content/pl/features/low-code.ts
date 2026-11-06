@@ -7,6 +7,7 @@ export const lowCodeFeature: FeaturePageContent = {
       "Automatyzuj decyzje regułami, skryptami i zapytaniami SQL. Silnik reguł „warunek to akcja” bez budowy osobnego systemu. Low-code w Opero.",
   },
   navLabel: "Low-code i automatyzacje",
+  navDescription: "Decyzje, które zapadają same",
   hero: {
     title: "Low-code i automatyzacje - logika, która pracuje za Ciebie",
     description:

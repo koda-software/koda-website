@@ -18,6 +18,7 @@ export const commonContent: ShellContent = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     exploreOpero: "Explore Opero",
+    exploreOperoText: "One platform for every area of your organisation.",
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Solutions" },
@@ -27,6 +28,8 @@ export const commonContent: ShellContent = {
     ],
   },
   footer: {
+    madeIn: "Made in",
+    madeInFlag: "the EU",
     tagline: "A low-code BPM platform built around how companies actually work.",
     description:
       "KodaSoft builds Opero for companies that need dependable software shaped around real operations, governance, automation, and practical AI.",

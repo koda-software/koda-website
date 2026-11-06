@@ -14,15 +14,19 @@
      near-black and blue-grey this used to be. Pure black (#02020d, #000407)
      read as a default dark theme rather than as KodaSoft's own colour: large
      dark planes are the most visible surface on the site, so they carry the
-     brand or they carry nothing. Every tone below is hsl(207deg) at a
-     different lightness, and each keeps a wide contrast margin - ink on paper
-     is 19.0:1, muted on paper 5.3:1, white on the darkest surface 19.0:1. */
+     brand or they carry nothing. The page is graphite and mist, and every grey
+     is one of those two toned down, so there is no fourth colour hiding in a
+     muted label. White is for one thing: the face of a card standing on mist. */
   --color-ink: #0b1116;
   --color-ink-soft: #1b262f;
-  --color-muted: #5f6d78;
+  /* Ink at 72% on mist, solid so that it stays legible wherever it lands. */
+  --color-muted: #4c5155;
   --color-muted-light: #c2c8cd;
   --color-paper: #ffffff;
-  --color-paper-soft: #f7f8f9;
+  /* Mist, the grey that graphite stands against. Light enough to read as paper
+     and grey enough to be a surface of its own next to white. */
+  --color-mist: #f2f5f7;
+  --color-paper-soft: var(--color-mist);
   /* The darkest surface, for banners and dark panels. Named rather than
      repeated as a literal: it was hardcoded as #000407 in seven components. */
   --color-surface-dark: #0b1116;
@@ -32,67 +36,46 @@
      it only reaches ~2.3:1 contrast though - well under the ~4.5:1 WCAG AA
      text needs - so --color-blue stays a slightly deeper, still-recognizably-
      brand shade of the same hue, tuned as close to #38B6FF as the contrast
-     floor allows. */
+     floor allows on mist, the darker of the two light surfaces. */
   --color-brand-blue: #38b6ff;
-  --color-blue: #0b7bbe;
+  --color-blue: #0a74b3;
   --color-blue-soft: #38b6ff;
-  --color-blue-deep: #1f26aa;
-  --color-cyan: #7ee7ff;
-  --color-border-light: rgba(2, 2, 13, 0.12);
+  --color-blue-deep: #075a8c;
+  --color-border-light: rgba(11, 17, 22, 0.12);
   --color-border-dark: rgba(255, 255, 255, 0.12);
 
-  --background: var(--color-paper);
+  --background: var(--color-mist);
   --foreground: var(--color-ink);
   --shell-width: 1440px;
   --page-gutter: clamp(1rem, 2vw, 1.5rem);
   --section-y: clamp(4rem, 8vw, 7rem);
   --radius-button: 6px;
-  --radius-card: 14px;
-  --radius-panel: 24px;
-  /* Subtler than a full bright-to-black sweep: both stops stay inside the
-     mid-to-light end of the brand blue range. */
-  --gradient-cta: linear-gradient(135deg, #2ca6f0, #0b4e7d);
+  --radius-card: 18px;
+  --radius-panel: 22px;
   /* Kept nearly flat on purpose: gradients are reserved for the hero banners,
      everywhere else (panels, cards) gets a plain dark tone instead. Graphite
      rather than black, so a panel reads as a lit surface with depth. */
-  --gradient-technical: linear-gradient(165deg, #16222e 0%, #101a23 55%, #0b1116 100%);
-  /* One clean diagonal sweep from graphite to brand blue - matches the
-     KodaSoft business card, not a hazy multi-stop glow. */
-  --gradient-hero:
-    radial-gradient(circle at 82% 16%, rgba(56, 182, 255, 0.24), transparent 31%),
-    radial-gradient(circle at 18% 86%, rgba(27, 113, 180, 0.34), transparent 36%),
-    linear-gradient(135deg, #08131d 0%, #0b2842 40%, #104b7a 72%, #1670b5 100%);
-  /* The footer used to top out at #0d263a while the banner reached #1670b5,
-     which left the two ends of the page reading as different palettes. It now
-     follows the banner's family but runs the other way: brightest where the
-     footer begins, settling to near-graphite by the legal line. A closing band
-     should quieten as it goes.
+  --gradient-technical: linear-gradient(165deg, #1b262f 0%, #111920 55%, #0b1116 100%);
+  /* The dark surfaces are graphite, with no blue in them: blue is an accent, one
+     thing at a time, and never what things stand on. The light above is a lighter graphite
+     falling off into the surface, so a large plane does not read as flat black. */
+  --gradient-hero: radial-gradient(ellipse 70% 80% at 50% 0%, #1b262f 0%, #0b1116 70%);
+  /* The page ends on the same colour it opens with. */
+  --gradient-footer: #0b1116;
+  --gradient-final-cta: var(--gradient-hero);
 
-     The peak stops at #12497c rather than the banner's #1670b5, because every
-     step brighter costs contrast against the small text on it. At this peak
-     white needs 61% opacity to clear 4.5:1, which is why the footer's muted
-     text sits at 65% - and why the accents are concentrated in the upper
-     third, where the background can carry them.
-
-     The stops are weighted towards the top: by 58% of the height the band is
-     already near-graphite, and it lands exactly on --color-surface-dark, the
-     tone the rest of the site's dark surfaces use. The page therefore ends on
-     the same colour it opens with. */
-  --gradient-footer:
-    radial-gradient(circle at 84% 10%, rgba(56, 182, 255, 0.22), transparent 32%),
-    radial-gradient(circle at 14% 22%, rgba(27, 113, 180, 0.24), transparent 32%),
-    linear-gradient(170deg, #12497c 0%, #0d3355 28%, #0a1c2e 58%, #0b1116 100%);
-  --gradient-final-cta:
-    radial-gradient(circle at 86% 20%, rgba(56, 182, 255, 0.26), transparent 33%),
-    radial-gradient(circle at 18% 92%, rgba(20, 112, 184, 0.24), transparent 36%),
-    linear-gradient(145deg, #101d2a 0%, #0d2740 50%, #09131d 100%);
+  /* Sora carries the message: titles, leads and buttons. Atkinson Hyperlegible
+     carries everything you read through, the way it does in the product. */
+  --type-display: var(--font-sans-brand), "Sora", ui-sans-serif, system-ui, sans-serif;
+  --type-ui: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Sora", "Sora Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-sans-brand), "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--type-ui);
+  --font-mono: var(--type-ui);
+  --font-display: var(--type-display);
 }
 
 html,
@@ -119,7 +102,7 @@ body {
  * ever saw them, so scrolling down again showed nothing moving.
  */
 html {
-  background: var(--color-paper);
+  background: var(--background);
   color: var(--color-ink);
   text-rendering: optimizeLegibility;
 }
@@ -128,7 +111,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans-brand), "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--type-ui);
 }
 
 /* Must sit in `base`: unlayered rules outrank Tailwind's `utilities` layer, so an
@@ -139,7 +122,12 @@ body {
 @layer base {
   h1,
   h2,
-  h3,
+  h3 {
+    font-family: var(--type-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
   p {
     text-wrap: pretty;
   }
@@ -150,48 +138,100 @@ body {
   }
 }
 
+/* The site's buttons: a pill, graphite on mist and mist on graphite. In `components`
+   so that a utility on the same element, such as `mt-7` or `w-full`, still wins. */
+@layer components {
+  .action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.6rem 26px;
+    border-radius: 999px;
+    font-family: var(--type-display);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-align: center;
+    transition:
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.2s ease;
+  }
+
+  .action:active {
+    transform: scale(0.97);
+  }
+
+  .action-ink {
+    background: var(--color-ink);
+    color: var(--color-mist);
+  }
+
+  .action-ink:hover {
+    box-shadow: 0 18px 40px -16px rgb(11 17 22 / 0.6);
+  }
+
+  .action-mist {
+    background: var(--color-mist);
+    color: var(--color-ink);
+  }
+
+  .action-mist:hover {
+    box-shadow: 0 18px 50px -16px rgb(0 0 0 / 0.9);
+  }
+
+  .action-line {
+    box-shadow: inset 0 0 0 1px rgb(11 17 22 / 0.24);
+    color: var(--color-ink);
+  }
+
+  .action-line:hover {
+    box-shadow: inset 0 0 0 1px rgb(11 17 22 / 0.58);
+  }
+
+  .action-line-dark {
+    box-shadow: inset 0 0 0 1px rgb(242 245 247 / 0.24);
+    color: var(--color-mist);
+  }
+
+  .action-line-dark:hover {
+    box-shadow: inset 0 0 0 1px rgb(242 245 247 / 0.58);
+  }
+}
+
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--color-blue-soft);
   outline-offset: 3px;
 }
 
-.site-menu-pill {
-  position: relative;
-  isolation: isolate;
+/* The phone menu covers the page, so the page under it must not scroll. */
+html.menu-open {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(8, 26, 42, 0.64);
-  box-shadow: 0 12px 36px rgba(7, 26, 43, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
-.site-menu-pill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0) 58%);
-  pointer-events: none;
+/* The header stays on screen, so whatever a link jumps to has to land below it. */
+html {
+  scroll-padding-top: 5.5rem;
 }
 
-.site-menu-pill > * {
-  position: relative;
-  z-index: 3;
+.site-drawer:not([hidden]) {
+  animation: site-drawer-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.site-menu-link-active {
-  color: var(--color-ink) !important;
+@keyframes site-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
-.site-menu-pill-scrolled {
-  border-color: rgba(255, 255, 255, 0.26);
-  background: rgba(8, 26, 42, 0.84);
-  box-shadow: 0 14px 40px rgba(7, 26, 43, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.site-menu-pill-scrolled::after {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 58%);
+@media (prefers-reduced-motion: reduce) {
+  .site-drawer:not([hidden]) {
+    animation: none;
+  }
 }
 
 /* Rich text rendered from the Opero blog module. Token-based so article bodies
@@ -223,7 +263,8 @@ button:focus-visible {
 .blog-prose h6 {
   margin: 3rem 0 1rem;
   color: var(--color-ink);
-  font-weight: 500;
+  font-family: var(--type-display);
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }

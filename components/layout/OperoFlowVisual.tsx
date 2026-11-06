@@ -13,13 +13,13 @@ const stepNumberClass =
 const stepTitleClass =
   "m-0 text-[clamp(1.28rem,1.75vw,1.55rem)] font-medium leading-[1.1]";
 const stepDescriptionClass =
-  "mt-2 max-w-[28rem] text-[0.98rem] font-light leading-[1.58] text-white/64";
+  "mt-2 max-w-[28rem] text-[0.98rem] leading-[1.58] text-white/64";
 const chipBaseClass =
   "rounded-full border border-white/[0.1] px-4 py-2.5 font-sans text-[0.88rem] font-normal leading-none";
 const mappingUnitBaseClass =
-  "relative min-h-[6.4rem] overflow-hidden rounded-[calc(var(--radius-card)+2px)] border border-white/[0.1] bg-[#11141b]/72 px-4 py-4 font-sans text-[0.92rem] font-light leading-[1.4] text-white/74 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.42),transparent)] [&>i]:mb-3 [&>i]:flex [&>i]:h-7 [&>i]:w-7 [&>i]:items-center [&>i]:justify-center [&>i]:rounded-full [&>i]:border [&>i]:border-[rgba(56,182,255,0.26)] [&>i]:bg-[rgba(56,182,255,0.12)] [&>i>svg]:h-4 [&>i>svg]:w-4 [&>i>svg]:text-[var(--color-blue-soft)]";
+  "relative min-h-[6.4rem] overflow-hidden rounded-[calc(var(--radius-card)+2px)] border border-white/[0.1] bg-[#11141b]/72 px-4 py-4 font-sans text-[0.92rem] leading-[1.4] text-white/74 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,transparent,rgba(56,182,255,0.42),transparent)] [&>i]:mb-3 [&>i]:flex [&>i]:h-7 [&>i]:w-7 [&>i]:items-center [&>i]:justify-center [&>i]:rounded-full [&>i]:border [&>i]:border-[rgba(56,182,255,0.26)] [&>i]:bg-[rgba(56,182,255,0.12)] [&>i>svg]:h-4 [&>i>svg]:w-4 [&>i>svg]:text-[var(--color-blue-soft)]";
 const outcomeItemClass =
-  "flex items-center gap-3 text-[0.96rem] font-light leading-[1.5] text-white/82";
+  "flex items-center gap-3 text-[0.96rem] leading-[1.5] text-white/82";
 
 function displayStepLabel(label: string) {
   return String(Number.parseInt(label, 10) || label);

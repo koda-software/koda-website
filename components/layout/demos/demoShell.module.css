@@ -11,7 +11,7 @@
   --line: #e4e8f0;
   --blue: #3b82f6;
   --brand: #38b6ff;
-  --bg: #f2f5fc;
+  --bg: var(--color-mist);
   /*
    * `width: 100%` matters: as a grid item, the auto side margins below would
    * otherwise win over `justify-self: stretch` and leave the demo shrink-wrapped

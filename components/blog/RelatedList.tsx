@@ -24,7 +24,7 @@ export function RelatedList({ items, locale, ui }: RelatedListProps) {
                 {item.tytul}
               </span>
               {item.zajawka ? (
-                <span className="mt-2 block text-[0.96rem] font-light leading-[1.6] text-[var(--color-muted)]">{item.zajawka}</span>
+                <span className="mt-2 block text-[0.96rem] leading-[1.6] text-[var(--color-muted)]">{item.zajawka}</span>
               ) : null}
             </Link>
           </li>

@@ -151,20 +151,24 @@ export function ComparisonSlider({
           sizes="(max-width: 980px) 100vw, 72vw"
           src={afterSrc}
         />
+        {/* A window sliding one way with the picture sliding back inside it, rather than a clip-path:
+            this moves on every frame of a scroll, and a clip-path would repaint the image each time. */}
         <div
-          className="absolute inset-0 overflow-hidden"
-          style={{
-            clipPath:
-              "inset(0 calc(100% - var(--comparison-position)) 0 0)",
-          }}
+          className="absolute inset-0 overflow-hidden will-change-transform"
+          style={{ transform: "translateX(calc(var(--comparison-position) - 100%))" }}
         >
-          <Image
-            alt={beforeAlt}
-            className="object-cover"
-            fill
-            sizes="(max-width: 980px) 100vw, 72vw"
-            src={beforeSrc}
-          />
+          <div
+            className="absolute inset-0 will-change-transform"
+            style={{ transform: "translateX(calc(100% - var(--comparison-position)))" }}
+          >
+            <Image
+              alt={beforeAlt}
+              className="object-cover"
+              fill
+              sizes="(max-width: 980px) 100vw, 72vw"
+              src={beforeSrc}
+            />
+          </div>
         </div>
 
         {showLabels ? (

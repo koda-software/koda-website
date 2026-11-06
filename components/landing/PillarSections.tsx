@@ -48,9 +48,9 @@ const ruleNodeShadow = "0 3px 6px -4px rgba(2,2,13,0.74), 0 5px 9px -8px rgba(2,
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
 const paletteClass =
-  "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.12)] bg-white/88 p-3";
+  "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.12)] p-3";
 const pageClass =
-  "relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] pt-3";
+  "relative rounded-[calc(var(--radius-panel)-14px)] pt-3";
 const dropSlotClass =
   "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
 const dashboardMetrics = [
@@ -487,7 +487,7 @@ function ProcessViewInteractive() {
   return (
     <div className={`${styles.wideStageFrame} relative min-h-[22rem] w-full overflow-visible`}>
       <div className={`relative left-1/2 min-h-[22rem] w-full min-[1440px]:pl-8 ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.processStage}`}>
-        <div className="relative rounded-[calc(var(--radius-panel)-14px)] bg-[rgba(255,255,255,0.9)] p-4">
+        <div className="relative rounded-[calc(var(--radius-panel)-14px)] p-4">
           <div className="mb-3 ml-4 flex w-[calc(100%-1rem)]">
             <div className="inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
             <ViewModeButton
@@ -1124,7 +1124,7 @@ export function PillarSections({ items }: PillarSectionsProps) {
                   <IndexNumber index={index} />
                   <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(56,182,255,0.35),rgba(11,17,22,0.08),transparent)]" />
                 </div>
-                <h3 className="m-0 text-[clamp(1.6rem,2.6vw,2.28rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[var(--color-ink)]">
+                <h3 className="m-0 text-[clamp(1.6rem,2.6vw,2.28rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--color-ink)]">
                   {pillar.title}
                 </h3>
                 <p className={`${sectionDescriptionClass} max-w-[42rem]`}>

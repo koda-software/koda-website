@@ -7,6 +7,7 @@ import { IndexNumber, PageHero } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
+import { TwoTone } from "@/components/landing/TwoTone";
 
 type FeaturePageProps = {
   feature: FeatureKey;
@@ -19,8 +20,7 @@ type FeaturePageProps = {
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const sectionTitleClass = "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
-const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
-const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
+const bodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 
 /**
  * Per-page icon sets. Icons are a presentation concern, so they stay out of the
@@ -69,7 +69,7 @@ function StepBlocks({ items }: { items: FeatureBlock[] }) {
           key={item.title}
         >
           <span className="text-[1.2rem] font-semibold text-[var(--color-blue)]">{String(index + 1).padStart(2, "0")}</span>
-          <h3 className="m-0 text-[1.4rem] font-medium leading-[1.2] text-[var(--color-ink)]">{item.title}</h3>
+          <h3 className="m-0 text-[1.4rem] font-semibold leading-[1.2] text-[var(--color-ink)]">{item.title}</h3>
           <p className={bodyClass}>{item.description}</p>
         </li>
       ))}
@@ -84,7 +84,7 @@ function TileBlocks({ items }: { items: FeatureBlock[] }) {
       {items.map((item, index) => (
         <article data-reveal key={item.title}>
           <CardHead index={index} />
-          <h3 className="m-0 text-[1.22rem] font-medium leading-[1.18] text-[var(--color-ink)]">{item.title}</h3>
+          <h3 className="m-0 text-[1.22rem] font-semibold leading-[1.18] text-[var(--color-ink)]">{item.title}</h3>
           <p className={`${bodyClass} mt-3 text-[0.95rem]`}>{item.description}</p>
         </article>
       ))}
@@ -103,7 +103,7 @@ function SplitBlocks({ items }: { items: FeatureBlock[] }) {
           key={item.title}
         >
           <IndexNumber className="self-center" index={index} />
-          <h3 className="m-0 self-center text-[1.5rem] font-medium leading-[1.15] tracking-[-0.02em] text-[var(--color-ink)] max-[900px]:self-center">
+          <h3 className="m-0 self-center text-[1.5rem] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--color-ink)] max-[900px]:self-center">
             {item.title}
           </h3>
           <p className={`${bodyClass} max-[900px]:col-span-2`}>{item.description}</p>
@@ -154,7 +154,7 @@ function ShotFrame({
     return (
       <figure className="m-0 grid grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] items-center gap-[clamp(1.5rem,4vw,3.5rem)] max-[809px]:grid-cols-1 max-[809px]:gap-4">
         <div className={reverse ? "max-[809px]:order-none min-[810px]:order-2" : ""}>{frame}</div>
-        <figcaption className="m-0 text-[clamp(1.05rem,1.6vw,1.32rem)] font-light leading-[1.45] text-[var(--color-ink-soft)]">
+        <figcaption className="m-0 text-[clamp(1.05rem,1.6vw,1.32rem)] font-display font-light leading-[1.45] text-[var(--color-ink-soft)]">
           {shot.caption}
         </figcaption>
       </figure>
@@ -165,7 +165,7 @@ function ShotFrame({
     <figure className="m-0">
       {frame}
       <figcaption
-        className={`mt-3 text-[0.92rem] font-light leading-[1.55] ${invert ? "text-white/60" : "text-[var(--color-muted)]"}`}
+        className={`mt-3 text-[0.92rem] leading-[1.55] ${invert ? "text-white/60" : "text-[var(--color-muted)]"}`}
       >
         {shot.caption}
       </figcaption>
@@ -187,14 +187,14 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
     layout.intro === "panel" ? (
       <section className={sectionClass} key="intro">
         <div className="rounded-[var(--radius-panel)] [background:var(--gradient-technical)] p-[clamp(1.5rem,4vw,3.5rem)] text-white">
-          <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.55] text-white/80">
+          <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-display font-light leading-[1.55] text-white/80">
             {content.intro.paragraph}
           </p>
         </div>
       </section>
     ) : (
       <section className={sectionClass} key="intro">
-        <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.55] text-[var(--color-ink-soft)]">
+        <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-display font-light leading-[1.55] text-[var(--color-ink-soft)]">
           {content.intro.paragraph}
         </p>
       </section>
@@ -202,7 +202,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   const blocksSection = (
     <section className={`${sectionClass} ${layout.intro === "panel" || layout.shotsFirst ? "" : "pt-0"}`} key="blocks">
-      <h2 className={sectionTitleClass}>{content.blocks.title}</h2>
+      <h2 className={sectionTitleClass}><TwoTone text={content.blocks.title} /></h2>
       {layout.blocks === "steps" ? <StepBlocks items={content.blocks.items} /> : null}
       {layout.blocks === "tiles" ? <TileBlocks items={content.blocks.items} /> : null}
       {layout.blocks === "split" ? <SplitBlocks items={content.blocks.items} /> : null}
@@ -212,7 +212,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   const shotsSection = content.shots ? (
     <section className={`${sectionClass} ${layout.shotsFirst ? "pt-0" : ""}`} key="shots">
-      <h2 className={sectionTitleClass}>{content.shots.title}</h2>
+      <h2 className={sectionTitleClass}><TwoTone text={content.shots.title} /></h2>
       {layout.shots === "alternating" ? (
         <div className="mt-10 grid gap-[clamp(2.5rem,5vw,4rem)]">
           {content.shots.items.map((shot, index) => (
@@ -263,7 +263,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       {layout.shotsFirst ? [shotsSection, blocksSection] : [blocksSection, shotsSection]}
 
       <section className={`${sectionClass} pt-0`}>
-        <h2 className={sectionTitleClass}>{content.seoText.title}</h2>
+        <h2 className={sectionTitleClass}><TwoTone text={content.seoText.title} /></h2>
         <div className="mt-6 grid max-w-[62rem] gap-5">
           {content.seoText.paragraphs.map((paragraph) => (
             <p className={bodyClass} key={paragraph}>
@@ -274,7 +274,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <h2 className={sectionTitleClass}>{content.faq.title}</h2>
+        <h2 className={sectionTitleClass}><TwoTone text={content.faq.title} /></h2>
         <div className="mt-8 grid max-w-[52rem] gap-3">
           {content.faq.items.map((item) => (
             <details
@@ -297,7 +297,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <h2 className="m-0 text-[1.9rem] leading-[1.12] text-[var(--color-ink)]">{content.related.title}</h2>
+        <h2 className="m-0 text-[1.9rem] leading-[1.12] text-[var(--color-ink)]"><TwoTone text={content.related.title} /></h2>
         <div className="mt-8 grid grid-cols-3 gap-4 max-[809px]:grid-cols-1">
           {related.map((item) => (
             <Link
@@ -314,7 +314,7 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
                   aria-hidden="true"
                 />
               </span>
-              <span className="text-[0.94rem] font-light leading-[1.6] text-[var(--color-muted)]">{item.description}</span>
+              <span className="text-[0.94rem] leading-[1.6] text-[var(--color-muted)]">{item.description}</span>
             </Link>
           ))}
         </div>
@@ -322,12 +322,10 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
       <section className={`${sectionClass} pt-0`}>
         <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
-          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
-            {content.finalCta.title}
-          </h2>
+          <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]"><TwoTone text={content.finalCta.title} /></h2>
           <p className={`${bodyClass} mx-auto mt-5 max-w-[680px]`}>{content.finalCta.description}</p>
           <div className="mt-8 flex justify-center">
-            <Link className={`${buttonClass} bg-[image:var(--gradient-cta)] text-white`} href={primaryHref}>
+            <Link className="action action-ink" href={primaryHref}>
               {content.finalCta.primaryCta}
             </Link>
           </div>

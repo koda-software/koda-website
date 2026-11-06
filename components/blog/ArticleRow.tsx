@@ -71,13 +71,13 @@ export function ArticleRow({ article, locale, ui, priority = false }: ArticleRow
         </div>
 
         {/* h2, not h3: each entry sits directly under the page h1, so an h3 would skip a level. */}
-        <h2 className="m-0 max-w-[42rem] text-[1.7rem] font-medium leading-[1.2] text-[var(--color-ink)] max-[809px]:text-[1.35rem]">
+        <h2 className="m-0 max-w-[42rem] text-[1.7rem] font-semibold leading-[1.2] text-[var(--color-ink)] max-[809px]:text-[1.35rem]">
           <Link className="transition-colors hover:text-[var(--color-blue)]" href={href}>
             {article.tytul}
           </Link>
         </h2>
         {article.zajawka ? (
-          <p className="m-0 mt-4 max-w-[42rem] text-[1.02rem] font-light leading-[1.65] text-[var(--color-muted)]">{article.zajawka}</p>
+          <p className="m-0 mt-4 max-w-[42rem] text-[1.02rem] leading-[1.65] text-[var(--color-muted)]">{article.zajawka}</p>
         ) : null}
 
         <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.88rem] text-[var(--color-muted)]">

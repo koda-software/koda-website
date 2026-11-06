@@ -7,6 +7,7 @@ export const processesFeature: FeaturePageContent = {
       "Design a flow of work as a process: stages, transitions, tasks and kanban. Automate approvals and procedures without code. See workflow in Opero.",
   },
   navLabel: "Processes and workflow",
+  navDescription: "Nothing lost between teams",
   hero: {
     title: "Processes and workflow - the whole company runs on your rules",
     description:

@@ -4,7 +4,7 @@
  */
 .root {
   --ink: var(--color-ink);
-  --ground: var(--color-paper);
+  --ground: var(--background);
   --line: rgb(11 17 22 / 0.12);
   --soft: var(--color-muted);
   --fresh: #e8f4fc;

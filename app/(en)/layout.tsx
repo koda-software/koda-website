@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Sora } from "next/font/google";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalyticsConsent } from "@/components/analytics/GoogleAnalyticsConsent";
@@ -12,6 +12,14 @@ import "../globals.css";
 
 const sora = Sora({
   variable: "--font-sans-brand",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const atkinson = Atkinson_Hyperlegible_Next({
+  variable: "--font-sans-ui",
+  // Next has no size metrics for this family, so it cannot generate a matched fallback.
+  adjustFontFallback: false,
   subsets: ["latin"],
   display: "swap",
 });
@@ -45,8 +53,8 @@ export const metadata: Metadata = {
 
 export default function EnglishRootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sora.variable} h-full antialiased`}>
-      <body className={`${sora.className} min-h-full`}>
+    <html lang="en" className={`${sora.variable} ${atkinson.variable} h-full antialiased`}>
+      <body className={`${atkinson.className} min-h-full`}>
         <Script id="analytics-consent-default" strategy="beforeInteractive">
           {GOOGLE_ANALYTICS_CONSENT_BOOTSTRAP}
         </Script>

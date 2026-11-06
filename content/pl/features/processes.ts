@@ -7,6 +7,7 @@ export const processesFeature: FeaturePageContent = {
       "Zaprojektuj obieg pracy jako proces: etapy, przejścia, zadania i kanban. Automatyzuj akceptacje i procedury bez kodu. Zobacz workflow w Opero.",
   },
   navLabel: "Procesy i workflow",
+  navDescription: "Nic nie ginie między działami",
   hero: {
     title: "Procesy i workflow - cała firma działa według Twoich reguł",
     description:

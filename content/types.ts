@@ -4,6 +4,8 @@ import type { PageKey } from "@/lib/i18n/routes";
 export type NavSubItem = {
   feature: FeatureKey;
   label: string;
+  /** What the area does for a business, in a few words. It sits under the name in the menu. */
+  description: string;
   href: string;
 };
 
@@ -43,9 +45,14 @@ export type ShellContent = {
     closeMenu: string;
     /** Link to the general Opero product page, shown as the first row inside the Opero dropdown. */
     exploreOpero: string;
+    /** One line next to `exploreOpero`, in the menu's drawer. */
+    exploreOperoText: string;
     items: Array<{ page: Exclude<PageKey, "home">; label: string }>;
   };
   footer: {
+    /** The line under the logo, which ends in the flag, and what the flag says to a screen reader. */
+    madeIn: string;
+    madeInFlag: string;
     tagline: string;
     description: string;
     links: Array<{ label: string; href: string }>;
@@ -150,6 +157,8 @@ export type HomeIntegrationItem = {
   icon: "invoice" | "delivery" | "registry" | "sms" | "email" | "signature";
   tone: "sky" | "violet" | "green" | "amber" | "rose" | "slate";
   logoSrc?: string;
+  /** Shows the name beside the logo, for a logo that does not say what the card is on its own. */
+  showName?: boolean;
 };
 
 /**
@@ -333,6 +342,8 @@ export type OperoProductContent = {
     title: string;
     brief: string;
     exploreLabel: string;
+    /** Names the route through the tour for a screen reader. */
+    journeyLabel: string;
     chapters: Array<{
       title: string;
       brief: string;
@@ -436,6 +447,7 @@ export type FeaturePageContent = {
   seo: SeoContent;
   /** Short label used in the navigation dropdown and in related-page links. */
   navLabel: string;
+  navDescription: string;
   hero: {
     title: string;
     description: string;

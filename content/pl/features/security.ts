@@ -7,6 +7,7 @@ export const securityFeature: FeaturePageContent = {
       "Role, uprawnienia do modułów i pól, wiele spółek, tokeny API i MFA. Kontroluj dostęp do danych firmy na poziomie oczekiwanym przez IT.",
   },
   navLabel: "Bezpieczeństwo i uprawnienia",
+  navDescription: "Każdy widzi tylko to, co powinien",
   hero: {
     title: "Bezpieczeństwo i uprawnienia - każdy widzi dokładnie to, co powinien",
     description:

@@ -18,6 +18,7 @@ export const commonContent: ShellContent = {
     openMenu: "Otwórz menu",
     closeMenu: "Zamknij menu",
     exploreOpero: "Poznaj Opero",
+    exploreOperoText: "Jedna platforma dla każdego obszaru organizacji.",
     items: [
       { page: "opero", label: "Opero" },
       { page: "solutions", label: "Rozwiązania" },
@@ -27,6 +28,8 @@ export const commonContent: ShellContent = {
     ],
   },
   footer: {
+    madeIn: "Stworzone w",
+    madeInFlag: "UE",
     tagline: "Platforma BPM low-code dopasowana do tego, jak firmy naprawdę pracują.",
     description:
       "KodaSoft tworzy Opero dla firm, które potrzebują stabilnego oprogramowania dopasowanego do realnych operacji, kontroli, automatyzacji i praktycznego AI.",

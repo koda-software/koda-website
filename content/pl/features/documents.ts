@@ -7,6 +7,7 @@ export const documentsFeature: FeaturePageContent = {
       "Rejestruj dokumenty, prowadź je przez obieg akceptacji i trzymaj wersje plików przy sprawie. System EOD i DMS w jednej platformie Opero.",
   },
   navLabel: "EOD / DMS",
+  navDescription: "Każdy plik przy swojej sprawie",
   hero: {
     title: "EOD i DMS - dokumenty pod kontrolą od wpływu do archiwum",
     description:

@@ -110,14 +110,14 @@ export function AuthorAvatar({ author, size = 40 }: { author: BlogAuthor; size?:
 /** Bordered author block that closes an article. */
 export function AuthorBox({ author, locale, ui }: { author: BlogAuthor; locale: BlogLocale; ui: BlogUiContent }) {
   return (
-    <section className="mt-12 rounded-[var(--radius-card)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper-soft)] p-6 max-[560px]:p-5">
+    <section className="mt-12 rounded-[var(--radius-card)] border border-[rgba(2,2,13,0.1)] bg-[var(--color-paper)] p-6 max-[560px]:p-5">
       <p className={`${blogMetaClass} m-0`}>{ui.labels.aboutAuthor}</p>
       <div className="mt-4 flex gap-5 max-[560px]:gap-4">
         <AuthorAvatar author={author} size={56} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <div className="min-w-0">
-              <h2 className="m-0 text-[1.1rem] font-medium leading-tight text-[var(--color-ink)]">
+              <h2 className="m-0 text-[1.1rem] font-semibold leading-tight text-[var(--color-ink)]">
                 {author.slug ? (
                   <Link className="transition-colors hover:text-[var(--color-blue)]" href={authorPath(locale, author.slug)}>
                     {author.nazwa}

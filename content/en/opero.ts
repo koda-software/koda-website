@@ -218,6 +218,7 @@ export const operoProductContent: OperoProductContent = {
     brief:
       "Every part of Opero works with the same operational context. Records, documents, decisions, permissions and history remain connected as work moves across the company.",
     exploreLabel: "Explore this feature",
+    journeyLabel: "Capabilities on this page",
     chapters: [
       {
         title: "Model the work in your own language.",

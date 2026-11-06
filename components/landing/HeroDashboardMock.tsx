@@ -102,7 +102,7 @@ export function HeroDashboardMock({ className = "" }: HeroDashboardMockProps) {
     <div ref={rootRef} className={`relative ${className}`.trim()}>
       <div
         aria-hidden="true"
-        className="absolute inset-[6%] rounded-full bg-[rgba(56,182,255,0.16)] blur-3xl"
+        className="absolute inset-[-6%] bg-[radial-gradient(closest-side,rgba(56,182,255,0.2),transparent)]"
         ref={glowRef}
         style={{ opacity: 0 }}
       />

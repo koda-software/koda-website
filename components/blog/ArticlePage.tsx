@@ -72,7 +72,7 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
           <h1 className="m-0 mt-5 text-[3.2rem] leading-[1.05] tracking-[-0.04em] max-[809px]:text-[2.1rem]">{article.tytul}</h1>
 
           {article.zajawka ? (
-            <p className="mt-6 text-[1.18rem] font-light leading-[1.6] text-white/72 max-[809px]:text-[1.02rem]">{article.zajawka}</p>
+            <p className="mt-6 text-[1.18rem] font-display font-light leading-[1.6] text-white/72 max-[809px]:text-[1.02rem]">{article.zajawka}</p>
           ) : null}
 
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/[0.12] pt-3.5 text-[0.85rem]">

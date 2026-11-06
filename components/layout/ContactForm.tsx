@@ -189,7 +189,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
         />
       </label>
 
-      <p className="m-0 text-[0.82rem] font-light leading-[1.6] text-[var(--color-muted)]">
+      <p className="m-0 text-[0.82rem] leading-[1.6] text-[var(--color-muted)]">
         {content.consent}{" "}
         <Link
           className="underline decoration-[var(--color-blue)]/40 underline-offset-2 transition-colors hover:text-[var(--color-ink)] hover:decoration-[var(--color-blue)]"
@@ -201,7 +201,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
 
       <div className="flex flex-wrap items-center gap-4">
         <button
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[image:var(--gradient-cta)] px-5 py-3 font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-60"
+          className="action action-ink disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitState === "submitting"}
           type="submit"
         >

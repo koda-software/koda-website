@@ -12,6 +12,9 @@ import styles from "./OperoBuildStory.module.css";
 type GsapModule = { gsap: typeof GsapNamespace };
 type ScrollTriggerModule = { ScrollTrigger: typeof ScrollTriggerInstance };
 
+/** The size the magnifier grows from, as it is in the stylesheet. */
+const MAGNIFIER_START_SCALE = 0.72;
+
 const magnifierPlacementClass = {
   model: styles.magnifierModel,
   form: styles.magnifierForm,
@@ -74,13 +77,17 @@ export function OperoBuildStory({
           return;
         }
 
+        // Played by a callback rather than attached to the trigger, so that a refresh of the page's
+        // triggers can never touch it and show what it reveals before it runs.
         const timeline = gsap.timeline({
           defaults: { ease: "power3.out" },
-          scrollTrigger: {
-            once: true,
-            start: "top 82%",
-            trigger: frame,
-          },
+          paused: true,
+        });
+        ScrollTrigger.create({
+          once: true,
+          onEnter: () => timeline.play(),
+          start: "top 82%",
+          trigger: frame,
         });
 
         timeline.fromTo(
@@ -98,19 +105,14 @@ export function OperoBuildStory({
         if (magnifier) {
           gsap.set(magnifier, {
             autoAlpha: 0,
-            scale: 0.68,
+            scale: MAGNIFIER_START_SCALE,
           });
 
-          timeline.to(
-            magnifier,
-            {
-              autoAlpha: 1,
-              duration: 0.58,
-              ease: "back.out(1.7)",
-              scale: 1,
-            },
-            "-=0.12",
-          );
+          // The fade has its own gentle ease. An overshooting one would turn it fully opaque at
+          // once, so that it seems to appear first and only then start moving.
+          timeline
+            .to(magnifier, { autoAlpha: 1, duration: 0.34, ease: "power1.out" }, "-=0.04")
+            .to(magnifier, { duration: 0.62, ease: "power3.out", scale: 1 }, "<");
         }
 
         if (popover) {
@@ -203,7 +205,7 @@ export function OperoBuildStory({
       if (nextMagnifier) {
         gsap.set(nextMagnifier, {
           autoAlpha: 0,
-          scale: 0.72,
+          scale: MAGNIFIER_START_SCALE,
         });
       }
       if (nextPopover) {
@@ -228,16 +230,9 @@ export function OperoBuildStory({
         );
 
       if (nextMagnifier) {
-        timeline.to(
-          nextMagnifier,
-          {
-            autoAlpha: 1,
-            duration: 0.48,
-            ease: "back.out(1.6)",
-            scale: 1,
-          },
-          0.18,
-        );
+        timeline
+          .to(nextMagnifier, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, 0.18)
+          .to(nextMagnifier, { duration: 0.54, ease: "power3.out", scale: 1 }, 0.18);
       }
       if (nextPopover) {
         timeline.to(

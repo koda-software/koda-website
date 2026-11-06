@@ -7,6 +7,7 @@ export const reportsFeature: FeaturePageContent = {
       "Buduj raporty, wykresy i dashboardy na żywych danych. Drąż od wskaźnika do rekordu bez eksportu do Excela. Analityka biznesowa w Opero.",
   },
   navLabel: "Raporty i analityka",
+  navDescription: "Decyzje oparte na danych",
   hero: {
     title: "Raporty i analityka - decyzje na danych, nie na przeczuciach",
     description:

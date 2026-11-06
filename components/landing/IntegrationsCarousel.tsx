@@ -51,7 +51,7 @@ function IntegrationCard({ item }: { item: HomeIntegrationItem }) {
             <Icon className="h-4 w-4" strokeWidth={1.7} />
           )}
         </span>
-        {item.logoSrc ? null : (
+        {item.logoSrc && !item.showName ? null : (
           <h3 className={styles.integrationName}>
             {item.name}
           </h3>

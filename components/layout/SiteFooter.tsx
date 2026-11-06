@@ -55,7 +55,7 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
   return (
     <footer className="relative isolate overflow-hidden bg-[var(--color-surface-dark)] [background:var(--gradient-footer)] px-[var(--page-gutter)] text-[var(--color-paper)]">
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(126,231,255,0.45),rgba(56,182,255,0.42),transparent)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(56,182,255,0.45),rgba(56,182,255,0.42),transparent)]"
         aria-hidden="true"
       />
 
@@ -73,7 +73,11 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
             />
             <span className="sr-only">{content.brand}</span>
           </Link>
-          <p className="mt-5 max-w-[22rem] text-[0.95rem] font-light leading-[1.6] text-white/65">
+          <p className="m-0 mt-4 flex items-center gap-1.5 text-[0.9rem] text-white/[0.72]">
+            {footer.madeIn}
+            <Image className="h-[22px] w-[22px]" src="/branding/eu-flag-round.svg" width={22} height={22} alt={footer.madeInFlag} />
+          </p>
+          <p className="mt-5 max-w-[22rem] text-[0.95rem] leading-[1.6] text-white/65">
             {footer.tagline}
           </p>
           <a
@@ -122,7 +126,7 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
           <p className="m-0 mb-4 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-white">
             {footer.reachHeading}
           </p>
-          <p className="m-0 max-w-[18rem] text-[0.92rem] font-light leading-[1.6] text-white/65">
+          <p className="m-0 max-w-[18rem] text-[0.92rem] leading-[1.6] text-white/65">
             {footer.talkBody}
           </p>
           {/* The cards that carried these went with the contact band, and a
@@ -148,7 +152,7 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
             ) : null}
           </div>
           <Link
-            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-button)] border border-white/[0.16] px-4 py-2.5 text-[0.92rem] font-medium text-white transition-colors duration-200 hover:border-[rgba(56,182,255,0.45)] hover:bg-white/[0.06]"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/[0.16] px-4 py-2.5 text-[0.92rem] font-medium text-white transition-colors duration-200 hover:border-[rgba(56,182,255,0.45)] hover:bg-white/[0.06]"
             href={contactHref}
           >
             {footer.contact.formLabel}

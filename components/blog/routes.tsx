@@ -200,7 +200,7 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
       <BlogListPage
         aside={
           <div>
-            {bio ? <p className="m-0 text-[1.02rem] font-light leading-[1.65] text-white/68">{bio}</p> : null}
+            {bio ? <p className="m-0 text-[1.02rem] leading-[1.65] text-white/68">{bio}</p> : null}
             <AuthorLinks author={author} invert />
           </div>
         }

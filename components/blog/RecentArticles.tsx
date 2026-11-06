@@ -94,11 +94,11 @@ function RecentArticle({ article, locale, minRead }: RecentArticleProps) {
       </span>
 
       <span className="block">
-        <h3 className="m-0 text-[1.2rem] font-medium leading-[1.3] text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-blue)] max-[640px]:mt-2 max-[640px]:text-[1.05rem]">
+        <h3 className="m-0 text-[1.2rem] font-semibold leading-[1.3] text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-blue)] max-[640px]:mt-2 max-[640px]:text-[1.05rem]">
           {article.tytul}
         </h3>
         {article.zajawka ? (
-          <span className="mt-3 line-clamp-3 block text-[0.96rem] font-light leading-[1.6] text-[var(--color-muted)] max-[640px]:hidden">
+          <span className="mt-3 line-clamp-3 block text-[0.96rem] leading-[1.6] text-[var(--color-muted)] max-[640px]:hidden">
             {article.zajawka}
           </span>
         ) : null}

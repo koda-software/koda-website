@@ -7,6 +7,7 @@ export const integrationsFeature: FeaturePageContent = {
       "KSeF, e-Delivery, NBP exchange rates and VAT checks straight from the system. An open API connects Opero with your tools, no extra software needed.",
   },
   navLabel: "Integrations and compliance",
+  navDescription: "Compliant and connected",
   hero: {
     title: "Integrations and compliance - Opero as part of your ecosystem",
     description:

@@ -111,6 +111,8 @@
   aspect-ratio: 1;
   opacity: 0;
   pointer-events: none;
+  /* Its starting size is here, so that it never depends on the script having loaded. */
+  transform: scale(0.72);
   transform-origin: 70% 78%;
 }
 
@@ -383,6 +385,10 @@
   .popover {
     visibility: visible;
     opacity: 1;
+  }
+
+  .magnifier {
+    transform: none;
   }
 
   .viewport {

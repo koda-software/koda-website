@@ -86,10 +86,10 @@ export function WorkflowTimeline({ steps }: WorkflowTimelineProps) {
               <span
                 className={`relative z-[1] grid h-11 w-11 place-items-center rounded-full border font-sans text-[0.78rem] font-semibold transition-[background,border-color,color,box-shadow,transform] duration-300 max-[640px]:h-9 max-[640px]:w-9 ${
                   active
-                    ? "scale-110 border-[rgba(126,231,255,0.72)] bg-[var(--color-blue)] text-white shadow-[0_0_0_6px_rgba(56,182,255,0.12),0_20px_44px_-26px_rgba(56,182,255,0.9)]"
+                    ? "scale-110 border-[rgba(56,182,255,0.72)] bg-[var(--color-blue)] text-white shadow-[0_0_0_6px_rgba(56,182,255,0.12),0_20px_44px_-26px_rgba(56,182,255,0.9)]"
                     : past
-                      ? "border-[rgba(126,231,255,0.38)] bg-[rgba(56,182,255,0.18)] text-[var(--color-blue-soft)]"
-                      : "border-[rgba(126,231,255,0.24)] bg-[rgba(8,16,24,0.78)] text-white/58"
+                      ? "border-[rgba(56,182,255,0.38)] bg-[rgba(56,182,255,0.18)] text-[var(--color-blue-soft)]"
+                      : "border-[rgba(56,182,255,0.24)] bg-[rgba(8,16,24,0.78)] text-white/58"
                 }`}
               >
                 {step.label}
@@ -104,13 +104,13 @@ export function WorkflowTimeline({ steps }: WorkflowTimelineProps) {
                 }`}
               >
                 <h3
-                  className={`m-0 max-w-[38rem] text-[clamp(1.65rem,2.6vw,2.32rem)] font-medium leading-[1.08] tracking-[-0.035em] transition-colors duration-300 ${
+                  className={`m-0 max-w-[38rem] text-[clamp(1.65rem,2.6vw,2.32rem)] font-semibold leading-[1.08] tracking-[-0.035em] transition-colors duration-300 ${
                     active ? "text-white" : "text-white/78"
                   }`}
                 >
                   {step.title}
                 </h3>
-                <p className="mt-4 max-w-[41rem] text-[1.05rem] font-light leading-[1.76] text-white/66">
+                <p className="mt-4 max-w-[41rem] text-[1.05rem] leading-[1.76] text-white/66">
                   {step.description}
                 </p>
               </article>

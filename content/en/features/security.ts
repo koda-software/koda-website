@@ -7,6 +7,7 @@ export const securityFeature: FeaturePageContent = {
       "Roles, permissions down to fields, multiple companies, API tokens and MFA. Control access to company data at the level IT departments expect.",
   },
   navLabel: "Security and permissions",
+  navDescription: "The right access for every person",
   hero: {
     title: "Security and permissions - everyone sees exactly what they should",
     description:

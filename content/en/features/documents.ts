@@ -7,6 +7,7 @@ export const documentsFeature: FeaturePageContent = {
       "Register documents, route them through approval and keep file versions with the case. Document workflow and DMS in one platform: Opero.",
   },
   navLabel: "Documents and files",
+  navDescription: "Every file stays with its case",
   hero: {
     title: "Document workflow - documents under control from intake to archive",
     description:

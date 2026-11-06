@@ -14,7 +14,7 @@ export function BlogNotFound({ locale, ui }: { locale: BlogLocale; ui: BlogUiCon
     <HeroShell className="pb-[7rem] pt-[10rem] max-[809px]:pt-[8rem]" photo="workspace">
       <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))] max-w-[760px]">
         <h1 className="m-0 text-[3.2rem] leading-[1.05] tracking-[-0.04em] max-[809px]:text-[2.1rem]">{ui.notFound.title}</h1>
-        <p className="mt-6 text-[1.12rem] font-light leading-[1.6] text-white/72">{ui.notFound.description}</p>
+        <p className="mt-6 text-[1.12rem] font-display font-light leading-[1.6] text-white/72">{ui.notFound.description}</p>
         <Link className={`${blogPrimaryButtonClass} mt-8`} href={blogIndexPath(locale)}>
           {ui.notFound.backLabel}
         </Link>

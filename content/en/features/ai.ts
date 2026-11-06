@@ -7,6 +7,7 @@ export const aiFeature: FeaturePageContent = {
       "Connect Claude or any MCP agent to Opero and describe what you need. It builds blocks, rules and views with your real data, within your permissions.",
   },
   navLabel: "Contextual AI",
+  navDescription: "Say it, and Opero builds it",
   hero: {
     title: "Say what you need. Opero builds it.",
     description: "Connect your AI agent to Opero and build blocks, rules and views by describing them, with your real data and permissions.",

@@ -44,7 +44,7 @@ function CardRule({ invert = false }: { invert?: boolean }) {
       aria-hidden="true"
       className={`h-px flex-1 ${
         invert
-          ? "bg-[linear-gradient(90deg,rgba(126,231,255,0.4),rgba(255,255,255,0.12),transparent)]"
+          ? "bg-[linear-gradient(90deg,rgba(56,182,255,0.4),rgba(255,255,255,0.12),transparent)]"
           : "bg-[linear-gradient(90deg,rgba(56,182,255,0.35),rgba(11,17,22,0.08),transparent)]"
       }`}
     />
@@ -89,7 +89,7 @@ export function PillarGrid({ items }: PillarGridProps) {
         >
           <article className="h-full">
             <CardHead index={index} />
-            <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-medium leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
+            <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
               {pillar.title}
             </h3>
             <p className={`${mutedCopyClass} mt-3 max-w-[36rem] text-[0.96rem] leading-[1.62]`}>
@@ -121,10 +121,10 @@ export function DarkStepGrid({ steps }: DarkStepGridProps) {
             {/* `step.label` holds the step number, which the badge now carries -
                 rendering both printed it twice. */}
             <CardHead index={index} invert />
-            <h3 className="m-0 text-[clamp(1.4rem,1.9vw,1.72rem)] font-medium leading-[1.08] tracking-[-0.035em] text-[var(--color-paper)]">
+            <h3 className="m-0 text-[clamp(1.4rem,1.9vw,1.72rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--color-paper)]">
               {step.title}
             </h3>
-            <p className="mt-4 max-w-[25rem] text-[1rem] font-light leading-[1.68] text-white/64">
+            <p className="mt-4 max-w-[25rem] text-[1rem] leading-[1.68] text-white/64">
               {step.description}
             </p>
           </article>
@@ -145,7 +145,7 @@ export function IconTextGrid({ items }: IconTextGridProps) {
         >
           <article className="h-full">
             <CardHead index={index} />
-            <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-medium leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
+            <h3 className="m-0 text-[clamp(1.28rem,1.8vw,1.55rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-[var(--color-ink)]">
               {item.title}
             </h3>
             <p className={`${mutedCopyClass} mt-3 max-w-[36rem] text-[0.96rem] leading-[1.62]`}>

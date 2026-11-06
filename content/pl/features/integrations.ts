@@ -7,6 +7,7 @@ export const integrationsFeature: FeaturePageContent = {
       "KSeF, e-Doręczenia, kursy NBP i weryfikacja VAT wprost z systemu. Otwarte API łączy Opero z narzędziami firmy. Zgodność bez dodatkowych aplikacji.",
   },
   navLabel: "Integracje i zgodność",
+  navDescription: "Zgodność i połączone narzędzia",
   hero: {
     title: "Integracje i zgodność - Opero częścią Twojego ekosystemu",
     description:

@@ -218,6 +218,7 @@ export const operoProductContent: OperoProductContent = {
     brief:
       "Każda część Opero korzysta z tego samego kontekstu operacyjnego. Rekordy, dokumenty, decyzje, uprawnienia i historia pozostają połączone, gdy praca przechodzi przez kolejne obszary firmy.",
     exploreLabel: "Poznaj tę funkcję",
+    journeyLabel: "Możliwości na tej stronie",
     chapters: [
       {
         title: "Opisuj pracę językiem własnej firmy.",

@@ -3,7 +3,9 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { PhotoBackdrop, type PhotoName } from "@/components/layout/PhotoBackdrop";
 import { KodaSoftMarkAccent } from "./BrandMark";
+import { FlowField } from "./FlowField";
 import { GsapRevealRoot } from "./GsapRevealRoot";
+import { TwoTone } from "./TwoTone";
 
 type LandingSectionProps = {
   children: ReactNode;
@@ -39,8 +41,6 @@ type DarkPanelProps = {
 type LandingHeroProps = {
   children: ReactNode;
   description?: string;
-  /** Photograph behind the banner. Omitted, the banner stays gradient-only. */
-  photo?: PhotoName;
   primaryCta: string;
   primaryHref: string;
   scrollLabel?: string;
@@ -56,6 +56,8 @@ type PageHeroProps = {
   children?: ReactNode;
   description?: string;
   descriptionClassName?: string;
+  /** Melts the bottom of the banner into graphite, for a section arriving over it as a card. */
+  fadeBottom?: boolean;
   photo?: PhotoName;
   photoOpacity?: number;
   photoPosition?: string;
@@ -90,7 +92,7 @@ type FinalCtaPanelProps = {
 
 export const landingShellClass = "mx-auto w-[min(100%,var(--shell-width))]";
 
-export const sectionTitleClass = "m-0 text-[clamp(2rem,3.6vw,2.85rem)] leading-[1.06] tracking-[-0.04em]";
+export const sectionTitleClass = "m-0 text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.04] tracking-[-0.045em]";
 
 /**
  * One type scale for every page banner, so the headline reads the same size on
@@ -103,7 +105,7 @@ export const sectionTitleClass = "m-0 text-[clamp(2rem,3.6vw,2.85rem)] leading-[
  * on a bare `h1`.
  */
 export const heroTitleClass =
-  "m-0 text-balance break-words text-[clamp(2.6rem,5vw,3.5rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(2rem,10vw,2.6rem)]";
+  "m-0 text-balance break-words text-[clamp(2.6rem,5vw,4.25rem)] leading-[1.02] tracking-[-0.05em] max-[809px]:text-[clamp(2rem,10vw,2.6rem)]";
 
 /**
  * The banner headline. Hyphenated terms carry the product's own vocabulary
@@ -114,17 +116,20 @@ export const heroTitleClass =
  * as a plain ASCII-hyphenated string to search engines and screen readers.
  */
 export function HeroTitle({ className = "", title }: { className?: string; title: string }) {
+  const keepHyphensWhole = (text: string) =>
+    text.split(/(\s+)/).map((part, index) =>
+      part.includes("-") && part.trim().length > 1 ? (
+        <span className="whitespace-nowrap" key={index}>
+          {part}
+        </span>
+      ) : (
+        part
+      ),
+    );
+
   return (
     <h1 className={`${heroTitleClass} ${className}`.trim()}>
-      {title.split(/(\s+)/).map((part, index) =>
-        part.includes("-") && part.trim().length > 1 ? (
-          <span className="whitespace-nowrap" key={index}>
-            {part}
-          </span>
-        ) : (
-          part
-        ),
-      )}
+      <TwoTone render={keepHyphensWhole} text={title} />
     </h1>
   );
 }
@@ -157,17 +162,16 @@ function HeroDescription({ description }: { description?: string }) {
   );
 }
 
-export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] font-light leading-[1.62] text-[var(--color-muted)]";
+export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] font-display font-light leading-[1.62] text-[var(--color-muted)]";
 
 export const mutedCopyClass = "m-0 leading-[1.55] text-[var(--color-muted)]";
 
 const sectionClass = `${landingShellClass} px-[var(--page-gutter)] py-[var(--section-y)]`;
-const sectionHeadingClass = "max-w-[790px]";
+const sectionHeadingClass = "max-w-[52rem]";
 const splitHeadingClass = `${sectionHeadingClass} grid max-w-none items-center gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] max-[809px]:grid-cols-1`;
-const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-[background,border-color] duration-150";
 const buttonClasses = {
-  primary: `${buttonClass} bg-[image:var(--gradient-cta)] text-[var(--color-paper)]`,
-  darkGhost: `${buttonClass} bg-white/10 text-[var(--color-paper)] hover:bg-white/[0.14]`,
+  primary: "action action-mist",
+  darkGhost: "action action-line-dark",
 };
 
 export function LandingSection({ children, className = "", id }: LandingSectionProps) {
@@ -185,7 +189,7 @@ export function SectionIntro({ action, align = "left", description, invert = fal
     return (
       <div className={splitHeadingClass}>
         <div>
-          <h2 className={sectionTitleClass}>{title}</h2>
+          <h2 className={sectionTitleClass}><TwoTone text={title} /></h2>
         </div>
         {description || action ? (
           <div>
@@ -201,7 +205,7 @@ export function SectionIntro({ action, align = "left", description, invert = fal
 
   return (
     <div className={`${sectionHeadingClass} ${centered ? "mx-auto text-center" : ""}`.trim()}>
-      <h2 className={sectionTitleClass}>{title}</h2>
+      <h2 className={sectionTitleClass}><TwoTone text={title} /></h2>
       {description ? <p className={`${descriptionClass} ${centered ? "mx-auto max-w-[760px]" : ""}`.trim()}>{description}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
@@ -248,7 +252,7 @@ export function IndexNumber({
     <span
       aria-hidden="true"
       className={`${className} shrink-0 font-sans text-[0.95rem] font-medium leading-none tabular-nums ${
-        invert ? "text-[var(--color-cyan)]" : "text-[var(--color-blue)]"
+        invert ? "text-[var(--color-blue-soft)]" : "text-[var(--color-blue)]"
       }`}
     >
       {String(index + 1).padStart(2, "0")}
@@ -259,7 +263,6 @@ export function IndexNumber({
 export function LandingHero({
   children,
   description,
-  photo,
   primaryCta,
   primaryHref,
   scrollLabel = "Scroll to next section",
@@ -272,9 +275,11 @@ export function LandingHero({
   const edgeVisual = visualMode === "edge";
 
   return (
-    <section className={`relative flex items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(5rem,9vw,8rem)] pt-[clamp(9rem,14vw,13rem)] text-[var(--color-paper)] max-[809px]:pt-[8rem] ${edgeVisual ? "max-[809px]:pb-[min(48vw,14rem)]" : ""}`.trim()}>
-      {photo ? <PhotoBackdrop photo={photo} priority /> : null}
+    <section className={`relative flex min-h-[calc(100svh-4.5rem)] items-center overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[clamp(5rem,9vw,8rem)] pt-[clamp(9rem,14vw,13rem)] text-[var(--color-paper)] max-[809px]:pt-[8rem] ${edgeVisual ? "max-[809px]:pb-[min(48vw,14rem)]" : ""}`.trim()}>
+      <FlowField />
       {edgeVisual ? children : null}
+      {/* Melts into the graphite that the next section arrives on, so the card has no hard line above it. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[35%] bg-[linear-gradient(to_bottom,transparent,var(--color-surface-dark))] max-[1023px]:hidden" />
       <GsapRevealRoot
         className={`relative z-[1] ${landingShellClass} grid items-center gap-[clamp(2rem,5vw,5rem)] ${edgeVisual ? "grid-cols-[minmax(0,0.78fr)_minmax(18rem,0.42fr)]" : "grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]"} max-[809px]:grid-cols-1`}
         duration={0.95}
@@ -282,9 +287,9 @@ export function LandingHero({
         start="top 92%"
         y={28}
       >
-        <div className="relative z-[1]">
+        <div className="relative z-[1] will-change-[transform,opacity]" data-hero-copy>
           <div data-gsap-reveal><HeroTitle className="max-w-[880px]" title={title} /></div>
-          <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">
+          <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-display font-light leading-[1.55] text-white/75">
             <HeroDescription description={description} />
           </p>
           <div data-gsap-reveal>
@@ -348,6 +353,7 @@ export function PageHero({
   children,
   description,
   descriptionClassName = "",
+  fadeBottom = false,
   photo,
   photoOpacity,
   photoPosition,
@@ -383,13 +389,13 @@ export function PageHero({
         start="top 92%"
         y={28}
       >
-        <div>
+        <div data-hero-copy>
           <div data-gsap-reveal>
             <HeroTitle className={titleClassName} title={title} />
           </div>
           {description ? (
             <p
-              className={`mt-6 max-w-[760px] text-[1.2rem] font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem] ${descriptionClassName}`.trim()}
+              className={`mt-6 max-w-[760px] text-[1.2rem] font-display font-light leading-[1.6] text-white/74 max-[809px]:text-[1.05rem] ${descriptionClassName}`.trim()}
               data-gsap-reveal
             >
               {description}
@@ -412,6 +418,9 @@ export function PageHero({
           </div>
         ) : null}
       </GsapRevealRoot>
+      {fadeBottom ? (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[28%] bg-[linear-gradient(to_bottom,transparent,var(--color-surface-dark))] max-[1023px]:hidden" />
+      ) : null}
     </HeroShell>
   );
 }
@@ -443,9 +452,7 @@ export function FinalCtaPanel({ description, primaryCta, primaryHref, secondaryC
     <DarkPanel className="relative overflow-hidden [background:var(--gradient-final-cta)] max-[520px]:rounded-[1.25rem] max-[520px]:p-[1.35rem]">
       <BrandMarkMotif />
       <div className="relative z-[1]">
-        <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.25rem,4.8vw,3.65rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(1.75rem,7.8vw,2.3rem)] max-[520px]:leading-[1.06]">
-          {title}
-        </h2>
+        <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.25rem,4.8vw,3.65rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(1.75rem,7.8vw,2.3rem)] max-[520px]:leading-[1.06]"><TwoTone text={title} /></h2>
         <p className={`${sectionDescriptionClass} max-w-[680px] text-white/70 max-[520px]:mt-3 max-[520px]:text-[1rem]`}>
           {description}
         </p>

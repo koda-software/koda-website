@@ -7,6 +7,7 @@ export const lowCodeFeature: FeaturePageContent = {
       "Automate decisions with rules, scripts and SQL queries. A \"condition, then action\" rule engine without building a separate system. Low-code in Opero.",
   },
   navLabel: "Low-code and automation",
+  navDescription: "Routine decisions, automated",
   hero: {
     title: "Low-code and automation - logic that works for you",
     description:

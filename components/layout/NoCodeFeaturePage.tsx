@@ -18,6 +18,7 @@ import {
 import type { NoCodePageContent, NoCodePageSection, NoCodePageVisual } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath } from "@/lib/i18n/features";
+import { TwoTone } from "@/components/landing/TwoTone";
 
 type NoCodeFeaturePageProps = {
   content: NoCodePageContent;
@@ -78,7 +79,7 @@ function ComparisonSummary({ accent = false, summary }: { accent?: boolean; summ
   return (
     <div className={`px-6 max-[980px]:px-0 ${accent ? "max-[980px]:pt-2" : ""}`}>
       <p className={`m-0 text-[clamp(1.65rem,2.5vw,2.35rem)] font-medium tracking-[-0.035em] max-[980px]:text-[1.6rem] ${accent ? "text-[#1e5278]" : "text-[var(--color-ink)]"}`}>{summary.total}</p>
-      <p className="mb-0 mt-3 max-w-[31rem] text-[0.82rem] font-light leading-[1.55] text-[var(--color-muted)]">{summary.description}</p>
+      <p className="mb-0 mt-3 max-w-[31rem] text-[0.82rem] leading-[1.55] text-[var(--color-muted)]">{summary.description}</p>
       <ul className="mb-0 mt-5 grid list-none gap-2 p-0">
         {summary.tags.map((tag) => (
           <li className="flex items-center gap-2.5 text-[0.82rem] leading-[1.45] text-[var(--color-ink-soft)]" key={tag}>
@@ -106,10 +107,10 @@ function ComparisonLedger({ comparison }: { comparison: NoCodePageContent["found
             <div className="relative z-[1] grid grid-cols-[minmax(15rem,0.9fr)_minmax(18rem,1.1fr)_minmax(18rem,1.1fr)] gap-4 pb-4 pt-5 max-[980px]:sticky max-[980px]:top-0 max-[980px]:z-10 max-[980px]:grid-cols-2 max-[980px]:gap-2 max-[980px]:bg-white/95 max-[980px]:py-3 max-[980px]:backdrop-blur-md">
               <div aria-hidden="true" className="max-[980px]:hidden" />
               <div className="px-4 max-[980px]:px-3">
-                <h3 className="m-0 text-[1.25rem] font-medium tracking-[-0.02em] text-[var(--color-ink)] max-[980px]:text-[0.9rem]">{comparison.traditional.title}</h3>
+                <h3 className="m-0 text-[1.25rem] font-semibold tracking-[-0.02em] text-[var(--color-ink)] max-[980px]:text-[0.9rem]">{comparison.traditional.title}</h3>
               </div>
               <div className="px-4 max-[980px]:px-3">
-                <h3 className="m-0 text-[1.25rem] font-medium tracking-[-0.02em] text-[#1e5278] max-[980px]:text-[0.9rem]">{comparison.opero.title}</h3>
+                <h3 className="m-0 text-[1.25rem] font-semibold tracking-[-0.02em] text-[#1e5278] max-[980px]:text-[0.9rem]">{comparison.opero.title}</h3>
               </div>
             </div>
 
@@ -122,7 +123,7 @@ function ComparisonLedger({ comparison }: { comparison: NoCodePageContent["found
                       <div className="grid grid-cols-[minmax(15rem,0.9fr)_minmax(18rem,1.1fr)_minmax(18rem,1.1fr)] items-center gap-4 rounded-[10px] transition-colors duration-200 hover:bg-[rgba(30,82,120,0.035)] max-[980px]:grid-cols-2 max-[980px]:gap-x-2 max-[980px]:gap-y-2 max-[980px]:border-t max-[980px]:border-[rgba(11,17,22,0.07)] max-[980px]:py-3 max-[980px]:first:border-t-0 max-[980px]:first:pt-0" key={row.title}>
                         <div className="pl-4 pr-6 max-[980px]:col-span-2 max-[980px]:px-3">
                           <h4 className="m-0 text-[0.94rem] font-medium leading-[1.25] text-[var(--color-ink)]">{row.title}</h4>
-                          <p className="mb-0 mt-1 text-[0.74rem] font-light leading-[1.35] text-[var(--color-muted)]">{row.detail}</p>
+                          <p className="mb-0 mt-1 text-[0.74rem] leading-[1.35] text-[var(--color-muted)]">{row.detail}</p>
                         </div>
                         <ComparisonCell cell={row.traditional} />
                         <ComparisonCell cell={row.opero} />
@@ -150,7 +151,7 @@ function StorySection({ labels, section }: { labels: NoCodePageContent["labels"]
     <section className={sectionClass} id={`capability-${section.number}`}>
       <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1">
         <div className={section.reverse ? "min-[981px]:order-2" : ""} data-reveal={section.reverse ? "right" : "left"}>
-          <h2 className={titleClass}>{section.title}</h2>
+          <h2 className={titleClass}><TwoTone text={section.title} /></h2>
           <p className={`${bodyClass} mt-7`}>{section.description}</p>
           <BulletList items={section.bullets} />
         </div>
@@ -179,7 +180,7 @@ function ProcessTracker({ tracker }: { tracker: NoCodePageContent["process"]["tr
                 aria-hidden="true"
                 className={`absolute left-0 top-[1.45rem] z-[1] flex h-[15px] w-[15px] items-center justify-center rounded-full ${
                   isComplete
-                    ? "bg-[#7ee7ff] text-[#0b1116]"
+                    ? "bg-[#38b6ff] text-[#0b1116]"
                     : isActive
                       ? "border border-[#f0b64a] bg-[#f0b64a]"
                       : "border-[1.5px] border-white/30 bg-[var(--color-surface-dark)]"
@@ -189,7 +190,7 @@ function ProcessTracker({ tracker }: { tracker: NoCodePageContent["process"]["tr
               </span>
               <div>
                 <p className="m-0 text-[1.05rem] font-medium tracking-[-0.01em] text-white">{stage.title}</p>
-                <p className="mb-0 mt-1 text-[0.84rem] font-light leading-[1.5] text-white/55">
+                <p className="mb-0 mt-1 text-[0.84rem] leading-[1.5] text-white/55">
                   {stage.detailBefore}
                   {stage.emphasis ? <strong className={`font-medium ${isActive ? "text-[#f6c96b]" : "text-white/85"}`}>{stage.emphasis}</strong> : null}
                 </p>
@@ -215,9 +216,9 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
       <section className={sectionClass} id="foundation">
         <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.5fr)] items-start gap-12 max-[900px]:grid-cols-1">
           <div data-reveal>
-            <h2 className="m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]">{content.foundation.title}</h2>
+            <h2 className="m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]"><TwoTone text={content.foundation.title} /></h2>
           </div>
-          <p className="m-0 text-[1rem] font-light leading-[1.68] text-[var(--color-muted)]" data-reveal>{content.foundation.description}</p>
+          <p className="m-0 text-[1rem] leading-[1.68] text-[var(--color-muted)]" data-reveal>{content.foundation.description}</p>
         </div>
         <div className="mx-auto mt-[clamp(2rem,4vw,3.2rem)] w-full max-w-[82rem]">
           <ComparisonLedger comparison={content.foundation.comparison} />
@@ -225,7 +226,7 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
       </section>
 
       <section
-        className="relative isolate overflow-hidden border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:radial-gradient(circle_at_16%_24%,rgba(56,182,255,0.2),transparent_32%),radial-gradient(circle_at_88%_78%,rgba(20,112,184,0.18),transparent_34%),linear-gradient(145deg,#09131d_0%,#0d263f_52%,#081018_100%)] text-white"
+        className="relative isolate overflow-hidden border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white"
         id="blocks"
       >
         <div
@@ -234,10 +235,8 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
         />
         <div className={`${sectionClass} relative`}>
           <div data-reveal>
-            <h2 className="m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white">
-              {content.capabilities.title}
-            </h2>
-            <p className="mb-0 mt-7 max-w-[46rem] text-[1.04rem] font-light leading-[1.72] text-white/62">
+            <h2 className="m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white"><TwoTone text={content.capabilities.title} /></h2>
+            <p className="mb-0 mt-7 max-w-[46rem] text-[1.04rem] leading-[1.72] text-white/62">
               {content.capabilities.description}
             </p>
           </div>
@@ -252,8 +251,8 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
         <div className={sectionClass}>
           <div className="grid grid-cols-[minmax(0,0.78fr)_minmax(28rem,1.22fr)] items-center gap-[clamp(3rem,7vw,7rem)] max-[980px]:grid-cols-1">
             <div data-reveal="left">
-              <h2 className="m-0 max-w-[780px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white">{content.process.title}</h2>
-              <p className="mb-0 mt-7 max-w-[42rem] text-[1.02rem] font-light leading-[1.72] text-white/62">{content.process.description}</p>
+              <h2 className="m-0 max-w-[780px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white"><TwoTone text={content.process.title} /></h2>
+              <p className="mb-0 mt-7 max-w-[42rem] text-[1.02rem] leading-[1.72] text-white/62">{content.process.description}</p>
               <Link className="mt-8 inline-flex items-center gap-2 text-[0.9rem] font-medium text-[var(--color-blue-soft)]" href={localizeFeaturePath(locale, "processes")}>{content.process.cta}<ArrowRightIcon aria-hidden="true" className="h-4 w-4" /></Link>
             </div>
             <ProcessTracker tracker={content.process.tracker} />
@@ -264,7 +263,7 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
       <section className="border-y border-[rgba(11,17,22,0.1)] bg-[var(--color-paper-soft)]">
         <div className={`${sectionClass} grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1`}>
           <SectionVisual fallbackLabel={content.labels.screenshotPlaceholder} visual={content.adaptation.visual} />
-          <div data-reveal="right"><h2 className={titleClass}>{content.adaptation.title}</h2><p className={`${bodyClass} mt-7`}>{content.adaptation.description}</p><BulletList items={content.adaptation.bullets} /></div>
+          <div data-reveal="right"><h2 className={titleClass}><TwoTone text={content.adaptation.title} /></h2><p className={`${bodyClass} mt-7`}>{content.adaptation.description}</p><BulletList items={content.adaptation.bullets} /></div>
         </div>
       </section>
 

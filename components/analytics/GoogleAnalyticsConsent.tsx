@@ -86,7 +86,7 @@ export function GoogleAnalyticsConsent({ content, privacyHref }: GoogleAnalytics
               <h2 id="analytics-consent-title" className="m-0 text-[1rem] font-semibold tracking-[-0.01em]">
                 {content.title}
               </h2>
-              <p id="analytics-consent-description" className="mt-2 mb-0 text-[0.88rem] font-light leading-[1.6] text-white/70">
+              <p id="analytics-consent-description" className="mt-2 mb-0 text-[0.88rem] leading-[1.6] text-white/70">
                 {content.description}{" "}
                 <Link className="font-medium text-white underline decoration-white/40 underline-offset-4 hover:decoration-white" href={privacyHref}>
                   {content.privacyLinkLabel}
@@ -95,14 +95,14 @@ export function GoogleAnalyticsConsent({ content, privacyHref }: GoogleAnalytics
             </div>
             <div className="flex shrink-0 flex-wrap gap-2 max-[560px]:w-full max-[560px]:flex-col-reverse">
               <button
-                className="min-h-11 rounded-[var(--radius-button)] border border-white/[0.18] px-4 py-2.5 text-[0.86rem] font-medium text-white transition-colors hover:bg-white/[0.08]"
+                className="min-h-11 rounded-full border border-white/[0.18] px-4 py-2.5 text-[0.86rem] font-medium text-white transition-colors hover:bg-white/[0.08]"
                 type="button"
                 onClick={() => saveChoice("rejected")}
               >
                 {content.rejectLabel}
               </button>
               <button
-                className="min-h-11 rounded-[var(--radius-button)] bg-[var(--color-brand-blue)] px-4 py-2.5 text-[0.86rem] font-semibold text-[var(--color-ink)] transition-colors hover:bg-[var(--color-cyan)]"
+                className="min-h-11 rounded-full bg-[var(--color-brand-blue)] px-4 py-2.5 text-[0.86rem] font-semibold text-[var(--color-ink)] transition-colors hover:bg-[var(--color-mist)]"
                 type="button"
                 onClick={() => saveChoice("accepted")}
               >

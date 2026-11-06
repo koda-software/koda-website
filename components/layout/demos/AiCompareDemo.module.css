@@ -283,7 +283,7 @@
 
 .rows > .total {
   border: 0;
-  background: var(--gradient-cta);
+  background: var(--color-blue);
   color: #fff;
   font-weight: 500;
 }

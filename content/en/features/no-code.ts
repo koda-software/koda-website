@@ -7,6 +7,7 @@ export const noCodeFeature: FeaturePageContent = {
       "Build business applications without code: model data with custom objects and fields, design forms and layouts, and configure menus and dashboards.",
   },
   navLabel: "No-code platform",
+  navDescription: "Your own apps, without developers",
   hero: {
     title: "No-code system your company needs.",
     description: "Configure objects, forms, menus and dashboards visually in Opero.",

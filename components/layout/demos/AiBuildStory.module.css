@@ -193,7 +193,7 @@
 }
 
 .liquid {
-  color: #7ee7ff;
+  color: #38b6ff;
 }
 
 .string {
@@ -251,7 +251,7 @@
   left: 0;
   width: 2px;
   height: 20px;
-  background: #7ee7ff;
+  background: #38b6ff;
 }
 
 .preview {
@@ -327,7 +327,7 @@
 }
 
 .dragLine {
-  stroke: #7ee7ff;
+  stroke: #38b6ff;
   stroke-dasharray: 6 4;
   stroke-width: 2;
 }

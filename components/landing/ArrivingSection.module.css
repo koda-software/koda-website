@@ -1,0 +1,97 @@
+/*
+ * Everything here moves by transform alone, because animating clip-path on a section this size
+ * would make the browser repaint all of it on every frame.
+ *
+ * The media query is the same condition as ARRIVAL_QUERY in ArrivingSection.tsx.
+ */
+
+/* The hero's graphite standing over each side of the section, with the card's rounded corner cut
+   out of its top. As they slide away the card seems to widen. They are in view from the first
+   paint, so they are shown here and cannot wait for the script. */
+.edge {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  display: none;
+  width: calc(5% + 48px);
+  height: 100vh;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.left {
+  left: 0;
+  background-image:
+    radial-gradient(circle at 100% 100%, transparent 47.5px, var(--color-surface-dark) 48px),
+    linear-gradient(var(--color-surface-dark), var(--color-surface-dark));
+  background-position:
+    top right,
+    left;
+  background-size:
+    48px 48px,
+    calc(100% - 48px) 100%;
+}
+
+.right {
+  right: 0;
+  background-image:
+    radial-gradient(circle at 0% 100%, transparent 47.5px, var(--color-surface-dark) 48px),
+    linear-gradient(var(--color-surface-dark), var(--color-surface-dark));
+  background-position:
+    top left,
+    right;
+  background-size:
+    48px 48px,
+    calc(100% - 48px) 100%;
+}
+
+@media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
+  .edge {
+    display: block;
+  }
+}
+
+/* The mist of the section above, carried on over this one with a slanted edge, and slid off it.
+   Hidden until the script takes it, so that nothing can stay covered if the script never runs. */
+.veil {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -30%;
+  z-index: 2;
+  width: 160%;
+  background: var(--color-mist);
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform;
+}
+
+/* A section that passes over the one above it, so it needs a ground of its own to hide it. */
+.curtain {
+  z-index: 1;
+  background: var(--color-mist);
+  box-shadow: 0 -24px 60px -24px rgb(0 0 0 / 0.55);
+}
+
+/* The mist above, hanging down over this section in columns that pull back one after another. */
+.columns {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.column {
+  flex: 1;
+  /* A pixel of overlap, so that no line of the section shows between two columns. */
+  margin-right: -1px;
+  background: var(--color-mist);
+  transform-origin: 50% 0;
+  will-change: transform;
+}

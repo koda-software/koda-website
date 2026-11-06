@@ -9,7 +9,7 @@ export const homeContent: HomeContent = {
       "Opero is a low-code BPM platform: processes, document workflow, automation, reports and permissions. No-code configuration, code only where it pays off.",
   },
   hero: {
-    title: "Turn the way you work into software",
+    title: "You run the business. Your system runs the rest",
     description:
       "Opero is a low-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. No code required.",
     primaryCta: "Book a demo",
@@ -305,6 +305,14 @@ export const homeContent: HomeContent = {
         tone: "rose",
       },
       {
+        name: "SSO",
+        description: "Single sign-on with your company's Microsoft accounts, so people log in once.",
+        icon: "signature",
+        logoSrc: "/integrations/microsoft.svg",
+        showName: true,
+        tone: "slate",
+      },
+      {
         name: "Custom e-mails",
         description: "Templates, assignments and automatic messages tied to business events.",
         icon: "email",
@@ -314,6 +322,21 @@ export const homeContent: HomeContent = {
         name: "Qualified signatures",
         description: "Signing steps placed inside the same case, approval and file history.",
         icon: "signature",
+        tone: "slate",
+      },
+      {
+        name: "Google Maps",
+        description: "Addresses from your records shown on the map.",
+        icon: "registry",
+        logoSrc: "/integrations/google-maps.svg",
+        showName: true,
+        tone: "green",
+      },
+      {
+        name: "Anthropic",
+        description: "Connect Claude to Opero and work with your real data and permissions.",
+        icon: "email",
+        logoSrc: "/integrations/anthropic.svg",
         tone: "slate",
       },
     ],

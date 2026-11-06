@@ -25,6 +25,7 @@ export const featurePages: FeaturePagesContent = {
 export const featureNavItems: NavSubItem[] = featureKeys.map((feature) => ({
   feature,
   label: featurePages[feature].navLabel,
+  description: featurePages[feature].navDescription,
   href: localizeFeaturePath("en", feature),
 }));
 

@@ -7,12 +7,10 @@ import { PageHero } from "@/components/landing/LandingPrimitives";
  */
 export const blogShellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 export const blogSectionClass = `${blogShellClass} py-[var(--section-y)]`;
-export const blogBodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
+export const blogBodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 export const blogMetaClass = "text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]";
-export const blogButtonClass =
-  "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
-export const blogPrimaryButtonClass = `${blogButtonClass} bg-[image:var(--gradient-cta)] text-white`;
-export const blogSecondaryButtonClass = `${blogButtonClass} border border-[rgba(2,2,13,0.12)] bg-white text-[var(--color-ink)] hover:border-[rgba(56, 182, 255,0.24)]`;
+export const blogPrimaryButtonClass = "action action-ink";
+export const blogSecondaryButtonClass = "action action-line";
 
 type BlogHeroProps = {
   title: string;

@@ -7,6 +7,7 @@ export const reportsFeature: FeaturePageContent = {
       "Build reports, charts and dashboards on live data. Drill down from a metric to a record with no export to spreadsheets. Business analytics in Opero.",
   },
   navLabel: "Reports and analytics",
+  navDescription: "Decide on data, not on hunches",
   hero: {
     title: "Reports and analytics - decisions on data, not on hunches",
     description:

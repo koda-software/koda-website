@@ -165,7 +165,7 @@ export function SolutionScreenshotMock({
         className={
           glowVariant === "hero"
             ? "absolute -inset-[10%] rounded-[34%] bg-[radial-gradient(ellipse_at_center,rgba(56,182,255,0.3)_0%,rgba(20,94,148,0.3)_36%,rgba(0,6,12,0.4)_62%,transparent_82%)] blur-[72px] shadow-[0_90px_190px_-24px_rgba(0,0,0,0.82),0_28px_110px_-20px_rgba(0,0,0,0.64)]"
-            : "absolute inset-[10%] rounded-full bg-[rgba(56,182,255,0.18)] blur-3xl"
+            : "absolute inset-[-2%] bg-[radial-gradient(closest-side,rgba(56,182,255,0.22),transparent)]"
         }
         ref={glowRef}
         style={{ opacity: 0, transform: "scale(0.9)" }}
