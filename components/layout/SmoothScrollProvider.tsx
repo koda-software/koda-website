@@ -24,6 +24,18 @@ type SmoothScrollProviderProps = {
 
 export const smoothScrollQuery = "(min-width: 992px) and (hover: hover) and (pointer: fine)";
 const smoothSeconds = 0.9;
+/* Sections carry enough top padding to clear the fixed header, so they can land at the very top. */
+const landing = "top top";
+
+function hashTarget(hash: string) {
+  return hash ? document.getElementById(hash.slice(1)) : null;
+}
+
+/* For a page opened on a #section: the smoother has to do the placing, not the browser. */
+function landOnHash(smoother: ScrollSmootherInstance | null) {
+  const target = hashTarget(window.location.hash);
+  if (smoother && target) smoother.scrollTo(target, false, landing);
+}
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   const pathname = usePathname();
@@ -73,6 +85,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
         ignoreMobileResize: true,
       });
       ScrollTrigger.refresh();
+      landOnHash(smootherRef.current);
     };
 
     const syncSmoother = () => {
@@ -95,11 +108,51 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
     };
   }, []);
 
+  /*
+   * The smoother moves the content inside a fixed wrapper with hidden overflow. A # link
+   * makes the browser scroll that wrapper directly, and the smoother cannot undo it, so the
+   * top of the page is left out of reach. Same-page links scroll here instead, without
+   * touching the URL, and anything else that moves the wrapper is put straight back.
+   */
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const keepWrapperStill = () => {
+      if (wrapper.scrollTop) wrapper.scrollTop = 0;
+    };
+
+    const scrollToSection = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (!(link instanceof HTMLAnchorElement) || link.pathname !== window.location.pathname) return;
+      const target = hashTarget(link.hash);
+      if (!target) return;
+
+      event.preventDefault();
+      if (smootherRef.current) {
+        smootherRef.current.scrollTo(target, true, landing);
+      } else {
+        const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ behavior: still ? "auto" : "smooth" });
+      }
+    };
+
+    wrapper.addEventListener("scroll", keepWrapperStill);
+    document.addEventListener("click", scrollToSection, true);
+
+    return () => {
+      wrapper.removeEventListener("scroll", keepWrapperStill);
+      document.removeEventListener("click", scrollToSection, true);
+    };
+  }, []);
+
   useEffect(() => {
     const timeout = window.setTimeout(() => {
       smootherRef.current?.scrollTop(0);
       smootherRef.current?.refresh(true, true);
       scrollTriggerRef.current?.refresh();
+      landOnHash(smootherRef.current);
     }, 80);
 
     return () => {
