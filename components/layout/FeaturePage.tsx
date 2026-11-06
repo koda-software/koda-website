@@ -18,8 +18,6 @@ type FeaturePageProps = {
 
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
-const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const sectionTitleClass = "m-0 max-w-[860px] text-[2.6rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] px-4 py-3 font-medium transition-colors";
@@ -189,18 +187,13 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
     layout.intro === "panel" ? (
       <section className={sectionClass} key="intro">
         <div className="rounded-[var(--radius-panel)] [background:var(--gradient-technical)] p-[clamp(1.5rem,4vw,3.5rem)] text-white">
-          <p className={darkEyebrowClass}>{content.intro.eyebrow}</p>
           <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.55] text-white/80">
             {content.intro.paragraph}
           </p>
         </div>
       </section>
     ) : (
-      <section
-        className={`${sectionClass} grid grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)] gap-12 max-[980px]:grid-cols-1 max-[980px]:gap-5`}
-        key="intro"
-      >
-        <p className={eyebrowClass}>{content.intro.eyebrow}</p>
+      <section className={sectionClass} key="intro">
         <p className="m-0 max-w-[52rem] text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.55] text-[var(--color-ink-soft)]">
           {content.intro.paragraph}
         </p>
@@ -209,7 +202,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   const blocksSection = (
     <section className={`${sectionClass} ${layout.intro === "panel" || layout.shotsFirst ? "" : "pt-0"}`} key="blocks">
-      <p className={eyebrowClass}>{content.blocks.eyebrow}</p>
       <h2 className={sectionTitleClass}>{content.blocks.title}</h2>
       {layout.blocks === "steps" ? <StepBlocks items={content.blocks.items} /> : null}
       {layout.blocks === "tiles" ? <TileBlocks items={content.blocks.items} /> : null}
@@ -220,7 +212,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
   const shotsSection = content.shots ? (
     <section className={`${sectionClass} ${layout.shotsFirst ? "pt-0" : ""}`} key="shots">
-      <p className={eyebrowClass}>{content.shots.eyebrow}</p>
       <h2 className={sectionTitleClass}>{content.shots.title}</h2>
       {layout.shots === "alternating" ? (
         <div className="mt-10 grid gap-[clamp(2.5rem,5vw,4rem)]">
@@ -256,7 +247,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       <PageHero
         description={content.hero.description}
         descriptionClassName="max-w-[720px]"
-        eyebrow={content.hero.eyebrow}
         photo="operations"
         primaryCta={content.hero.primaryCta}
         primaryHref={primaryHref}
@@ -273,7 +263,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       {layout.shotsFirst ? [shotsSection, blocksSection] : [blocksSection, shotsSection]}
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.seoText.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.seoText.title}</h2>
         <div className="mt-6 grid max-w-[62rem] gap-5">
           {content.seoText.paragraphs.map((paragraph) => (
@@ -285,7 +274,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.faq.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.faq.title}</h2>
         <div className="mt-8 grid max-w-[52rem] gap-3">
           {content.faq.items.map((item) => (
@@ -309,7 +297,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.related.eyebrow}</p>
         <h2 className="m-0 text-[1.9rem] leading-[1.12] text-[var(--color-ink)]">{content.related.title}</h2>
         <div className="mt-8 grid grid-cols-3 gap-4 max-[809px]:grid-cols-1">
           {related.map((item) => (
@@ -335,7 +322,6 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
 
       <section className={`${sectionClass} pt-0`}>
         <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
-          <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
           <h2 className="mx-auto m-0 max-w-[860px] text-[2.7rem] leading-[1.08] text-[var(--color-ink)] max-[809px]:text-[1.9rem]">
             {content.finalCta.title}
           </h2>

@@ -8,7 +8,7 @@ export const blogContent: BlogUiContent = {
       "Notatki zespołu, który tworzy Opero: wdrożenia BPM, projektowanie procesów, automatyzacja, modelowanie danych i miejsca, w których AI realnie pomaga.",
   },
   index: {
-    eyebrow: "Blog",
+    label: "Blog",
     title: "Notatki z budowania platformy BPM no-code.",
     description:
       "To, czego uczymy się wdrażając Opero w realnych operacjach: jak modelować procesy, gdzie automatyzacja naprawdę się opłaca, czego wymaga kontrola nad danymi i kiedy AI pomaga, a kiedy przeszkadza.",
@@ -32,15 +32,11 @@ export const blogContent: BlogUiContent = {
     breadcrumbHome: "Start",
   },
   recent: {
-    eyebrow: "Blog",
     title: "Najnowsze na blogu.",
     description:
       "Notatki zespołu, który tworzy Opero: o projektowaniu procesów, automatyzacji pracy i wdrażaniu BPM w codziennym działaniu firm.",
   },
   archives: {
-    categoryEyebrow: "Kategoria",
-    tagEyebrow: "Tag",
-    authorEyebrow: "Autor",
     categoryDescription: "Wszystkie artykuły z tej kategorii.",
     tagDescription: "Wszystkie artykuły oznaczone tym tagiem.",
     authorDescription: "Wszystko, co napisał ten autor.",
@@ -63,7 +59,6 @@ export const blogContent: BlogUiContent = {
     backLabel: "Wróć na blog",
   },
   cta: {
-    eyebrow: "Następny krok",
     title: "Zobacz, jak to działa na Twoich procesach.",
     description:
       "Przejdziemy przez Twoje operacje, pokażemy, jak Opero je odwzoruje, i szczerze powiemy, co pasuje, a co nie.",

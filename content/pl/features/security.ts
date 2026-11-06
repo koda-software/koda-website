@@ -8,7 +8,6 @@ export const securityFeature: FeaturePageContent = {
   },
   navLabel: "Bezpieczeństwo i uprawnienia",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "Bezpieczeństwo i uprawnienia - każdy widzi dokładnie to, co powinien",
     description:
       "Role, uprawnienia, wiele spółek i tokeny API pod kontrolą. Dane firmy chronione na poziomie oczekiwanym przez działy IT.",
@@ -16,7 +15,6 @@ export const securityFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Dostęp w Opero układasz od organizacji i jej spółek, przez role i członków, aż po precyzyjne uprawnienia do modułów, obiektów i pól. Integracje zabezpieczasz tokenami API, a konta - uwierzytelnianiem wieloskładnikowym.",
   },
@@ -39,7 +37,6 @@ export const securityFeature: FeaturePageContent = {
     },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Kontrola dostępu od organizacji po pojedyncze pole.",
     items: [
       {
@@ -69,13 +66,11 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Zapanuj nad dostępem do danych.",
     description: "Pokażemy model ról i uprawnień dopasowany do struktury Twojej firmy.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "Dostęp do danych pod pełną kontrolą.",
     paragraphs: [
       "Bezpieczeństwo w Opero zaczyna się od precyzyjnej kontroli dostępu. Uprawnienia ustawiasz od organizacji i jej spółek, przez role i członków, aż po widoczność i edycję na poziomie pojedynczego modułu, obiektu i pola. Dzięki rolom zmiana uprawnień obejmuje od razu wszystkich, którzy do nich należą, a każdy użytkownik widzi dokładnie to, co powinien.",
@@ -84,7 +79,6 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -100,7 +94,6 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["integrations", "documents", "ai"],
   },

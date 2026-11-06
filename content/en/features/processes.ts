@@ -8,7 +8,6 @@ export const processesFeature: FeaturePageContent = {
   },
   navLabel: "Processes and workflow",
   hero: {
-    eyebrow: "System features",
     title: "Processes and workflow - the whole company runs on your rules",
     description:
       "Design every flow of work as a process. Approvals, document routing and procedures move through defined stages, so nothing gets lost between departments.",
@@ -16,7 +15,6 @@ export const processesFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "Opero is a process engine in which a record moves through stages and transitions (for example New → In progress → Approved → Closed). The process enforces order, permissions and deadlines, and every run stays in the history.",
   },
@@ -42,7 +40,6 @@ export const processesFeature: FeaturePageContent = {
     },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "A process that enforces order, permissions and deadlines.",
     items: [
       {
@@ -73,13 +70,11 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "Map your first process in Opero.",
     description: "We will show you how to move a flow out of email and spreadsheets into one controlled process.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "A workflow system that enforces order and deadlines.",
     paragraphs: [
       "Opero is a workflow system that turns every process in your company into a repeatable, controlled flow. A record moves through defined stages and transitions while the system enforces order, permissions and deadlines. Instead of decisions scattered across email and spreadsheets, you get one place that shows which stage a case is at, who owns it and what happened before.",
@@ -88,7 +83,6 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -103,7 +97,6 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["documents", "noCode", "lowCode"],
   },

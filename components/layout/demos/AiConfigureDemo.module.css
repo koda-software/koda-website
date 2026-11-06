@@ -1,0 +1,267 @@
+/*
+ * What is asked, how it gets there and what it changes, side by side on the section's own
+ * ground. Everything here describes the first result; the timeline takes it back from there.
+ */
+.root {
+  --ink: var(--color-ink);
+  --ground: var(--color-paper);
+  --line: rgb(11 17 22 / 0.12);
+  --soft: var(--color-muted);
+  --fresh: #e8f4fc;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) 216px minmax(0, 1.2fr);
+  gap: clamp(2.5rem, 4.5vw, 4.5rem);
+  align-items: center;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+/* The point whose arrival in the middle of the screen starts the story. */
+.centre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+
+.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.lines path {
+  fill: none;
+  stroke: rgb(11 17 22 / 0.18);
+  stroke-width: 1.5;
+}
+
+.lines .lit {
+  stroke: var(--color-blue);
+  stroke-dasharray: 1;
+}
+
+.dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-blue);
+}
+
+/* What the reader asks their own agent. */
+.message {
+  position: relative;
+  display: grid;
+  padding: 20px 22px;
+  border: 1.5px solid var(--color-blue);
+  border-radius: 18px 18px 18px 4px;
+  background: var(--ground);
+}
+
+.sentence {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+/* Inline, because anything else would let a line break in the middle of the word being typed. */
+.caret {
+  margin-right: -2px;
+  border-left: 2px solid var(--ink);
+}
+
+.rest {
+  visibility: hidden;
+}
+
+/* Opero MCP, and what the agent does through it. */
+.middle {
+  position: relative;
+  padding: 16px;
+  border: 1.5px solid var(--color-blue);
+  border-radius: 16px;
+  background: var(--ground);
+}
+
+.mcp {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.stepLists {
+  display: grid;
+}
+
+.steps {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.ring {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+}
+
+.done {
+  position: absolute;
+  inset: -1.5px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-blue);
+  color: #fff;
+}
+
+/* The form or list that already exists, and changes while it is looked at. */
+.screens {
+  position: relative;
+  display: grid;
+}
+
+.screen {
+  grid-area: 1 / 1;
+  min-width: 0;
+  padding: 20px 22px 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--ground);
+}
+
+.screenTitle {
+  margin: 0 0 14px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.fields {
+  display: grid;
+  margin: 0;
+}
+
+.field {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42% minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding-inline: 10px;
+  border-top: 1px solid var(--line);
+  background: var(--ground);
+  font-size: 14px;
+}
+
+.field dt {
+  color: var(--soft);
+}
+
+.field dd {
+  margin: 0;
+}
+
+.field.fresh,
+.tableHead .fresh,
+.tableRow .fresh {
+  background: var(--fresh);
+}
+
+.field .unset {
+  color: var(--soft);
+  font-style: italic;
+}
+
+/* It passes over the others on its way up. */
+.moved {
+  z-index: 1;
+}
+
+.required {
+  color: #bd4323;
+  font-weight: 500;
+}
+
+.table {
+  font-size: 13px;
+}
+
+.tableHead,
+.tableRow {
+  display: flex;
+  border-top: 1px solid var(--line);
+}
+
+.tableHead {
+  border-top: 0;
+  color: var(--soft);
+}
+
+.tableHead span,
+.tableRow span {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 9px 8px 9px 0;
+}
+
+/* The number is short, which leaves more room for the name. */
+.tableHead span:first-child,
+.tableRow span:first-child {
+  flex-grow: 0.6;
+}
+
+.newCell {
+  flex: none;
+  width: 122px;
+  padding: 9px 8px;
+  overflow: hidden;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tableHead .newCell {
+  color: var(--ink);
+}
+
+/* Too narrow for all three side by side, so they go one under the other. */
+@media (max-width: 1099px) {
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 38rem;
+    margin-inline: auto;
+  }
+}

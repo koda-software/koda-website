@@ -15,7 +15,6 @@ type SectionIntroProps = {
   action?: ReactNode;
   align?: "left" | "center";
   description?: string;
-  eyebrow: string;
   invert?: boolean;
   split?: boolean;
   title: string;
@@ -40,7 +39,6 @@ type DarkPanelProps = {
 type LandingHeroProps = {
   children: ReactNode;
   description?: string;
-  eyebrow: string;
   /** Photograph behind the banner. Omitted, the banner stays gradient-only. */
   photo?: PhotoName;
   primaryCta: string;
@@ -58,7 +56,6 @@ type PageHeroProps = {
   children?: ReactNode;
   description?: string;
   descriptionClassName?: string;
-  eyebrow: string;
   photo?: PhotoName;
   photoOpacity?: number;
   photoPosition?: string;
@@ -84,7 +81,6 @@ type HeroShellProps = {
 
 type FinalCtaPanelProps = {
   description: string;
-  eyebrow: string;
   primaryCta: string;
   primaryHref: string;
   secondaryCta: string;
@@ -165,8 +161,6 @@ export const sectionDescriptionClass = "mt-4 text-[clamp(1rem,1.5vw,1.12rem)] fo
 
 export const mutedCopyClass = "m-0 leading-[1.55] text-[var(--color-muted)]";
 
-const eyebrowClass = "eyebrow mb-4 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = `${eyebrowClass} text-[var(--color-blue-soft)]`;
 const sectionClass = `${landingShellClass} px-[var(--page-gutter)] py-[var(--section-y)]`;
 const sectionHeadingClass = "max-w-[790px]";
 const splitHeadingClass = `${sectionHeadingClass} grid max-w-none items-center gap-[clamp(1.5rem,4vw,4rem)] grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] max-[809px]:grid-cols-1`;
@@ -184,14 +178,13 @@ export function LandingSection({ children, className = "", id }: LandingSectionP
   );
 }
 
-export function SectionIntro({ action, align = "left", description, eyebrow, invert = false, split = false, title }: SectionIntroProps) {
+export function SectionIntro({ action, align = "left", description, invert = false, split = false, title }: SectionIntroProps) {
   const descriptionClass = invert ? `${sectionDescriptionClass} text-white/70` : sectionDescriptionClass;
 
   if (split) {
     return (
       <div className={splitHeadingClass}>
         <div>
-          <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
           <h2 className={sectionTitleClass}>{title}</h2>
         </div>
         {description || action ? (
@@ -208,7 +201,6 @@ export function SectionIntro({ action, align = "left", description, eyebrow, inv
 
   return (
     <div className={`${sectionHeadingClass} ${centered ? "mx-auto text-center" : ""}`.trim()}>
-      <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
       <h2 className={sectionTitleClass}>{title}</h2>
       {description ? <p className={`${descriptionClass} ${centered ? "mx-auto max-w-[760px]" : ""}`.trim()}>{description}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
@@ -236,7 +228,6 @@ export function DarkPanel({ children, className = "" }: DarkPanelProps) {
   );
 }
 
-/** A section label. */
 /**
  * A card's position as a plain two-digit number - the opening mark of every
  * numbered card and list. Decorative, so hidden from screen readers: the cards
@@ -265,16 +256,9 @@ export function IndexNumber({
   );
 }
 
-export function Eyebrow({ children, invert = false }: { children: ReactNode; invert?: boolean }) {
-  return (
-    <p className={invert ? darkEyebrowClass : eyebrowClass}>{children}</p>
-  );
-}
-
 export function LandingHero({
   children,
   description,
-  eyebrow,
   photo,
   primaryCta,
   primaryHref,
@@ -299,7 +283,6 @@ export function LandingHero({
         y={28}
       >
         <div className="relative z-[1]">
-          <div data-gsap-reveal><Eyebrow invert>{eyebrow}</Eyebrow></div>
           <div data-gsap-reveal><HeroTitle className="max-w-[880px]" title={title} /></div>
           <p data-gsap-reveal className="mt-6 max-w-[760px] text-[clamp(1.05rem,2vw,1.35rem)] font-light leading-[1.55] text-white/75">
             <HeroDescription description={description} />
@@ -365,7 +348,6 @@ export function PageHero({
   children,
   description,
   descriptionClassName = "",
-  eyebrow,
   photo,
   photoOpacity,
   photoPosition,
@@ -402,9 +384,6 @@ export function PageHero({
         y={28}
       >
         <div>
-          <div data-gsap-reveal>
-            <Eyebrow invert>{eyebrow}</Eyebrow>
-          </div>
           <div data-gsap-reveal>
             <HeroTitle className={titleClassName} title={title} />
           </div>
@@ -459,12 +438,11 @@ function BrandMarkMotif() {
   );
 }
 
-export function FinalCtaPanel({ description, eyebrow, primaryCta, primaryHref, secondaryCta, secondaryHref, title }: FinalCtaPanelProps) {
+export function FinalCtaPanel({ description, primaryCta, primaryHref, secondaryCta, secondaryHref, title }: FinalCtaPanelProps) {
   return (
     <DarkPanel className="relative overflow-hidden [background:var(--gradient-final-cta)] max-[520px]:rounded-[1.25rem] max-[520px]:p-[1.35rem]">
       <BrandMarkMotif />
       <div className="relative z-[1]">
-        <p className={darkEyebrowClass}>{eyebrow}</p>
         <h2 className="m-0 max-w-[900px] text-balance break-words text-[clamp(2.25rem,4.8vw,3.65rem)] leading-[1.03] tracking-[-0.05em] max-[809px]:text-[clamp(1.75rem,7.8vw,2.3rem)] max-[520px]:leading-[1.06]">
           {title}
         </h2>

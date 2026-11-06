@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { commonContent, navItems } from "@/content/pl/common";
 import { featureCtas, featurePages } from "@/content/pl/features";
+import { aiPage } from "@/content/pl/features/ai";
 import { noCodePage } from "@/content/pl/features/no-code";
 import { FeaturePage } from "@/components/layout/FeaturePage";
+import { AiFeaturePage } from "@/components/layout/AiFeaturePage";
 import { NoCodeFeaturePage } from "@/components/layout/NoCodeFeaturePage";
 import { PageShell } from "@/components/layout/PageShell";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
@@ -47,7 +49,7 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
         ]}
       />
       <FaqJsonLd
-        items={feature === "noCode" ? noCodePage.faq.items : featurePages[feature].faq.items}
+        items={feature === "noCode" ? noCodePage.faq.items : feature === "ai" ? aiPage.faq.items : featurePages[feature].faq.items}
       />
       <PageShell
         locale="pl"
@@ -63,6 +65,8 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
             primaryHref={featureCtas.primary}
             secondaryHref={featureCtas.secondary}
           />
+        ) : feature === "ai" ? (
+          <AiFeaturePage content={aiPage} locale="pl" primaryHref={featureCtas.primary} />
         ) : (
           <FeaturePage
             feature={feature}

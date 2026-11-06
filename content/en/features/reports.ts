@@ -8,7 +8,6 @@ export const reportsFeature: FeaturePageContent = {
   },
   navLabel: "Reports and analytics",
   hero: {
-    eyebrow: "System features",
     title: "Reports and analytics - decisions on data, not on hunches",
     description:
       "Build tables, charts and dashboards on live system data. From an aggregate number you can go down to a single record without exporting to a spreadsheet.",
@@ -16,7 +15,6 @@ export const reportsFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "Opero reports aggregate and group object data, present it in tables and charts, and through drill-down lead from a metric to the source records. Dashboards collect the numbers that matter most, and SQL queries cover the unusual cuts of data.",
   },
@@ -40,7 +38,6 @@ export const reportsFeature: FeaturePageContent = {
     captions: { table: "A plain table of data", chart: "The same report <b>as a chart</b>", drill: "Click a bar - and see <b>the records behind it</b>" },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "From a metric down to a single record.",
     items: [
       {
@@ -65,13 +62,11 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "See your data the way you actually need it.",
     description: "We will show you a report and a dashboard built on your own data type.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "Operational data turned into decisions.",
     paragraphs: [
       "Reports in Opero turn operational data into decisions. You build tables on object data: aggregations, groupings, metrics and charts run on live information from the system, with no export to spreadsheets. Drill-down takes you from an aggregate value down to the individual records behind it, so every number can be checked at the source.",
@@ -80,7 +75,6 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -95,7 +89,6 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["lowCode", "noCode", "ai"],
   },

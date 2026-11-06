@@ -130,7 +130,6 @@ export type UseCaseCard = {
 };
 
 export type HomeSection = {
-  label: string;
   title: string;
   description: string;
 };
@@ -213,7 +212,6 @@ export type ConfigDemoContent = {
 export type HomeContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -246,13 +244,11 @@ export type HomeContent = {
     cta: string;
   };
   pillars: {
-    label: string;
     title: string;
     description: string;
     items: FeaturePillar[];
   };
   workflow: {
-    label: string;
     title: string;
     description: string;
     steps: HomeStep[];
@@ -263,7 +259,6 @@ export type HomeContent = {
   };
   trust: HomePointGroup;
   finalCta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -313,7 +308,6 @@ export type ProductComparisonColumn = {
 export type OperoProductContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     brief: string;
     primaryCta: string;
@@ -323,7 +317,6 @@ export type OperoProductContent = {
     };
   };
   connectedModel: {
-    eyebrow: string;
     title: string;
     brief: string;
     comparison: {
@@ -337,12 +330,10 @@ export type OperoProductContent = {
     story: OperoBuildStoryContent;
   };
   productTour: {
-    eyebrow: string;
     title: string;
     brief: string;
     exploreLabel: string;
     chapters: Array<{
-      eyebrow: string;
       title: string;
       brief: string;
       features: Array<
@@ -359,7 +350,6 @@ export type OperoProductContent = {
     }>;
   };
   customization: {
-    eyebrow: string;
     title: string;
     brief: string;
     comparison: {
@@ -372,7 +362,6 @@ export type OperoProductContent = {
     };
   };
   finalCta: {
-    eyebrow: string;
     title: string;
     brief: string;
     primaryCta: string;
@@ -448,7 +437,6 @@ export type FeaturePageContent = {
   /** Short label used in the navigation dropdown and in related-page links. */
   navLabel: string;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -457,11 +445,9 @@ export type FeaturePageContent = {
     shot?: FeatureShot;
   };
   intro: {
-    eyebrow: string;
     paragraph: string;
   };
   blocks: {
-    eyebrow: string;
     title: string;
     items: FeatureBlock[];
   };
@@ -469,30 +455,25 @@ export type FeaturePageContent = {
   demo?: FeatureDemoContent;
   /** Omit the whole band when the page has no reviewed screenshots yet. */
   shots?: {
-    eyebrow: string;
     title: string;
     items: FeatureShot[];
   };
   finalCta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
   };
   /** Longer-form SEO copy near the bottom of the page - written for search intent, not skimming. */
   seoText: {
-    eyebrow: string;
     title: string;
     paragraphs: string[];
   };
   /** Long-tail Q&A, also emitted as FAQPage structured data. */
   faq: {
-    eyebrow: string;
     title: string;
     items: Array<{ question: string; answer: string }>;
   };
   related: {
-    eyebrow: string;
     title: string;
     items: FeatureKey[];
   };
@@ -513,7 +494,6 @@ export type NoCodePageVisual = {
 
 export type NoCodePageSection = {
   number: string;
-  eyebrow: string;
   title: string;
   description: string;
   bullets: string[];
@@ -562,7 +542,6 @@ export type NoCodePageContent = {
     screenshotPlaceholder: string;
   };
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -575,19 +554,16 @@ export type NoCodePageContent = {
     };
   };
   foundation: {
-    eyebrow: string;
     title: string;
     description: string;
     comparison: NoCodePageComparison;
   };
   capabilities: {
-    eyebrow: string;
     title: string;
     description: string;
     items: NoCodePageSection[];
   };
   process: {
-    eyebrow: string;
     title: string;
     description: string;
     tracker: {
@@ -602,28 +578,252 @@ export type NoCodePageContent = {
     cta: string;
   };
   adaptation: {
-    eyebrow: string;
     title: string;
     description: string;
     bullets: string[];
     visual: NoCodePageVisual;
   };
   faq: {
-    eyebrow: string;
     title: string;
     items: Array<{ question: string; answer: string }>;
   };
   related: {
-    eyebrow: string;
     title: string;
     items: Array<{ feature: FeatureKey; title: string; description: string }>;
   };
   finalCta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
     secondaryCta: string;
+  };
+};
+
+export type AiHeroDemoKey = "client" | "invoices" | "overdue" | "reminder";
+
+/**
+ * Copy for the contextual AI hero. The sentence is split into segments because
+ * the words carrying a `key` are the ones that travel into the page and become
+ * its parts, and those words differ between languages.
+ */
+export type AiHeroDemoContent = {
+  sentence: Array<{ text: string; key?: AiHeroDemoKey }>;
+  /** What a screen reader calls the send button that starts the story. */
+  sendLabel: string;
+  tags: Record<AiHeroDemoKey, string>;
+  page: {
+    breadcrumb: string;
+    title: string;
+    status: string;
+    fields: Array<{ label: string; value: string }>;
+  };
+  block: {
+    title: string;
+    asOf: string;
+    columns: [string, string, string];
+    rows: Array<{ number: string; due: string; amount: string; overdue?: boolean }>;
+    overdueLabel: string;
+    totalLabel: string;
+    total: number;
+    currency: string;
+    thousandsSeparator: string;
+    action: { before: string; word: string };
+  };
+};
+
+export type AiRuleNode = { title: string; detail: string };
+
+export type AiBuildDemoContent = {
+  /** What the system holds; the tiles marked `match` are the ones the request named. */
+  system: { label: string; tiles: Array<{ name: string; match?: boolean }> };
+  /** The labels of the query and the block being written, bottom first. The code in them is not translated. */
+  layers: [string, string];
+  /** The rule behind the button: its trigger, the step that assigns, and the two steps that follow it. */
+  rule: {
+    label: string;
+    steps: [AiRuleNode, AiRuleNode, AiRuleNode, AiRuleNode];
+    onError: string;
+  };
+  page: {
+    breadcrumb: string;
+    title: string;
+    status: string;
+    fields: Array<{ label: string; value: string }>;
+    /** The rest of the record, which the new section pushes down out of view. */
+    billing: { title: string; fields: Array<{ label: string; value: string }> };
+    notes: { title: string; text: string };
+  };
+  block: {
+    title: string;
+    rows: Array<{ number: string; title: string; sla: string; late?: boolean }>;
+    summary: string;
+    action: string;
+  };
+  dialog: {
+    title: string;
+    fields: Array<{ label: string; value: string }>;
+    confirm: string;
+  };
+};
+
+/** Everything floating in the field the agent chooses from. All of them are things it can reach in Opero. */
+export type AiAskToolId =
+  | "blocks"
+  | "catalog"
+  | "comments"
+  | "companies"
+  | "contractors"
+  | "cost_invoices"
+  | "custom_fields"
+  | "custom_lists"
+  | "custom_objects"
+  | "dictionaries"
+  | "documents"
+  | "email_templates"
+  | "emails"
+  | "forms"
+  | "layouts"
+  | "logs"
+  | "menus"
+  | "pages"
+  | "reports"
+  | "rules"
+  | "sales_invoices"
+  | "saved_queries"
+  | "scripts"
+  | "sql_lists"
+  | "tasks"
+  | "themes"
+  | "tickets"
+  | "workflows";
+
+/** A part of the question, and how the agent gets somewhere with it. */
+export type AiAskClue = {
+  /** The words it comes from, exactly as they are written in the question. */
+  words: string;
+  /** What it measures against these words and rules out, strongest first, then what it settles on and what that gave it. */
+  tries: [AiAskToolId, AiAskToolId, AiAskToolId];
+  tool: AiAskToolId;
+  result: string;
+};
+
+/** A question to the agent and the route it takes to the answer. */
+export type AiAskQuestion = {
+  question: string;
+  reply: string;
+  /** The pieces it puts together, in the order it finds them. No tool may appear twice, in `tries` or `tool`. */
+  clues: [AiAskClue, AiAskClue, AiAskClue, AiAskClue];
+};
+
+export type AiAskDemoContent = {
+  note: string;
+  tools: Record<AiAskToolId, string>;
+  questions: [AiAskQuestion, AiAskQuestion, AiAskQuestion];
+};
+
+export type AiCompareDemoContent = {
+  /** The same question without a connection: everything the agent needs is handed over by hand. */
+  manual: {
+    label: string;
+    messages: Array<{
+      from: "you" | "agent";
+      text: string;
+      files?: Array<{ name: string; kind: "sheet" | "image" }>;
+    }>;
+  };
+  /** And connected: the agent fetches what it needs and answers. */
+  connected: {
+    label: string;
+    question: string;
+    steps: string[];
+    answer: string;
+    rows: Array<{ number: string; due: string; amount: string }>;
+    total: { label: string; amount: string };
+  };
+};
+
+type AiConfigureRequest = { request: string; steps: [string, string] };
+
+export type AiConfigureDemoContent = {
+  /** The name of what sits between the agent and Opero. */
+  mcp: string;
+  asset: { title: string; fields: Array<{ label: string; value: string }>; added: { label: string; value: string } };
+  ticket: { title: string; fields: Array<{ label: string; value: string }>; moved: { label: string; value: string } };
+  invoices: { title: string; columns: [string, string, string]; added: string; rows: Array<{ cells: [string, string, string]; overdue: string }> };
+  /** The asset form, the ticket form and the invoice list, in that order. */
+  requests: [AiConfigureRequest, AiConfigureRequest, AiConfigureRequest];
+};
+
+type AiPageActText = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+/** The act whose animation is the whole section, and asks its own questions. */
+export type AiAskAct = AiPageActText & { demo: AiAskDemoContent; configure?: undefined };
+
+/** The act whose animation takes up the section, and makes its own requests. */
+export type AiConfigureAct = AiPageActText & { demo?: undefined; configure: AiConfigureDemoContent };
+
+export type AiPageAct = AiAskAct | AiConfigureAct;
+
+export type AiConnectDemoContent = {
+  agent: string;
+  opero: string;
+  add: { title: string; detail: string; button: string };
+  signIn: { title: string; initials: string; name: string; note: string; button: string };
+  done: { title: string; placeholder: string };
+};
+
+export type AiPageContent = {
+  hero: {
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+    trust: string[];
+    demo: AiHeroDemoContent;
+  };
+  problem: {
+    title: string;
+    points: string[];
+    solution: string;
+    demo: AiCompareDemoContent;
+  };
+  signature: {
+    title: string;
+    steps: Array<{ title: string; description: string }>;
+    demo: AiBuildDemoContent;
+    noteTitle: string;
+    note: string;
+    cta: string;
+  };
+  acts: AiPageAct[];
+  connect: {
+    title: string;
+    steps: Array<{ title: string; description: string }>;
+    demo: AiConnectDemoContent;
+  };
+  trust: {
+    title: string;
+    items: Array<{ title: string; description: string }>;
+  };
+  proof: {
+    title: string;
+    description: string;
+  };
+  prompts: {
+    title: string;
+    /** What people want, in their own words, and things they might say. No product terms in either. */
+    groups: Array<{ title: string; items: string[] }>;
+  };
+  faq: NoCodePageContent["faq"];
+  related: NoCodePageContent["related"];
+  finalCta: NoCodePageContent["finalCta"];
+  seoText: {
+    title: string;
+    paragraphs: string[];
   };
 };
 
@@ -801,7 +1001,6 @@ export type SolutionPatternRow = {
 export type SolutionsContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
     supportLine: string;
@@ -809,13 +1008,11 @@ export type SolutionsContent = {
     secondaryCta: string;
   };
   industries: {
-    eyebrow: string;
     title: string;
     description: string;
     items: SolutionIndustry[];
   };
   pattern: {
-    eyebrow: string;
     title: string;
     description: string;
     problemLabel: string;
@@ -823,7 +1020,6 @@ export type SolutionsContent = {
     rows: SolutionPatternRow[];
   };
   fit: {
-    eyebrow: string;
     title: string;
     description: string;
     goodFitTitle: string;
@@ -832,7 +1028,6 @@ export type SolutionsContent = {
     notBestFit: string[];
   };
   finalCta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -854,43 +1049,36 @@ export type AboutBackgroundRow = {
 export type AboutPageContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
     secondaryCta: string;
   };
   identity: {
-    eyebrow: string;
     title: string;
     paragraphs: string[];
   };
   origin: {
-    eyebrow: string;
     title: string;
     paragraphs: string[];
     /** Pulled out as a manifesto quote next to the narrative. */
     manifesto: string;
   };
   mission: {
-    eyebrow: string;
     title: string;
     description: string;
   };
   beliefs: {
-    eyebrow: string;
     title: string;
     description: string;
     items: AboutBelief[];
   };
   background: {
-    eyebrow: string;
     title: string;
     description: string;
     rows: AboutBackgroundRow[];
   };
   approach: {
-    eyebrow: string;
     title: string;
     items: AboutBelief[];
   };
@@ -900,13 +1088,11 @@ export type AboutPageContent = {
    * page never ships invented statistics or an empty frame.
    */
   facts?: {
-    eyebrow: string;
     title: string;
     description: string;
     items: Array<{ label: string; value: string }>;
   };
   finalCta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -914,13 +1100,11 @@ export type AboutPageContent = {
   };
   /** Longer-form SEO copy near the bottom, written for search intent. */
   seoText: {
-    eyebrow: string;
     title: string;
     paragraphs: string[];
   };
   /** Long-tail Q&A, also emitted as FAQPage structured data. */
   faq: {
-    eyebrow: string;
     title: string;
     items: Array<{ question: string; answer: string }>;
   };
@@ -933,7 +1117,7 @@ export type AboutPageContent = {
 export type BlogUiContent = {
   seo: SeoContent;
   index: {
-    eyebrow: string;
+    label: string;
     title: string;
     description: string;
   };
@@ -957,14 +1141,10 @@ export type BlogUiContent = {
   };
   /** The "latest articles" strip embedded on marketing pages such as the homepage. */
   recent: {
-    eyebrow: string;
     title: string;
     description: string;
   };
   archives: {
-    categoryEyebrow: string;
-    tagEyebrow: string;
-    authorEyebrow: string;
     categoryDescription: string;
     tagDescription: string;
     authorDescription: string;
@@ -989,7 +1169,6 @@ export type BlogUiContent = {
     backLabel: string;
   };
   cta: {
-    eyebrow: string;
     title: string;
     description: string;
     primaryCta: string;
@@ -1023,12 +1202,10 @@ export type ContactFormContent = {
 export type ContactPageContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
   };
   context: {
-    eyebrow: string;
     title: string;
     paragraphs: string[];
   };
@@ -1054,7 +1231,6 @@ export type LegalSection = {
 export type PrivacyContent = {
   seo: SeoContent;
   hero: {
-    eyebrow: string;
     title: string;
     description: string;
   };

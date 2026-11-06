@@ -8,7 +8,6 @@ export const securityFeature: FeaturePageContent = {
   },
   navLabel: "Security and permissions",
   hero: {
-    eyebrow: "System features",
     title: "Security and permissions - everyone sees exactly what they should",
     description:
       "Roles, permissions, multiple companies and API tokens under control. Company data protected to the standard IT departments expect.",
@@ -16,7 +15,6 @@ export const securityFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "Access in Opero is arranged from the organisation and its companies, through roles and members, down to precise permissions on modules, objects and fields. Integrations are secured with API tokens, and accounts with multi-factor authentication.",
   },
@@ -39,7 +37,6 @@ export const securityFeature: FeaturePageContent = {
     },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "Access control from the organisation down to a single field.",
     items: [
       {
@@ -69,13 +66,11 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "Take control of access to your data.",
     description: "We will show you a role and permission model matched to your company structure.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "Access to your data, fully under control.",
     paragraphs: [
       "Security in Opero starts with precise access control. You set permissions from the organisation and its companies, through roles and members, down to visibility and editing at the level of a single module, object and field. Roles mean a permission change applies immediately to everyone who holds that role, and every user sees exactly what they should.",
@@ -84,7 +79,6 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -99,7 +93,6 @@ export const securityFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["integrations", "documents", "ai"],
   },

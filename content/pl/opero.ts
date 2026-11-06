@@ -8,7 +8,6 @@ export const operoProductContent: OperoProductContent = {
       "Opero sprawia, że sposób pracy firmy staje się widoczny, powtarzalny i łatwiejszy do doskonalenia wraz z rozwojem organizacji.",
   },
   hero: {
-    eyebrow: "Poznaj Opero",
     title: "Buduj system wokół Twojej firmy. Nie odwrotnie.",
     brief:
       "Każda firma wypracowuje własny sposób działania. Opero sprawia, że praca staje się widoczna, powtarzalna i łatwiejsza do doskonalenia, bez zamieniania każdej zmiany w kolejny projekt informatyczny.",
@@ -19,7 +18,6 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   connectedModel: {
-    eyebrow: "Idea Opero",
     title: "Jeden wspólny model.",
     brief:
       "Zamiast przekazywać fragmenty pracy między osobnymi narzędziami, Opero zachowuje całą historię w jednym miejscu. Od początku do końca pozostaje widoczne, co się wydarzyło, kto podjął działanie, jakie decyzje zapadły i co należy zrobić dalej.",
@@ -216,14 +214,12 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   productTour: {
-    eyebrow: "Poznaj platformę",
     title: "Jedno Opero. Osiem możliwości.",
     brief:
       "Każda część Opero korzysta z tego samego kontekstu operacyjnego. Rekordy, dokumenty, decyzje, uprawnienia i historia pozostają połączone, gdy praca przechodzi przez kolejne obszary firmy.",
     exploreLabel: "Poznaj tę funkcję",
     chapters: [
       {
-        eyebrow: "01 / Kształtuj system",
         title: "Opisuj pracę językiem własnej firmy.",
         brief:
           "Zacznij od sposobu, w jaki zespoły już opisują swoją pracę. Opero zamienia tę strukturę w system, z którego mogą korzystać i który mogą stale rozwijać.",
@@ -235,7 +231,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "02 / Prowadź pracę",
         title: "Przeprowadzaj sprawy i dokumenty przez firmę.",
         brief:
           "Każda sprawa podąża widoczną ścieżką, ma osobę odpowiedzialną, aktualny etap i kolejny krok. Zespoły wiedzą, co posuwa się naprzód, a co wymaga uwagi.",
@@ -251,7 +246,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "03 / Automatyzuj i rozszerzaj",
         title: "Pozwól platformie wykonywać powtarzalną pracę.",
         brief:
           "Gdy proces jest jasno określony, Opero może przejąć powtarzalne kroki. Reguły, integracje i AI utrzymują pracę w ruchu, a ludzie zachowują kontrolę.",
@@ -271,7 +265,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "04 / Rozumiej i kontroluj",
         title: "Widzisz, co się dzieje, i decydujesz, kto może działać.",
         brief:
           "Opero pozwala mierzyć działania bez oddzielania nadzoru od codziennej pracy. Ta sama platforma pokazuje wyniki i kontroluje, kto może działać.",
@@ -297,7 +290,6 @@ export const operoProductContent: OperoProductContent = {
     ],
   },
   customization: {
-    eyebrow: "Twoja przestrzeń pracy",
     title: "Dopasuj Opero do siebie",
     brief:
       "Opero może od pierwszego logowania wyglądać jak własny system Twojej firmy. Zastosuj logo, kolory i preferowany styl wizualny bez zmieniania sposobu działania procesów.",
@@ -311,7 +303,6 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   finalCta: {
-    eyebrow: "Zobacz Opero w swoim procesie",
     title: "Przynieś nam jeden proces. Pokażemy, jak może wyglądać w Opero.",
     brief:
       "Powiedz nam, gdzie praca zwalnia albo traci kontekst. Przygotujemy praktyczny pokaz Opero wokół tej sytuacji, zamiast przedstawiać ogólną prezentację produktu.",

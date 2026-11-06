@@ -8,7 +8,6 @@ export const documentsFeature: FeaturePageContent = {
   },
   navLabel: "Documents and files",
   hero: {
-    eyebrow: "System features",
     title: "Document workflow - documents under control from intake to archive",
     description:
       "Register documents, route them through approval and keep every file version with the case, instead of scattered across inboxes and drives.",
@@ -16,7 +15,6 @@ export const documentsFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "Opero combines document workflow with file management: a document has its own record, an approval path and a complete set of versioned files. All of it with a full history and access control.",
   },
@@ -49,7 +47,6 @@ export const documentsFeature: FeaturePageContent = {
     captions: { intake: "A document arrives and <b>becomes a record by itself</b>", numbering: "The number is assigned <b>automatically</b>", path: "The approval path <b>depends on the amount</b>", versions: "Every file is versioned - <b>nothing gets lost</b>" },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "Record, approval path and files as one whole.",
     items: [
       {
@@ -80,13 +77,11 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "Put document flow in order.",
     description: "See how Opero carries a document from intake to archive with no gaps and no lost files.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "Documents under control from intake to archive.",
     paragraphs: [
       "Electronic document workflow in Opero puts every letter, request and invoice on a controlled path: from intake, through assignment and approvals, to archiving. A document gets its own record built as a custom object, with intake fields and numbering, plus a flow built on stages and transitions. That makes it clear where a case is and whose desk it is on.",
@@ -95,7 +90,6 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -110,7 +104,6 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["processes", "noCode", "security"],
   },

@@ -8,7 +8,6 @@ export const aboutContent: AboutPageContent = {
       "Meet KodaSoft, the team behind Opero. Years of BPM, workflow, document management, DMS and ERP rollouts turned into a flexible low-code platform.",
   },
   hero: {
-    eyebrow: "About us",
     title: "We are the team that builds Opero",
     description:
       "For years we rolled out BPM, workflow, document management, DMS, ERP and BI systems, along with low-code and no-code platforms. We learned their limits from the inside. Opero is our answer: a platform that begins where packaged software ends.",
@@ -16,7 +15,6 @@ export const aboutContent: AboutPageContent = {
     secondaryCta: "See system features",
   },
   identity: {
-    eyebrow: "Who we are",
     title: "Years of implementation practice turned into one product.",
     paragraphs: [
       "KodaSoft is a team of implementation consultants and engineers. We did not start from an idea for software, but from hundreds of hours spent with clients: mapping processes, putting document workflow in order, and trying to fit a rigid system to a company that had just changed.",
@@ -24,7 +22,6 @@ export const aboutContent: AboutPageContent = {
     ],
   },
   origin: {
-    eyebrow: "Where Opero came from",
     title: "We saw exactly where packaged systems stop.",
     paragraphs: [
       "We implemented BPM and workflow systems, electronic document workflow, DMS repositories, low-code and no-code platforms, ERP systems, and reporting and BI tools. Different vendors, different industries, and companies at very different levels of process maturity.",
@@ -35,13 +32,11 @@ export const aboutContent: AboutPageContent = {
       "We do not describe Opero as a complete system, because it is not packaged software you switch on and use. Opero is flexible, it grows with the company, and it supports it at every stage of its development.",
   },
   mission: {
-    eyebrow: "Our mission",
     title: "We give companies a system that adapts to them, not the other way round.",
     description:
       "We want change inside a company to stop meaning an IT project. A new process, a new document type, a new department or a new line of business should be something you configure in Opero, not something you order from a vendor. Our measure of success is how much a company can do in Opero on its own, not how many features we managed to list in a proposal.",
   },
   beliefs: {
-    eyebrow: "What we believe",
     title: "Six convictions you can see in the product.",
     description:
       "These are not slogans for a website. Each one turns into a concrete design decision in Opero and into the way we run implementations.",
@@ -79,7 +74,6 @@ export const aboutContent: AboutPageContent = {
     ],
   },
   background: {
-    eyebrow: "Experience that goes into the product",
     title: "Every one of these areas left its mark on the platform.",
     description:
       "Opero was not built in isolation from the market. Below is what working with each class of system taught us.",
@@ -119,7 +113,6 @@ export const aboutContent: AboutPageContent = {
     ],
   },
   approach: {
-    eyebrow: "How we work",
     title: "Four principles we run implementations by.",
     items: [
       {
@@ -145,7 +138,6 @@ export const aboutContent: AboutPageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Book a demo",
     title: "See Opero in action",
     description:
       "The fastest way to judge whether Opero fits your company is to see it running your process. We will show you how the flow you handle today in email and spreadsheets looks inside it.",
@@ -153,7 +145,6 @@ export const aboutContent: AboutPageContent = {
     secondaryCta: "Explore system features",
   },
   seoText: {
-    eyebrow: "KodaSoft and Opero",
     title: "The maker of a low-code platform for processes and documents.",
     paragraphs: [
       "KodaSoft is the maker of Opero, a low-code platform for managing a company's processes, documents and data. The team behind the system has years of experience implementing BPM, workflow, document management, DMS and ERP software, as well as reporting and BI tools. That experience is the foundation of the product today: we know what an approval flow, document registration, work across many departments, and the moment a company outgrows its system actually look like.",
@@ -162,7 +153,6 @@ export const aboutContent: AboutPageContent = {
     ],
   },
   faq: {
-    eyebrow: "Common questions",
     title: "About KodaSoft and Opero",
     items: [
       {

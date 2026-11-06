@@ -2,13 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import CheckIcon from "lucide-react/dist/esm/icons/check.mjs";
-import ChevronDownIcon from "lucide-react/dist/esm/icons/chevron-down.mjs";
-import CircleCheckIcon from "lucide-react/dist/esm/icons/circle-check.mjs";
 import Clock3Icon from "lucide-react/dist/esm/icons/clock-3.mjs";
-import GaugeIcon from "lucide-react/dist/esm/icons/gauge.mjs";
-import ImageIcon from "lucide-react/dist/esm/icons/image.mjs";
 import { BrowserFrame } from "@/components/landing/BrowserFrame";
 import { PageHero } from "@/components/landing/LandingPrimitives";
+import {
+  BulletList,
+  FeatureFaqSection,
+  FeatureFinalCtaSection,
+  FeatureRelatedSection,
+  ScreenshotPlaceholder,
+  bodyClass,
+  sectionClass,
+  titleClass,
+} from "@/components/layout/FeaturePageSections";
 import type { NoCodePageContent, NoCodePageSection, NoCodePageVisual } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath } from "@/lib/i18n/features";
@@ -20,12 +26,6 @@ type NoCodeFeaturePageProps = {
   secondaryHref: string;
 };
 
-const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
-const sectionClass = `${shellClass} py-[clamp(5.5rem,10vw,9rem)]`;
-const eyebrowClass = "m-0 text-[0.76rem] font-semibold uppercase tracking-[0.09em] text-[var(--color-blue)]";
-const titleClass = "m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-[var(--color-ink)]";
-const bodyClass = "m-0 max-w-[46rem] text-[1.04rem] font-light leading-[1.72] text-[var(--color-muted)]";
-
 function HeroProductShot({ image }: { image: NoCodePageContent["hero"]["image"] }) {
   return (
     <div className="relative h-[clamp(29rem,42vw,35rem)] w-[calc(100%+var(--page-gutter))] overflow-visible max-[980px]:h-[22rem] max-[560px]:h-[18rem] min-[981px]:-ml-[5rem] min-[981px]:w-[calc(100%+5rem+var(--page-gutter))] min-[1441px]:w-[calc(100%+5rem+(100vw-var(--shell-width))/2+var(--page-gutter))]">
@@ -36,21 +36,6 @@ function HeroProductShot({ image }: { image: NoCodePageContent["hero"]["image"] 
       >
         <Image alt={image.alt} className="block h-auto w-full" height={image.height} priority sizes="(max-width: 980px) 145vw, 72vw" src={image.src} width={image.width} />
       </BrowserFrame>
-    </div>
-  );
-}
-
-function ScreenshotPlaceholder({ label, title }: { label: string; title: string }) {
-  return (
-    <div className="relative grid min-h-[clamp(22rem,42vw,36rem)] place-items-center overflow-hidden rounded-[var(--radius-panel)] border border-dashed border-[rgba(11,17,22,0.22)] bg-[linear-gradient(145deg,rgba(56,182,255,0.045),rgba(255,255,255,0.9))] p-8 text-center shadow-[0_28px_80px_rgba(20,45,64,0.09)]" data-reveal>
-      <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(rgba(11,17,22,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(11,17,22,0.035)_1px,transparent_1px)] [background-size:32px_32px]" />
-      <div className="relative grid max-w-[24rem] justify-items-center gap-4">
-        <span className="grid h-14 w-14 place-items-center rounded-full border border-[rgba(56,182,255,0.3)] bg-white text-[var(--color-blue)] shadow-[0_12px_32px_rgba(28,112,165,0.12)]">
-          <ImageIcon aria-hidden="true" className="h-6 w-6" strokeWidth={1.5} />
-        </span>
-        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-[var(--color-blue)]">{label}</span>
-        <span className="text-[1.12rem] font-medium leading-[1.35] text-[var(--color-ink)]">{title}</span>
-      </div>
     </div>
   );
 }
@@ -160,29 +145,12 @@ function ComparisonLedger({ comparison }: { comparison: NoCodePageContent["found
   );
 }
 
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <ul className="mb-0 mt-7 grid list-none gap-3 p-0">
-      {items.map((item) => (
-        <li className="flex gap-3 text-[0.91rem] leading-[1.55] text-[var(--color-ink-soft)]" key={item}>
-          <CircleCheckIcon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-blue)]" strokeWidth={1.6} />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 function StorySection({ labels, section }: { labels: NoCodePageContent["labels"]; section: NoCodePageSection }) {
   return (
     <section className={sectionClass} id={`capability-${section.number}`}>
       <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1">
         <div className={section.reverse ? "min-[981px]:order-2" : ""} data-reveal={section.reverse ? "right" : "left"}>
-          <div className="flex items-center gap-4">
-            <span className="text-[0.82rem] font-semibold text-[var(--color-blue)]">{section.number}</span>
-            <p className={eyebrowClass}>{section.eyebrow}</p>
-          </div>
-          <h2 className={`${titleClass} mt-5`}>{section.title}</h2>
+          <h2 className={titleClass}>{section.title}</h2>
           <p className={`${bodyClass} mt-7`}>{section.description}</p>
           <BulletList items={section.bullets} />
         </div>
@@ -240,14 +208,13 @@ function ProcessTracker({ tracker }: { tracker: NoCodePageContent["process"]["tr
 export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref }: NoCodeFeaturePageProps) {
   return (
     <>
-      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" eyebrow={content.hero.eyebrow} primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="min-[981px]:items-end min-[981px]:pb-0" secondaryCta={content.hero.secondaryCta} secondaryHref={secondaryHref} shellClassName="grid-cols-[minmax(0,0.86fr)_minmax(28rem,1.14fr)] gap-[clamp(2.5rem,5vw,5rem)]" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
+      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="min-[981px]:items-end min-[981px]:pb-0" secondaryCta={content.hero.secondaryCta} secondaryHref={secondaryHref} shellClassName="grid-cols-[minmax(0,0.86fr)_minmax(28rem,1.14fr)] gap-[clamp(2.5rem,5vw,5rem)]" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
         <HeroProductShot image={content.hero.image} />
       </PageHero>
 
       <section className={sectionClass} id="foundation">
         <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.5fr)] items-start gap-12 max-[900px]:grid-cols-1">
           <div data-reveal>
-            <p className={`${eyebrowClass} mb-4`}>{content.foundation.eyebrow}</p>
             <h2 className="m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]">{content.foundation.title}</h2>
           </div>
           <p className="m-0 text-[1rem] font-light leading-[1.68] text-[var(--color-muted)]" data-reveal>{content.foundation.description}</p>
@@ -265,10 +232,7 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1.2px)] [background-size:24px_24px] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
         />
-        <div className={`${sectionClass} relative grid grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] gap-[clamp(2rem,7vw,7rem)] max-[809px]:grid-cols-1`}>
-          <p className="m-0 text-[0.76rem] font-semibold uppercase tracking-[0.09em] text-[var(--color-blue-soft)]" data-reveal>
-            {content.capabilities.eyebrow}
-          </p>
+        <div className={`${sectionClass} relative`}>
           <div data-reveal>
             <h2 className="m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white">
               {content.capabilities.title}
@@ -288,8 +252,7 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
         <div className={sectionClass}>
           <div className="grid grid-cols-[minmax(0,0.78fr)_minmax(28rem,1.22fr)] items-center gap-[clamp(3rem,7vw,7rem)] max-[980px]:grid-cols-1">
             <div data-reveal="left">
-              <p className="m-0 text-[0.76rem] font-semibold uppercase tracking-[0.09em] text-[var(--color-blue-soft)]">{content.process.eyebrow}</p>
-              <h2 className="m-0 mt-5 max-w-[780px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white">{content.process.title}</h2>
+              <h2 className="m-0 max-w-[780px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white">{content.process.title}</h2>
               <p className="mb-0 mt-7 max-w-[42rem] text-[1.02rem] font-light leading-[1.72] text-white/62">{content.process.description}</p>
               <Link className="mt-8 inline-flex items-center gap-2 text-[0.9rem] font-medium text-[var(--color-blue-soft)]" href={localizeFeaturePath(locale, "processes")}>{content.process.cta}<ArrowRightIcon aria-hidden="true" className="h-4 w-4" /></Link>
             </div>
@@ -301,31 +264,13 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
       <section className="border-y border-[rgba(11,17,22,0.1)] bg-[var(--color-paper-soft)]">
         <div className={`${sectionClass} grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1`}>
           <SectionVisual fallbackLabel={content.labels.screenshotPlaceholder} visual={content.adaptation.visual} />
-          <div data-reveal="right"><p className={eyebrowClass}>{content.adaptation.eyebrow}</p><h2 className={`${titleClass} mt-5`}>{content.adaptation.title}</h2><p className={`${bodyClass} mt-7`}>{content.adaptation.description}</p><BulletList items={content.adaptation.bullets} /></div>
+          <div data-reveal="right"><h2 className={titleClass}>{content.adaptation.title}</h2><p className={`${bodyClass} mt-7`}>{content.adaptation.description}</p><BulletList items={content.adaptation.bullets} /></div>
         </div>
       </section>
 
-      <section className="border-y border-[rgba(11,17,22,0.1)] bg-[var(--color-paper-soft)]">
-        <div className={sectionClass}>
-          <p className={eyebrowClass} data-reveal>{content.faq.eyebrow}</p><h2 className={`${titleClass} mt-5`} data-reveal>{content.faq.title}</h2>
-          <div className="mt-10 border-t border-[rgba(11,17,22,0.12)]">
-            {content.faq.items.map((item) => <details className="group border-b border-[rgba(11,17,22,0.12)] py-1" key={item.question}><summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-[1.05rem] font-medium text-[var(--color-ink)] [&::-webkit-details-marker]:hidden">{item.question}<ChevronDownIcon aria-hidden="true" className="h-5 w-5 shrink-0 text-[var(--color-blue)] transition-transform duration-300 group-open:rotate-180" strokeWidth={1.6} /></summary><p className={`${bodyClass} max-w-[54rem] pb-6 pr-10`}>{item.answer}</p></details>)}
-          </div>
-        </div>
-      </section>
-
-      <section className={sectionClass}>
-        <p className={eyebrowClass} data-reveal>{content.related.eyebrow}</p><h2 className="mb-0 mt-5 text-[clamp(2rem,4vw,3.4rem)] leading-[1.04] tracking-[-0.035em] text-[var(--color-ink)]" data-reveal>{content.related.title}</h2>
-        <div className="mt-9 grid grid-cols-3 gap-3 max-[760px]:grid-cols-1">{content.related.items.map((item) => <Link className="group rounded-[16px] border border-[rgba(11,17,22,0.1)] p-6 transition-colors hover:border-[rgba(56,182,255,0.45)]" href={localizeFeaturePath(locale, item.feature)} key={item.feature}><div className="flex items-start justify-between gap-4"><h3 className="m-0 text-[1.08rem] font-medium text-[var(--color-ink)]">{item.title}</h3><ArrowRightIcon aria-hidden="true" className="h-5 w-5 shrink-0 text-[var(--color-blue)] transition-transform group-hover:translate-x-1" /></div><p className="mb-0 mt-3 text-[0.85rem] font-light leading-[1.55] text-[var(--color-muted)]">{item.description}</p></Link>)}</div>
-      </section>
-
-      <section className={`${sectionClass} pt-0`}>
-        <div className="relative overflow-hidden rounded-[var(--radius-panel)] [background:var(--gradient-final-cta)] px-[clamp(1.5rem,6vw,5rem)] py-[clamp(3.5rem,7vw,6rem)] text-center text-white">
-          <GaugeIcon aria-hidden="true" className="absolute -right-16 -top-20 h-72 w-72 text-white/[0.045]" strokeWidth={0.8} />
-          <p className="relative m-0 text-[0.76rem] font-semibold uppercase tracking-[0.09em] text-[var(--color-blue-soft)]">{content.finalCta.eyebrow}</p><h2 className="relative mx-auto mb-0 mt-5 max-w-[900px] text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.04] tracking-[-0.035em]">{content.finalCta.title}</h2><p className="relative mx-auto mb-0 mt-7 max-w-[700px] text-[1.02rem] font-light leading-[1.72] text-white/65">{content.finalCta.description}</p>
-          <div className="relative mt-9 flex flex-wrap justify-center gap-3"><Link className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] bg-[image:var(--gradient-cta)] px-5 py-3 font-medium text-white" href={primaryHref}>{content.finalCta.primaryCta}</Link><Link className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] border border-white/18 bg-white/[0.055] px-5 py-3 font-medium text-white" href={primaryHref}>{content.finalCta.secondaryCta}</Link></div>
-        </div>
-      </section>
+      <FeatureFaqSection faq={content.faq} />
+      <FeatureRelatedSection locale={locale} related={content.related} />
+      <FeatureFinalCtaSection finalCta={content.finalCta} primaryHref={primaryHref} />
     </>
   );
 }

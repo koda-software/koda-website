@@ -58,7 +58,7 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
               </Link>
             ) : (
               <Link className="text-[var(--color-blue-soft)] transition-opacity hover:opacity-75" href={blogIndexPath(locale)}>
-                {ui.index.eyebrow}
+                {ui.index.label}
               </Link>
             )}
             <span className="text-white/28" aria-hidden="true">
@@ -140,7 +140,6 @@ export function ArticlePage({ article, locale, ui, ctaHrefs }: ArticlePageProps)
 
       <BlogFinalCta
         description={ui.cta.description}
-        eyebrow={ui.cta.eyebrow}
         primaryHref={ctaHrefs.primary}
         primaryLabel={ui.cta.primaryCta}
         secondaryHref={ctaHrefs.secondary}

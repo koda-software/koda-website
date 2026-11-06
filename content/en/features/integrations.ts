@@ -8,7 +8,6 @@ export const integrationsFeature: FeaturePageContent = {
   },
   navLabel: "Integrations and compliance",
   hero: {
-    eyebrow: "System features",
     title: "Integrations and compliance - Opero as part of your ecosystem",
     description:
       "KSeF, e-Delivery, NBP exchange rates and VAT verification work straight from the system, and an open API connects Opero with the rest of your company's tools.",
@@ -16,7 +15,6 @@ export const integrationsFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "Opero meets Polish regulatory requirements (e-invoicing, official correspondence) and exchanges data with the outside world without separate software.",
   },
@@ -37,7 +35,6 @@ export const integrationsFeature: FeaturePageContent = {
     captions: { arrives: "A KSeF document <b>becomes a record</b>", fields: "Fields fill in <b>with no re-typing</b>", api: "The API works <b>both ways</b>" },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "Requirements and data exchange handled inside the system.",
     items: [
       {
@@ -68,13 +65,11 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "Connect Opero with your systems.",
     description: "See how compliance and integrations work without any additional software.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "Compliance and integrations without extra applications.",
     paragraphs: [
       "Opero meets Polish regulatory requirements and exchanges data with the outside world without separate software. The KSeF integration lets you send and receive structured invoices in line with mandatory e-invoicing, and e-Delivery brings official electronic correspondence straight into the system, with no trip to an external portal.",
@@ -83,7 +78,6 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -97,7 +91,6 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["security", "documents", "reports"],
   },

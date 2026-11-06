@@ -8,7 +8,6 @@ export const processesFeature: FeaturePageContent = {
   },
   navLabel: "Procesy i workflow",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "Procesy i workflow - cała firma działa według Twoich reguł",
     description:
       "Zaprojektuj każdy obieg pracy jako proces. Akceptacje, obiegi dokumentów i procedury przechodzą przez zdefiniowane etapy - nic nie ginie między działami.",
@@ -16,7 +15,6 @@ export const processesFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Opero to silnik procesów, w którym rekord przechodzi przez etapy i przejścia (np. Nowe → W realizacji → Zaakceptowane → Zamknięte). Proces pilnuje kolejności, uprawnień i terminów, a każdy przebieg zostaje w historii.",
   },
@@ -42,7 +40,6 @@ export const processesFeature: FeaturePageContent = {
     },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Proces, który pilnuje kolejności, uprawnień i terminów.",
     items: [
       {
@@ -73,13 +70,11 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Zmapuj swój pierwszy proces w Opero.",
     description: "Pokażemy, jak przenieść obieg z maili i Excela do jednego, kontrolowanego procesu.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "System workflow, który pilnuje kolejności i terminów.",
     paragraphs: [
       "Opero to system workflow, w którym każdy proces w firmie zamieniasz w powtarzalny, kontrolowany obieg. Rekord przechodzi przez zdefiniowane etapy i przejścia, a system pilnuje kolejności, uprawnień i terminów. Zamiast ustaleń rozproszonych w mailach i arkuszach masz jedno miejsce, w którym widać, na jakim etapie jest sprawa, kto za nią odpowiada i co wydarzyło się wcześniej.",
@@ -88,7 +83,6 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -104,7 +98,6 @@ export const processesFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["documents", "noCode", "lowCode"],
   },

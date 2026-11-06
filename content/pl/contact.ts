@@ -6,13 +6,11 @@ export const contactContent: ContactPageContent = {
     description: "Skontaktuj się z KodaSoft, aby omówić Opero, automatyzację procesów, projektowanie procesów no-code i oprogramowanie dopasowane do pracy firmy.",
   },
   hero: {
-    eyebrow: "Umów demo",
     title: "Pokaż nam, jak działa Twoja firma.",
     description:
       "Opowiedz, gdzie standardowe narzędzia przestają pasować: rekordy, akceptacje, dokumenty, raportowanie, role albo powtarzalne wyjątki. Wrócimy z praktyczną odpowiedzią, czy Opero będzie dobrym kierunkiem.",
   },
   context: {
-    eyebrow: "Co możemy omówić",
     title: "Krótka rozmowa o realnym modelu pracy.",
     paragraphs: [
       "Opero najlepiej sprawdza się tam, gdzie firma ma własny sposób działania, który musi pozostać czytelny, kontrolowany i łatwy do dalszego dostosowania.",

@@ -8,15 +8,13 @@ export const noCodeFeature: FeaturePageContent = {
   },
   navLabel: "No-code platform",
   hero: {
-    eyebrow: "System features",
     title: "No-code system your company needs.",
     description: "Configure objects, forms, menus and dashboards visually in Opero.",
     primaryCta: "Book a demo",
     secondaryCta: "Meet Opero",
   },
-  intro: { eyebrow: "In short", paragraph: "Build complete business applications through visual configuration." },
+  intro: { paragraph: "Build complete business applications through visual configuration." },
   blocks: {
-    eyebrow: "What you get",
     title: "One application, configured around the company.",
     items: [
       { title: "Data", description: "Custom modules, objects, fields and relationships." },
@@ -25,26 +23,23 @@ export const noCodeFeature: FeaturePageContent = {
       { title: "Pages", description: "Dashboards, reports, tasks and intake forms." },
     ],
   },
-  finalCta: { eyebrow: "Next step", title: "Show us what you need to manage.", description: "We will model it in Opero.", primaryCta: "Book a demo" },
+  finalCta: { title: "Show us what you need to manage.", description: "We will model it in Opero.", primaryCta: "Book a demo" },
   seoText: {
-    eyebrow: "More about no-code",
     title: "Business applications without a development project.",
     paragraphs: ["Opero combines configurable data, views, navigation and pages in one governed application."],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       { question: "Can I build an application without a developer?", answer: "Yes. Opero's core application-building tools use visual configuration." },
     ],
   },
-  related: { eyebrow: "Related features", title: "See also", items: ["processes", "lowCode", "reports"] },
+  related: { title: "See also", items: ["processes", "lowCode", "reports"] },
 };
 
 export const noCodePage: NoCodePageContent = {
   labels: { screenshotPlaceholder: "Screenshot placeholder" },
   hero: {
-    eyebrow: "Opero no-code platform",
     title: "No-code system your company needs.",
     description:
       "Opero already has the foundations every business application shares: data, forms, permissions, files and history. You configure the part that is yours, from objects and forms to menus and dashboards, and publish. No code, no development project.",
@@ -58,7 +53,6 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   foundation: {
-    eyebrow: "A different way to build",
     title: "Custom does not have to mean custom-built.",
     description:
       "A system tailored to a company usually means a development project. Someone has to build the data layer, the screens, the permissions, the tests, and then maintain every change for years. Most of that work is identical in every company. Opero provides it once. What is left is the part that is actually yours: what the system keeps track of, how it looks to each team and where people start their day.",
@@ -173,14 +167,12 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   capabilities: {
-    eyebrow: "Shape the system",
     title: "Four areas of configuration. One application.",
     description:
       "Data, views, navigation and pages are not separate tools. They are four views of the same configuration. A field you add today shows up in the form, in the list, in the menu filter and in the dashboard counter, because there is only one definition of it.",
     items: [
       {
         number: "01",
-        eyebrow: "Model your business",
         title: "Describe what your company keeps track of.",
         description:
           "A module is a business area. Objects are what lives in it: assets, inspections, requests, suppliers. Each object gets fields from 31 types, from text and amount to file, signature, a link to another object or a generated number like INS/2026/041. Dictionaries keep choices consistent, so Severity means the same on every form.",
@@ -203,7 +195,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "02",
-        eyebrow: "Shape the experience",
         title: "Design the screens each team works in.",
         description:
           "Drag fields onto a canvas. Group them in cards and columns, tuck rare details into a tab. Make a field required for the technician and optional for the manager, or show a section only when a condition is met. One object, several forms: one to report a fault, another to approve the repair.",
@@ -227,7 +218,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "03",
-        eyebrow: "Simplify the workspace",
         title: "Give every team a menu that fits its day.",
         description:
           "A menu is a tree you drag together from folders, objects, reports, pages and links. The same object can appear twice with different filters: My open requests for technicians, All requests for the lead. Set the entry point, then build a different menu for the field team, the office or an external company on the same data.",
@@ -249,7 +239,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "04",
-        eyebrow: "Create the right starting point",
         title: "Build the page people open first.",
         description:
           "Custom pages are built from 20 blocks: live counters, charts and pivot reports, task lists, an embedded form, files, comments, quick links and your own content. A maintenance dashboard shows overdue inspections, assets by status, this week's tasks and a Report a fault form on one screen. Every team gets its own starting page.",
@@ -273,7 +262,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   process: {
-    eyebrow: "And then, put it in motion",
     title: "Attach a process to any object.",
     description:
       "A request should not just sit in a list. Add a workflow: stages, who is assigned, how many days they have, which moves are allowed. Every stage becomes a task in someone's queue and every move is recorded. Workflows are configured visually too, with templates for common approvals.",
@@ -311,7 +299,6 @@ export const noCodePage: NoCodePageContent = {
     cta: "Explore processes and workflow",
   },
   adaptation: {
-    eyebrow: "Keep adapting",
     title: "Everyday improvements should not become software projects.",
     description:
       "Add an equipment category. Link an asset to its warranty provider. Make Inspection date required. Remove a menu item nobody uses. In Opero these are configuration changes: draft, see what they affect, validate, publish. Records stay intact, and the previous version is one click away.",
@@ -332,7 +319,6 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       { question: "Can I really build an application without a developer?", answer: "Yes. Objects, fields, forms, layouts, menus, pages and workflows are created in visual configuration. A person who understands the process can build a working application. Rules and scripts exist for advanced logic, but a complete application does not require them." },
@@ -344,7 +330,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: [
       { feature: "processes", title: "Processes and workflow", description: "Stages, tasks, deadlines and kanban boards on the objects you configured." },
@@ -353,7 +338,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "See it with your own example",
     title: "Show us what your company needs to manage.",
     description: "Bring a spreadsheet, a process that lives in email, or an idea for an internal system. In the demo we build its module, form, menu and dashboard in front of you, so you can see how it takes shape in Opero.",
     primaryCta: "Book a demo",

@@ -8,7 +8,6 @@ export const lowCodeFeature: FeaturePageContent = {
   },
   navLabel: "Low-code and automation",
   hero: {
-    eyebrow: "System features",
     title: "Low-code and automation - logic that works for you",
     description:
       "Where configuration is not enough, rules, scripts and SQL queries take over. You automate decisions and data processing without building a separate system.",
@@ -16,7 +15,6 @@ export const lowCodeFeature: FeaturePageContent = {
     secondaryCta: "See Opero in action",
   },
   intro: {
-    eyebrow: "In short",
     paragraph:
       "The low-code layer in Opero runs logic on events: the rule engine reacts on a “when a condition is met, run these steps” basis, the script engine handles unusual processing, and SQL queries reach for data exactly the way you need it.",
   },
@@ -32,7 +30,6 @@ export const lowCodeFeature: FeaturePageContent = {
     captions: { condition: "You assemble the condition <b>from ready-made blocks</b>", fired: "The rule fires <b>on every record</b>", summary: "Field, notification, blocked transition - <b>with no chasing</b>" },
   },
   blocks: {
-    eyebrow: "What you get",
     title: "Three layers of logic on your data.",
     items: [
       {
@@ -53,13 +50,11 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Next step",
     title: "Automate the repetitive work.",
     description: "See how rules and scripts take over the manual steps your team does today.",
     primaryCta: "Book a demo",
   },
   seoText: {
-    eyebrow: "More about this",
     title: "Automation that takes over repetitive work.",
     paragraphs: [
       "The low-code layer in Opero automates the work that eats into your team's time today. The rule engine runs on a simple \"when a condition is met, run these steps\" basis: set a field, create a record, send a notification, block a transition in a process. You define and test rules before rollout, so automation stays predictable rather than risky.",
@@ -68,7 +63,6 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Questions",
     title: "Frequently asked questions.",
     items: [
       {
@@ -83,7 +77,6 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Related features",
     title: "See also",
     items: ["processes", "reports", "noCode"],
   },

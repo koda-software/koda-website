@@ -8,7 +8,6 @@ export const documentsFeature: FeaturePageContent = {
   },
   navLabel: "EOD / DMS",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "EOD i DMS - dokumenty pod kontrolą od wpływu do archiwum",
     description:
       "Rejestruj dokumenty, prowadź je przez obieg akceptacji i trzymaj każdą wersję pliku przy sprawie - zamiast po mailach i dyskach.",
@@ -16,7 +15,6 @@ export const documentsFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Opero łączy obieg dokumentów (EOD) z zarządzaniem plikami (DMS): dokument ma swoją kartotekę, ścieżkę akceptacji i komplet plików z wersjami. Wszystko z pełną historią i kontrolą dostępu.",
   },
@@ -49,7 +47,6 @@ export const documentsFeature: FeaturePageContent = {
     captions: { intake: "Dokument wpada i <b>sam staje się rekordem</b>", numbering: "Numer nadaje się <b>automatycznie</b>", path: "Ścieżka akceptacji <b>zależy od kwoty</b>", versions: "Każdy plik ma wersje - <b>nic nie ginie</b>" },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Kartoteka, obieg i pliki jako jedna całość.",
     items: [
       {
@@ -80,13 +77,11 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Uporządkuj obieg dokumentów.",
     description: "Zobacz, jak Opero prowadzi dokument od wpływu do archiwum bez luk i zagubionych plików.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "Dokumenty od wpływu po archiwum w jednym systemie.",
     paragraphs: [
       "Elektroniczny obieg dokumentów (EOD) w Opero porządkuje drogę każdego pisma, wniosku i faktury: od wpływu, przez dekretację i akceptacje, po archiwizację. Dokument ma własną kartotekę zbudowaną jako obiekt własny, z polami rejestrowymi i numeracją, oraz ścieżkę obiegu opartą o etapy i przejścia. Dzięki temu wiadomo, gdzie jest sprawa i kto ma ją na biurku.",
@@ -95,7 +90,6 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -111,7 +105,6 @@ export const documentsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["processes", "noCode", "security"],
   },

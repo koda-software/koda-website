@@ -10,7 +10,6 @@ type ContactPageProps = {
 
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
-const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 
 export function ContactPage({ locale, content }: ContactPageProps) {
@@ -18,7 +17,6 @@ export function ContactPage({ locale, content }: ContactPageProps) {
     <>
       <PageHero
         description={content.hero.description}
-        eyebrow={content.hero.eyebrow}
         photo="meeting"
         title={content.hero.title}
         titleClassName="max-w-[940px]"
@@ -26,7 +24,6 @@ export function ContactPage({ locale, content }: ContactPageProps) {
 
       <section className={`${sectionClass} grid grid-cols-[minmax(0,0.78fr)_minmax(24rem,0.74fr)] gap-16 max-[980px]:grid-cols-1`}>
         <div>
-          <p className={eyebrowClass}>{content.context.eyebrow}</p>
           <h2 className="m-0 max-w-[760px] text-[2.5rem] leading-[1.1] text-[var(--color-ink)] max-[809px]:text-[1.75rem]">{content.context.title}</h2>
           <div className="mt-7 grid gap-5">
             {content.context.paragraphs.map((paragraph) => (

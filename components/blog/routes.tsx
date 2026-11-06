@@ -71,7 +71,7 @@ export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale;
         buildHref={(target) => blogPagePath(locale, target)}
         ctaHrefs={ctaHrefs}
         footer={<TagChips locale={locale} tags={tags} ui={ui} />}
-        heading={{ eyebrow: ui.index.eyebrow, title: ui.index.title, description: ui.index.description }}
+        heading={{ title: ui.index.title, description: ui.index.description }}
         locale={locale}
         page={page}
         rows={rows}
@@ -109,7 +109,6 @@ export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; 
         buildHref={() => categoryPath(locale, slug)}
         ctaHrefs={ctaHrefs}
         heading={{
-          eyebrow: ui.archives.categoryEyebrow,
           title: category.nazwa,
           description: category.opis ?? ui.archives.categoryDescription,
         }}
@@ -150,7 +149,6 @@ export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug:
         buildHref={() => tagPath(locale, slug)}
         ctaHrefs={ctaHrefs}
         heading={{
-          eyebrow: ui.archives.tagEyebrow,
           title: tag.nazwa,
           description: tag.opis ?? ui.archives.tagDescription,
         }}
@@ -209,7 +207,6 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
         buildHref={() => authorPath(locale, slug)}
         ctaHrefs={ctaHrefs}
         heading={{
-          eyebrow: record.stanowisko ?? ui.archives.authorEyebrow,
           title: author.nazwa,
           description: ui.archives.authorDescription,
         }}
@@ -299,7 +296,7 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
       />
       <BreadcrumbJsonLd
         items={[
-          { name: ui.index.eyebrow, path: blogIndexPath(locale) },
+          { name: ui.index.label, path: blogIndexPath(locale) },
           ...(article.kategoria_slug && article.kategoria_nazwa
             ? [{ name: article.kategoria_nazwa, path: categoryPath(locale, article.kategoria_slug) }]
             : []),

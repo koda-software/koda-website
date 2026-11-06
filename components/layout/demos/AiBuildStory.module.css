@@ -1,0 +1,697 @@
+/*
+ * The block taken apart. Everything here describes the finished page; the
+ * layers under it exist only on a `data-live` story, so a reader with reduced
+ * motion simply gets the page.
+ */
+.root {
+  --ink: #101828;
+  --ink-soft: #5a6373;
+  --line: #e4e8f0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(28rem, 1.28fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.steps {
+  display: grid;
+  gap: clamp(1.25rem, 3.5vh, 2.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+  transition: opacity 0.3s ease;
+}
+
+/* Only where the list and the visual are on screen together; on a phone the active step can be out of sight. */
+@media (min-width: 981px) {
+  .root[data-live] .steps li {
+    opacity: 0.36;
+  }
+
+  .root[data-live] .steps li[data-active] {
+    opacity: 1;
+  }
+}
+
+.steps span {
+  color: var(--color-blue-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.9;
+}
+
+.steps h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.steps p {
+  margin: 0.5rem 0 0;
+  color: rgb(255 255 255 / 0.62);
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+/* How far along the story is, where only one step shows at a time. */
+.pips {
+  display: none;
+}
+
+.frame {
+  width: 100%;
+  /* Sized by the window's height too, so the pinned story always fits on screen. */
+  max-width: calc((100vh - 8rem) * var(--stage-w) / var(--stage-h));
+  margin-inline: auto 0;
+}
+
+.scaler {
+  position: relative;
+  width: 100%;
+  aspect-ratio: calc(var(--stage-w) / var(--stage-h));
+}
+
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--stage-w) * 1px);
+  height: calc(var(--stage-h) * 1px);
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+.camera {
+  position: absolute;
+  inset: 0;
+  perspective: 1500px;
+  perspective-origin: 50% 40%;
+}
+
+.tilt,
+.turn {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.plate {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 600px;
+  height: 500px;
+  border-radius: 16px;
+}
+
+/* The system under the page: everything it holds, of which the request named a few. */
+.floor,
+.layer {
+  display: none;
+  padding: 26px 28px;
+  border: 1px solid rgb(126 231 255 / 0.22);
+  color: rgb(255 255 255 / 0.5);
+}
+
+.root[data-live] .floor,
+.root[data-live] .layer {
+  display: block;
+}
+
+.floor {
+  background: rgb(8 28 46 / 0.92);
+}
+
+.layer {
+  background: rgb(12 22 34 / 0.96);
+  box-shadow: 0 -14px 44px rgb(3 12 22 / 0.5);
+}
+
+.plateLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.plateLabel i {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2fb872;
+  color: #06170e;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tiles span {
+  display: grid;
+  place-items: center;
+  height: 88px;
+  padding: 8px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.04);
+  font-size: 18px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.code {
+  display: grid;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 19px;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.line {
+  display: block;
+  width: fit-content;
+  color: rgb(255 255 255 / 0.82);
+  font-family: inherit;
+}
+
+.liquid {
+  color: #7ee7ff;
+}
+
+.string {
+  color: #86e5a8;
+}
+
+.keyword {
+  color: #9fc3ff;
+}
+
+/* The block being written: the code on top, and under it what that code makes so far. */
+.buildLayer {
+  padding: 18px 24px;
+  background: #0c1622;
+}
+
+.buildLayer .plateLabel {
+  margin-bottom: 12px;
+}
+
+.editor {
+  padding: 8px 14px 12px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.codeArea {
+  position: relative;
+  height: 140px;
+}
+
+.codeArea .code {
+  font-size: 13.5px;
+  line-height: 20px;
+}
+
+.cssCode {
+  position: absolute;
+  inset: 0;
+}
+
+.caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 20px;
+  background: #7ee7ff;
+}
+
+.preview {
+  --ink: #fff;
+  --ink-soft: rgb(255 255 255 / 0.6);
+  --line: rgb(255 255 255 / 0.12);
+  position: relative;
+  overflow: hidden;
+  height: 214px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.03);
+  color: var(--ink);
+}
+
+.preview .row {
+  height: 34px;
+}
+
+.preview [data-ticket-title] {
+  justify-self: start;
+}
+
+.previewFoot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+/* A browser's plain grey button until the CSS fills it in. */
+.previewButton {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  height: 36px;
+  padding-inline: 16px;
+  border-radius: 6px;
+  background: #d9dde3;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.previewButton i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #2ca6f0, #0b4e7d);
+}
+
+.previewButton span {
+  position: relative;
+}
+
+/* The rule behind the button: the dotted canvas and nodes of the rule editor, in its dark theme. */
+.ruleLayer {
+  overflow: hidden;
+  background-color: rgb(12 22 34 / 0.98);
+  background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: rgb(255 255 255 / 0.42);
+  stroke-width: 1.6;
+}
+
+.dragLine {
+  stroke: #7ee7ff;
+  stroke-dasharray: 6 4;
+  stroke-width: 2;
+}
+
+.node {
+  position: absolute;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 10px;
+  background: #17283b;
+  box-shadow: 0 4px 12px rgb(3 12 22 / 0.4);
+  color: #fff;
+}
+
+/* Every node the same height, so the ports stay where the edges expect them in either language. */
+.nodeHead {
+  display: flex;
+  gap: 8px;
+  height: 88px;
+  padding: 11px 10px;
+}
+
+.nodeHead b {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.nodeHead div span {
+  display: block;
+  margin-top: 2px;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 11.5px;
+  line-height: 1.25;
+}
+
+.nodeIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.06);
+  color: #ffc266;
+}
+
+.trigger {
+  border: 1.5px solid #e5484d;
+  background: #2c1f2a;
+}
+
+.trigger .nodeIcon {
+  border-color: rgb(229 72 77 / 0.5);
+  background: rgb(229 72 77 / 0.2);
+  color: #ff9a9c;
+}
+
+.nodeError {
+  position: relative;
+  margin: 0;
+  padding: 7px 12px;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.6);
+  font-size: 12px;
+  text-align: right;
+}
+
+.nodeError i {
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f5a524;
+  transform: translateY(-50%);
+}
+
+/* The two ports the cursor joins. */
+.port {
+  position: absolute;
+  top: 30px;
+  right: -5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #38b6ff;
+}
+
+.portIn {
+  right: auto;
+  left: -5px;
+}
+
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  fill: #fff;
+  stroke: #101828;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  filter: drop-shadow(0 3px 5px rgb(3 12 22 / 0.4));
+  pointer-events: none;
+}
+
+.root[data-live] .cursor {
+  display: block;
+}
+
+/* The Opero page it all ends up on. */
+.page {
+  --ink: #fff;
+  --ink-soft: rgb(255 255 255 / 0.6);
+  --line: rgb(255 255 255 / 0.12);
+  overflow: hidden;
+  padding: 20px 26px;
+  border: 1px solid rgb(126 231 255 / 0.22);
+  background: rgb(12 22 34 / 0.98);
+  box-shadow: 0 30px 70px rgb(3 12 22 / 0.42);
+  color: var(--ink);
+}
+
+.pageHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.crumb {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.pageTitle {
+  margin: 2px 0 0;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(47 184 114 / 0.18);
+  color: #86e5a8;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* Read-only values under their labels, the way a record shows them. */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 18px;
+  margin: 16px 0 0;
+}
+
+.fields dt {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  line-height: 16px;
+}
+
+.fields dd {
+  margin: 1px 0 0;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+/* The new section: no card of its own, just more of the page, in the room the form opens up for it. */
+.block {
+  overflow: hidden;
+  margin-top: 22px;
+}
+
+/* The rest of the record, below the new section. The section pushes it out of the window, so the finished page does not show it. */
+.rest {
+  margin-top: 22px;
+  visibility: hidden;
+}
+
+.root[data-live] .rest {
+  visibility: visible;
+}
+
+.rest b {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 22px;
+}
+
+.rest .fields {
+  margin: 12px 0 22px;
+}
+
+.rest p {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.blockTitle {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  height: 46px;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.late,
+.onTime {
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.late {
+  background: rgb(229 72 77 / 0.2);
+  color: #ff9a9c;
+}
+
+.onTime {
+  background: rgb(255 255 255 / 0.08);
+  color: var(--ink-soft);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 60px;
+  border-top: 1.5px solid rgb(255 255 255 / 0.5);
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.action {
+  display: inline-grid;
+  place-items: center;
+  height: 38px;
+  padding-inline: 16px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #2ca6f0, #0b4e7d);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* The rule's own run dialog, opened by the button with the ticket filled in. */
+.dialogLayer {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+}
+
+.root[data-live] .dialogLayer {
+  display: grid;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  padding: 22px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 12px;
+  background: #17283b;
+  box-shadow: 0 24px 60px rgb(3 12 22 / 0.5);
+}
+
+.dialog b {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.dialog dl {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0 20px;
+}
+
+.dialog dt {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.dialog dd {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.04);
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .frame {
+    order: -1;
+    max-width: none;
+  }
+}
+
+/*
+ * On a narrow screen the list would be far longer than the story it goes with, so the steps
+ * share one place under it and read as a caption. They stay in the page for a screen reader.
+ * The story cannot show them one at a time without motion, so then they stay a list.
+ */
+@media (max-width: 980px) and (prefers-reduced-motion: no-preference) {
+  .root {
+    gap: 1.5rem;
+  }
+
+  .steps li {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+
+  .root:not([data-live]) .steps li:first-child,
+  .root[data-live] .steps li[data-active] {
+    opacity: 1;
+  }
+
+  .pips {
+    display: flex;
+    gap: 6px;
+  }
+
+  .pips i {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.16);
+    transition: background-color 0.3s ease;
+  }
+
+  .pips i[data-active] {
+    background: var(--color-blue-soft);
+  }
+}

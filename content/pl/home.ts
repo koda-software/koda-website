@@ -9,7 +9,6 @@ export const homeContent: HomeContent = {
       "Opero to platforma BPM low-code: procesy, elektroniczny obieg dokumentów, automatyzacja, raporty i uprawnienia. Konfiguracja no-code, bez pisania kodu.",
   },
   hero: {
-    eyebrow: "BPM low-code od KodaSoft",
     title: "Zamień swój sposób działania w oprogramowanie",
     description:
       "Opero to platforma BPM low-code, w której modelujesz własne procesy, prowadzisz obieg dokumentów, automatyzujesz powtarzalne kroki i trzymasz dane firmy pod kontrolą. Bez pisania kodu.",
@@ -17,7 +16,7 @@ export const homeContent: HomeContent = {
     secondaryCta: "Poznaj Opero",
     supportPoints: [
       "Obiekty własne, formularze i procesy dopasowane do firmy.",
-      "Automatyzacje, raporty i asystent AI na Twoich danych.",
+      "Automatyzacje, raporty i agenci AI pracujący na Twoich danych.",
       "Uprawnienia, obieg dokumentów i pełna historia zmian.",
     ],
     visual: {
@@ -76,7 +75,6 @@ export const homeContent: HomeContent = {
     },
   },
   problem: {
-    label: "Problem",
     title: "Najwięcej kosztuje praca, której nie widać w systemie.",
     description:
       "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Drobne obejścia tworzą drugi obieg firmy: nieopisany, niewidoczny i trudny do odtworzenia, gdy sprawa staje.",
@@ -96,7 +94,6 @@ export const homeContent: HomeContent = {
     ],
   },
   solution: {
-    label: "Rozwiązanie",
     title: "Opero dopasowuje się do sposobu pracy firmy.",
     description:
       "Zamiast dopasowywać firmę do gotowych modułów, projektujesz własne obiekty, procesy i widoki w konfiguracji wizualnej. Dane, obieg dokumentów, automatyzacje i uprawnienia pozostają w jednym systemie.",
@@ -108,7 +105,6 @@ export const homeContent: HomeContent = {
     cta: "Poznaj Opero",
   },
   pillars: {
-    label: "Możliwości Opero",
     title: "Fundament low-code dla procesów, które się zmieniają.",
     description:
       "Opero działa jak warstwa operacyjna firmy: model danych, procesy, obieg dokumentów, automatyzacje, raporty i uprawnienia pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
@@ -165,7 +161,7 @@ export const homeContent: HomeContent = {
           "Elastyczny silnik reguł do niemal każdej automatyzacji",
           "System workflow, który pilnuje procesów",
           "Integracje z narzędziami używanymi przez zespoły",
-          "Asystent AI i API do własnych operacji",
+          "Agenci AI przez MCP i API do własnych operacji",
         ],
         link: {
           label: "Więcej o automatyzacji",
@@ -227,7 +223,6 @@ export const homeContent: HomeContent = {
     ],
   },
   workflow: {
-    label: "Jak to działa",
     title: "Jak KodaSoft przekłada proces na Opero.",
     description:
       "Każdą współpracę zaczynamy od zrozumienia firmy, a nie od uruchomienia narzędzia. Analizujemy realny przebieg pracy, konfigurujemy Opero pod ten proces, wdrażamy zespół i rozwijamy rozwiązanie na podstawie pracy w systemie.",
@@ -259,7 +254,6 @@ export const homeContent: HomeContent = {
     ],
   },
   integrations: {
-    label: "Integracje",
     title: "Połącz Opero z usługami wokół Twojego procesu.",
     description:
       "Opero może wymieniać dane z rejestrami publicznymi, kanałami doręczeń, podpisami i narzędziami, z których zespół już korzysta. Zacznij od integracji potrzebnych dziś i dodawaj kolejne, gdy proces się rozwija.",
@@ -325,7 +319,6 @@ export const homeContent: HomeContent = {
     ],
   },
   trust: {
-    label: "Tworzone przez KodaSoft",
     title: "Doświadczenie software house’u, wykonanie na poziomie produktu.",
     description:
       "KodaSoft buduje Opero z dyscypliną inżynieryjną: elastyczna architektura, utrzymywalny kod, kontrolowane uprawnienia, sprawdzalna automatyzacja i świadome podejście do wydajności.",
@@ -337,7 +330,6 @@ export const homeContent: HomeContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Zacznij od procesu",
     title: "Buduj oprogramowanie wokół tego, jak firma naprawdę pracuje.",
     description:
       "Pokaż nam jeden proces, który dziś żyje w mailach i arkuszach. Zobaczysz, jak wygląda w Opero.",

@@ -31,7 +31,6 @@ export const privacyContent: PrivacyContent = {
       "Jak KodaSoft przetwarza dane z formularza kontaktowego i analityki opartej na zgodzie: zakres, cele, odbiorcy, okresy przechowywania i prawa użytkownika.",
   },
   hero: {
-    eyebrow: "Dokumenty",
     title: "Polityka prywatności",
     description:
       "Ten serwis korzysta z Google Analytics wyłącznie po wyrażeniu zgody. Bez niej skrypt Google Analytics nie jest ładowany i nie są zapisywane analityczne pliki cookies.",

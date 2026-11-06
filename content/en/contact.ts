@@ -6,13 +6,11 @@ export const contactContent: ContactPageContent = {
     description: "Contact KodaSoft to discuss Opero, workflow automation, no-code process design, and operational software shaped around your company.",
   },
   hero: {
-    eyebrow: "Book a demo",
     title: "Show us how your operation works.",
     description:
       "Tell us where standard tools stop fitting: records, approvals, documents, reporting, roles, or recurring exceptions. We will come back with a practical view of whether Opero is the right fit.",
   },
   context: {
-    eyebrow: "What we can discuss",
     title: "A short conversation around your real operating model.",
     paragraphs: [
       "Opero is most useful when the company has a specific way of working that needs to stay visible, controlled, and easier to change over time.",

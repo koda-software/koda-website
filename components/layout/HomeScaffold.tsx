@@ -41,7 +41,6 @@ export function HomeScaffold({
   return (
     <>
       <LandingHero
-        eyebrow={content.hero.eyebrow}
         title={content.hero.title}
         description={content.hero.description}
         primaryCta={content.hero.primaryCta}
@@ -63,9 +62,6 @@ export function HomeScaffold({
         <div className={`${landingShellClass} px-[var(--page-gutter)] py-[var(--section-y)]`}>
           <Reveal>
             <div className="mx-auto max-w-[900px] text-center">
-              <p className="mb-4 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]">
-                {content.problem.label}
-              </p>
               <h2 className={sectionTitleClass}>{content.problem.title}</h2>
               <p className={`${sectionDescriptionClass} mx-auto max-w-[760px]`}>
                 {content.problem.description}
@@ -147,7 +143,6 @@ export function HomeScaffold({
         <Reveal>
           <SectionIntro
             align="center"
-            eyebrow={content.pillars.label}
             title={content.pillars.title}
             description={content.pillars.description}
           />
@@ -162,9 +157,6 @@ export function HomeScaffold({
         <div className={`${landingShellClass} relative z-[1] grid items-start gap-[clamp(3rem,7vw,7rem)] grid-cols-[minmax(0,0.82fr)_minmax(26rem,1fr)] max-[980px]:grid-cols-1`}>
           <div className="sticky top-[clamp(6rem,14vh,9rem)] max-[980px]:static">
             <Reveal>
-              <p className="mb-4 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]">
-                {content.workflow.label}
-              </p>
               <h2 className={`${sectionTitleClass} max-w-[720px] text-white`}>
                 {content.workflow.title}
               </h2>
@@ -189,7 +181,6 @@ export function HomeScaffold({
         <div className={`${landingShellClass} relative z-[1]`}>
           <Reveal>
             <SectionIntro
-              eyebrow={content.integrations.label}
               title={content.integrations.title}
               description={content.integrations.description}
               split
@@ -220,7 +211,6 @@ export function HomeScaffold({
       <LandingSection className="my-[clamp(3rem,6vw,5.5rem)] pt-0">
         <Reveal>
           <FinalCtaPanel
-            eyebrow={content.finalCta.eyebrow}
             title={content.finalCta.title}
             description={content.finalCta.description}
             primaryCta={content.finalCta.primaryCta}

@@ -194,14 +194,6 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 58%);
 }
 
-/* Section eyebrow labels share a class so page-specific utilities can keep
-   the same typography without repeating global selectors. */
-@layer components {
-  .eyebrow {
-    display: block;
-  }
-}
-
 /* Rich text rendered from the Opero blog module. Token-based so article bodies
    inherit exactly the type ramp and rhythm used by the marketing pages. */
 .blog-prose {
@@ -732,7 +724,7 @@ button:focus-visible {
 
 /*
  * Banner entrance. Every page banner runs the same staggered rise on load: the
- * eyebrow, headline, copy and buttons arrive in reading order, and the product
+ * headline, copy and buttons arrive in reading order, and the product
  * demo beside them follows last. Pure CSS on purpose - it runs on first paint
  * with no hydration or observer involved, which is what keeps it reliable.
  */

@@ -31,7 +31,6 @@ export function LegalPage({ content, locale }: LegalPageProps) {
     <>
       <PageHero
         description={content.hero.description}
-        eyebrow={content.hero.eyebrow}
         sectionClassName="!min-h-[19rem] pb-[clamp(3rem,6vw,4.5rem)] pt-[clamp(7rem,11vw,9rem)]"
         title={content.hero.title}
       />

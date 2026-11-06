@@ -8,7 +8,6 @@ export const solutionsContent: SolutionsContent = {
       "Opero in manufacturing, construction, professional services, field service, healthcare, retail and the public sector. Workflow shaped to your industry.",
   },
   hero: {
-    eyebrow: "Solutions",
     title: "Low-code BPM for processes that off-the-shelf systems cannot handle.",
     description:
       "Every industry has work that standard systems struggle to represent: local procedures, approvals, exceptions, documents, roles and handoffs. In Opero you model that work without losing control of the data.",
@@ -17,7 +16,6 @@ export const solutionsContent: SolutionsContent = {
     secondaryCta: "Explore Opero",
   },
   industries: {
-    eyebrow: "Industry fit",
     title: "Where Opero works best.",
     description:
       "Opero is strongest where the process is specific, the data model departs from the standard, and teams need flexibility and an audit trail at the same time. It complements the systems you already run rather than replacing every specialist tool.",
@@ -113,7 +111,7 @@ export const solutionsContent: SolutionsContent = {
           "Record views for service cases, assets, assignments, checklists and files.",
           "Process stages: intake, diagnosis, waiting for parts, in progress, ready, closed.",
           "Recurring rules for checks, overdue reminders and daily reports.",
-          "The AI assistant for summarising case history and operational reporting.",
+          "An AI agent connected over MCP for summarising case history and operational reporting.",
         ],
         supportsLabel: "Opero handles",
         supports: ["Service cases and asset records", "Technician assignments and stages", "Checklists, files and repair notes", "Reminders and recurring reports"],
@@ -217,7 +215,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   pattern: {
-    eyebrow: "The common pattern",
     title: "Different industries, the same operational problems.",
     description:
       "The details change between industries, but the pattern is usually the same: important work does not fit the main system, so teams create side processes. Over time those become hard to search, automate, audit and improve.",
@@ -232,7 +229,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   fit: {
-    eyebrow: "Fit",
     title: "See whether this is your case.",
     description:
       "Opero fits when a company needs more than a spreadsheet, more flexibility than a predefined module and more control than a loose internal tool. It also works well alongside the systems you already have.",
@@ -252,7 +248,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Start with the process",
     title: "Tell us how your operation runs. We will tell you whether Opero fits.",
     description:
       "We will map the records, roles, documents, approvals and exceptions in your process, then show you what they would look like in the system.",

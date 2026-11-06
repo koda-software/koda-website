@@ -8,15 +8,13 @@ export const noCodeFeature: FeaturePageContent = {
   },
   navLabel: "Platforma no-code",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "System no-code, którego potrzebuje Twoja firma.",
     description: "Konfiguruj wizualnie obiekty, formularze, menu i pulpity w Opero.",
     primaryCta: "Umów prezentację",
     secondaryCta: "Poznaj Opero",
   },
-  intro: { eyebrow: "W skrócie", paragraph: "Buduj kompletne aplikacje biznesowe za pomocą konfiguracji wizualnej." },
+  intro: { paragraph: "Buduj kompletne aplikacje biznesowe za pomocą konfiguracji wizualnej." },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Jedna aplikacja skonfigurowana wokół firmy.",
     items: [
       { title: "Dane", description: "Własne moduły, obiekty, pola i relacje." },
@@ -25,24 +23,21 @@ export const noCodeFeature: FeaturePageContent = {
       { title: "Strony", description: "Pulpity, raporty, zadania i formularze zgłoszeń." },
     ],
   },
-  finalCta: { eyebrow: "Następny krok", title: "Pokaż nam, czym potrzebujesz zarządzać.", description: "Zamienimy to w model w Opero.", primaryCta: "Umów prezentację" },
+  finalCta: { title: "Pokaż nam, czym potrzebujesz zarządzać.", description: "Zamienimy to w model w Opero.", primaryCta: "Umów prezentację" },
   seoText: {
-    eyebrow: "Więcej o no-code",
     title: "Aplikacje biznesowe bez projektu programistycznego.",
     paragraphs: ["Opero łączy konfigurowalne dane, widoki, nawigację i strony w jednej zarządzanej aplikacji."],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [{ question: "Czy zbuduję aplikację bez programisty?", answer: "Tak. Podstawowe narzędzia do budowy aplikacji w Opero opierają się na konfiguracji wizualnej." }],
   },
-  related: { eyebrow: "Pokrewne funkcje", title: "Zobacz też", items: ["processes", "lowCode", "reports"] },
+  related: { title: "Zobacz też", items: ["processes", "lowCode", "reports"] },
 };
 
 export const noCodePage: NoCodePageContent = {
   labels: { screenshotPlaceholder: "Miejsce na zrzut ekranu" },
   hero: {
-    eyebrow: "Platforma no-code Opero",
     title: "System no-code, którego potrzebuje Twoja firma.",
     description:
       "Opero zapewnia fundamenty wspólne dla każdej aplikacji biznesowej: dane, formularze, uprawnienia, pliki i historię. Ty konfigurujesz to, co właściwe dla Twojej firmy, od obiektów i formularzy po menu i pulpity, a następnie publikujesz. Bez kodu i bez projektu programistycznego.",
@@ -56,7 +51,6 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   foundation: {
-    eyebrow: "Inny sposób budowy",
     title: "Dopasowany do firmy nie musi oznaczać budowanego od zera.",
     description:
       "System dopasowany do firmy zwykle oznacza projekt programistyczny. Ktoś musi zbudować warstwę danych, ekrany i uprawnienia, przeprowadzić testy, a potem przez lata utrzymywać każdą zmianę. Większość tej pracy wygląda tak samo w każdej firmie. Opero zapewnia ją raz. Do skonfigurowania zostaje to, co rzeczywiście jest Twoje: jakie informacje śledzi system, jak wygląda dla poszczególnych zespołów i od czego ludzie zaczynają dzień.",
@@ -171,14 +165,12 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   capabilities: {
-    eyebrow: "Kształtuj system",
     title: "Cztery obszary konfiguracji. Jedna aplikacja.",
     description:
       "Dane, widoki, nawigacja i strony nie są oddzielnymi narzędziami. To cztery perspektywy tej samej konfiguracji. Pole dodane dzisiaj pojawia się w formularzu, na liście, w filtrze menu i w liczniku na pulpicie, ponieważ ma tylko jedną definicję.",
     items: [
       {
         number: "01",
-        eyebrow: "Modeluj firmę",
         title: "Opisz to, czym zajmuje się Twoja firma.",
         description:
           "Moduł to obszar biznesowy. Obiekty to jego elementy: zasoby, przeglądy, zgłoszenia, dostawcy. Każdy obiekt opisują pola z 31 typów, od tekstu i kwoty po plik, podpis, powiązanie z innym obiektem czy generowany numer, taki jak INS/2026/041. Słowniki pilnują spójności wyborów, więc Priorytet oznacza to samo w każdym formularzu.",
@@ -201,7 +193,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "02",
-        eyebrow: "Kształtuj doświadczenie",
         title: "Projektuj ekrany, na których pracuje każdy zespół.",
         description:
           "Przeciągaj pola na obszar roboczy. Grupuj je w karty i kolumny, a rzadziej używane szczegóły chowaj w zakładce. Ustaw pole jako wymagane dla technika i opcjonalne dla menedżera albo pokazuj sekcję tylko po spełnieniu warunku. Jeden obiekt, kilka formularzy: jeden do zgłoszenia usterki, drugi do akceptacji naprawy.",
@@ -225,7 +216,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "03",
-        eyebrow: "Uprość przestrzeń pracy",
         title: "Daj każdemu zespołowi menu dopasowane do jego dnia.",
         description:
           "Menu to drzewo, które składasz przeciąganiem z folderów, obiektów, raportów, stron i linków. Ten sam obiekt może pojawić się dwa razy z różnymi filtrami: Moje otwarte zgłoszenia dla techników, Wszystkie zgłoszenia dla kierownika. Wskaż punkt startowy i zbuduj osobne menu dla zespołu terenowego, biura lub firmy zewnętrznej na tych samych danych.",
@@ -247,7 +237,6 @@ export const noCodePage: NoCodePageContent = {
       },
       {
         number: "04",
-        eyebrow: "Stwórz właściwy punkt startowy",
         title: "Buduj stronę, którą ludzie otwierają jako pierwszą.",
         description:
           "Strony własne składasz z 20 komponentów: liczników na żywo, wykresów i raportów przestawnych, list zadań, osadzonego formularza, plików, komentarzy, szybkich linków i własnych treści. Pulpit utrzymania pokaże na jednym ekranie zaległe przeglądy, zasoby według statusu, zadania na ten tydzień i formularz Zgłoś usterkę. Każdy zespół ma własną stronę startową.",
@@ -271,7 +260,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   process: {
-    eyebrow: "Następnie wpraw to w ruch",
     title: "Dołącz proces do dowolnego obiektu.",
     description:
       "Zgłoszenie nie powinno tylko leżeć na liście. Dodaj workflow: etapy, osoby przypisane, terminy i dozwolone przejścia. Każdy etap staje się zadaniem w czyjejś kolejce, a każda zmiana jest zapisywana. Workflow też konfigurujesz wizualnie, a typowe akceptacje zaczynasz od szablonu.",
@@ -309,7 +297,6 @@ export const noCodePage: NoCodePageContent = {
     cta: "Poznaj procesy i workflow",
   },
   adaptation: {
-    eyebrow: "Stale dopasowuj",
     title: "Codzienne usprawnienia nie powinny stawać się projektami programistycznymi.",
     description:
       "Dodaj kategorię zasobu. Połącz sprzęt z dostawcą gwarancji. Ustaw Datę przeglądu jako wymaganą. Usuń pozycję menu, z której nikt nie korzysta. W Opero to zmiany konfiguracji: wersja robocza, podgląd wpływu, walidacja, publikacja. Rekordy zostają nienaruszone, a poprzednia wersja jest o jedno kliknięcie.",
@@ -330,7 +317,6 @@ export const noCodePage: NoCodePageContent = {
     },
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       { question: "Czy naprawdę zbuduję aplikację bez programisty?", answer: "Tak. Obiekty, pola, formularze, układy, menu, strony i workflow powstają w konfiguracji wizualnej. Osoba, która zna proces, może zbudować działającą aplikację. Reguły i skrypty służą do zaawansowanej logiki, ale kompletna aplikacja ich nie wymaga." },
@@ -342,7 +328,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: [
       { feature: "processes", title: "Procesy i workflow", description: "Etapy, zadania, terminy i tablice kanban na skonfigurowanych obiektach." },
@@ -351,7 +336,6 @@ export const noCodePage: NoCodePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Zobacz to na własnym przykładzie",
     title: "Pokaż nam, czym potrzebuje zarządzać Twoja firma.",
     description: "Przynieś arkusz, proces działający dziś w e-mailach albo pomysł na system wewnętrzny. Podczas prezentacji zbudujemy na Twoich oczach jego moduł, formularz, menu i pulpit, aby pokazać, jak nabiera kształtu w Opero.",
     primaryCta: "Umów prezentację",

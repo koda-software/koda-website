@@ -8,7 +8,7 @@ export const blogContent: BlogUiContent = {
       "Field notes from the team building Opero: BPM rollouts, process design, workflow automation, data modelling, governance, and where AI genuinely helps.",
   },
   index: {
-    eyebrow: "Blog",
+    label: "Blog",
     title: "Notes from building a no-code BPM platform.",
     description:
       "What we learn shipping Opero into real operations: how processes get modelled, where automation earns its keep, what governance actually requires, and where AI helps instead of getting in the way.",
@@ -32,15 +32,11 @@ export const blogContent: BlogUiContent = {
     breadcrumbHome: "Home",
   },
   recent: {
-    eyebrow: "Blog",
     title: "Latest from the blog.",
     description:
       "Notes from the team building Opero on process design, workflow automation and running BPM in real operations.",
   },
   archives: {
-    categoryEyebrow: "Category",
-    tagEyebrow: "Tag",
-    authorEyebrow: "Author",
     categoryDescription: "Every article filed under this category.",
     tagDescription: "Every article tagged with this topic.",
     authorDescription: "Everything written by this author.",
@@ -63,7 +59,6 @@ export const blogContent: BlogUiContent = {
     backLabel: "Back to the blog",
   },
   cta: {
-    eyebrow: "Next step",
     title: "See how this works on your own processes.",
     description:
       "We can walk through your operations, show how Opero would model them, and be direct about what fits and what does not.",

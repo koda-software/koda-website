@@ -8,7 +8,6 @@ export const integrationsFeature: FeaturePageContent = {
   },
   navLabel: "Integracje i zgodność",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "Integracje i zgodność - Opero częścią Twojego ekosystemu",
     description:
       "KSeF, e-Doręczenia, kursy NBP i weryfikacja VAT działają wprost z systemu, a otwarte API łączy Opero z resztą narzędzi firmy.",
@@ -16,7 +15,6 @@ export const integrationsFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Opero spełnia polskie wymogi (e-fakturowanie, korespondencja urzędowa) i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania.",
   },
@@ -37,7 +35,6 @@ export const integrationsFeature: FeaturePageContent = {
     captions: { arrives: "Dokument z KSeF <b>staje się rekordem</b>", fields: "Pola wypełniają się <b>bez przepisywania</b>", api: "API działa <b>w obie strony</b>" },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Wymogi i wymiana danych obsłużone w systemie.",
     items: [
       {
@@ -67,13 +64,11 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Połącz Opero ze swoimi systemami.",
     description: "Sprawdź, jak zgodność i integracje działają bez dodatkowego oprogramowania.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "Zgodność i integracje bez dodatkowych aplikacji.",
     paragraphs: [
       "Opero spełnia polskie wymogi prawne i wymienia dane ze światem zewnętrznym bez osobnego oprogramowania. Integracja z KSeF pozwala wysyłać i odbierać faktury ustrukturyzowane zgodnie z obowiązkowym e-fakturowaniem, a e-Doręczenia umożliwiają elektroniczną korespondencję urzędową wprost z systemu, bez wychodzenia do zewnętrznych portali.",
@@ -82,7 +77,6 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -98,7 +92,6 @@ export const integrationsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["security", "documents", "reports"],
   },

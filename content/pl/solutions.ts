@@ -8,7 +8,6 @@ export const solutionsContent: SolutionsContent = {
       "Opero w produkcji, budownictwie, usługach profesjonalnych, serwisie, medycynie, handlu i sektorze publicznym. Procesy i obieg dokumentów dla Twojej branży.",
   },
   hero: {
-    eyebrow: "Rozwiązania",
     title: "BPM low-code dla procesów, których nie obsłuży system pudełkowy.",
     description:
       "Każda branża ma pracę, którą standardowe systemy opisują z trudem: lokalne procedury, akceptacje, wyjątki, dokumenty, role i przekazania. W Opero modelujesz ją bez utraty kontroli nad danymi.",
@@ -17,7 +16,6 @@ export const solutionsContent: SolutionsContent = {
     secondaryCta: "Poznaj Opero",
   },
   industries: {
-    eyebrow: "Dopasowanie branżowe",
     title: "Gdzie Opero sprawdza się najlepiej.",
     description:
       "Opero jest najmocniejsze tam, gdzie proces jest specyficzny, model danych odbiega od standardu, a zespoły potrzebują jednocześnie elastyczności i śladu działania. Uzupełnia istniejące systemy zamiast zastępować każde narzędzie specjalistyczne.",
@@ -113,7 +111,7 @@ export const solutionsContent: SolutionsContent = {
           "Widoki rekordów dla spraw serwisowych, zasobów, przypisań, checklist i plików.",
           "Etapy procesu: przyjęcie, diagnoza, oczekiwanie na części, praca w toku, gotowe, zamknięte.",
           "Reguły cykliczne dla kontroli, przypomnień o opóźnieniach i raportów dziennych.",
-          "Asystent AI przy podsumowaniu historii sprawy i raportowaniu operacyjnym.",
+          "Agent AI połączony przez MCP do podsumowania historii sprawy i raportowania operacyjnego.",
         ],
         supportsLabel: "Opero obsługuje",
         supports: ["Sprawy serwisowe i kartoteki zasobów", "Przypisania techników i etapy", "Checklisty, pliki i notatki napraw", "Przypomnienia i raporty cykliczne"],
@@ -217,7 +215,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   pattern: {
-    eyebrow: "Wspólny wzorzec",
     title: "Różne branże, te same problemy operacyjne.",
     description:
       "Szczegóły zmieniają się między branżami, ale wzorzec jest zwykle ten sam: ważna praca nie mieści się w głównym systemie, więc zespoły tworzą procesy poboczne. Z czasem trudno je przeszukiwać, automatyzować, audytować i usprawniać.",
@@ -232,7 +229,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   fit: {
-    eyebrow: "Dopasowanie",
     title: "Sprawdź, czy to Twój przypadek.",
     description:
       "Opero pasuje wtedy, gdy firma potrzebuje czegoś więcej niż arkusz, większej elastyczności niż gotowy moduł i większej kontroli niż luźne narzędzie wewnętrzne. Świetnie współpracuje też z systemami, które już masz.",
@@ -252,7 +248,6 @@ export const solutionsContent: SolutionsContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Zacznij od procesu",
     title: "Opowiedz, jak działa Twoja operacja. Powiemy, czy Opero pasuje.",
     description:
       "Zmapujemy rekordy, role, dokumenty, akceptacje i wyjątki w Twoim procesie, a potem pokażemy, jak wyglądałyby w systemie.",

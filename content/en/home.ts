@@ -9,7 +9,6 @@ export const homeContent: HomeContent = {
       "Opero is a low-code BPM platform: processes, document workflow, automation, reports and permissions. No-code configuration, code only where it pays off.",
   },
   hero: {
-    eyebrow: "Low-code BPM by KodaSoft",
     title: "Turn the way you work into software",
     description:
       "Opero is a low-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. No code required.",
@@ -17,7 +16,7 @@ export const homeContent: HomeContent = {
     secondaryCta: "Explore Opero",
     supportPoints: [
       "Custom objects, forms and processes shaped around your company.",
-      "Automation, reports and an AI assistant on your own data.",
+      "Automation, reports and AI agents working on your own data.",
       "Permissions, document workflow and a full history of changes.",
     ],
     visual: {
@@ -76,7 +75,6 @@ export const homeContent: HomeContent = {
     },
   },
   problem: {
-    label: "The problem",
     title: "The work your system cannot see is the work that costs most.",
     description:
       "A spreadsheet beside the ERP, an approval in email, a file on someone's drive. Small workarounds become a second, undocumented flow: uncounted, invisible, and hard to reconstruct when a case stalls.",
@@ -96,7 +94,6 @@ export const homeContent: HomeContent = {
     ],
   },
   solution: {
-    label: "The solution",
     title: "Opero adapts to the way your company works.",
     description:
       "Instead of fitting the company to predefined modules, you design your own objects, processes and views in visual configuration. Data, document workflow, automation and permissions all stay in one system.",
@@ -108,7 +105,6 @@ export const homeContent: HomeContent = {
     cta: "Learn about Opero",
   },
   pillars: {
-    label: "What Opero can do",
     title: "A low-code foundation for processes that keep changing.",
     description:
       "Opero works as your company's operating layer: the data model, processes, document workflow, automation, reports and permissions stay connected instead of becoming more separate tools.",
@@ -165,7 +161,7 @@ export const homeContent: HomeContent = {
           "Flexible rules engine for virtually any automation",
           "Workflow system that keeps processes under control",
           "Integrations with the tools your teams already use",
-          "AI assistant and API for custom operations",
+          "AI agents over MCP and an API for custom operations",
         ],
         link: {
           label: "Learn about automation",
@@ -227,7 +223,6 @@ export const homeContent: HomeContent = {
     ],
   },
   workflow: {
-    label: "How it works",
     title: "How KodaSoft turns your process into Opero.",
     description:
       "Every cooperation starts with understanding the company, not with switching on software. We analyse the real workflow, configure Opero around it, bring the team into the system and keep improving it with live feedback.",
@@ -259,7 +254,6 @@ export const homeContent: HomeContent = {
     ],
   },
   integrations: {
-    label: "Integrations",
     title: "Connect Opero with the services around your process.",
     description:
       "Opero can exchange data with public registries, delivery channels, signatures and the tools your team already uses. Start with the integrations you need today and add more as the process grows.",
@@ -325,7 +319,6 @@ export const homeContent: HomeContent = {
     ],
   },
   trust: {
-    label: "Built by KodaSoft",
     title: "Software house experience, product-grade delivery.",
     description:
       "KodaSoft builds Opero with engineering discipline: flexible architecture, maintainable code, controlled permissions, inspectable automation and a deliberate approach to performance.",
@@ -337,7 +330,6 @@ export const homeContent: HomeContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Start with the process",
     title: "Build software around how your company actually works.",
     description:
       "Show us one process that lives in email and spreadsheets today. You will see what it looks like in Opero.",

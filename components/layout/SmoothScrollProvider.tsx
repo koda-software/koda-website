@@ -22,7 +22,7 @@ type SmoothScrollProviderProps = {
   children: ReactNode;
 };
 
-const desktopQuery = "(min-width: 992px) and (hover: hover) and (pointer: fine)";
+export const smoothScrollQuery = "(min-width: 992px) and (hover: hover) and (pointer: fine)";
 const smoothSeconds = 0.9;
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
@@ -35,7 +35,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   useEffect(() => {
     let cancelled = false;
     let creating = false;
-    const desktopMedia = window.matchMedia(desktopQuery);
+    const desktopMedia = window.matchMedia(smoothScrollQuery);
     const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const killSmoother = () => {

@@ -1,0 +1,414 @@
+/*
+ * A question, and everything the agent can reach for to answer it, floating in the section
+ * itself: it has no ground or edge of its own, and on a wide screen it runs out past the
+ * heading to the sides of the page. The stage is as wide as the page, and
+ * only scales down on a phone, where the question would no longer fit on its line.
+ * Everything here describes the first answer; the timeline takes it back from there.
+ */
+.root {
+  --ink: var(--color-ink);
+  --ground: var(--color-paper);
+  --line: rgb(11 17 22 / 0.12);
+  --soft: var(--color-muted);
+  --column: 600px;
+  width: 100%;
+  overflow: hidden;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.scaler {
+  position: relative;
+  width: 100%;
+  max-height: 42rem;
+  aspect-ratio: 640 / 560;
+}
+
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% / var(--fit, 1));
+  height: calc(100% / var(--fit, 1));
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+/* The point whose arrival in the middle of the screen starts the story. */
+.centre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+
+/* Each clue has a colour, which follows it from the question to the tool and the step. */
+.clue0 {
+  --highlighter: #ffe9a8;
+  --mark-ink: #8a6100;
+  --edge: #bd8100;
+}
+
+.clue1 {
+  --highlighter: #cfeaff;
+  --mark-ink: #12659f;
+  --edge: #1d87d0;
+}
+
+.clue2 {
+  --highlighter: #c9f2dc;
+  --mark-ink: #0e7a4f;
+  --edge: #18a66c;
+}
+
+.clue3 {
+  --highlighter: #ffdccf;
+  --mark-ink: #bd4323;
+  --edge: #e8683f;
+}
+
+/* The question, in the box it is asked in. */
+.composer {
+  position: absolute;
+  top: 20px;
+  left: calc(50% - var(--column) / 2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: var(--column);
+  height: 56px;
+  padding-inline: 18px;
+  border: 1.5px solid var(--color-blue);
+  border-radius: 16px;
+  background: var(--ground);
+}
+
+.questions {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 26px;
+}
+
+.question {
+  position: absolute;
+  top: 0;
+  left: 0;
+  isolation: isolate;
+  width: fit-content;
+  font-size: 18.5px;
+  letter-spacing: -0.01em;
+  line-height: 26px;
+  white-space: nowrap;
+}
+
+.words {
+  position: relative;
+}
+
+/* The highlighter stroke, which is drawn across the words from the left. */
+.words i {
+  position: absolute;
+  z-index: -1;
+  inset: 1px -3px;
+  border-radius: 4px;
+  background: var(--highlighter);
+  transform-origin: 0 50%;
+}
+
+.caret {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 2px;
+  height: 22px;
+  background: var(--ink);
+}
+
+/* The agent's side of things, which has no edge. On a very wide screen it stops spreading, so that things stay near each other. */
+.window {
+  position: absolute;
+  top: 92px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+}
+
+/* Specks, which say there is more out there than what has a name. */
+.dust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+}
+
+/* Everything it can reach for. It falls back behind the answer, which is how it is left at rest. */
+.field {
+  position: absolute;
+  inset: 0;
+}
+
+/* Where a thing floats. Only this moves it, so that the thing itself can react to the agent as it goes. */
+.body {
+  position: absolute;
+  width: max-content;
+  top: var(--y);
+  left: var(--x);
+  transform: translate(-50%, -50%) scale(var(--depth));
+  will-change: transform;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--ground);
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  line-height: 16px;
+  opacity: 0.2;
+  white-space: nowrap;
+}
+
+.tile svg {
+  flex: none;
+  color: var(--color-blue);
+}
+
+/* The question going out into everything, from the box it was asked in. Its size and place depend on how far everything is. */
+.pulse {
+  position: absolute;
+  border: 1px solid var(--color-blue);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* What a thing scored against the words being looked for. It keeps its size at any depth. */
+.readout {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: calc(5px / var(--depth));
+  padding: calc(1px / var(--depth)) calc(5px / var(--depth));
+  border-radius: calc(5px / var(--depth));
+  background: var(--ground);
+  font-size: calc(11px / var(--depth));
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateX(-50%);
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.readout i {
+  display: block;
+  overflow: hidden;
+  width: calc(34px / var(--depth));
+  height: calc(3px / var(--depth));
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.readout b {
+  display: block;
+  height: 100%;
+  background: currentcolor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.readout span {
+  min-width: 3ch;
+  text-align: right;
+}
+
+.list {
+  position: absolute;
+  inset: 0;
+}
+
+/* What runs from the words to the things measured against them, behind those things, and what joins the things it found. */
+.probes,
+.links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.probes path,
+.links path {
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-width: 1;
+}
+
+.links path {
+  stroke-width: 1.5;
+}
+
+/* What it comes to, over everything it chose from. */
+.outcome {
+  position: absolute;
+  top: 84px;
+  bottom: 12px;
+  left: calc(50% - var(--column) / 2 + 12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: calc(var(--column) - 24px);
+}
+
+/* The agent's answer. */
+.answer {
+  display: grid;
+  gap: 10px;
+  padding-inline: 12px;
+}
+
+.reply {
+  margin: 0;
+  padding: 15px 20px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--color-blue);
+  color: #fff;
+  font-size: 19px;
+  transform-origin: 0 100%;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--ground);
+  color: var(--soft);
+  font-size: 14px;
+}
+
+.note svg {
+  flex: none;
+  color: #18a66c;
+}
+
+/* The route the agent chose for this question. */
+.chain {
+  display: flex;
+  gap: 8px;
+}
+
+.step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 70px;
+  padding: 8px 9px;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  background: var(--ground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* What joins a step to the one before it, when nothing has drawn the line. */
+.joined .step + .step::before {
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 8px;
+  height: 1.5px;
+  background: var(--line);
+  content: "";
+}
+
+.stepName {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+  color: var(--mark-ink);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+.stepName svg {
+  flex: none;
+}
+
+/* The page is wide enough for everything to float around the heading, and the box to sit right under the heading. */
+@media (min-width: 981px) {
+  .root {
+    --column: 640px;
+    overflow: visible;
+  }
+
+  .scaler {
+    height: clamp(33rem, 62vh, 40rem);
+    max-height: none;
+    aspect-ratio: auto;
+  }
+
+  .composer {
+    top: 0;
+  }
+
+  .window {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 50%;
+    width: min(100%, 1760px);
+    transform: translateX(-50%);
+  }
+
+  .dust {
+    top: -320px;
+  }
+
+  .body {
+    top: var(--wide-y);
+    left: var(--wide-x);
+  }
+
+  .tile {
+    gap: 7px;
+    padding: 8px 14px 8px 10px;
+    font-size: 14px;
+  }
+
+  .outcome {
+    top: 72px;
+    bottom: auto;
+    left: calc(50% - var(--column) / 2);
+    gap: 14px;
+    justify-content: flex-start;
+    width: var(--column);
+  }
+
+  .answer {
+    padding-inline: 0;
+  }
+}

@@ -8,7 +8,6 @@ export const lowCodeFeature: FeaturePageContent = {
   },
   navLabel: "Low-code i automatyzacje",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "Low-code i automatyzacje - logika, która pracuje za Ciebie",
     description:
       "Tam, gdzie konfiguracja to za mało, wchodzą reguły, skrypty i zapytania SQL. Automatyzujesz decyzje i przetwarzanie danych bez budowania osobnego systemu.",
@@ -16,7 +15,6 @@ export const lowCodeFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Warstwa low-code Opero uruchamia logikę na zdarzeniach: silnik reguł reaguje według zasady „gdy warunek → wykonaj kroki”, silnik skryptów obsługuje nietypowe przetwarzanie, a zapytania SQL sięgają po dane dokładnie tak, jak potrzebujesz.",
   },
@@ -32,7 +30,6 @@ export const lowCodeFeature: FeaturePageContent = {
     captions: { condition: "Warunek składasz <b>z gotowych klocków</b>", fired: "Reguła odpala się <b>przy każdym rekordzie</b>", summary: "Pole, powiadomienie, blokada przejścia - <b>bez pilnowania</b>" },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Trzy warstwy logiki na Twoich danych.",
     items: [
       {
@@ -53,13 +50,11 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Zautomatyzuj powtarzalne zadania.",
     description: "Zobacz, jak reguły i skrypty przejmują ręczne kroki, które dziś robi zespół.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "Automatyzacja, która przejmuje powtarzalną pracę.",
     paragraphs: [
       "Warstwa low-code Opero automatyzuje pracę, która dziś pochłania czas zespołu. Silnik reguł działa według prostej zasady „gdy zajdzie warunek, wykonaj kroki”: ustaw pole, utwórz rekord, wyślij powiadomienie, zablokuj przejście w procesie. Reguły definiujesz i testujesz przed wdrożeniem, więc automatyzacja jest przewidywalna, a nie ryzykowna.",
@@ -68,7 +63,6 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -84,7 +78,6 @@ export const lowCodeFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["processes", "reports", "noCode"],
   },

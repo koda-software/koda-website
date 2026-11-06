@@ -10,8 +10,6 @@ type AboutPageProps = {
 
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
-const eyebrowClass = "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
-const darkEyebrowClass = "eyebrow mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue-soft)]";
 const sectionTitleClass = "m-0 max-w-[52rem] text-[clamp(1.9rem,3.4vw,2.6rem)] leading-[1.1] tracking-[-0.03em] text-[var(--color-ink)]";
 const bodyClass = "m-0 text-[1.04rem] font-light leading-[1.7] text-[var(--color-muted)]";
 const buttonClass =
@@ -22,7 +20,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
     <>
       <PageHero
         description={content.hero.description}
-        eyebrow={content.hero.eyebrow}
         photo="workspace"
         primaryCta={content.hero.primaryCta}
         primaryHref={ctas.primary}
@@ -33,10 +30,7 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       />
 
       <section className={`${sectionClass} grid grid-cols-[minmax(0,1fr)_minmax(20rem,0.82fr)] items-start gap-[clamp(2rem,5vw,4.5rem)] max-[980px]:grid-cols-1`}>
-        <div>
-          <p className={eyebrowClass}>{content.identity.eyebrow}</p>
-          <h2 className={sectionTitleClass}>{content.identity.title}</h2>
-        </div>
+        <h2 className={sectionTitleClass}>{content.identity.title}</h2>
         <div className="grid gap-5">
           {content.identity.paragraphs.map((paragraph) => (
             <p className={bodyClass} key={paragraph}>
@@ -48,7 +42,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
 
       <section className={`${sectionClass} pt-0`}>
         <div className="border-t border-[rgba(2,2,13,0.12)] pt-[var(--section-y)]">
-          <p className={eyebrowClass}>{content.origin.eyebrow}</p>
           <h2 className={sectionTitleClass}>{content.origin.title}</h2>
           <div className="mt-8 grid grid-cols-[minmax(0,1fr)_minmax(18rem,0.62fr)] gap-[clamp(2rem,5vw,4.5rem)] max-[980px]:grid-cols-1">
             <div className="grid max-w-[46rem] gap-5">
@@ -69,7 +62,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
 
       <section className={`${shellClass} pb-[var(--section-y)]`}>
         <div className="rounded-[var(--radius-panel)] [background:var(--gradient-technical)] p-[clamp(1.75rem,5vw,4rem)] text-white">
-          <p className={darkEyebrowClass}>{content.mission.eyebrow}</p>
           <p className="m-0 max-w-[46rem] text-[clamp(1.7rem,3.4vw,2.5rem)] font-light leading-[1.18] tracking-[-0.03em]">
             {content.mission.title}
           </p>
@@ -80,7 +72,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.beliefs.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.beliefs.title}</h2>
         <p className={`${bodyClass} mt-5 max-w-[46rem]`}>{content.beliefs.description}</p>
         <div className="mt-10 grid grid-cols-3 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
@@ -99,7 +90,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
 
       <section className={`${sectionClass} pt-0`}>
         <div className="border-t border-[rgba(2,2,13,0.12)] pt-[var(--section-y)]">
-          <p className={eyebrowClass}>{content.background.eyebrow}</p>
           <h2 className={sectionTitleClass}>{content.background.title}</h2>
           <p className={`${bodyClass} mt-5 max-w-[46rem]`}>{content.background.description}</p>
           <dl className="mt-9 grid max-w-[62rem] gap-0">
@@ -118,7 +108,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.approach.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.approach.title}</h2>
         <div className="mt-9 grid grid-cols-4 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
           {content.approach.items.map((item, index) => (
@@ -136,7 +125,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       {content.facts ? (
         <section className={`${sectionClass} pt-0`}>
           <div className="border-t border-[rgba(2,2,13,0.12)] pt-[var(--section-y)]">
-            <p className={eyebrowClass}>{content.facts.eyebrow}</p>
             <h2 className={sectionTitleClass}>{content.facts.title}</h2>
             <p className={`${bodyClass} mt-5 max-w-[46rem]`}>{content.facts.description}</p>
             <dl className="mt-9 grid grid-cols-4 gap-4 max-[980px]:grid-cols-2 max-[640px]:grid-cols-1">
@@ -158,7 +146,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
 
       <section className={`${sectionClass} pt-0`}>
         <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
-          <p className={eyebrowClass}>{content.finalCta.eyebrow}</p>
           <h2 className="mx-auto m-0 max-w-[860px] text-[clamp(1.9rem,3.6vw,2.7rem)] leading-[1.08] text-[var(--color-ink)]">
             {content.finalCta.title}
           </h2>
@@ -178,7 +165,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.seoText.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.seoText.title}</h2>
         <div className="mt-6 grid max-w-[62rem] gap-5">
           {content.seoText.paragraphs.map((paragraph) => (
@@ -190,7 +176,6 @@ export function AboutPage({ content, ctas }: AboutPageProps) {
       </section>
 
       <section className={`${sectionClass} pt-0`}>
-        <p className={eyebrowClass}>{content.faq.eyebrow}</p>
         <h2 className={sectionTitleClass}>{content.faq.title}</h2>
         <div className="mt-8 grid max-w-[52rem] gap-3">
           {content.faq.items.map((item) => (

@@ -8,7 +8,6 @@ export const reportsFeature: FeaturePageContent = {
   },
   navLabel: "Raporty i analityka",
   hero: {
-    eyebrow: "Funkcje systemu",
     title: "Raporty i analityka - decyzje na danych, nie na przeczuciach",
     description:
       "Buduj zestawienia, wykresy i pulpity na żywych danych systemu. Od liczby zbiorczej zejdziesz do pojedynczego rekordu bez eksportu do Excela.",
@@ -16,7 +15,6 @@ export const reportsFeature: FeaturePageContent = {
     secondaryCta: "Zobacz Opero w akcji",
   },
   intro: {
-    eyebrow: "W skrócie",
     paragraph:
       "Raporty Opero agregują i grupują dane obiektów, prezentują je w tabelach i na wykresach, a przez drill-down prowadzą od wskaźnika do źródłowych rekordów. Najważniejsze liczby zbierają dashboardy, a nietypowe cięcia danych - zapytania SQL.",
   },
@@ -40,7 +38,6 @@ export const reportsFeature: FeaturePageContent = {
     captions: { table: "Zwykła tabela z danymi", chart: "Ten sam raport <b>jako wykres</b>", drill: "Klikasz słupek - i widzisz <b>rekordy, które go tworzą</b>" },
   },
   blocks: {
-    eyebrow: "Co dostajesz",
     title: "Od wskaźnika do pojedynczego rekordu.",
     items: [
       {
@@ -65,13 +62,11 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   finalCta: {
-    eyebrow: "Następny krok",
     title: "Zobacz swoje dane tak, jak ich potrzebujesz.",
     description: "Pokażemy raport i dashboard zbudowane na Twoim typie danych.",
     primaryCta: "Umów prezentację",
   },
   seoText: {
-    eyebrow: "Więcej o funkcji",
     title: "Dane operacyjne zamienione w decyzje.",
     paragraphs: [
       "Raporty w Opero zamieniają dane operacyjne w decyzje. Zestawienia budujesz na danych obiektów: agregacje, grupowania, wskaźniki i wykresy powstają na żywych informacjach z systemu, bez eksportu do arkuszy. Dzięki drążeniu szczegółów (drill-down) przechodzisz od wartości zbiorczej do pojedynczych rekordów, które się na nią składają, więc każdą liczbę można sprawdzić u źródła.",
@@ -80,7 +75,6 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   faq: {
-    eyebrow: "Pytania",
     title: "Najczęściej zadawane pytania.",
     items: [
       {
@@ -96,7 +90,6 @@ export const reportsFeature: FeaturePageContent = {
     ],
   },
   related: {
-    eyebrow: "Pokrewne funkcje",
     title: "Zobacz też",
     items: ["lowCode", "noCode", "ai"],
   },

@@ -1,0 +1,185 @@
+/*
+ * The whole setup, in one small card under the two things it joins, on the section's own
+ * ground. Everything here describes the connected state; the timeline takes it back from there.
+ */
+.root {
+  --ink: var(--color-ink);
+  --line: rgb(11 17 22 / 0.14);
+  --soft: var(--color-muted);
+  position: relative;
+  width: min(100%, 30rem);
+  margin-inline: auto;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+/* The point whose arrival in the middle of the screen starts the story. */
+.centre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+
+/* The agent and Opero, with what joins them. */
+.ends {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--color-paper);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.gap {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background-image: linear-gradient(90deg, var(--line) 55%, transparent 0);
+  background-size: 9px 2px;
+}
+
+.wire {
+  position: absolute;
+  inset: 0;
+  background: var(--color-blue);
+  transform-origin: 0 50%;
+}
+
+.joint {
+  position: absolute;
+  top: -11px;
+  left: calc(50% - 12px);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  color: #fff;
+}
+
+/* The one place the setup happens. Each screen takes its place, so nothing around it moves. */
+.card {
+  position: relative;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--color-paper);
+}
+
+.pane {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 15rem;
+  padding: 22px 24px;
+  visibility: hidden;
+}
+
+.paneDone {
+  visibility: visible;
+}
+
+.title {
+  margin: 0 0 16px;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.row small {
+  display: block;
+  color: var(--soft);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Every button is in this same spot, and the cursor is placed on it. */
+.button {
+  align-self: flex-end;
+  width: 7.5rem;
+  margin-top: auto;
+  padding: 10px 0;
+  border-radius: 12px;
+  background: var(--color-blue);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+}
+
+.cursor {
+  position: absolute;
+  right: 44px;
+  bottom: 12px;
+  width: 26px;
+  height: 26px;
+  overflow: visible;
+}
+
+.cursor path {
+  fill: var(--color-ink);
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+/* Where the next thing gets said. */
+.waiting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 56px;
+  margin: auto 0 0;
+  padding-inline: 16px;
+  border: 1.5px solid var(--color-blue);
+  border-radius: 14px;
+  color: var(--soft);
+  font-size: 16px;
+}
+
+.caret {
+  width: 2px;
+  height: 20px;
+  background: var(--ink);
+}

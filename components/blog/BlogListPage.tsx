@@ -10,7 +10,7 @@ import { BlogFinalCta, BlogHero, blogBodyClass, blogSectionClass } from "./primi
 type BlogListPageProps = {
   locale: BlogLocale;
   ui: BlogUiContent;
-  heading: { eyebrow: string; title: string; description?: string };
+  heading: { title: string; description?: string };
   aside?: ReactNode;
   rows: ArticleListRow[];
   page: number;
@@ -39,7 +39,7 @@ export function BlogListPage({
 }: BlogListPageProps) {
   return (
     <>
-      <BlogHero eyebrow={heading.eyebrow} title={heading.title} description={heading.description} aside={aside} />
+      <BlogHero title={heading.title} description={heading.description} aside={aside} />
 
       <section className={blogSectionClass}>
         {showBackLink ? (
@@ -68,7 +68,6 @@ export function BlogListPage({
 
       <BlogFinalCta
         description={ui.cta.description}
-        eyebrow={ui.cta.eyebrow}
         primaryHref={ctaHrefs.primary}
         primaryLabel={ui.cta.primaryCta}
         secondaryHref={ctaHrefs.secondary}

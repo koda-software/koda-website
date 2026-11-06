@@ -52,7 +52,6 @@ export async function RecentArticles({ locale }: { locale: BlogLocale }) {
             </Link>
           }
           description={ui.recent.description}
-          eyebrow={ui.recent.eyebrow}
           title={ui.recent.title}
         />
       </Reveal>
@@ -103,7 +102,7 @@ function RecentArticle({ article, locale, minRead }: RecentArticleProps) {
             {article.zajawka}
           </span>
         ) : null}
-        {/* Plain sentence-case byline under the text, not an uppercase eyebrow above it. */}
+        {/* Plain sentence-case byline under the text, not an uppercase label above it. */}
         <span className="mt-4 block text-[0.88rem] leading-[1.5] text-[var(--color-muted)] max-[640px]:mt-2">
           {article.kategoria_nazwa ? <span className="text-[var(--color-ink)]">{article.kategoria_nazwa}</span> : null}
           {article.kategoria_nazwa ? <span aria-hidden="true"> · </span> : null}

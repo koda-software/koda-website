@@ -20,8 +20,6 @@ type OperoProductPageProps = {
 const shellClass =
   "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
-const eyebrowClass =
-  "mb-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-blue)]";
 const titleClass =
   "m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]";
 const briefClass =
@@ -46,19 +44,14 @@ const storyStepIndexesByItem: Record<
 
 function SectionIntro({
   brief,
-  eyebrow,
   title,
 }: {
   brief: string;
-  eyebrow: string;
   title: string;
 }) {
   return (
     <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.5fr)] items-end gap-12 max-[900px]:grid-cols-1">
-      <div>
-        <p className={eyebrowClass}>{eyebrow}</p>
-        <h2 className={titleClass}>{title}</h2>
-      </div>
+      <h2 className={titleClass}>{title}</h2>
       <p className={briefClass}>{brief}</p>
     </div>
   );
@@ -74,7 +67,6 @@ export function OperoProductPage({
     <>
       <PageHero
         description={content.hero.brief}
-        eyebrow={content.hero.eyebrow}
         primaryCta={content.hero.primaryCta}
         primaryHref={primaryHref}
         secondaryCta={content.hero.secondaryCta}
@@ -103,7 +95,6 @@ export function OperoProductPage({
       <section className={sectionClass}>
         <SectionIntro
           brief={content.connectedModel.brief}
-          eyebrow={content.connectedModel.eyebrow}
           title={content.connectedModel.title}
         />
         <div className="mx-auto mt-[clamp(2rem,4vw,3.2rem)] w-full max-w-[82rem] px-[clamp(0.75rem,2.5vw,2.25rem)]">
@@ -126,23 +117,19 @@ export function OperoProductPage({
       <section className={sectionClass} id="product-tour">
         <SectionIntro
           brief={content.productTour.brief}
-          eyebrow={content.productTour.eyebrow}
           title={content.productTour.title}
         />
 
         <div className="mt-[clamp(4rem,9vw,8rem)] grid gap-[clamp(12rem,22vw,18rem)]">
           {content.productTour.chapters.map((chapter) => (
-            <section key={chapter.eyebrow}>
-              <div className="grid grid-cols-[minmax(13rem,0.45fr)_minmax(0,1fr)] gap-10 border-t border-[rgba(2,2,13,0.14)] pt-7 max-[809px]:grid-cols-1">
-                <p className={`${eyebrowClass} mb-0`}>{chapter.eyebrow}</p>
-                <div>
-                  <h3 className="m-0 max-w-[760px] text-balance text-[clamp(1.8rem,3.2vw,2.65rem)] leading-[1.08] tracking-[-0.04em] text-[var(--color-ink)]">
-                    {chapter.title}
-                  </h3>
-                  <p className={`${briefClass} mt-4 max-w-[720px]`}>
-                    {chapter.brief}
-                  </p>
-                </div>
+            <section key={chapter.title}>
+              <div className="border-t border-[rgba(2,2,13,0.14)] pt-7">
+                <h3 className="m-0 max-w-[760px] text-balance text-[clamp(1.8rem,3.2vw,2.65rem)] leading-[1.08] tracking-[-0.04em] text-[var(--color-ink)]">
+                  {chapter.title}
+                </h3>
+                <p className={`${briefClass} mt-4 max-w-[720px]`}>
+                  {chapter.brief}
+                </p>
               </div>
 
               <div className="mt-10 grid gap-[clamp(8rem,14vw,12rem)]">
@@ -218,7 +205,6 @@ export function OperoProductPage({
       <section className={sectionClass}>
         <SectionIntro
           brief={content.customization.brief}
-          eyebrow={content.customization.eyebrow}
           title={content.customization.title}
         />
         <div className="mx-auto mt-[clamp(2rem,4vw,3.2rem)] w-full max-w-[82rem] px-[clamp(0.75rem,2.5vw,2.25rem)]">
@@ -242,7 +228,6 @@ export function OperoProductPage({
       <section className={`${sectionClass} pt-0`}>
         <FinalCtaPanel
           description={content.finalCta.brief}
-          eyebrow={content.finalCta.eyebrow}
           primaryCta={content.finalCta.primaryCta}
           primaryHref={primaryHref}
           secondaryCta={content.finalCta.secondaryCta}

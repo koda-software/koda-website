@@ -1,0 +1,474 @@
+/*
+ * The contextual AI hero. Everything here describes the finished state; the
+ * timeline hides parts of it once it has measured them, so a reader with
+ * reduced motion simply gets the finished page. `data-live` marks the stage as
+ * animated, which is what brings in the layers only the story needs.
+ */
+.root {
+  --ink: #101828;
+  --ink-soft: #5a6373;
+  --line: #e4e8f0;
+  --overdue: #b4540a;
+  --overdue-bg: #fdecd7;
+  width: 100%;
+  /* The stage is sized by height first, so it can never be what makes the banner taller. */
+  max-width: calc(40rem * var(--stage-w) / var(--stage-h));
+  margin-inline: auto 0;
+}
+
+.scaler {
+  position: relative;
+  width: 100%;
+  aspect-ratio: calc(var(--stage-w) / var(--stage-h));
+}
+
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--stage-w) * 1px);
+  height: calc(var(--stage-h) * 1px);
+  /* Clipped only at the bottom, where the page comes up: the marker and the tilted page run past the other edges. */
+  clip-path: inset(-50% -50% 0);
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+/* Only there to keep the illustration out of the accessibility tree; it adds no box of its own. */
+.scene {
+  display: contents;
+}
+
+/* The message to the agent. The timeline cuts it to the sentence, which sits on top of it. */
+.composer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: none;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 20px;
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: 0 24px 60px rgb(3 12 22 / 0.3);
+}
+
+.stage[data-live] .composer {
+  display: block;
+}
+
+.send {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #0b1116;
+}
+
+/* Enabled only while the message is waiting for the reader, and asking to be sent. */
+.send:enabled {
+  cursor: pointer;
+}
+
+.send:enabled:hover {
+  background: #d9efff;
+}
+
+.send:focus-visible {
+  outline: 2px solid #7ee7ff;
+  outline-offset: 3px;
+}
+
+.send:enabled::after {
+  position: absolute;
+  inset: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  animation: sendPulse 1.8s ease-out infinite;
+  content: "";
+}
+
+@keyframes sendPulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+.caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 2.5px;
+  height: 38px;
+  background: #fff;
+}
+
+.stage[data-live] .caret {
+  display: block;
+}
+
+/* The request, set as type. */
+.sentence {
+  position: absolute;
+  left: 28px;
+  width: calc(100% - 56px);
+  margin: 0;
+  display: none;
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.6;
+}
+
+.stage[data-live] .sentence {
+  display: block;
+}
+
+.word,
+.keyWord {
+  display: inline-block;
+  will-change: transform;
+}
+
+.keyWord {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.twin {
+  position: absolute;
+}
+
+/* The drawn part of a mark. The timeline moves this clip, so the ink itself is one flat shape. */
+.swipe {
+  position: absolute;
+  display: none;
+  height: 38px;
+  pointer-events: none;
+}
+
+.stage[data-live] .swipe {
+  display: block;
+}
+
+.swipe svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.swipe path {
+  fill: var(--key);
+}
+
+/* The wet edge of the felt tip, which leads the stroke and is gone when it stops. */
+.swipe i {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  width: 7px;
+  background: var(--key);
+  transform: skewX(-8deg);
+}
+
+.tag {
+  position: absolute;
+  display: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--key);
+  color: #0b1116;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.stage[data-live] .tag {
+  display: block;
+}
+
+/*
+ * The Opero page the words land on. It stands tilted, so it runs on past the
+ * bottom of the stage: the clip stays the only lower edge at any angle.
+ */
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -80px;
+  transform: var(--page-tilt);
+  transform-origin: 50% calc(var(--stage-h) * 0.5px);
+}
+
+/* GSAP cannot read a pose back out of a perspective matrix, so the timeline starts flat and sets the same one itself. */
+.stage[data-live] .page {
+  transform: none;
+}
+
+/* What gives the tilt its depth: a shadow and blue glow behind the page, and light across it. */
+.glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px 14px 0 0;
+  box-shadow:
+    -20px 14px 70px -14px rgb(2 8 16 / 0.6),
+    0 0 110px -14px rgb(56 182 255 / 0.3);
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(135deg, rgb(255 255 255 / 0.14), transparent 34%, rgb(56 182 255 / 0.05) 78%, rgb(9 19 29 / 0.05));
+  pointer-events: none;
+}
+
+.pageBody {
+  position: relative;
+  height: 100%;
+  padding: 20px 24px 0;
+  border-radius: 14px 14px 0 0;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 -20px 60px rgb(3 12 22 / 0.42);
+}
+
+.pageHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.crumb {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.pageTitle {
+  position: relative;
+  width: fit-content;
+  margin: 2px 0 0;
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.pageTitle span {
+  position: relative;
+  z-index: 1;
+}
+
+/* What stays on the page once the word has gone: the word's own marker, in its own colour. */
+.titleMark {
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  bottom: 1px;
+  height: 45%;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--key) 62%, transparent);
+  transform-origin: left center;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f6ee;
+  color: #17734a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.fields {
+  display: flex;
+  gap: 32px;
+  margin: 12px 0 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.fields dt {
+  color: var(--ink-soft);
+  font-size: 11.5px;
+}
+
+.fields dd {
+  margin: 1px 0 0;
+  font-size: 13.5px;
+}
+
+.block {
+  position: relative;
+  margin-top: 16px;
+}
+
+/* The empty place in the layout, visible only until the block arrives. */
+.slot {
+  position: absolute;
+  inset: -4px -6px -14px;
+  border: 1.5px dashed #c6d0dc;
+  border-radius: 10px;
+  visibility: hidden;
+}
+
+.stage[data-live] .slot {
+  visibility: visible;
+}
+
+.blockHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.asOf {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 17px;
+  text-align: right;
+}
+
+.blockTitle span {
+  position: relative;
+  z-index: 1;
+}
+
+.blockTitle {
+  position: relative;
+  display: block;
+  width: fit-content;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.rule {
+  display: block;
+  height: 1.5px;
+  background: var(--ink);
+  transform-origin: left center;
+}
+
+.blockHead + .rule {
+  margin-top: 10px;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 1.42fr 0.72fr 1fr 5.4rem;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.cols {
+  height: 30px;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+}
+
+.rows {
+  height: calc(var(--row-h) * 5);
+}
+
+.row {
+  height: var(--row-h);
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pill {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  height: 25px;
+  color: var(--overdue);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.pill i {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: var(--overdue-bg);
+  transform-origin: left center;
+}
+
+.pill em {
+  position: relative;
+  font-style: normal;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 70px;
+}
+
+.total span {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+}
+
+.total b {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.total b span {
+  display: inline;
+  color: inherit;
+  font-size: inherit;
+}
+
+.action {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  height: 38px;
+  padding-inline: 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.action i {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #2ca6f0, #0b4e7d);
+  transform-origin: left center;
+}
+
+.action em {
+  position: relative;
+  font-style: normal;
+  white-space: pre;
+}

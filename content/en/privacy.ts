@@ -14,7 +14,6 @@ export const privacyContent: PrivacyContent = {
       "How KodaSoft processes contact-form and consent-based analytics data: what is collected, why, who processes it, how long it is kept and what rights you have.",
   },
   hero: {
-    eyebrow: "Documents",
     title: "Privacy policy",
     description:
       "This site uses Google Analytics only after you consent. Without that consent, no Google Analytics script is loaded and no analytics cookies are set.",

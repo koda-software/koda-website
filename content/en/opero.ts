@@ -8,7 +8,6 @@ export const operoProductContent: OperoProductContent = {
       "Opero, the low-code BPM platform, makes your company’s way of working visible, repeatable and easier to improve as the business changes.",
   },
   hero: {
-    eyebrow: "Meet Opero",
     title: "Build the system around the way your company works.",
     brief:
       "Every company develops its own way of working. Opero makes that work visible, repeatable and easier to improve, without turning every change into another software project.",
@@ -19,7 +18,6 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   connectedModel: {
-    eyebrow: "The Opero idea",
     title: "One shared model. Every part of the work connected.",
     brief:
       "Instead of passing fragments of work between separate tools, Opero keeps the whole story together. What happened, who acted, what was decided and what comes next remain visible from start to finish.",
@@ -216,14 +214,12 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   productTour: {
-    eyebrow: "Explore the platform",
     title: "Eight capabilities. One Opero.",
     brief:
       "Every part of Opero works with the same operational context. Records, documents, decisions, permissions and history remain connected as work moves across the company.",
     exploreLabel: "Explore this feature",
     chapters: [
       {
-        eyebrow: "01 / Shape the system",
         title: "Model the work in your own language.",
         brief:
           "Start from the way your teams already describe their work. Opero turns that structure into a system they can use and continue to evolve.",
@@ -235,7 +231,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "02 / Run the work",
         title: "Move cases and documents through the company.",
         brief:
           "Every case follows a visible path, with a responsible person, current stage and next action. Teams know what is moving and what needs attention.",
@@ -251,7 +246,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "03 / Automate and extend",
         title: "Let the platform handle the repeatable work.",
         brief:
           "Once the process is clear, Opero can handle the repeatable steps. Rules, integrations and AI keep work moving while people remain in control.",
@@ -271,7 +265,6 @@ export const operoProductContent: OperoProductContent = {
         ],
       },
       {
-        eyebrow: "04 / Understand and control",
         title: "See what is happening and govern who can act.",
         brief:
           "Opero makes activity measurable without separating oversight from daily work. The same platform shows the results and controls who can act.",
@@ -297,7 +290,6 @@ export const operoProductContent: OperoProductContent = {
     ],
   },
   customization: {
-    eyebrow: "Your workspace",
     title: "Make it yours",
     brief:
       "Opero can feel like your company’s own system from the first login. Apply your logo, colours and preferred visual style without changing how the underlying work operates.",
@@ -311,7 +303,6 @@ export const operoProductContent: OperoProductContent = {
     },
   },
   finalCta: {
-    eyebrow: "See Opero in your process",
     title: "Bring us one process. We will show you what it could look like in Opero.",
     brief:
       "Tell us where work slows down or loses context. We will prepare a practical Opero walkthrough around that situation instead of giving you a generic product presentation.",
