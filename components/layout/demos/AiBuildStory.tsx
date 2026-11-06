@@ -531,7 +531,7 @@ export function AiBuildStory({ demo, steps }: { demo: AiBuildDemoContent; steps:
                       <div className={styles.pageHead}>
                         <div>
                           <span className={styles.crumb}>{demo.page.breadcrumb}</span>
-                          <h3 className={styles.pageTitle}>{demo.page.title}</h3>
+                          <p className={styles.pageTitle}>{demo.page.title}</p>
                         </div>
                         <span className={styles.status}>{demo.page.status}</span>
                       </div>

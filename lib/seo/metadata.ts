@@ -90,7 +90,7 @@ function buildMetadata({
           url: absoluteUrl(siteConfig.defaultOgImage),
           width: 1200,
           height: 630,
-          alt: `${siteConfig.name} and ${siteConfig.productName}`,
+          alt: `${siteConfig.name} ${locale === "pl" ? "i" : "and"} ${siteConfig.productName}`,
         },
       ],
     },

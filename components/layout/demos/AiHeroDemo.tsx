@@ -439,10 +439,10 @@ export function AiHeroDemo({ demo }: { demo: AiHeroDemoContent }) {
                 <div className={styles.pageHead}>
                   <div>
                     <span className={styles.crumb}>{page.breadcrumb}</span>
-                    <h3 className={styles.pageTitle}>
+                    <p className={styles.pageTitle}>
                       <span data-el="pageTitle">{page.title}</span>
                       <i className={styles.titleMark} data-el="titleMark" style={keyStyle("client")} />
-                    </h3>
+                    </p>
                   </div>
                   <span className={styles.status}>{page.status}</span>
                 </div>

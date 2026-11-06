@@ -19,6 +19,7 @@ import {
 } from "@/components/layout/FeaturePageSections";
 import type { AiAskAct, AiConfigureAct, AiPageContent } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
+import { localizeFeaturePath } from "@/lib/i18n/features";
 
 type AiFeaturePageProps = {
   content: AiPageContent;
@@ -141,6 +142,12 @@ export function AiFeaturePage({ content, locale, primaryHref }: AiFeaturePagePro
             <div className="rounded-[16px] border border-[rgba(11,17,22,0.1)] p-6" data-reveal key={item.title}>
               <h3 className="m-0 text-[1.08rem] font-medium text-[var(--color-ink)]">{item.title}</h3>
               <p className="mb-0 mt-3 text-[0.88rem] font-light leading-[1.55] text-[var(--color-muted)]">{item.description}</p>
+              {item.securityLink ? (
+                <Link className="mt-3 inline-flex items-center gap-1.5 text-[0.88rem] font-medium text-[var(--color-blue)]" href={localizeFeaturePath(locale, "security")}>
+                  {item.securityLink}
+                  <ArrowRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>

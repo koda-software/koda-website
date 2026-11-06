@@ -38,7 +38,7 @@ export const aiPage: AiPageContent = {
   hero: {
     title: "Powiedz, czego potrzebujesz. Opero to zbuduje.",
     description:
-      "Połącz Claude lub innego agenta MCP z Opero i opisz zwykłymi słowami widok, regułę albo raport. Agent pracuje na Twoich obiektach, polach i uprawnieniach, więc to, co zbuduje, trafia do Twojego systemu i tam zostaje.",
+      "Kontekstowe AI dla Twojego systemu firmowego: połącz Claude lub innego agenta MCP z Opero i opisz zwykłymi słowami widok, regułę albo raport. Agent pracuje na Twoich obiektach, polach i uprawnieniach, więc to, co zbuduje, trafia do Twojego systemu i tam zostaje.",
     primaryCta: "Umów prezentację",
     secondaryCta: "Zobacz, jak powstaje blok",
     trust: ["Model AI według Twojego wyboru", "Działa z Twoimi uprawnieniami", "Walidacja przed zapisem", "Bez pisania kodu"],
@@ -246,7 +246,7 @@ export const aiPage: AiPageContent = {
     {
       number: "01",
       title: "Pytaj o dane tak, jak zapytałbyś współpracownika.",
-      description: "Agent czyta bieżące dane w Opero, ograniczone do tego, co widzi Twoja rola. Dostajesz prawdziwe nazwy, kwoty i daty z rekordów, a nie ogólne podsumowanie.",
+      description: "Agent AI czyta bieżące dane w Opero, ograniczone do tego, co widzi Twoja rola. Dostajesz prawdziwe nazwy, kwoty i daty z rekordów, a nie ogólne podsumowanie.",
       demo: {
         note: "Odczytane przed chwilą, z Twoimi uprawnieniami",
         tools: {
@@ -316,7 +316,7 @@ export const aiPage: AiPageContent = {
     {
       number: "02",
       title: "Opisz zmianę. Agent skonfiguruje za Ciebie platformę.",
-      description: "Obiekty, pola, formularze, układy, reguły, workflow, bloki i strony. Agent stosuje zasady platformy i waliduje każdą zmianę, więc oceniasz gotowy wynik, a nie szkic.",
+      description: "Obiekty, pola, formularze, układy, reguły, workflow, bloki i strony. Agent AI stosuje zasady platformy i waliduje każdą zmianę, więc oceniasz gotowy wynik, a nie szkic.",
       configure: {
         mcp: "Opero MCP",
         asset: {
@@ -361,7 +361,7 @@ export const aiPage: AiPageContent = {
     steps: [
       { title: "Połącz agenta z Opero", description: "Dodaj Opero do Claude lub innego agenta obsługującego MCP. Dostęp przez MCP to opcjonalny moduł licencji." },
       { title: "Zaloguj się jako Ty", description: "Połączenie działa w Twoim imieniu, dokładnie z uprawnieniami Twojej roli. Wymagania MFA i SSO nadal obowiązują." },
-      { title: "Powiedz, czego potrzebujesz", description: "Agent czyta konfigurację i bieżące dane, a potem buduje to, co opiszesz." },
+      { title: "Powiedz, czego potrzebujesz", description: "Agent AI czyta konfigurację i bieżące dane, a potem buduje to, co opiszesz." },
     ],
     demo: {
       agent: "Twój agent",
@@ -376,7 +376,7 @@ export const aiPage: AiPageContent = {
     items: [
       { title: "Zna Twój model", description: "Obiekty, pola, relacje, formularze i reguły Twojego systemu, a nie ogólną wiedzę o oprogramowaniu." },
       { title: "Sprawdza przed zapisem", description: "Zmiany są najpierw walidowane, a zmiana bloku, która zepsułaby używającą go stronę, zostaje odrzucona." },
-      { title: "Szanuje uprawnienia", description: "Widzi i zmienia dokładnie to, na co pozwala Twoja rola. Te same granice co przy klikaniu w Opero." },
+      { title: "Szanuje uprawnienia", description: "Widzi i zmienia dokładnie to, na co pozwala Twoja rola. Te same granice co przy klikaniu w Opero.", securityLink: "Jak Opero podchodzi do uprawnień" },
       { title: "Możesz to edytować", description: "To, co zbuduje, jest zwykłą konfiguracją Opero, którą możesz otworzyć i dostosować." },
     ],
   },

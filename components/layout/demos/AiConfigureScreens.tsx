@@ -5,7 +5,7 @@ import styles from "./AiConfigureDemo.module.css";
 function Screen({ children, title }: { children: ReactNode; title: string }) {
   return (
     <div className={styles.screen} data-screen>
-      <h3 className={styles.screenTitle}>{title}</h3>
+      <p className={styles.screenTitle}>{title}</p>
       {children}
     </div>
   );

@@ -807,7 +807,8 @@ export type AiPageContent = {
   };
   trust: {
     title: string;
-    items: Array<{ title: string; description: string }>;
+    /** `securityLink` is the words that lead on to the security page. */
+    items: Array<{ title: string; description: string; securityLink?: string }>;
   };
   proof: {
     title: string;

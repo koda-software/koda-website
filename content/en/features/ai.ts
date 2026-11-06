@@ -38,7 +38,7 @@ export const aiPage: AiPageContent = {
   hero: {
     title: "Say what you need. Opero builds it.",
     description:
-      "Connect Claude or any other MCP agent to Opero and describe a view, a rule or a report in plain words. It works with your real objects, fields and permissions, so what it builds lands inside your system and stays there.",
+      "Contextual AI for your business system: connect Claude or any other MCP agent to Opero and describe a view, a rule or a report in plain words. It works with your real objects, fields and permissions, so what it builds lands inside your system and stays there.",
     primaryCta: "Book a demo",
     secondaryCta: "Watch it build a block",
     trust: ["Your choice of AI model", "Acts with your own permissions", "Validated before it saves", "No code to write"],
@@ -246,7 +246,7 @@ export const aiPage: AiPageContent = {
     {
       number: "01",
       title: "Ask about your data like you would ask a colleague.",
-      description: "Your agent reads the current data in Opero, limited to what your role can see. You get real names, amounts and dates from your records, not a generic summary.",
+      description: "Your AI agent reads the current data in Opero, limited to what your role can see. You get real names, amounts and dates from your records, not a generic summary.",
       demo: {
         note: "Read just now, with your permissions",
         tools: {
@@ -316,7 +316,7 @@ export const aiPage: AiPageContent = {
     {
       number: "02",
       title: "Describe the change. It configures the platform for you.",
-      description: "Objects, fields, forms, layouts, rules, workflows, custom blocks and pages. The agent works with the platform's own rules and validates each change, so you review a result instead of a draft.",
+      description: "Objects, fields, forms, layouts, rules, workflows, custom blocks and pages. The AI agent works with the platform's own rules and validates each change, so you review a result instead of a draft.",
       configure: {
         mcp: "Opero MCP",
         asset: {
@@ -361,7 +361,7 @@ export const aiPage: AiPageContent = {
     steps: [
       { title: "Connect your agent to Opero", description: "Add Opero to Claude or any other agent that supports MCP. MCP access is an optional licence module." },
       { title: "Sign in as yourself", description: "The connection acts as you, with exactly your role's permissions. MFA and SSO requirements still apply." },
-      { title: "Say what you need", description: "Your agent reads your configuration and live data, and builds what you describe." },
+      { title: "Say what you need", description: "Your AI agent reads your configuration and live data, and builds what you describe." },
     ],
     demo: {
       agent: "Your agent",
@@ -376,7 +376,7 @@ export const aiPage: AiPageContent = {
     items: [
       { title: "It knows your model", description: "Objects, fields, relations, forms and rules of your own system, not general knowledge about software." },
       { title: "It checks before it saves", description: "Changes are validated first, and a block change that would break a page using it is refused." },
-      { title: "It respects permissions", description: "It sees and changes exactly what your role allows. The same limits as clicking in Opero." },
+      { title: "It respects permissions", description: "It sees and changes exactly what your role allows. The same limits as clicking in Opero.", securityLink: "How Opero handles permissions" },
       { title: "It is yours to edit", description: "What it builds is standard Opero configuration that you can open and adjust." },
     ],
   },
