@@ -1,26 +1,33 @@
 .board {
   display: flex;
   gap: 16px;
-  padding: 0 40px;
+  /*
+   * Pinned to the top with each column sized to its own cards, so a column grows
+   * only when a card lands in it and the rest of the board stays where it is.
+   */
+  align-self: flex-start;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding: 0 24px;
   width: 100%;
   position: relative;
 }
 .col {
   flex: 1;
+  min-width: 0;
   /* Opaque enough to stay a light column over the dark banner. */
   background: rgb(255 255 255 / 0.9);
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 14px 12px;
-  min-height: 300px;
+  padding: 14px 12px 4px;
 }
 .colHead {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   padding: 0 4px;
 }
 .colHead i {
@@ -38,25 +45,34 @@
   border-radius: 20px;
   padding: 1px 9px;
 }
+/*
+ * The gap the travelling card lands in. It stays shut until the card crosses
+ * into the column, so the standing cards get shoved down by its arrival rather
+ * than leaving room for it in advance.
+ */
+.slot {
+  height: 0;
+  transition: height 0.32s cubic-bezier(0.3, 0, 0.2, 1);
+}
 .mini {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 12px 13px;
+  padding: 13px 14px;
   margin-bottom: 10px;
   box-shadow: 0 2px 6px rgb(16 24 40 / 0.05);
 }
 .mini b {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 .mini span {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink2);
 }
-/* Positioned and sized against a column by the timeline, so it can slide between them. */
+/* Positioned against a column's slot by the timeline. The easing and 0.6s match the demo cursor, which carries it. */
 .flycard {
   position: absolute;
   left: 0;
@@ -66,22 +82,32 @@
   border: 1.5px solid var(--brand);
   border-radius: 14px;
   padding: 13px 14px;
-  box-shadow: 0 12px 30px rgb(16 24 40 / 0.16);
-  transition: transform 0.75s cubic-bezier(0.5, 0, 0.2, 1), border-color 0.4s;
+  box-shadow: 0 6px 16px rgb(16 24 40 / 0.1);
+  transition:
+    transform 0.6s cubic-bezier(0.4, 0.05, 0.2, 1),
+    rotate 0.2s ease,
+    scale 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.4s;
   z-index: 20;
+}
+.lifted {
+  rotate: 2deg;
+  scale: 1.03;
+  box-shadow: 0 22px 44px rgb(16 24 40 / 0.24);
 }
 .flycard b {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 750;
   margin-bottom: 4px;
 }
-.flycard span {
-  font-size: 13px;
+.flycard > span {
+  font-size: 14px;
   color: var(--ink2);
 }
 .flycard em {
-  display: inline-block;
+  display: table;
   margin-top: 9px;
   font-style: normal;
   font-size: 12px;
@@ -94,86 +120,42 @@
 .approved {
   border-color: #10b981;
 }
-.bottom {
-  display: flex;
-  gap: 16px;
-  padding: 22px 40px 0;
-  width: 100%;
-}
-.tasks {
-  flex: 1;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 14px 16px;
-  box-shadow: 0 10px 30px rgb(16 24 40 / 0.07);
-}
-.tasksHead {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 12px;
-}
-.task {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* A row that takes no space until it opens; --row is mirrored by the slot in the timeline. */
+.reveal {
+  height: 0;
+  overflow: hidden;
   opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.4s, transform 0.4s;
+  transition: height 0.32s cubic-bezier(0.3, 0, 0.2, 1), opacity 0.25s;
 }
-.task.on {
+.reveal.on {
+  height: var(--row);
   opacity: 1;
-  transform: none;
+}
+.owner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding-top: 10px;
+  font-size: 13px;
+  color: var(--ink2);
+  white-space: nowrap;
 }
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: linear-gradient(140deg, #7c93b8, #3f5b80);
   flex: none;
 }
-.task b {
-  display: block;
-  font-size: 15px;
-  font-weight: 650;
-}
-.task span {
-  font-size: 13px;
-  color: var(--ink3);
-}
-.approve {
-  flex: 1;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 14px 16px;
+.actions {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 10px 30px rgb(16 24 40 / 0.07);
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.4s, transform 0.4s;
+  gap: 8px;
+  height: 48px;
+  padding-top: 10px;
 }
-.approve.on {
-  opacity: 1;
-  transform: none;
-}
-.approveText {
+.actions button {
   flex: 1;
-}
-.approveText b {
-  display: block;
-  font-size: 15px;
-  font-weight: 650;
-}
-.approveText span {
-  font-size: 13px;
-  color: var(--ink3);
+  justify-content: center;
+  padding: 0 8px;
 }

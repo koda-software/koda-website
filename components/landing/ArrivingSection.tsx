@@ -45,12 +45,15 @@ const CURTAIN_SINK = 0.14;
  *
  * `curtain` slides over the section above on a straight edge with a shadow, while that
  * section's content sinks a little more slowly behind the edge. Whatever is marked
- * `data-arrive` on it grows into place, as with `open`.
+ * `data-arrive` on it grows into place, as with `open`. A section with something pinned in
+ * it marks what may sink with `data-sink` instead, because a transform above a pin breaks it,
+ * and a section whose content should simply scroll marks it `data-sink="none"`.
  *
  * `steps` is the mist above hanging over the section in columns, which pull back one after
  * another and leave a stepped edge on the way, for a section about steps.
  *
- * `slide` brings whatever is marked `data-arrive` in from the right, for a row of things.
+ * `slide` brings whatever is marked `data-arrive` in from the right, for a row of things,
+ * or from the left with `data-arrive="left"`.
  *
  * `open` grows whatever is marked `data-arrive` up into place, the way the page's first
  * section did, so that the page ends the way it began.
@@ -90,8 +93,9 @@ export function ArrivingSection({ children, className = "", cut, id }: ArrivingS
           );
 
         if (cut === "curtain") {
-          const covered = root.previousElementSibling?.firstElementChild;
-          if (covered) {
+          const above = root.previousElementSibling;
+          const covered = above?.querySelector("[data-sink]") ?? above?.firstElementChild;
+          if (covered && covered.getAttribute("data-sink") !== "none") {
             gsap.to(covered, {
               y: () => window.innerHeight * CURTAIN_SINK,
               ease: "none",
@@ -113,7 +117,8 @@ export function ArrivingSection({ children, className = "", cut, id }: ArrivingS
         }
 
         if (cut === "slide") {
-          gsap.fromTo(marked, { x: 220, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power2.out", scrollTrigger: { trigger: root, start: "top 85%", end: "top 35%", scrub: true } });
+          const side = (_: number, element: HTMLElement) => (element.dataset.arrive === "left" ? -220 : 220);
+          gsap.fromTo(marked, { x: side, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power2.out", scrollTrigger: { trigger: root, start: "top 85%", end: "top 35%", scrub: true } });
           return;
         }
 

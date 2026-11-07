@@ -43,20 +43,20 @@ type MotionPathModule = {
   MotionPathPlugin: typeof MotionPathPluginInstance;
 };
 
-const ruleNodeShadow = "0 3px 6px -4px rgba(2,2,13,0.74), 0 5px 9px -8px rgba(2,2,13,0.7)";
+const ruleNodeShadow = "0 10px 24px -16px rgba(2,2,13,0.4), 0 1px 2px rgba(2,2,13,0.04)";
 
 const dashboardBlockIcons = [GaugeIcon, BarChart3Icon, Table2Icon] as const;
 const placeholderIcons = [TextCursorInputIcon, Rows3Icon, CheckSquareIcon] as const;
 const paletteClass =
-  "grid content-start gap-2 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.12)] p-3";
+  "grid content-start gap-2 rounded-[var(--radius-card)] border border-[var(--color-border-light)] bg-white p-2.5 shadow-[0_18px_40px_-32px_rgba(2,2,13,0.4)]";
 const pageClass =
-  "relative rounded-[calc(var(--radius-panel)-14px)] pt-3";
+  "relative rounded-[var(--radius-card)]";
 const dropSlotClass =
-  "rounded-[calc(var(--radius-card)-4px)] border border-dashed";
+  "rounded-[14px] border border-dashed";
 const dashboardMetrics = [
-  { caption: "Open pipeline", value: "€18.4k" },
-  { caption: "Weighted value", value: "€12.1k" },
-  { caption: "Active deals", value: "27" },
+  { value: "€18.4k" },
+  { value: "€12.1k" },
+  { value: "27" },
 ] as const;
 const dashboardBars = [
   { label: "New", value: 42 },
@@ -79,21 +79,21 @@ const processRecords = [
     title: "Invoice #1042",
   },
   {
-    calendarClass: "col-start-5 row-start-2 bg-[#bef2da] text-[#047857]",
+    calendarClass: "col-start-5 row-start-2 bg-[#fdecc4] text-[#8a5a06]",
     date: "12",
     owner: "Tomek",
     status: "Doing",
     title: "Onboarding kit",
   },
   {
-    calendarClass: "col-start-3 row-start-3 bg-[#d9dafe] text-[#4338ca]",
+    calendarClass: "col-start-3 row-start-3 bg-[#c9f2e0] text-[#047857]",
     date: "17",
     owner: "Ania",
     status: "Done",
     title: "Coffee budget",
   },
   {
-    calendarClass: "col-start-6 row-start-4 bg-[#bef2da] text-[#047857]",
+    calendarClass: "col-start-6 row-start-4 bg-[#fdecc4] text-[#8a5a06]",
     date: "27",
     owner: "Piotr",
     status: "Doing",
@@ -107,20 +107,12 @@ const processRecords = [
     title: "Office plants",
   },
 ] as const;
-const kanbanColumns = [
-  {
-    color: "text-[#075985]",
-    status: "Intake",
-  },
-  {
-    color: "text-[#047857]",
-    status: "Doing",
-  },
-  {
-    color: "text-[#4338ca]",
-    status: "Done",
-  },
-] as const;
+const STATUS_DOT = {
+  Doing: "bg-[#f59e0b]",
+  Done: "bg-[#10b981]",
+  Intake: "bg-[var(--color-blue-soft)]",
+} as const;
+const kanbanColumns = ["Intake", "Doing", "Done"] as const;
 
 async function animateDemoIn(root: HTMLElement | null, selector: string, y = 10) {
   if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -184,8 +176,8 @@ function BlockLabel({
   icon: BlockIcon;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.14)] bg-white px-3 py-2 text-[0.78rem] font-semibold text-[var(--color-ink)]">
-      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(2,2,13,0.045)] text-[rgba(11,17,22,0.68)]">
+    <div className="flex items-center gap-2.5 rounded-[12px] px-2 py-1.5 text-[0.82rem] font-semibold text-[var(--color-ink)] transition-colors duration-150 hover:bg-[var(--color-mist)]">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[10px] bg-[rgba(56,182,255,0.13)] text-[var(--color-blue)]">
         <Icon className="h-4 w-4" strokeWidth={1.6} />
       </span>
       <span className="truncate">{children}</span>
@@ -217,7 +209,7 @@ function BlockPalette({
       {blocks.map((block, index) => (
         <button
           aria-pressed={selected?.[index]}
-          className={`relative rounded-[calc(var(--radius-button)+2px)] text-left transition-[filter,opacity] duration-150 hover:brightness-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue)] ${
+          className={`relative rounded-[12px] text-left transition-opacity duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue)] ${
             pulseIndex === index && !selected?.[index] ? styles.pulseHint : ""
           } ${selected?.[index] ? "cursor-default opacity-[0.42] grayscale" : "cursor-pointer"}`}
           disabled={selected?.[index]}
@@ -226,7 +218,7 @@ function BlockPalette({
           type="button"
         >
           {showTryMe && index === 0 && !selected?.[0] ? (
-            <span className={`${styles.tryMePopover} pointer-events-none absolute left-[calc(50%+1.55rem)] top-0 z-20 min-w-[5.25rem] -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-[calc(var(--radius-button)+3px)] border border-[rgba(16,185,129,0.36)] bg-[rgba(236,253,245,0.94)] px-3.5 py-2 text-center text-[0.82rem] font-semibold text-[#057344] shadow-[0_14px_32px_-22px_rgba(2,2,13,0.42)]`}>
+            <span className={`${styles.tryMePopover} pointer-events-none absolute left-[calc(50%+1.55rem)] top-0 z-20 min-w-[5.25rem] -translate-x-1/2 -translate-y-[calc(100%-0.38rem)] rounded-full bg-[var(--color-ink)] px-3.5 py-1.5 text-center text-[0.78rem] font-semibold text-white shadow-[0_14px_32px_-18px_rgba(2,2,13,0.6)]`}>
               {tryLabel}
             </span>
           ) : null}
@@ -255,17 +247,14 @@ function DashboardPage({
           <div className={`${styles.componentPop} grid min-h-[4.625rem] grid-cols-3 gap-2`} data-build-component="0">
             {animation.metrics.map((metric, index) => (
               <span
-                className="rounded-[calc(var(--radius-card)-6px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] p-2 shadow-[0_1px_1px_rgba(50,70,88,0.18)]"
+                className="rounded-[14px] border border-[var(--color-border-light)] bg-white p-2.5"
                 key={metric}
               >
-                <span className="block truncate text-[0.5rem] font-semibold uppercase tracking-[0.06em] text-[rgba(11,17,22,0.58)]">
+                <span className="block truncate text-[0.6rem] font-medium text-[var(--color-muted)]">
                   {metric}
                 </span>
-                <span className="mt-1.5 block truncate text-[1.02rem] font-bold leading-none text-[var(--color-ink)]">
+                <span className="mt-1.5 block truncate text-[1.12rem] font-semibold leading-none tracking-[-0.02em] text-[var(--color-ink)]">
                   {dashboardMetrics[index].value}
-                </span>
-                <span className="mt-1.5 block truncate text-[0.5rem] font-medium text-[rgba(11,17,22,0.58)]">
-                  {dashboardMetrics[index].caption}
                 </span>
               </span>
             ))}
@@ -279,27 +268,20 @@ function DashboardPage({
           {visibleBlocks[1] ? (
           <div className={`${styles.componentPop} grid h-full grid-rows-[auto_1fr]`} data-build-component="1">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[0.58rem] font-semibold text-[var(--color-ink)]">
+              <span className="text-[0.7rem] font-semibold text-[var(--color-ink)]">
                 {animation.chartTitle}
               </span>
-              <span className="text-[0.48rem] font-semibold uppercase tracking-[0.08em] text-[rgba(11,17,22,0.5)]">
-                Current
-              </span>
             </div>
-            <div className="relative flex h-full min-h-[10.5rem] items-end gap-2 overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] px-2 pb-4 pt-2 shadow-[0_1px_1px_rgba(50,70,88,0.14)]">
-              <span className="absolute inset-x-2 top-1/4 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
-              <span className="absolute inset-x-2 top-1/2 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
-              <span className="absolute inset-x-2 top-3/4 h-px bg-[rgba(11,17,22,0.06)]" aria-hidden="true" />
-              <span className="absolute bottom-[1.05rem] left-2 right-2 h-px bg-[rgba(11,17,22,0.16)]" aria-hidden="true" />
+            <div className="relative flex h-full min-h-[10.5rem] items-end gap-2 overflow-hidden rounded-[14px] border border-[var(--color-border-light)] bg-white px-3 pb-3 pt-3">
               {dashboardBars.map((bar) => (
                 <span className="relative z-[1] flex h-full flex-1 flex-col justify-end gap-1" key={bar.label}>
                   <span className="flex min-h-0 flex-1 items-end">
                     <span
-                      className="block min-h-3 w-full rounded-t-sm bg-[#2f78a8] shadow-[0_1px_1px_rgba(47,120,168,0.28)]"
+                      className="block min-h-3 w-full rounded-[5px] bg-[var(--color-blue-soft)]"
                       style={{ height: `${bar.value}%` }}
                     />
                   </span>
-                  <span className="truncate text-center text-[0.45rem] font-semibold text-[rgba(11,17,22,0.62)]">
+                  <span className="truncate text-center text-[0.55rem] font-medium text-[var(--color-muted)]">
                     {bar.label}
                   </span>
                 </span>
@@ -312,15 +294,15 @@ function DashboardPage({
         </div>
         <div className={visibleBlocks[2] ? "grid min-h-full" : `${dropSlotClass} grid p-3 ${styles.interactiveDropZone}`}>
           {visibleBlocks[2] ? (
-          <div className={`${styles.componentPop} overflow-hidden rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] shadow-[0_1px_1px_rgba(50,70,88,0.14)]`} data-build-component="2">
-            <div className="border-b border-[rgba(47,120,168,0.16)] bg-[rgba(47,120,168,0.1)] px-2 py-1.5 text-[0.54rem] font-semibold text-[var(--color-ink)]">
+          <div className={`${styles.componentPop} overflow-hidden rounded-[14px] border border-[var(--color-border-light)] bg-white`} data-build-component="2">
+            <div className="px-2.5 pb-1 pt-2.5 text-[0.7rem] font-semibold text-[var(--color-ink)]">
               {animation.tableTitle}
             </div>
             {dashboardRows.map((row) => (
-              <div className="grid grid-cols-[1fr_1.8rem_2.7rem] border-b border-[rgba(2,2,13,0.08)] text-[0.48rem] last:border-b-0" key={row[0]}>
-                <span className="truncate px-2 py-1.5 font-semibold text-[var(--color-ink)]">{row[0]}</span>
-                <span className="px-1 py-1.5 text-right font-semibold text-[rgba(11,17,22,0.66)]">{row[1]}</span>
-                <span className="truncate px-1.5 py-1.5 font-medium text-[rgba(11,17,22,0.64)]">{row[2]}</span>
+              <div className="grid grid-cols-[1fr_1.4rem_2.5rem] items-center border-t border-[rgba(2,2,13,0.06)] text-[0.58rem] first-of-type:border-t-0" key={row[0]}>
+                <span className="truncate py-2 pl-2.5 pr-1 font-medium text-[var(--color-ink)]">{row[0]}</span>
+                <span className="py-2 text-right text-[var(--color-muted)]">{row[1]}</span>
+                <span className="truncate py-2 pl-1.5 pr-2 text-[var(--color-muted)]">{row[2]}</span>
               </div>
             ))}
           </div>
@@ -402,33 +384,29 @@ function ViewModeButton({
   );
 }
 
+function StatusDot({ status }: { status: keyof typeof STATUS_DOT }) {
+  return <i className={`h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[status]}`} />;
+}
+
 function TableView({ active }: { active: boolean }) {
   return (
     <div className={`absolute inset-0 p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="table">
-      <div className="overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.18)] bg-[rgba(250,251,252,0.98)]">
-        <div className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] bg-[rgba(47,120,168,0.1)] text-[0.54rem] font-semibold uppercase text-[rgba(11,17,22,0.68)]">
-          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Case</span>
-          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Owner</span>
-          <span className="border-r border-[rgba(2,2,13,0.11)] px-3 py-2">Status</span>
-          <span className="px-3 py-2">Day</span>
+      <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border-light)] bg-white shadow-[0_18px_40px_-32px_rgba(2,2,13,0.4)]">
+        <div className="grid grid-cols-[1.1fr_0.6fr_0.7fr_0.34fr] px-2 pt-1 text-[0.66rem] font-medium text-[var(--color-muted)]">
+          <span className="px-2.5 py-2">Case</span>
+          <span className="px-2.5 py-2">Owner</span>
+          <span className="px-2.5 py-2">Status</span>
+          <span className="px-2.5 py-2">Day</span>
         </div>
         {processRecords.map((record) => (
-          <div
-            className="grid grid-cols-[1.08fr_0.58fr_0.62fr_0.38fr] border-t border-[rgba(2,2,13,0.12)]"
-            key={record.title}
-          >
-            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.64rem] font-bold text-[var(--color-ink)]">
-              {record.title}
-            </span>
-            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.64rem] font-medium text-[rgba(11,17,22,0.72)]">
-              {record.owner}
-            </span>
-            <span className="truncate border-r border-[rgba(2,2,13,0.1)] px-3 py-2 text-[0.62rem] font-semibold text-[rgba(11,17,22,0.78)]">
+          <div className="mx-2 grid grid-cols-[1.1fr_0.6fr_0.7fr_0.34fr] items-center border-t border-[rgba(2,2,13,0.06)] text-[0.74rem]" key={record.title}>
+            <span className="truncate px-2.5 py-[0.56rem] font-semibold text-[var(--color-ink)]">{record.title}</span>
+            <span className="truncate px-2.5 py-[0.56rem] text-[var(--color-muted)]">{record.owner}</span>
+            <span className="flex items-center gap-1.5 truncate px-2.5 py-[0.56rem] text-[var(--color-ink)]">
+              <StatusDot status={record.status} />
               {record.status}
             </span>
-            <span className="px-3 py-2 text-[0.62rem] font-semibold text-[rgba(11,17,22,0.72)]">
-              {record.date}
-            </span>
+            <span className="px-2.5 py-[0.56rem] text-[var(--color-muted)]">{record.date}</span>
           </div>
         ))}
       </div>
@@ -439,21 +417,22 @@ function TableView({ active }: { active: boolean }) {
 function KanbanView({ active }: { active: boolean }) {
   return (
     <div className={`absolute inset-0 grid grid-cols-3 gap-3 p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="kanban">
-      {kanbanColumns.map((column) => (
-        <div className="grid content-start gap-2 rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.16)] bg-[rgba(247,248,249,0.98)] p-2" key={column.status}>
-          <span className={`mb-1 px-0.5 py-0.5 text-[0.58rem] font-semibold ${column.color}`}>
-            {column.status}
+      {kanbanColumns.map((status) => (
+        <div className="grid content-start gap-2 rounded-[var(--radius-card)] border border-[var(--color-border-light)] bg-white/70 p-2" key={status}>
+          <span className="mb-0.5 flex items-center gap-1.5 px-1 py-0.5 text-[0.72rem] font-semibold text-[var(--color-ink)]">
+            <StatusDot status={status} />
+            {status}
           </span>
           {processRecords
-            .filter((record) => record.status === column.status)
+            .filter((record) => record.status === status)
             .map((record) => (
-            <span className="rounded-[calc(var(--radius-card)-7px)] border border-[rgba(2,2,13,0.16)] bg-white p-2 text-[0.6rem] font-semibold leading-[1.25] text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.24)]" key={record.title}>
-              {record.title}
-              <span className="mt-1 block text-[0.48rem] font-semibold text-[rgba(11,17,22,0.62)]">
-                {record.owner} · day {record.date}
+              <span className="rounded-[12px] border border-[var(--color-border-light)] bg-white p-2.5 text-[0.72rem] font-semibold leading-[1.25] text-[var(--color-ink)]" key={record.title}>
+                {record.title}
+                <span className="mt-1 block text-[0.62rem] font-normal text-[var(--color-muted)]">
+                  {record.owner} · day {record.date}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
         </div>
       ))}
     </div>
@@ -462,20 +441,22 @@ function KanbanView({ active }: { active: boolean }) {
 
 function CalendarView({ active }: { active: boolean }) {
   return (
-    <div className={`absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-1.5 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(247,248,249,0.98)] p-4 transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="calendar">
-      {Array.from({ length: 35 }, (_, index) => (
-        <span
-          className="rounded-[calc(var(--radius-card)-8px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 text-[0.5rem] font-semibold text-[rgba(11,17,22,0.58)]"
-          key={index}
-        >
-          {index + 1}
-        </span>
-      ))}
-      {processRecords.map((record) => (
-        <span className={`${record.calendarClass} z-10 mt-4 truncate rounded-full border border-white px-2 py-1 text-[0.54rem] font-bold shadow-[0_14px_30px_-16px_rgba(2,2,13,0.52)] ring-1 ring-[rgba(2,2,13,0.08)]`} key={record.title}>
-          {record.title.replace(/^(.+?)(\s|#).*$/, "$1")}
-        </span>
-      ))}
+    <div className={`absolute inset-4 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border-light)] transition-opacity duration-200 ease-out ${active ? "opacity-100" : "pointer-events-none opacity-0"}`} data-process-view="calendar">
+      <div className="grid h-full grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-px bg-[rgba(2,2,13,0.07)]">
+        {Array.from({ length: 35 }, (_, index) => (
+          <span className="bg-white p-1.5 text-[0.58rem] text-[var(--color-muted)]" key={index}>
+            {index + 1}
+          </span>
+        ))}
+      </div>
+      {/* A grid of its own, so that placing an event does not push the days along. */}
+      <div className="absolute inset-0 grid grid-cols-7 grid-rows-[repeat(5,minmax(0,1fr))] gap-px">
+        {processRecords.map((record) => (
+          <span className={`${record.calendarClass} mx-1 mb-1 mt-5 self-start truncate rounded-full px-2 py-0.5 text-[0.58rem] font-semibold`} key={record.title}>
+            {record.title.replace(/^(.+?)(\s|#).*$/, "$1")}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -489,7 +470,7 @@ function ProcessViewInteractive() {
       <div className={`relative left-1/2 min-h-[22rem] w-full min-[1440px]:pl-8 ${styles.stageScale} ${styles.edgeStage} ${styles.wideDesktopStage} ${styles.processStage}`}>
         <div className="relative rounded-[calc(var(--radius-panel)-14px)] p-4">
           <div className="mb-3 ml-4 flex w-[calc(100%-1rem)]">
-            <div className="inline-flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
+            <div className="inline-flex rounded-full border border-[var(--color-border-light)] bg-white p-1">
             <ViewModeButton
               active={activeView === "table"}
               label="List"
@@ -543,15 +524,15 @@ function RuleNode({
 }) {
   const toneClass =
     tone === "green"
-      ? "border-[rgba(16,185,129,0.2)] bg-[rgba(16,185,129,0.08)] text-[#0f8b5d]"
+      ? "bg-[rgba(16,185,129,0.13)] text-[#0f8b5d]"
       : tone === "red"
-        ? "border-[rgba(248,113,113,0.26)] bg-[rgba(248,113,113,0.08)] text-[#c2413b]"
-        : "border-[rgba(2,2,13,0.14)] bg-[rgba(2,2,13,0.05)] text-[rgba(11,17,22,0.72)]";
+        ? "bg-[rgba(245,158,11,0.15)] text-[#a76008]"
+        : "bg-[rgba(56,182,255,0.13)] text-[var(--color-blue)]";
 
   return (
-    <div className={`${styles.ruleNode} absolute z-10 rounded-[calc(var(--radius-panel)-14px)] border border-[rgba(2,2,13,0.08)] bg-white p-3 shadow-[0_3px_6px_-4px_rgba(2,2,13,0.74),0_5px_9px_-8px_rgba(2,2,13,0.7)] ${className}`} data-rule-node={nodeId}>
+    <div className={`${styles.ruleNode} absolute z-10 rounded-[var(--radius-card)] border border-[var(--color-border-light)] bg-white p-3 shadow-[0_10px_24px_-16px_rgba(2,2,13,0.4),0_1px_2px_rgba(2,2,13,0.04)] ${className}`} data-rule-node={nodeId}>
       <div className="flex items-start gap-2.5">
-        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[calc(var(--radius-button)-4px)] border ${toneClass}`}>
+        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[10px] ${toneClass}`}>
           <Icon className="h-4 w-4" strokeWidth={1.6} />
         </span>
         <span className="min-w-0">
@@ -898,15 +879,15 @@ function RuleFlowInteractive({ animation }: { animation: RuleAnimation }) {
         <div className="relative h-[26.25rem] overflow-visible rounded-[calc(var(--radius-panel)-14px)]">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.15)_1px,transparent_1.25px),linear-gradient(rgba(241,244,247,0.82),rgba(241,244,247,0.82))] [background-size:18px_18px,100%_100%] [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
+            className="pointer-events-none absolute inset-0 rounded-[calc(var(--radius-panel)-14px)] bg-[radial-gradient(circle,rgba(11,17,22,0.13)_1px,transparent_1.25px)] [background-size:18px_18px] [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)] [-webkit-mask-composite:source-in] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%),linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
           />
           <button
-            className={`absolute left-1/2 top-[0.375rem] z-20 inline-flex -translate-x-1/2 cursor-pointer items-center gap-3 rounded-[calc(var(--radius-button)+6px)] border border-[rgba(11,123,190,0.22)] bg-[var(--color-blue)] px-5 py-3 text-[0.9rem] font-semibold text-white shadow-[0_16px_34px_-24px_rgba(11,123,190,0.82)] transition-[background-color,transform] duration-150 hover:bg-[#096da9] active:translate-y-px disabled:cursor-default ${!isRunning ? styles.pulseHint : ""}`}
+            className={`absolute left-1/2 top-[0.375rem] z-20 inline-flex -translate-x-1/2 cursor-pointer items-center gap-3 rounded-full bg-[var(--color-ink)] px-5 py-2.5 text-[0.88rem] font-semibold text-white shadow-[0_16px_34px_-22px_rgba(2,2,13,0.7)] transition-[background-color,transform] duration-150 hover:bg-[var(--color-ink-soft)] active:translate-y-px disabled:cursor-default ${!isRunning ? styles.pulseHint : ""}`}
             disabled={isRunning}
             onClick={startFlow}
             type="button"
           >
-            <SendIcon className="h-4.5 w-4.5 text-white" strokeWidth={1.9} />
+            <SendIcon className="h-4 w-4 text-white" strokeWidth={1.9} />
             {animation.actionLabel}
           </button>
           <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 504 420">
@@ -991,7 +972,7 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
         <div className="relative h-[22rem] overflow-hidden">
           <div className="absolute left-1/2 top-5 grid w-[24rem] -translate-x-1/2 gap-3">
             <div className="flex justify-end">
-              <div className="flex rounded-[calc(var(--radius-button)+4px)] border border-[rgba(2,2,13,0.12)] bg-white p-1 shadow-[0_12px_28px_-22px_rgba(2,2,13,0.38)]">
+              <div className="flex rounded-full border border-[var(--color-border-light)] bg-white p-1">
                 {([
                   ["hr", animation.hrRoleLabel],
                   ["employee", animation.employeeRoleLabel],
@@ -1012,19 +993,19 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
               </div>
             </div>
 
-            <div className="rounded-[calc(var(--radius-panel)-12px)] border border-[rgba(2,2,13,0.14)] bg-white p-4 shadow-[0_1px_1px_rgba(50,70,88,0.16)]">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-[0.82rem] font-semibold text-[var(--color-ink)]">
+            <div className="rounded-[var(--radius-panel)] border border-[var(--color-border-light)] bg-white p-5 shadow-[0_18px_40px_-32px_rgba(2,2,13,0.4)]">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-[0.95rem] font-semibold tracking-[-0.01em] text-[var(--color-ink)]">
                 {animation.title}
               </span>
             </div>
-            <div className="grid gap-3">
+            <div className="grid gap-1">
               {animation.fields.map((field, index) => {
                 const protectedField = index === 1;
 
                 return (
                   <div
-                    className={`relative overflow-hidden rounded-[calc(var(--radius-card)-4px)] border border-[rgba(2,2,13,0.14)] bg-[rgba(250,251,252,0.98)] p-3 ${
+                    className={`relative overflow-hidden rounded-[12px] py-2 ${
                       protectedField ? styles.permissionProtectedField : ""
                     } ${
                       protectedField && protectedHidden ? styles.permissionProtectedFieldHidden : ""
@@ -1032,18 +1013,18 @@ function PermissionFormInteractive({ animation }: { animation: PermissionAnimati
                     data-permission-field={protectedField ? "protected" : "open"}
                     key={field.label}
                   >
-                    <div className={`grid gap-2 ${protectedField ? styles.permissionFieldContent : ""} ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>
-                      <span className="text-[0.58rem] font-bold text-[rgba(11,17,22,0.68)]">
+                    <div className={`grid gap-1.5 ${protectedField ? styles.permissionFieldContent : ""} ${protectedField && protectedHidden ? styles.permissionFieldContentHidden : ""}`}>
+                      <span className="text-[0.68rem] font-medium text-[var(--color-muted)]">
                         {field.label}
                       </span>
-                      <span className="rounded-[calc(var(--radius-button)-4px)] border border-[rgba(2,2,13,0.16)] bg-white px-3 py-2 text-[0.72rem] font-semibold text-[var(--color-ink)]">
+                      <span className="rounded-[10px] border border-[var(--color-border-light)] bg-[var(--color-mist)] px-3 py-2 text-[0.76rem] font-medium text-[var(--color-ink)]">
                         {field.value}
                       </span>
                     </div>
                     {protectedField ? (
-                      <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-[rgba(255,255,255,0.84)] backdrop-blur-[2px]`}>
-                        <span className="flex items-center gap-2 rounded-[calc(var(--radius-button)+2px)] border border-[rgba(2,2,13,0.18)] bg-white px-3 py-2 text-[0.68rem] font-semibold text-[var(--color-ink)] shadow-[0_1px_1px_rgba(50,70,88,0.2)]">
-                          <LockKeyholeIcon className="h-4 w-4 text-[rgba(11,17,22,0.62)]" strokeWidth={1.9} />
+                      <div className={`${styles.permissionLockOverlay} ${protectedHidden ? styles.permissionLockOverlayVisible : ""} absolute inset-0 grid place-items-center bg-transparent`}>
+                        <span className="flex items-center gap-2 rounded-full bg-[var(--color-ink)] px-3 py-1.5 text-[0.7rem] font-semibold text-white">
+                          <LockKeyholeIcon className="h-3.5 w-3.5 text-white" strokeWidth={1.9} />
                           {animation.lockedLabel}
                         </span>
                       </div>

@@ -4,7 +4,18 @@ import { commonContent, navItems } from "@/content/pl/common";
 import { featureCtas, featurePages } from "@/content/pl/features";
 import { aiPage } from "@/content/pl/features/ai";
 import { noCodePage } from "@/content/pl/features/no-code";
-import { FeaturePage } from "@/components/layout/FeaturePage";
+import { documentsPage } from "@/content/pl/features/documents";
+import { integrationsPage } from "@/content/pl/features/integrations";
+import { lowCodePage } from "@/content/pl/features/low-code";
+import { processesPage } from "@/content/pl/features/processes";
+import { reportsPage } from "@/content/pl/features/reports";
+import { securityPage } from "@/content/pl/features/security";
+import { ProcessesFeaturePage } from "@/components/layout/features/ProcessesFeaturePage";
+import { DocumentsFeaturePage } from "@/components/layout/features/DocumentsFeaturePage";
+import { LowCodeFeaturePage } from "@/components/layout/features/LowCodeFeaturePage";
+import { ReportsFeaturePage } from "@/components/layout/features/ReportsFeaturePage";
+import { SecurityFeaturePage } from "@/components/layout/features/SecurityFeaturePage";
+import { IntegrationsFeaturePage } from "@/components/layout/features/IntegrationsFeaturePage";
 import { AiFeaturePage } from "@/components/layout/AiFeaturePage";
 import { NoCodeFeaturePage } from "@/components/layout/NoCodeFeaturePage";
 import { PageShell } from "@/components/layout/PageShell";
@@ -67,11 +78,45 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
           />
         ) : feature === "ai" ? (
           <AiFeaturePage content={aiPage} locale="pl" primaryHref={featureCtas.primary} />
-        ) : (
-          <FeaturePage
-            feature={feature}
+        ) : feature === "processes" ? (
+          <ProcessesFeaturePage
+            content={processesPage}
             locale="pl"
-            pages={featurePages}
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : feature === "documents" ? (
+          <DocumentsFeaturePage
+            content={documentsPage}
+            locale="pl"
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : feature === "lowCode" ? (
+          <LowCodeFeaturePage
+            content={lowCodePage}
+            locale="pl"
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : feature === "reports" ? (
+          <ReportsFeaturePage
+            content={reportsPage}
+            locale="pl"
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : feature === "security" ? (
+          <SecurityFeaturePage
+            content={securityPage}
+            locale="pl"
+            primaryHref={featureCtas.primary}
+            secondaryHref={featureCtas.secondary}
+          />
+        ) : (
+          <IntegrationsFeaturePage
+            content={integrationsPage}
+            locale="pl"
             primaryHref={featureCtas.primary}
             secondaryHref={featureCtas.secondary}
           />

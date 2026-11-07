@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import type { gsap as GsapNamespace } from "gsap";
 import { BrowserFrame } from "@/components/landing/BrowserFrame";
 
@@ -11,6 +11,8 @@ type GsapModule = {
 
 type SolutionScreenshotMockProps = {
   alt?: string;
+  /** Laid over the screenshot, positioned against it. */
+  children?: ReactNode;
   className?: string;
   glowVariant?: "default" | "hero";
   height?: number;
@@ -29,6 +31,7 @@ const startTransform = "translateY(34px) rotateX(0deg) rotateY(0deg) rotateZ(0de
 
 export function SolutionScreenshotMock({
   alt = "Opero visual rule editor",
+  children,
   className = "",
   glowVariant = "default",
   height = 1355,
@@ -91,7 +94,11 @@ export function SolutionScreenshotMock({
           willChange: "transform, opacity",
         });
 
-        gsap
+        // Anything laid over the screenshot waits until it has settled.
+        const overlay = root.querySelector("[data-arrives-last]");
+        if (overlay) gsap.set(overlay, { autoAlpha: 0, scale: 0.72 });
+
+        const entrance = gsap
           .timeline({ defaults: { ease: "power3.out" } })
           .to(screenshot, {
             autoAlpha: 1,
@@ -119,6 +126,7 @@ export function SolutionScreenshotMock({
             },
             "<0.12",
           );
+        if (overlay) entrance.to(overlay, { autoAlpha: 1, duration: 0.6, ease: "back.out(1.4)", scale: 1 }, "-=0.45");
       }, root);
     };
 
@@ -146,7 +154,8 @@ export function SolutionScreenshotMock({
           start();
         }
       },
-      { threshold: 0.28 },
+      // Late enough that the section's own arrival has uncovered the screenshot, so the entrance is seen.
+      { threshold: 0.45 },
     );
 
     observer.observe(root);
@@ -189,6 +198,7 @@ export function SolutionScreenshotMock({
             src={src}
             width={width}
           />
+          {children}
         </div>
       </BrowserFrame>
     </div>

@@ -79,12 +79,12 @@ export const homeContent: HomeContent = {
     description:
       "A spreadsheet beside the ERP, an approval in email, a file on someone's drive. Small workarounds become a second, undocumented flow: uncounted, invisible, and hard to reconstruct when a case stalls.",
     comparison: {
-      title: "Revenue Risk Matrix",
-      ariaLabel: "Compare Sheets and Opero",
-      beforeLabel: "Sheets",
-      beforeAlt: "Spreadsheet showing revenue risk matrix source rows",
+      title: "Customer requests",
+      ariaLabel: "Compare a spreadsheet tracker and Opero",
+      beforeLabel: "Spreadsheet",
+      beforeAlt: "Spreadsheet tracker of customer requests, with statuses and notes typed by hand",
       afterLabel: "Opero",
-      afterAlt: "Opero report interface showing a revenue risk matrix",
+      afterAlt: "Opero board with customer requests in columns by stage, each card showing its priority, customer, category, channel and owner",
     },
     points: [
       "Changing a process takes a development project, so the team routes around the system with a spreadsheet.",

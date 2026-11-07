@@ -119,12 +119,12 @@ export const operoProductContent: OperoProductContent = {
           title: "Zachowaj pliki przy rekordzie",
           image: {
             src: "/opero/documents/record-with-file-preview.webp",
-            alt: "Rekord części zamiennej w Opero z metadanymi i panelem Pliki prezentującym załączony model 3D",
+            alt: "Zgłoszenie klienta w Opero ze szczegółami i panelem Pliki prezentującym załączone zdjęcie",
             width: 2480,
             height: 1887,
             magnifier: {
               src: "/opero/documents/files-panel-magnifier.webp",
-              alt: "Powiększenie karty Pliki z trzema załącznikami i informacjami o wybranym pliku STL",
+              alt: "Powiększenie karty Pliki z załączonym zdjęciem i informacjami o pliku",
               width: 497,
               height: 494,
               placement: "documents",
@@ -183,12 +183,12 @@ export const operoProductContent: OperoProductContent = {
           title: "Współpracuj w kontekście sprawy",
           image: {
             src: "/opero/communication/comments-and-notifications.webp",
-            alt: "Rekord zasobu w Opero z wątkiem komentarzy, wzmiankami i reakcjami obok panelu powiadomień",
+            alt: "Zgłoszenie klienta w Opero z wątkiem komentarzy, wzmiankami i reakcjami obok panelu powiadomień",
             width: 1869,
             height: 1223,
             magnifier: {
               src: "/opero/communication/notifications-magnifier.webp",
-              alt: "Powiększenie powiadomień o reakcjach na komentarze, wzmiankach i przypisanej pracy",
+              alt: "Powiększenie powiadomień o reakcjach na komentarze i wzmiankach",
               width: 528,
               height: 528,
               placement: "communication",

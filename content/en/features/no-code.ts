@@ -48,9 +48,9 @@ export const noCodePage: NoCodePageContent = {
     secondaryCta: "Meet Opero",
     image: {
       src: "/opero/no-code/view-layout-hero.webp",
-      alt: "Opero view layout builder configuring the Asset Lifecycle Admin form in a dark workspace",
-      width: 2111,
-      height: 1316,
+      alt: "Opero view layout builder configuring the Asset Lifecycle Admin form",
+      width: 2157,
+      height: 1685,
     },
   },
   foundation: {

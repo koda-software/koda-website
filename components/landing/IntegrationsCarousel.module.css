@@ -14,33 +14,19 @@
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid rgba(10, 24, 38, 0.13);
-  border-radius: calc(var(--radius-panel) - 12px);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(249, 251, 252, 0.98)),
-    radial-gradient(circle at 18% 0%, rgba(10, 24, 38, 0.075), transparent 44%),
-    linear-gradient(135deg, rgba(10, 24, 38, 0.04), transparent 42%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 0 0 1px rgba(255, 255, 255, 0.72) inset,
-    0 8px 16px -14px rgba(6, 24, 38, 0.5);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-card);
+  background: #fff;
   padding: 1.15rem;
-  transition: box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition:
+    border-color 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* The card in the middle, picked out as the Processes board picks out a card in motion. */
 .integrationCarousel [data-active="true"] .integrationCard {
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 0 0 1px rgba(255, 255, 255, 0.72) inset,
-    0 24px 54px -34px rgba(6, 24, 38, 0.58);
-}
-
-.integrationCard::after {
-  position: absolute;
-  inset: auto 1rem 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(10, 24, 38, 0.28), transparent);
-  content: "";
+  border-color: rgba(56, 182, 255, 0.55);
+  box-shadow: 0 22px 46px -34px rgba(6, 24, 38, 0.55);
 }
 
 .identity,

@@ -66,11 +66,9 @@ export function WorkflowTimeline({ steps }: WorkflowTimelineProps) {
       className="relative m-0 grid list-none gap-[clamp(2.4rem,5.5vh,4.25rem)] p-0"
       style={{ "--timeline-progress": `${progress}%` } as CSSProperties}
     >
-      <span
-        className="absolute left-[1.35rem] top-5 w-px origin-top bg-[linear-gradient(180deg,var(--color-blue-soft),rgba(56,182,255,0.35),transparent)] shadow-[0_0_20px_rgba(56,182,255,0.42)] transition-[height] duration-500 ease-out max-[640px]:left-[1.15rem]"
-        style={{ height: "var(--timeline-progress)" }}
-        aria-hidden="true"
-      />
+      <span aria-hidden="true" className="absolute bottom-10 left-[1.35rem] top-5 w-0.5 rounded-full bg-white/13 max-[640px]:left-[1.1rem]">
+        <span className="block w-full rounded-full bg-[var(--color-blue-soft)] transition-[height] duration-500 ease-out" style={{ height: "var(--timeline-progress)" }} />
+      </span>
       {steps.map((step, index) => {
         const active = index === activeIndex;
         const past = index < activeIndex;
@@ -84,33 +82,25 @@ export function WorkflowTimeline({ steps }: WorkflowTimelineProps) {
               }}
             >
               <span
-                className={`relative z-[1] grid h-11 w-11 place-items-center rounded-full border font-sans text-[0.78rem] font-semibold transition-[background,border-color,color,box-shadow,transform] duration-300 max-[640px]:h-9 max-[640px]:w-9 ${
+                className={`relative z-[1] grid h-11 w-11 place-items-center rounded-[0.85rem] text-[0.78rem] font-semibold transition-[background-color,color,box-shadow] duration-300 max-[640px]:h-9 max-[640px]:w-9 ${
                   active
-                    ? "scale-110 border-[rgba(56,182,255,0.72)] bg-[var(--color-blue)] text-white shadow-[0_0_0_6px_rgba(56,182,255,0.12),0_20px_44px_-26px_rgba(56,182,255,0.9)]"
+                    ? "bg-[#10283a] text-[var(--color-blue-soft)] shadow-[0_0_0_1.5px_var(--color-blue-soft),0_0_22px_-4px_var(--color-blue-soft)]"
                     : past
-                      ? "border-[rgba(56,182,255,0.38)] bg-[rgba(56,182,255,0.18)] text-[var(--color-blue-soft)]"
-                      : "border-[rgba(56,182,255,0.24)] bg-[rgba(8,16,24,0.78)] text-white/58"
+                      ? "bg-[#10283a] text-[var(--color-blue-soft)]"
+                      : "bg-[#141c23] text-white/42"
                 }`}
               >
                 {step.label}
               </span>
               <article
-                className={`pt-1 transition-[opacity,transform] duration-300 ${
-                  active
-                    ? "translate-x-1 opacity-100"
-                    : past
-                      ? "opacity-80"
-                      : "opacity-58"
-                }`}
+                className={`pt-1.5 transition-opacity duration-300 ${active ? "opacity-100" : past ? "opacity-70" : "opacity-45"}`}
               >
                 <h3
-                  className={`m-0 max-w-[38rem] text-[clamp(1.65rem,2.6vw,2.32rem)] font-semibold leading-[1.08] tracking-[-0.035em] transition-colors duration-300 ${
-                    active ? "text-white" : "text-white/78"
-                  }`}
+                  className={`m-0 max-w-[38rem] text-[clamp(1.35rem,2vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.03em] text-white`}
                 >
                   {step.title}
                 </h3>
-                <p className="mt-4 max-w-[41rem] text-[1.05rem] leading-[1.76] text-white/66">
+                <p className="mt-2.5 max-w-[41rem] text-[1.02rem] leading-[1.6] text-white/66">
                   {step.description}
                 </p>
               </article>

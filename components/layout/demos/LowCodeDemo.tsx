@@ -11,7 +11,7 @@ const STAGE_WIDTH = 860;
 const STAGE_HEIGHT = 360;
 const CYCLE_MS = 26000;
 
-export function LowCodeDemo({ content }: { content: LowCodeDemoContent }) {
+export function LowCodeDemo({ content, tone }: { content: LowCodeDemoContent; tone?: "dark" | "light" }) {
   const timeline = useCallback(
     ({ at, el, show, click, caption, view, dot, hideCursor }: DemoApi) => {
       at(0, () => {
@@ -45,7 +45,7 @@ export function LowCodeDemo({ content }: { content: LowCodeDemoContent }) {
   const [fieldBlock, operatorBlock, valueBlock] = content.condition;
 
   return (
-    <DemoStage onClass={styles.on} stageWidth={STAGE_WIDTH} cycleMs={CYCLE_MS} dotCount={2} glowX="80%" stageHeight={STAGE_HEIGHT} timeline={timeline}>
+    <DemoStage tone={tone} onClass={styles.on} stageWidth={STAGE_WIDTH} cycleMs={CYCLE_MS} dotCount={2} glowX="80%" stageHeight={STAGE_HEIGHT} timeline={timeline}>
       <DemoView name="build">
         <div className={styles.builder}>
           <div className={`${shell.lab} ${shell.labOnSurface}`}>{content.conditionLabel}</div>

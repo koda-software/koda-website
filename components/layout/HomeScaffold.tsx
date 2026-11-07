@@ -19,9 +19,10 @@ import {
   SectionIntro,
 } from "@/components/landing/LandingPrimitives";
 import { KodaSoftMarkAccent } from "@/components/landing/BrandMark";
-import { HeroDashboardMock } from "@/components/landing/HeroDashboardMock";
+import { HeroEdgeVisual } from "@/components/landing/HeroDashboardMock";
 import { Reveal } from "@/components/landing/Reveal";
 import { SolutionScreenshotMock } from "@/components/landing/SolutionScreenshotMock";
+import { Magnifier } from "@/components/layout/features/processes/Magnifier";
 import { WorkflowTimeline } from "@/components/landing/WorkflowTimeline";
 import { TwoTone } from "@/components/landing/TwoTone";
 
@@ -51,9 +52,7 @@ export function HomeScaffold({
         secondaryHref={secondaryHref}
         visualMode="edge"
       >
-        <div className="pointer-events-none absolute right-[-11rem] top-[calc(clamp(12.5rem,23vw,18rem)-120px)] z-0 w-[clamp(37rem,53vw,61rem)] max-[1200px]:left-[calc(clamp(23rem,44vw,36rem)-160px)] max-[1200px]:right-auto max-[1200px]:top-[calc(clamp(15rem,28vw,20rem)-120px)] max-[1200px]:w-[clamp(35rem,65vw,54rem)] max-[1200px]:opacity-40 max-[809px]:left-[calc(52vw-100px)] max-[809px]:top-[calc(19rem-170px)] max-[809px]:w-[min(39rem,90vw)] max-[809px]:opacity-24">
-          <HeroDashboardMock className="h-auto w-full select-none" />
-        </div>
+        <HeroEdgeVisual centered />
       </LandingHero>
 
       <ArrivingSection className="bg-[var(--color-mist)]" cut="card" id="problem">
@@ -71,11 +70,11 @@ export function HomeScaffold({
               <ComparisonSlider
                 afterAlt={content.problem.comparison.afterAlt}
                 afterLabel={content.problem.comparison.afterLabel}
-                afterSrc="/hero/opero-report-comparison.png"
+                afterSrc="/hero/requests-board-comparison.webp"
                 ariaLabel={content.problem.comparison.ariaLabel}
                 beforeAlt={content.problem.comparison.beforeAlt}
                 beforeLabel={content.problem.comparison.beforeLabel}
-                beforeSrc="/hero/sheets-report-comparison.png"
+                beforeSrc="/hero/requests-tracker-comparison.webp"
                 title={content.problem.comparison.title}
               />
             </div>
@@ -84,20 +83,22 @@ export function HomeScaffold({
         </div>
       </ArrivingSection>
 
-      <ArrivingSection className="bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pt-[clamp(3rem,6vw,5rem)] text-white" cut="wipe">
-        <div className={`${landingShellClass} grid items-end gap-[clamp(2.75rem,5vw,5.75rem)] grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.74fr)] max-[1440px]:grid-cols-[minmax(0,0.9fr)_minmax(26rem,1fr)] max-[1440px]:items-center max-[1200px]:grid-cols-1`}>
-          <Reveal className="max-[1440px]:self-center max-[1200px]:order-2 max-[809px]:hidden" from="left">
+      <ArrivingSection className="bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] py-[clamp(4rem,7vw,6rem)] text-white" cut="wipe">
+        <div data-sink="none" className={`${landingShellClass} grid items-center gap-[clamp(2.75rem,5vw,5.75rem)] grid-cols-[minmax(0,1fr)_minmax(28rem,0.92fr)] max-[1440px]:grid-cols-[minmax(0,0.82fr)_minmax(28rem,1fr)] max-[1200px]:grid-cols-1`}>
+          <Reveal className="max-[1200px]:order-2 max-[809px]:hidden" from="left">
             {/*
               On wide screens the screenshot still bleeds out of the visual
               column. Once the section stacks, it becomes a smaller centered
               row so it does not dominate the copy above it.
             */}
-            <div data-arrive="slide" className="relative ml-[calc(min(0px,(var(--shell-width)-100vw)/2)-var(--page-gutter)-clamp(1rem,2vw,2rem))] max-[1440px]:max-w-[56rem] max-[1200px]:mx-auto max-[1200px]:ml-auto max-[1200px]:w-[min(100%,52rem)]">
-              <SolutionScreenshotMock className="relative left-[50px] h-auto w-full max-w-[64rem] select-none max-[1440px]:max-w-none max-[1200px]:left-0 max-[980px]:origin-bottom-left" />
+            <div className="relative ml-[calc(min(0px,(var(--shell-width)-100vw)/2)-var(--page-gutter)-clamp(1rem,2vw,2rem))] max-[1440px]:max-w-[56rem] max-[1200px]:mx-auto max-[1200px]:ml-auto max-[1200px]:w-[min(100%,52rem)]">
+              <SolutionScreenshotMock className="relative -left-[4.5rem] h-auto w-full max-w-[64rem] select-none max-[1440px]:max-w-none max-[1200px]:left-0 max-[980px]:origin-bottom-left">
+                <Magnifier image={{ alt: "", height: 840, src: "/hero/rule-editor-magnifier.webp", width: 840 }} placement={{ left: "74%", size: "40%", top: "46%" }} />
+              </SolutionScreenshotMock>
             </div>
           </Reveal>
 
-          <div className="relative z-[1] pb-[var(--section-y)] max-[1200px]:order-1 max-[1200px]:pb-0 max-[809px]:pb-[var(--section-y)]">
+          <div className="relative z-[1] max-[1200px]:order-1">
             <Reveal>
               <Image
                 data-arrive
@@ -108,7 +109,7 @@ export function HomeScaffold({
                 width={739}
               />
               <h2 data-arrive className={`${sectionTitleClass} text-white`}><TwoTone text={content.solution.title} /></h2>
-              <p data-arrive className={`${sectionDescriptionClass} max-w-[34rem] text-white/82`}>
+              <p data-arrive className={`${sectionDescriptionClass} max-w-[38rem] text-white/82`}>
                 {content.solution.description}
               </p>
             </Reveal>

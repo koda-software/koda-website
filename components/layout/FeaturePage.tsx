@@ -3,7 +3,8 @@ import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import { CardHead, IconTextGrid } from "@/components/landing/LandingCards";
 import { FeatureDemo } from "./demos/FeatureDemo";
-import { IndexNumber, PageHero } from "@/components/landing/LandingPrimitives";
+import { HeroEdgeVisual } from "@/components/landing/HeroDashboardMock";
+import { IndexNumber, LandingHero, PageHero } from "@/components/landing/LandingPrimitives";
 import type { FeatureBlock, FeaturePagesContent, FeatureShot } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
 import { localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
@@ -38,20 +39,13 @@ type PageLayout = {
   shots: "pair" | "alternating";
   /** Whether the screenshot band comes before the feature blocks. */
   shotsFirst?: boolean;
-  /**
-   * The hero shot sits in a side column next to the copy. "wide" gives that
-   * column more of the row (and shrinks the copy column to match) so a wide,
-   * short screenshot - like a rule editor toolbar - renders bigger and taller
-   * instead of getting squeezed down to the point its text is unreadable.
-   */
-  heroImageColumn?: "normal" | "wide";
 };
 
 const pageLayouts: Record<FeatureKey, PageLayout> = {
   processes: { blocks: "steps", intro: "plain", shots: "pair" },
   documents: { blocks: "split", intro: "panel", shots: "alternating" },
   noCode: { blocks: "tiles", intro: "plain", shots: "alternating", shotsFirst: true },
-  lowCode: { blocks: "split", intro: "plain", shots: "alternating", heroImageColumn: "wide" },
+  lowCode: { blocks: "split", intro: "plain", shots: "alternating" },
   reports: { blocks: "grid", intro: "panel", shots: "pair" },
   security: { blocks: "steps", intro: "plain", shots: "alternating" },
   integrations: { blocks: "tiles", intro: "panel", shots: "pair" },
@@ -229,35 +223,50 @@ export function FeaturePage({ feature, locale, pages, primaryHref, secondaryHref
     </section>
   ) : null;
 
-  const heroVisual = content.demo ? (
-    <FeatureDemo demo={content.demo} />
-  ) : content.hero.shot ? (
-    <ShotFrame invert priority shot={content.hero.shot} />
-  ) : null;
+  const heroShot = content.hero.shot;
+  const heroVisual = heroShot ? null : content.demo ? <FeatureDemo demo={content.demo} /> : null;
   const heroShellClassName = content.demo
     ? "grid-cols-[minmax(0,0.86fr)_minmax(26rem,1.14fr)] gap-[clamp(2rem,4vw,4rem)]"
-    : content.hero.shot
-      ? layout.heroImageColumn === "wide"
-        ? "grid-cols-[minmax(0,0.8fr)_minmax(26rem,1.2fr)]"
-        : "grid-cols-[minmax(0,1fr)_minmax(22rem,0.86fr)]"
-      : "";
+    : "";
 
   return (
     <>
-      <PageHero
-        description={content.hero.description}
-        descriptionClassName="max-w-[720px]"
-        photo="operations"
-        primaryCta={content.hero.primaryCta}
-        primaryHref={primaryHref}
-        secondaryCta={content.hero.secondaryCta}
-        secondaryHref={secondaryHref}
-        shellClassName={heroShellClassName}
-        title={content.hero.title}
-        titleClassName="max-w-[900px]"
-      >
-        {heroVisual}
-      </PageHero>
+      {heroShot ? (
+        <LandingHero
+          description={content.hero.description}
+          primaryCta={content.hero.primaryCta}
+          primaryHref={primaryHref}
+          secondaryCta={content.hero.secondaryCta}
+          secondaryHref={secondaryHref}
+          title={content.hero.title}
+          visualMode="edge"
+        >
+          <HeroEdgeVisual image={heroShot} />
+        </LandingHero>
+      ) : (
+        <PageHero
+          description={content.hero.description}
+          descriptionClassName="max-w-[720px]"
+          photo="operations"
+          primaryCta={content.hero.primaryCta}
+          primaryHref={primaryHref}
+          secondaryCta={content.hero.secondaryCta}
+          secondaryHref={secondaryHref}
+          shellClassName={heroShellClassName}
+          title={content.hero.title}
+          titleClassName="max-w-[900px]"
+        >
+          {heroVisual}
+        </PageHero>
+      )}
+
+      {heroShot && content.demo ? (
+        <section className={`${shellClass} pt-[var(--section-y)]`}>
+          <div className="mx-auto max-w-[62rem]">
+            <FeatureDemo demo={content.demo} />
+          </div>
+        </section>
+      ) : null}
 
       {introSection}
       {layout.shotsFirst ? [shotsSection, blocksSection] : [blocksSection, shotsSection]}

@@ -3,8 +3,10 @@ import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import CheckIcon from "lucide-react/dist/esm/icons/check.mjs";
 import Clock3Icon from "lucide-react/dist/esm/icons/clock-3.mjs";
+import { ArrivingSection } from "@/components/landing/ArrivingSection";
 import { BrowserFrame } from "@/components/landing/BrowserFrame";
-import { PageHero } from "@/components/landing/LandingPrimitives";
+import { HeroEdgeVisual } from "@/components/landing/HeroDashboardMock";
+import { LandingHero } from "@/components/landing/LandingPrimitives";
 import {
   BulletList,
   FeatureFaqSection,
@@ -26,20 +28,6 @@ type NoCodeFeaturePageProps = {
   primaryHref: string;
   secondaryHref: string;
 };
-
-function HeroProductShot({ image }: { image: NoCodePageContent["hero"]["image"] }) {
-  return (
-    <div className="relative h-[clamp(29rem,42vw,35rem)] w-[calc(100%+var(--page-gutter))] overflow-visible max-[980px]:h-[22rem] max-[560px]:h-[18rem] min-[981px]:-ml-[5rem] min-[981px]:w-[calc(100%+5rem+var(--page-gutter))] min-[1441px]:w-[calc(100%+5rem+(100vw-var(--shell-width))/2+var(--page-gutter))]">
-      <BrowserFrame
-        chromeClassName="h-10"
-        className="absolute left-0 top-8 w-[147%] max-w-[86rem] rounded-t-[20px] border border-white/16 bg-[#06111d] [box-shadow:-38px_46px_120px_rgba(0,0,0,0.68),-14px_16px_48px_rgba(36,139,210,0.2)] max-[980px]:w-[145%]"
-        tone="dark"
-      >
-        <Image alt={image.alt} className="block h-auto w-full" height={image.height} priority sizes="(max-width: 980px) 145vw, 72vw" src={image.src} width={image.width} />
-      </BrowserFrame>
-    </div>
-  );
-}
 
 function BrowserScreenshot({ image }: { image: NonNullable<NoCodePageVisual["image"]> }) {
   return (
@@ -146,20 +134,23 @@ function ComparisonLedger({ comparison }: { comparison: NoCodePageContent["found
   );
 }
 
-function StorySection({ labels, section }: { labels: NoCodePageContent["labels"]; section: NoCodePageSection }) {
+/** The first passes over the dark band above it. The rest bring their screenshot in from its own side of the page. */
+function StorySection({ first, labels, section }: { first: boolean; labels: NoCodePageContent["labels"]; section: NoCodePageSection }) {
   return (
-    <section className={sectionClass} id={`capability-${section.number}`}>
-      <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1">
-        <div className={section.reverse ? "min-[981px]:order-2" : ""} data-reveal={section.reverse ? "right" : "left"}>
-          <h2 className={titleClass}><TwoTone text={section.title} /></h2>
-          <p className={`${bodyClass} mt-7`}>{section.description}</p>
-          <BulletList items={section.bullets} />
-        </div>
-        <div className={section.reverse ? "min-[981px]:order-1" : ""}>
-          <SectionVisual fallbackLabel={labels.screenshotPlaceholder} visual={section.visual} />
+    <ArrivingSection className={first ? "" : "border-t border-[rgba(11,17,22,0.09)]"} cut={first ? "curtain" : "slide"} id={`capability-${section.number}`}>
+      <div className={sectionClass}>
+        <div className="grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1">
+          <div className={section.reverse ? "min-[981px]:order-2" : ""} data-reveal={section.reverse ? "right" : "left"}>
+            <h2 className={titleClass}><TwoTone text={section.title} /></h2>
+            <p className={`${bodyClass} mt-7`}>{section.description}</p>
+            <BulletList items={section.bullets} />
+          </div>
+          <div className={section.reverse ? "min-[981px]:order-1" : ""} data-arrive={section.reverse ? "left" : "right"}>
+            <SectionVisual fallbackLabel={labels.screenshotPlaceholder} visual={section.visual} />
+          </div>
         </div>
       </div>
-    </section>
+    </ArrivingSection>
   );
 }
 
@@ -209,45 +200,49 @@ function ProcessTracker({ tracker }: { tracker: NoCodePageContent["process"]["tr
 export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref }: NoCodeFeaturePageProps) {
   return (
     <>
-      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="min-[981px]:items-end min-[981px]:pb-0" secondaryCta={content.hero.secondaryCta} secondaryHref={secondaryHref} shellClassName="grid-cols-[minmax(0,0.86fr)_minmax(28rem,1.14fr)] gap-[clamp(2.5rem,5vw,5rem)]" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
-        <HeroProductShot image={content.hero.image} />
-      </PageHero>
+      <LandingHero description={content.hero.description} primaryCta={content.hero.primaryCta} primaryHref={primaryHref} secondaryCta={content.hero.secondaryCta} secondaryHref={secondaryHref} title={content.hero.title} visualMode="edge">
+        <HeroEdgeVisual image={content.hero.image} />
+      </LandingHero>
 
-      <section className={sectionClass} id="foundation">
-        <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.5fr)] items-start gap-12 max-[900px]:grid-cols-1">
-          <div data-reveal>
-            <h2 className="m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]"><TwoTone text={content.foundation.title} /></h2>
+      {/* The table's header sticks on a phone, which clipping the section would stop. */}
+      <ArrivingSection className="bg-[var(--color-mist)] max-[980px]:overflow-visible" cut="card" id="foundation">
+        <div className={sectionClass}>
+          <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.5fr)] items-start gap-12 max-[900px]:grid-cols-1">
+            <div data-reveal>
+              <h2 className="m-0 max-w-[880px] text-balance text-[clamp(2.15rem,4vw,3.35rem)] leading-[1.04] tracking-[-0.045em] text-[var(--color-ink)]"><TwoTone text={content.foundation.title} /></h2>
+            </div>
+            <p className="m-0 text-[1rem] leading-[1.68] text-[var(--color-muted)]" data-reveal>{content.foundation.description}</p>
           </div>
-          <p className="m-0 text-[1rem] leading-[1.68] text-[var(--color-muted)]" data-reveal>{content.foundation.description}</p>
+          <div className="mx-auto mt-[clamp(2rem,4vw,3.2rem)] w-full max-w-[82rem]">
+            <ComparisonLedger comparison={content.foundation.comparison} />
+          </div>
         </div>
-        <div className="mx-auto mt-[clamp(2rem,4vw,3.2rem)] w-full max-w-[82rem]">
-          <ComparisonLedger comparison={content.foundation.comparison} />
-        </div>
-      </section>
+      </ArrivingSection>
 
-      <section
-        className="relative isolate overflow-hidden border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white"
+      <ArrivingSection
+        className="isolate border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white"
+        cut="wipe"
         id="blocks"
       >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1.2px)] [background-size:24px_24px] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
-        />
-        <div className={`${sectionClass} relative`}>
-          <div data-reveal>
-            <h2 className="m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white"><TwoTone text={content.capabilities.title} /></h2>
-            <p className="mb-0 mt-7 max-w-[46rem] text-[1.04rem] leading-[1.72] text-white/62">
-              {content.capabilities.description}
-            </p>
+        <div className="relative">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1.2px)] [background-size:24px_24px] [mask-image:linear-gradient(to_right,transparent_0%,#000_18%,#000_82%,transparent_100%)]"
+          />
+          <div className={`${sectionClass} relative`}>
+            <div data-reveal>
+              <h2 className="m-0 max-w-[940px] text-[clamp(2.15rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.04em] text-white" data-arrive><TwoTone text={content.capabilities.title} /></h2>
+              <p className="mb-0 mt-7 max-w-[46rem] text-[1.04rem] leading-[1.72] text-white/62" data-arrive>
+                {content.capabilities.description}
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </ArrivingSection>
 
-      <div className="divide-y divide-[rgba(11,17,22,0.09)]">
-        {content.capabilities.items.map((section) => <StorySection key={section.number} labels={content.labels} section={section} />)}
-      </div>
+      {content.capabilities.items.map((section, index) => <StorySection first={index === 0} key={section.number} labels={content.labels} section={section} />)}
 
-      <section className="bg-[var(--color-surface-dark)] text-white">
+      <ArrivingSection className="bg-[var(--color-surface-dark)] text-white" cut="steps">
         <div className={sectionClass}>
           <div className="grid grid-cols-[minmax(0,0.78fr)_minmax(28rem,1.22fr)] items-center gap-[clamp(3rem,7vw,7rem)] max-[980px]:grid-cols-1">
             <div data-reveal="left">
@@ -258,18 +253,24 @@ export function NoCodeFeaturePage({ content, locale, primaryHref, secondaryHref 
             <ProcessTracker tracker={content.process.tracker} />
           </div>
         </div>
-      </section>
+      </ArrivingSection>
 
-      <section className="border-y border-[rgba(11,17,22,0.1)] bg-[var(--color-paper-soft)]">
+      <ArrivingSection className="border-y border-[rgba(11,17,22,0.1)]" cut="curtain">
         <div className={`${sectionClass} grid grid-cols-[minmax(0,0.82fr)_minmax(28rem,1.18fr)] items-center gap-[clamp(2rem,4vw,4rem)] max-[980px]:grid-cols-1`}>
-          <SectionVisual fallbackLabel={content.labels.screenshotPlaceholder} visual={content.adaptation.visual} />
+          <div className="min-w-0" data-arrive>
+            <SectionVisual fallbackLabel={content.labels.screenshotPlaceholder} visual={content.adaptation.visual} />
+          </div>
           <div data-reveal="right"><h2 className={titleClass}><TwoTone text={content.adaptation.title} /></h2><p className={`${bodyClass} mt-7`}>{content.adaptation.description}</p><BulletList items={content.adaptation.bullets} /></div>
         </div>
-      </section>
+      </ArrivingSection>
 
       <FeatureFaqSection faq={content.faq} />
       <FeatureRelatedSection locale={locale} related={content.related} />
-      <FeatureFinalCtaSection finalCta={content.finalCta} primaryHref={primaryHref} />
+      <ArrivingSection cut="open">
+        <div data-arrive>
+          <FeatureFinalCtaSection finalCta={content.finalCta} primaryHref={primaryHref} />
+        </div>
+      </ArrivingSection>
     </>
   );
 }

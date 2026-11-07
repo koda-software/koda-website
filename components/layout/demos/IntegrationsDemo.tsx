@@ -11,7 +11,7 @@ const STAGE_WIDTH = 940;
 const STAGE_HEIGHT = 420;
 const CYCLE_MS = 22000;
 
-export function IntegrationsDemo({ content }: { content: IntegrationsDemoContent }) {
+export function IntegrationsDemo({ content, tone }: { content: IntegrationsDemoContent; tone?: "dark" | "light" }) {
   const timeline = useCallback(
     ({ at, el, show, hide, caption, view, dot }: DemoApi) => {
       at(0, () => {
@@ -54,6 +54,7 @@ export function IntegrationsDemo({ content }: { content: IntegrationsDemoContent
 
   return (
     <DemoStage
+      tone={tone}
       cycleMs={CYCLE_MS}
       dotCount={3}
       glowX="50%"

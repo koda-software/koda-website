@@ -1,0 +1,64 @@
+/* Sits over the part of a screenshot worth reading. It grows in once the screenshot has settled. */
+.magnifier {
+  position: absolute;
+  z-index: 2;
+  top: var(--top, 48%);
+  left: var(--left, 45%);
+  width: var(--size, 44%);
+  aspect-ratio: 1;
+  margin-top: calc(var(--size, 44%) / -2);
+  margin-left: calc(var(--size, 44%) / -2);
+  transform-origin: 70% 78%;
+  animation: arrive 0.62s cubic-bezier(0.2, 0.8, 0.2, 1) 1.15s both;
+}
+/* The handle. */
+.magnifier::after {
+  position: absolute;
+  top: 80%;
+  left: 80%;
+  width: 36%;
+  height: 16px;
+  border: 3px solid rgb(255 255 255 / 0.92);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #b8c8d2 0 13%, #263e4d 14% 100%);
+  box-shadow: 0 9px 18px -9px rgb(4 24 39 / 0.7);
+  content: "";
+  transform: rotate(43deg);
+  transform-origin: left center;
+}
+.lens {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  border: 5px solid rgb(249 252 253 / 0.96);
+  border-radius: 50%;
+  background: #f7f7f7;
+  box-shadow:
+    0 28px 54px -20px rgb(2 8 16 / 0.75),
+    0 8px 18px -12px rgb(5 31 48 / 0.55),
+    0 0 0 1px rgb(24 67 91 / 0.24),
+    0 0 0 8px rgb(225 237 243 / 0.22);
+}
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .magnifier {
+    animation: none;
+  }
+}
+@media (max-width: 1200px) {
+  .hideOnNarrow {
+    display: none;
+  }
+}

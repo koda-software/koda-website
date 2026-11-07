@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import type { gsap as GsapNamespace } from "gsap";
 import { BrowserFrame } from "@/components/landing/BrowserFrame";
 
@@ -11,9 +11,12 @@ type GsapModule = {
 
 type HeroDashboardMockProps = {
   className?: string;
+  image?: { alt: string; height: number; src: string; width: number };
 };
 
-export function HeroDashboardMock({ className = "" }: HeroDashboardMockProps) {
+const DASHBOARD_IMAGE = { alt: "Opero executive dashboard", height: 1956, src: "/hero/opero-dashboard-hero-static.png", width: 2157 };
+
+export function HeroDashboardMock({ className = "", image = DASHBOARD_IMAGE }: HeroDashboardMockProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -117,13 +120,13 @@ export function HeroDashboardMock({ className = "" }: HeroDashboardMockProps) {
       >
         <div className="relative bg-[#eef8fc]">
           <Image
-            alt="Opero executive dashboard"
+            alt={image.alt}
             className="h-auto w-full select-none"
-            height={1956}
+            height={image.height}
             priority
             sizes="(min-width: 1200px) 77rem, (min-width: 810px) 66vw, 112vw"
-            src="/hero/opero-dashboard-hero-static.png"
-            width={2157}
+            src={image.src}
+            width={image.width}
           />
           <div
             aria-hidden="true"
@@ -132,5 +135,43 @@ export function HeroDashboardMock({ className = "" }: HeroDashboardMockProps) {
         </div>
       </BrowserFrame>
     </div>
+  );
+}
+
+/** Places a hero visual the way the homepage does: centred in the hero, running off the right edge. */
+type HeroEdgeVisualProps = Pick<HeroDashboardMockProps, "image"> & {
+  /** Sits over the screenshot, unrotated: a magnifier, for example. */
+  children?: ReactNode;
+  /** Level with the middle of the headline column, rather than hanging from the top of the banner. */
+  centered?: boolean;
+  /** A little more screenshot than the default, centred. It grows to the right, off the page, so it stays clear of the headline. */
+  large?: boolean;
+};
+
+// Both sit on the middle of the hero's content box, where the flex-centred copy sits: the banner's middle, moved by half the difference between its top and bottom padding.
+// The tilted frame's perspective shifts it by a different amount at each size, and the last term takes that back out. Tailwind needs these classes whole.
+const CENTERED_LARGE = "top-[calc(50%+(clamp(9rem,14vw,13rem)-clamp(5rem,9vw,8rem))/2+16px)] -translate-y-1/2 max-[1200px]:translate-y-0";
+const CENTERED = "top-[calc(50%+(clamp(9rem,14vw,13rem)-clamp(5rem,9vw,8rem))/2-13px)] -translate-y-1/2 max-[1200px]:translate-y-0";
+
+export function HeroEdgeVisual({ centered = false, children, image, large = false }: HeroEdgeVisualProps) {
+  // The large one is anchored by its left edge, which clears the headline column, and runs off the page to the right.
+  const size = large
+    ? `left-[max(745px,calc(50vw+45px))] ${CENTERED_LARGE} w-[clamp(41rem,60vw,68rem)]`
+    : `right-[-11rem] ${centered ? CENTERED : "top-[calc(clamp(12.5rem,23vw,18rem)-120px)]"} w-[clamp(37rem,53vw,61rem)]`;
+  const placement = `pointer-events-none absolute ${size} max-[1200px]:left-[calc(clamp(23rem,44vw,36rem)-160px)] max-[1200px]:right-auto max-[1200px]:top-[calc(clamp(15rem,28vw,20rem)-120px)] max-[1200px]:w-[clamp(35rem,65vw,54rem)] max-[809px]:left-[calc(52vw-100px)] max-[809px]:top-[calc(19rem-170px)] max-[809px]:w-[min(39rem,90vw)]`;
+  const { height, width } = image ?? DASHBOARD_IMAGE;
+
+  return (
+    <>
+      <div className={`${placement} z-0 max-[1200px]:opacity-40 max-[809px]:opacity-24`}>
+        <HeroDashboardMock className="h-auto w-full select-none" image={image} />
+      </div>
+      {/* Its own layer, above the fade that melts the bottom of the screenshot into the banner. */}
+      {children ? (
+        <div className={`${placement} z-[1]`} style={{ aspectRatio: `${width} / ${height}` }}>
+          {children}
+        </div>
+      ) : null}
+    </>
   );
 }

@@ -119,12 +119,12 @@ export const operoProductContent: OperoProductContent = {
           title: "Keep files with the record",
           image: {
             src: "/opero/documents/record-with-file-preview.webp",
-            alt: "Opero spare-part record with metadata and a Files panel previewing an attached 3D model",
+            alt: "Opero customer request with its details and a Files panel previewing an attached photo",
             width: 2480,
             height: 1887,
             magnifier: {
               src: "/opero/documents/files-panel-magnifier.webp",
-              alt: "Close-up of the Files tab showing three attachments and the selected STL file details",
+              alt: "Close-up of the Files tab showing an attached photo and its file details",
               width: 497,
               height: 494,
               placement: "documents",
@@ -183,12 +183,12 @@ export const operoProductContent: OperoProductContent = {
           title: "Keep collaboration in context",
           image: {
             src: "/opero/communication/comments-and-notifications.webp",
-            alt: "Opero asset record showing a comment thread with mentions and reactions alongside the notifications panel",
+            alt: "Opero customer request showing a comment thread with mentions and reactions alongside the notifications panel",
             width: 1869,
             height: 1223,
             magnifier: {
               src: "/opero/communication/notifications-magnifier.webp",
-              alt: "Close-up of notifications for comment reactions, mentions and assigned work",
+              alt: "Close-up of notifications for comment reactions and mentions",
               width: 528,
               height: 528,
               placement: "communication",
