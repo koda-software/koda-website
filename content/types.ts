@@ -1197,8 +1197,6 @@ export type ContactFormContent = {
   consent: string;
   /** Link text appended to the consent line, pointing at the privacy policy. */
   consentLinkLabel: string;
-  requiredHint: string;
-  optionalHint: string;
   submitLabel: string;
   submittingLabel: string;
   successMessage: string;
@@ -1219,13 +1217,6 @@ export type ContactPageContent = {
   context: {
     title: string;
     paragraphs: string[];
-  };
-  topics: {
-    title: string;
-    items: Array<{
-      title: string;
-      description: string;
-    }>;
   };
   form: ContactFormContent;
 };

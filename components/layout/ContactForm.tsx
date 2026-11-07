@@ -37,7 +37,14 @@ const initialState: FormState = {
 const inputClass =
   "mt-2 min-h-12 w-full rounded-[var(--radius-button)] border border-[rgba(2,2,13,0.12)] bg-white px-3.5 py-3 text-[1rem] text-[var(--color-ink)] outline-none transition-colors placeholder:text-[var(--color-muted-light)] focus:border-[var(--color-blue)]";
 const labelClass = "block text-[0.9rem] font-medium text-[var(--color-ink)]";
-const hintClass = "ml-2 text-[0.72rem] font-normal uppercase tracking-[0.08em] text-[var(--color-muted)]";
+
+function RequiredMark() {
+  return (
+    <span aria-hidden="true" className="ml-0.5 text-[var(--color-blue)]">
+      *
+    </span>
+  );
+}
 
 export function ContactForm({ locale, content }: ContactFormProps) {
   const formId = useId();
@@ -104,7 +111,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
       <div className="grid grid-cols-2 gap-5 max-[809px]:grid-cols-1">
         <label className={labelClass} htmlFor={`${formId}-name`}>
           {content.nameLabel}
-          <span className={hintClass}>{content.requiredHint}</span>
+          <RequiredMark />
           <input
             autoComplete="name"
             className={inputClass}
@@ -117,7 +124,6 @@ export function ContactForm({ locale, content }: ContactFormProps) {
         </label>
         <label className={labelClass} htmlFor={`${formId}-company`}>
           {content.companyLabel}
-          <span className={hintClass}>{content.optionalHint}</span>
           <input
             autoComplete="organization"
             className={inputClass}
@@ -132,7 +138,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
       <div className="grid grid-cols-2 gap-5 max-[809px]:grid-cols-1">
         <label className={labelClass} htmlFor={`${formId}-email`}>
           {content.emailLabel}
-          <span className={hintClass}>{content.requiredHint}</span>
+          <RequiredMark />
           <input
             autoComplete="email"
             className={inputClass}
@@ -146,7 +152,6 @@ export function ContactForm({ locale, content }: ContactFormProps) {
         </label>
         <label className={labelClass} htmlFor={`${formId}-phone`}>
           {content.phoneLabel}
-          <span className={hintClass}>{content.optionalHint}</span>
           <input
             autoComplete="tel"
             className={inputClass}
@@ -178,7 +183,7 @@ export function ContactForm({ locale, content }: ContactFormProps) {
 
       <label className={labelClass} htmlFor={`${formId}-message`}>
         {content.messageLabel}
-        <span className={hintClass}>{content.requiredHint}</span>
+        <RequiredMark />
         <textarea
           className={`${inputClass} min-h-36 resize-y leading-[1.6]`}
           id={`${formId}-message`}

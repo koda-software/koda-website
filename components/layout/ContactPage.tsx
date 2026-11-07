@@ -7,13 +7,15 @@ import { TwoTone } from "@/components/landing/TwoTone";
 type ContactPageProps = {
   locale: Locale;
   content: ContactPageContent;
+  /** The company's address and number, as the footer shows them. */
+  reach: { email?: string; phone?: string };
 };
 
 const shellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
 const sectionClass = `${shellClass} py-[var(--section-y)]`;
 const bodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 
-export function ContactPage({ locale, content }: ContactPageProps) {
+export function ContactPage({ locale, content, reach }: ContactPageProps) {
   return (
     <>
       <PageHero
@@ -34,16 +36,17 @@ export function ContactPage({ locale, content }: ContactPageProps) {
             ))}
           </div>
 
-          <div className="mt-12 border-y border-[rgba(2,2,13,0.12)] py-7">
-            <h3 className="m-0 text-[1.3rem] font-semibold text-[var(--color-ink)]">{content.topics.title}</h3>
-            <div className="mt-6 grid gap-5">
-              {content.topics.items.map((item) => (
-                <article data-reveal className="grid grid-cols-[minmax(10rem,0.38fr)_minmax(0,1fr)] gap-6 border-t border-[rgba(2,2,13,0.08)] pt-5 first:border-t-0 first:pt-0 max-[809px]:grid-cols-1 max-[809px]:gap-2" key={item.title}>
-                  <h4 className="m-0 text-[1rem] font-medium leading-[1.45] text-[var(--color-ink)]">{item.title}</h4>
-                  <p className={`${bodyClass} text-[0.96rem]`}>{item.description}</p>
-                </article>
-              ))}
-            </div>
+          <div className="mt-10 grid gap-3 border-t border-[rgba(2,2,13,0.12)] pt-7">
+            {reach.email ? (
+              <a className="w-fit text-[1.3rem] font-semibold text-[var(--color-ink)] transition-colors duration-150 hover:text-[var(--color-blue)]" href={`mailto:${reach.email}`}>
+                {reach.email}
+              </a>
+            ) : null}
+            {reach.phone ? (
+              <a className="w-fit text-[1.3rem] font-semibold text-[var(--color-ink)] transition-colors duration-150 hover:text-[var(--color-blue)]" href={`tel:${reach.phone.replaceAll(" ", "")}`}>
+                {reach.phone}
+              </a>
+            ) : null}
           </div>
         </div>
 

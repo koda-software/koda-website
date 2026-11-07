@@ -7,32 +7,11 @@ export const contactContent: ContactPageContent = {
   },
   hero: {
     title: "Show us how your operation works.",
-    description:
-      "Tell us where standard tools stop fitting: records, approvals, documents, reporting, roles, or recurring exceptions. We will come back with a practical view of whether Opero is the right fit.",
+    description: "Tell us what you need and we will come back to you.",
   },
   context: {
-    title: "A short conversation around your real operating model.",
-    paragraphs: [
-      "Opero is most useful when the company has a specific way of working that needs to stay visible, controlled, and easier to change over time.",
-      "The demo can stay high level or go into concrete processes: contractor onboarding, service delivery, logistics coordination, production work, medical operations, internal approvals, or reporting.",
-    ],
-  },
-  topics: {
-    title: "Typical demo areas",
-    items: [
-      {
-        title: "Data and records",
-        description: "How your objects, relationships, statuses, documents, and responsible people could be represented without forcing everything into predefined modules.",
-      },
-      {
-        title: "Workflows and approvals",
-        description: "How teams can move work through stages, exceptions, handovers, permissions, and review points with a clear audit trail.",
-      },
-      {
-        title: "Automation and reporting",
-        description: "Where rules, notifications, generated documents, dashboards, and AI-assisted reporting could remove repeated manual coordination.",
-      },
-    ],
+    title: "Talk to us.",
+    paragraphs: ["Write to us, call, or use the form."],
   },
   form: {
     nameLabel: "Name",
@@ -43,8 +22,6 @@ export const contactContent: ContactPageContent = {
     messageLabel: "What would you like to discuss?",
     consent: "By sending this form, you agree that KodaSoft may contact you about your request.",
     consentLinkLabel: "Privacy policy",
-    requiredHint: "Required",
-    optionalHint: "Optional",
     submitLabel: "Send request",
     submittingLabel: "Sending...",
     successMessage: "Thanks. Your message has been sent.",

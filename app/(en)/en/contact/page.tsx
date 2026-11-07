@@ -14,7 +14,7 @@ export const metadata: Metadata = createPageMetadata({
 export default function EnContactPage() {
   return (
     <PageShell locale="en" page="contact" shell={commonContent} navItems={navItems}>
-      <ContactPage locale="en" content={contactContent} />
+      <ContactPage locale="en" content={contactContent} reach={commonContent.footer.contact} />
     </PageShell>
   );
 }
