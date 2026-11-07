@@ -793,7 +793,6 @@ export type AiPageContent = {
     title: string;
     description: string;
     primaryCta: string;
-    trust: string[];
     demo: AiHeroDemoContent;
   };
   problem: {

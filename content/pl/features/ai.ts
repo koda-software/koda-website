@@ -41,7 +41,6 @@ export const aiPage: AiPageContent = {
     description:
       "Kontekstowe AI dla Twojego systemu firmowego: połącz Claude lub innego agenta MCP z Opero i opisz zwykłymi słowami widok, regułę albo raport. Agent pracuje na Twoich obiektach, polach i uprawnieniach, więc to, co zbuduje, trafia do Twojego systemu i tam zostaje.",
     primaryCta: "Umów prezentację",
-    trust: ["Model AI według Twojego wyboru", "Działa z Twoimi uprawnieniami", "Walidacja przed zapisem", "Bez pisania kodu"],
     demo: {
       sentence: [
         { text: "Pokaż " },

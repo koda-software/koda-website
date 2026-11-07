@@ -1,6 +1,5 @@
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import CircleCheckIcon from "lucide-react/dist/esm/icons/circle-check.mjs";
 import { ArrivingSection } from "@/components/landing/ArrivingSection";
 import { PageHero } from "@/components/landing/LandingPrimitives";
 import { AiAskDemo } from "@/components/layout/demos/AiAskDemo";
@@ -68,23 +67,12 @@ function ConfigureActSection({ act, first }: { act: AiConfigureAct; first: boole
 export function AiFeaturePage({ content, locale, primaryHref }: AiFeaturePageProps) {
   return (
     <>
-      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="min-[1024px]:!min-h-[calc(100svh-4.5rem)] items-end pb-0 max-[980px]:pb-0 min-[981px]:pb-0" shellClassName="gap-[clamp(2rem,4vw,4rem)] min-[981px]:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] min-[981px]:self-stretch" title={content.hero.title} titleClassName="max-w-[840px]" visualClassName="self-end">
+      <PageHero description={content.hero.description} descriptionClassName="max-w-[700px]" primaryCta={content.hero.primaryCta} primaryHref={primaryHref} sectionClassName="min-[1024px]:!min-h-[calc(100svh-4.5rem)]" shellClassName="gap-[clamp(2rem,4vw,4rem)] min-[981px]:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]" title={content.hero.title} titleClassName="max-w-[840px]">
         <AiHeroDemo demo={content.hero.demo} />
       </PageHero>
 
       <ArrivingSection className="bg-[var(--color-mist)]" cut="card">
         <div>
-          <div className="border-b border-[rgba(11,17,22,0.09)]">
-            <ul className={`${shellClass} m-0 flex list-none flex-wrap justify-center gap-x-10 gap-y-3 py-6`}>
-              {content.hero.trust.map((item) => (
-                <li className="flex items-center gap-2.5 text-[0.88rem] text-[var(--color-ink-soft)]" key={item}>
-                  <CircleCheckIcon aria-hidden="true" className="h-[1.1rem] w-[1.1rem] shrink-0 text-[var(--color-blue)]" strokeWidth={1.6} />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
           <section className={`${shellClass} py-[clamp(7rem,13vw,12rem)]`} id="problem">
             <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(32rem,1.28fr)] items-center gap-[clamp(3rem,6vw,6rem)] max-[980px]:grid-cols-1">
               <div data-reveal="left">
