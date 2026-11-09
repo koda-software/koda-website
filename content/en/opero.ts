@@ -23,11 +23,11 @@ export const operoProductContent: OperoProductContent = {
       "Instead of passing fragments of work between separate tools, Opero keeps the whole story together. What happened, who acted, what was decided and what comes next remain visible from start to finish.",
     comparison: {
       title: "Customer requests",
-      ariaLabel: "Compare the list and task-board views of customer requests",
+      ariaLabel: "Compare the customer request list with the reservations calendar",
       beforeLabel: "List view",
       beforeAlt: "Customer requests displayed as a structured list in Opero",
-      afterLabel: "Tasks board",
-      afterAlt: "The same customer requests displayed as a workflow board in Opero",
+      afterLabel: "Reservations calendar",
+      afterAlt: "Resource reservations displayed as a monthly calendar in Opero",
     },
     story: {
       ariaLabel: "How a customer request becomes a working Opero process",

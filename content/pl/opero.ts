@@ -23,11 +23,11 @@ export const operoProductContent: OperoProductContent = {
       "Zamiast przekazywać fragmenty pracy między osobnymi narzędziami, Opero zachowuje całą historię w jednym miejscu. Od początku do końca pozostaje widoczne, co się wydarzyło, kto podjął działanie, jakie decyzje zapadły i co należy zrobić dalej.",
     comparison: {
       title: "Zgłoszenia klientów",
-      ariaLabel: "Porównaj widok listy i tablicy zadań dla zgłoszeń klientów",
+      ariaLabel: "Porównaj listę zgłoszeń klientów z kalendarzem rezerwacji",
       beforeLabel: "Widok listy",
       beforeAlt: "Zgłoszenia klientów przedstawione jako uporządkowana lista w Opero",
-      afterLabel: "Tablica zadań",
-      afterAlt: "Te same zgłoszenia klientów przedstawione jako tablica procesu w Opero",
+      afterLabel: "Kalendarz rezerwacji",
+      afterAlt: "Rezerwacje zasobów przedstawione jako kalendarz miesięczny w Opero",
     },
     story: {
       ariaLabel: "Jak zgłoszenie klienta staje się działającym procesem w Opero",
