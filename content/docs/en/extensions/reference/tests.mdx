@@ -1,0 +1,175 @@
+---
+title: Tests
+description: "Write contract tests for Opero extension actions: inputs, settings, connection values, scripted HTTP exchanges and expected outcomes, run offline at upload."
+---
+
+Every action has at least one test case. A case gives an input, lists the HTTP exchanges the action is expected to make, and says how it ends. Opero runs every case at upload, without sending anything over the network.
+
+```yaml title="actions/greet/tests.yaml"
+- name: the greeting is sent
+  input: { name: Ada }
+  settings: { language: pl }
+  connection: { token: test-token }
+  http:
+    - request:
+        method: POST
+        url: https://httpbin.org/anything?lang=pl
+        headers: { authorization: Bearer test-token }
+        body: { greeting: "Hello, Ada!" }
+      response:
+        status: 200
+        headers: { content-type: application/json }
+        body: { json: { greeting: "Hello, Ada!" } }
+  returns:
+    status: 200
+    headers: { content-type: application/json }
+    body: { json: { greeting: "Hello, Ada!" } }
+```
+
+## A test case
+
+<TypeTable
+  type={{
+    name: {
+      type: 'string',
+      description: 'Shown in results.',
+      required: true,
+    },
+    input: {
+      type: 'object',
+      description: 'The action\'s input. Must match the input fields. Leave it out for no input.',
+    },
+    settings: {
+      type: 'object',
+      description: 'The extension\'s settings for this case. Defaults apply to the fields left out. Only in a package with settings.yaml.',
+    },
+    connection: {
+      type: 'object',
+      description: 'The credential fields, for a package with a connection. Settings do not go here.',
+    },
+    companyId: {
+      type: 'string',
+      description: 'For packages with company credentials.',
+    },
+    http: {
+      type: 'exchange[]',
+      description: 'The exchanges, in order, up to 50. Each request has method, url and optionally headers and body; each response has status and optionally headers and body.',
+    },
+  }}
+/>
+
+Only the request headers you name are compared; write their names in lower case.
+
+## Settings in a case
+
+The settings of a case, with the defaults applied, must match `settings.yaml`. A required setting without a default must therefore be given in every case, including cases of actions that do not read it. A case that gives settings in a package without `settings.yaml`, or that gives them under `connection.config`, is refused with `test.invalid`. See [Settings in tests](/docs/en/extensions/reference/settings#settings-in-tests).
+
+## How a case ends
+
+Each case has exactly one outcome:
+
+| Outcome | Passes when |
+| --- | --- |
+| `returns: <output>` | The action returns exactly this output. |
+| `succeeds: true` | The action ends without an error, whatever it returns. |
+| `fails: true` | The action fails. |
+| `fails: { status: 409 }` | The action fails because the service answered with that status. |
+| `rateLimited: true` | The service answered `429`. |
+| `rateLimited: { status: 429 }` | The same, with the status written out. |
+
+<Tabs items={['Success', 'Failure', 'Rate limit', 'No network']}>
+<Tab value="Success">
+
+```yaml
+- name: a valid token is accepted
+  connection: { token: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://httpbin.org/bearer
+        headers: { authorization: Bearer test-token }
+      response: { status: 200, body: { authenticated: true } }
+  succeeds: true
+```
+
+</Tab>
+<Tab value="Failure">
+
+```yaml
+- name: a refused token fails
+  connection: { token: wrong-token }
+  http:
+    - request: { method: GET, url: https://httpbin.org/bearer }
+      response: { status: 401 }
+  fails: { status: 401 }
+```
+
+</Tab>
+<Tab value="Rate limit">
+
+```yaml
+- name: a 429 is reported as rate limited
+  input: { name: Ada }
+  connection: { token: test-token }
+  http:
+    - request: { method: POST, url: https://httpbin.org/anything?lang=en }
+      response: { status: 429, headers: { retry-after: "30" } }
+  rateLimited: { status: 429 }
+```
+
+</Tab>
+<Tab value="No network">
+
+A script that calls nothing needs no `http` list:
+
+```yaml
+- name: a price of 200 and a cost of 150 give 25 percent
+  input: { price: "200", cost: "150" }
+  returns: { margin: 50, marginPercent: 25 }
+```
+
+</Tab>
+</Tabs>
+
+## When a case fails
+
+A case is named by its file and position, for example `actions/greet/tests.yaml#/0`. It fails when the action:
+
+- makes a request the case did not expect;
+- makes a request that differs in method, URL, a named header or the body;
+- leaves a scripted exchange unused;
+- ends in a different outcome;
+- returns an output that does not match `returns`, or does not match the output fields.
+
+The codes are listed under [Error codes](/docs/en/extensions/error-codes#only-at-upload-when-the-tests-run).
+
+## Limits
+
+| What | Limit |
+| --- | --- |
+| Cases per action | 1 to 50 |
+| Cases per package | 200 |
+| Exchanges per case | 50 |
+| Time per case | 10 seconds |
+| Time for all cases of a package | 60 seconds |
+
+## Several test files
+
+`tests` in `action.yaml` may name a folder instead of a file. Every `.yaml` file in that folder is then a test file:
+
+<Files>
+  <Folder name="actions" defaultOpen>
+    <Folder name="greet" defaultOpen>
+      <File name="action.yaml" />
+      <File name="rule.yaml" />
+      <Folder name="tests" defaultOpen>
+        <File name="success.yaml" />
+        <File name="errors.yaml" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+```yaml title="actions/greet/action.yaml"
+tests: tests/
+```

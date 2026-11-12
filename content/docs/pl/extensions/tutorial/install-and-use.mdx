@@ -1,0 +1,112 @@
+---
+title: "Część 4: Zainstaluj i używaj"
+description: "Prześlij rozszerzenie Hello do Opero, przejrzyj plan instalacji, sprawdź ustawienia, skonfiguruj i zweryfikuj połączenie, użyj kroku i filtra w regule, a potem wydaj nową wersję."
+---
+
+W tej części przesyłasz paczkę, instalujesz ją, sprawdzasz jej ustawienia, konfigurujesz połączenie, używasz jej kroku w regule i wydajesz drugą wersję.
+
+<Steps>
+<Step>
+### Prześlij
+
+W Opero otwórz **Zarządzaj → Rozszerzenia**, wybierz **Prześlij pakiet** i wskaż plik zip. Opero powtarza sprawdzenia wykonywane bez sieci, a potem uruchamia twoje przypadki testowe.
+
+Jeśli coś się nie powiedzie, nic nie zostaje zapisane, a ty widzisz listę problemów z plikami i wierszami. Jeśli wszystko przejdzie, paczka pojawia się w sekcji **Dostępne do instalacji** jako paczka prywatna twojej organizacji.
+
+Paczkę możesz też przesłać z terminala albo zlecić to asystentowi AI:
+
+<Tabs items={['Ekran Opero', 'Narzędzie wiersza poleceń', 'Asystent AI']}>
+<Tab value="Ekran Opero">
+
+**Zarządzaj → Rozszerzenia → Prześlij pakiet**, potem wskaż plik zip. Limit to 10 MB.
+
+</Tab>
+<Tab value="Narzędzie wiersza poleceń">
+
+```bash title="Terminal"
+extension-cli push . --server https://opero.example.com/mcp
+```
+
+Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji.
+
+</Tab>
+<Tab value="Asystent AI">
+
+Asystent AI połączony z serwerem MCP Opero może przesłać plik zip za ciebie. Poproś go o przesłanie pliku paczki do twojej organizacji; wykonuje te same sprawdzenia i testy.
+
+</Tab>
+</Tabs>
+</Step>
+
+<Step>
+### Zainstaluj
+
+Naciśnij **Zainstaluj**. Zanim Opero cokolwiek zmieni, pokazuje plan:
+
+- co zostanie utworzone: trzy reguły (`Hello: Hello`, `Hello: Verify`, `Hello: Greet`) i jeden filtr szablonu;
+- hosty, które paczka może wywoływać, każdy z podanym przez ciebie powodem (`httpbin.org`);
+- uprawnienia, których potrzebujesz, i czy je masz;
+- ewentualne problemy, oznaczone jako blokujące albo nie.
+
+Potwierdź, aby zainstalować. Rozszerzenie ma teraz status **Nie działa: połączenie nie jest włączone**.
+
+<Callout>
+Ten status jest oczekiwany: instalacja nigdy nie tworzy połączenia.
+</Callout>
+</Step>
+
+<Step>
+### Sprawdź ustawienia
+
+Otwórz rozszerzenie i przejdź do karty **Ustawienia**, między kartami **Szczegóły** i **Połączenie**. Widać na niej grupę `general` z `settings.yaml` z polem `language`, ustawionym na wartość domyślną, angielski. W polskim interfejsie mają etykiety z `locales/pl.yaml`: **Ogólne** i **Język**. Jeśli chcesz, żeby powitania szły z `lang=pl`, wybierz polski i zapisz.
+
+Język ma wartość domyślną, więc rozszerzenie na niego nie czeka. Wymagane ustawienie bez wartości domyślnej sprawiłoby, że rozszerzenie miałoby status **Nie działa: niekompletne ustawienia**, dopóki nie zostanie uzupełnione.
+</Step>
+
+<Step>
+### Skonfiguruj połączenie
+
+Przejdź do karty **Połączenie** rozszerzenia. Wpisz token (httpbin przyjmie dowolny tekst), zapisz i naciśnij **Zweryfikuj**.
+
+Opero uruchamia twoją akcję `verify` z zapisanymi wartościami. Gdy przejdzie, włącz połączenie. Rozszerzenie ma teraz status **Działa**.
+</Step>
+
+<Step>
+### Użyj kroków i filtra
+
+Utwórz albo otwórz regułę. Kroki **Pozdrów** i **Powitanie** są na liście kroków, każdy z polem **Imię** wygenerowanym z jego wejścia. W zapisanej regule krok greet wygląda tak:
+
+```json title="Krok w jednej z reguł organizacji"
+{
+  "type": "x-hello-ext.greet",
+  "contextKey": "greeting",
+  "config": { "name": "{{ trigger.data.firstName }}" }
+}
+```
+
+Wyjście akcji trafia pod klucz kontekstu kroku, tutaj `greeting`, i mogą go używać kolejne kroki: `{{ greeting.status }}`, `{{ greeting.body.json.greeting }}`.
+
+Jeśli akcja się nie powiedzie, krok kończy się błędem; podłącz jego wyjście błędu, żeby to obsłużyć. Zobacz [Gdy krok się nie powiedzie](/docs/pl/extensions/after-install#when-a-step-fails).
+
+W dowolnym szablonie wypróbuj `{{ "hello" | x_hello_ext_shout }}`.
+</Step>
+
+<Step>
+### Wydaj nową wersję
+
+Zmień coś, podnieś `version` do `0.1.1`, zwaliduj, spakuj i prześlij. Zainstalowane rozszerzenie pokazuje nowszą wersję; naciśnij **Uaktualnij**, przejrzyj plan i potwierdź.
+
+Reguły, które używają twojego kroku, działają dalej, bo krok zachowuje tożsamość między wersjami, dopóki nazwa akcji się nie zmienia. [Uaktualnianie](/docs/pl/extensions/after-install#upgrading) wymienia, co może zablokować uaktualnienie.
+</Step>
+</Steps>
+
+## Co dalej
+
+<Cards>
+  <Card title="Przepis: krok, który liczy" href="/docs/pl/extensions/calculating-step">
+    Krok bez połączenia, napisany jako skrypt.
+  </Card>
+  <Card title="Dokumentacja techniczna" href="/docs/pl/extensions/reference/manifest">
+    Każdy klucz każdego pliku.
+  </Card>
+</Cards>

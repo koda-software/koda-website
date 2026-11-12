@@ -1,0 +1,93 @@
+---
+title: The package folder
+description: "How an Opero extension package folder is laid out: the manifest, settings, connection, action and filter folders, modules, translations, file naming and YAML rules."
+---
+
+A package is a folder with `extension.yaml` at the top and one folder per feature. Only what the manifest lists is part of the package.
+
+<Files>
+  <Folder name="your-extension" defaultOpen>
+    <File name="extension.yaml" />
+    <File name="settings.yaml" />
+    <Folder name="connection" defaultOpen>
+      <File name="connection.yaml" />
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="create-shipment" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml (or run.js / run.ts)" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="filters" defaultOpen>
+      <Folder name="tracking-url" defaultOpen>
+        <File name="filter.yaml" />
+        <File name="filter.js" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+    <File name="README.md" />
+    <Folder name=".github" disabled />
+    <Folder name=".opero" disabled />
+  </Folder>
+</Files>
+
+| Path | Holds |
+| --- | --- |
+| `extension.yaml` | The identity, requirements and permissions, and the lists of everything else. Required. See [extension.yaml](/docs/en/extensions/reference/manifest). |
+| `actions/<folder>/` | `action.yaml`, the file `run` names (a rule file, a script, or a rule file and the scripts its steps name), the test file or folder, and any schema files. See [Actions](/docs/en/extensions/reference/actions). |
+| `filters/<folder>/` | `filter.yaml` and its script. See [Filters](/docs/en/extensions/reference/filters). |
+| `settings.yaml` | The extension's settings, when `extension.yaml` says `settings: settings.yaml`. See [Settings](/docs/en/extensions/reference/settings). |
+| `connection/` | `connection.yaml`, when `extension.yaml` says `connection: connection`. See [Connection and secrets](/docs/en/extensions/reference/connection-and-secrets). |
+| `<module>/module.yaml` | A group of features in its own folder, for a large package. See [Modules](#modules). |
+| `locales/<lang>.yaml` | One translation per language listed in `locales`. See [Translations](/docs/en/extensions/reference/translations). |
+| Anything else | A README, a changelog, a licence, CI files, your editor settings: ignored and not packed. |
+
+<Callout type="warn">
+A descriptor file (`action.yaml`, `filter.yaml` and so on) that no list names is refused with `layout.unlisted_feature`. List its folder, or delete it. The same goes for a `settings.yaml` that `extension.yaml` does not name.
+</Callout>
+
+## Naming
+
+- Every file the package uses has a lower-case path: letters, digits, `.`, `_` and `-`.
+- Descriptor names are fixed. Folder names are yours and never become identifiers, so you can rename a folder without breaking anything that uses the feature.
+
+## YAML rules
+
+YAML is read strictly:
+
+- one document per file, UTF-8;
+- no anchors, aliases, tags, merge keys or repeated keys.
+
+JSON is valid YAML, so a rule exported from the rule builder can be pasted as it is.
+
+## Modules
+
+A large package can group features into module folders. Each module folder holds a `module.yaml`:
+
+```yaml title="billing/module.yaml"
+module: billing
+name: Billing
+description: Invoice and payment steps.
+actions:
+  - actions/create-invoice
+  - actions/send-invoice
+filters:
+  - filters/invoice-number
+```
+
+| Key | Meaning |
+| --- | --- |
+| `module` | The module's key. |
+| `name` | Its name. |
+| `description` | Optional. |
+| `actions`, `filters` | Its own lists, relative to the module's folder. |
+
+`extension.yaml` names the module folder under `include`. Modules go one level deep only.
+
+```yaml title="extension.yaml"
+include:
+  - billing
+```

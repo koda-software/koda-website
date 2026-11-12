@@ -1,0 +1,31 @@
+---
+title: Limits
+description: "Size and count limits for Opero extension packages: zip size, files, actions, filters, test cases, HTTP exchanges, hosts, languages, field lists and settings."
+---
+
+A package that crosses one of these limits is refused at upload.
+
+| What | Limit |
+| --- | --- |
+| Zip size | 10 MB |
+| Files in a package | 500, each up to 2 MB, 30 MB unpacked |
+| Entries in each list | 200 actions, 200 filters, 50 includes |
+| Test cases | 1 to 50 per action, 200 per package |
+| HTTP exchanges | 50 per case |
+| Test time | 10 seconds per case, 60 seconds for the package |
+| Hosts | 50 |
+| Languages | 40 |
+| Field lists | 100 fields, 5 levels, 200 options |
+| Connection methods | 10 |
+| Settings | 1 to 20 groups, 100 fields in all |
+
+## Text lengths
+
+| Text | Up to |
+| --- | --- |
+| Extension key | 2 to 31 characters |
+| Action and filter names | 41 characters |
+| Package `name`, `publisher`, action `label` | 120 characters |
+| Field `label`, settings group `label` | 200 characters |
+| Field `help`, settings group `description` | 1,000 characters |
+| Package `description`, each translation | 2,000 characters |

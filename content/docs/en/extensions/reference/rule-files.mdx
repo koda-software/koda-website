@@ -1,0 +1,87 @@
+---
+title: Rule files
+description: "Write an Opero extension action as a rule file: entryStepId, steps and edges, local step ids, publishing the output, Call webhook URLs, script files and the allowed step types."
+---
+
+A rule file is an action's logic written as a rule: the `entryStepId`, `steps` and `edges` the rule builder saves. The rule's name, description and trigger come from `action.yaml`, so do not write them.
+
+```yaml title="actions/lookup/rule.yaml"
+entryStepId: call
+steps:
+  - id: call
+    type: CALL_WEBHOOK
+    name: Find customer
+    contextKey: answer
+    config:
+      url: "https://api.example.com/v1/customers?email={{ trigger.data.email }}"
+      method: GET
+      headers: { Authorization: "Bearer {{ connection.token }}" }
+  - id: shape
+    type: RUN_SCRIPT
+    name: Keep the first match
+    contextKey: output
+    config:
+      code: { $file: shape.js }
+edges:
+  - { fromStepId: call, toStepId: shape, branchKey: default }
+```
+
+## Rules for rule files
+
+- **Step ids are local names** such as `call` or `map_items`: lower-case letters, digits and `_`, not UUIDs. Keep an id the same across versions and the step keeps its identity.
+- **An edge** is `{ fromStepId, toStepId, branchKey }` using those ids.
+- **Publish the result under the context key `output`.** Whatever the rule leaves under `output` is the action's result.
+- **A Call webhook URL** starts with `https://` and a host written out from `permissions.network`. The host cannot come from a template.
+- **A Run script step may keep its code in a script file** of the action's folder: `code: { $file: step.js }`. That is the only place `$file` is accepted.
+- **A rule may use the package's own steps**, but not in a circle, and may not use the package's own filters.
+
+## Values available in a rule file
+
+| Write | To get |
+| --- | --- |
+| `{{ trigger.data.<field> }}` | A field of the action's input. |
+| `{{ trigger.settings.<field> }}` | One of the extension's [settings](/docs/en/extensions/reference/settings), with its default applied. Not secret; usable anywhere. |
+| `{{ connection.<field> }}` | A secret field. Only in a header value or a URL query value of a **Call webhook** step. See [Secrets](/docs/en/extensions/reference/connection-and-secrets#secrets). |
+| `{{ <contextKey>.… }}` | The result of an earlier step, under its context key. |
+
+A **Call webhook** step's result is `{ status, headers, body }`. An error status fails the step, and so the action.
+
+Inside an action, templates get Opero's built-in filters only. Filters from other extensions or from the organization's own scripts are not available.
+
+## Steps a rule file may use
+
+| Step type | Use it to |
+| --- | --- |
+| `CALL_WEBHOOK` | Call the outside service. |
+| `RUN_SCRIPT` | Run sandboxed JavaScript between calls. |
+| `CONDITION`, `SWITCH` | Branch on the answer. |
+| `LOOP` | Repeat steps for each item of a list. |
+| `FILTER`, `TRANSFORM`, `AGGREGATE`, `SORT`, `DEDUPE` | Reshape lists. |
+| `SAVE_TO_CONTEXT` | Keep a value for later steps. |
+| `LOG_OUTPUT` | Write to the run log. |
+| `WAIT` | Pause. |
+| `STOP` | End the rule. |
+| `x-<key>.<name>` | Call another action of the same package. |
+
+<Callout type="warn" title="No record, email or notification steps">
+Steps that touch records, send email or notify people are refused with `step.type_not_allowed`. That work belongs in the organization's rule that uses your step.
+</Callout>
+
+## From the rule builder to a rule file
+
+You can build the logic in the rule builder first, export the rule as JSON and paste it into the rule file: JSON is valid YAML. Then:
+
+<Steps>
+<Step>
+Remove `name`, `description` and `trigger`.
+</Step>
+<Step>
+Replace the step UUIDs with short local ids, in the steps and in the edges.
+</Step>
+<Step>
+Replace hard-coded credentials with `{{ connection.<field> }}`.
+</Step>
+<Step>
+Make sure the last step publishes its result under `output`.
+</Step>
+</Steps>

@@ -1,0 +1,154 @@
+---
+title: "Recipe: a step that only calculates"
+description: "Build a four-file Opero extension with a Calculate margin rule step written as a script, with no connection and no network access."
+---
+
+A step does not have to call anything. Leave out the connection and the network permissions, and write the logic as a script. With no connection to set up, the extension runs as soon as it is installed. The whole package is four files.
+
+The example adds a step **Calculate margin** (`x-calc-ext.margin`) that takes a price and a cost and returns the margin and its percentage.
+
+<Steps>
+<Step>
+### Scaffold
+
+Start with the scaffold, add the action, and remove the example:
+
+```bash title="Terminal"
+extension-cli init calc-ext --name Calc
+cd calc-ext
+extension-cli add action margin
+```
+
+Delete the `actions/hello` folder. The package then holds four files:
+
+<Files>
+  <Folder name="calc-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="actions" defaultOpen>
+      <Folder name="margin" defaultOpen>
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+
+<Step>
+### Write the manifest
+
+```yaml title="extension.yaml"
+# The package's contents: every feature it installs is listed here.
+manifestVersion: 2
+extension: calc-ext
+version: 0.1.0
+name: Calc
+description: Calculation steps for rules.
+publisher: Your company
+requires:
+  modules: [rules]
+
+actions:
+  - actions/margin
+```
+</Step>
+
+<Step>
+### Describe the action
+
+```yaml title="actions/margin/action.yaml"
+action: margin
+label: Calculate margin
+description: Works out the margin between a price and a cost.
+
+input:
+  price: { type: text, label: Price, required: true }
+  cost: { type: text, label: Cost, required: true }
+output:
+  margin: { type: number, label: Margin }
+  marginPercent: { type: number, label: Margin (%) }
+
+run: run.js
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+
+<Callout type="warn" title="Declare inputs as text">
+The values a rule gives a step are checked against its input fields when the rule is saved, so a field typed `number` accepts only a fixed number, not `{{ record.price }}`. Type the inputs as `text` and convert them in the script.
+</Callout>
+</Step>
+
+<Step>
+### Write the script
+
+```js title="actions/margin/run.js"
+/** @type {import('../../.opero/types').Action<'margin'>} */
+const run = ({ input }) => {
+  const price = Number(input.price);
+  const cost = Number(input.cost);
+  if (!Number.isFinite(price) || !Number.isFinite(cost) || price <= 0) {
+    throw new Error('The price and the cost are numbers, and the price is above zero.'); // [!code highlight]
+  }
+  const margin = Math.round((price - cost) * 100) / 100;
+  return {
+    margin,
+    marginPercent: Math.round((margin / price) * 10000) / 100,
+  };
+};
+export default run;
+```
+
+Throwing an error fails the step.
+</Step>
+
+<Step>
+### Test it
+
+The first case compares the exact result; the second proves that bad input fails:
+
+```yaml title="actions/margin/tests.yaml"
+- name: a price of 200 and a cost of 150 give 25 percent
+  input: { price: "200", cost: "150" }
+  returns: { margin: 50, marginPercent: 25 }
+
+- name: text that is not a number fails the step
+  input: { price: abc, cost: "150" }
+  fails: true
+```
+</Step>
+
+<Step>
+### Validate and pack
+
+```bash title="Terminal"
+extension-cli validate .
+extension-cli pack .
+```
+
+```txt title="Output"
+calc-ext 0.1.0 is valid.
+Wrote …/calc-ext-0.1.0.zip (1309 bytes)
+```
+
+Upload and install as in the [tutorial](/docs/en/extensions/tutorial/install-and-use); there is no connection step.
+</Step>
+</Steps>
+
+## Use it in a rule
+
+In a rule, the step is saved like this, and later steps read `{{ result.marginPercent }}`:
+
+```json title="A step in one of the organization's rules"
+{
+  "type": "x-calc-ext.margin",
+  "contextKey": "result",
+  "config": { "price": "{{ trigger.data.price }}", "cost": "{{ trigger.data.cost }}" }
+}
+```
+
+## When a step is too much
+
+If the calculation is a one-line conversion of a single value, a [template filter](/docs/en/extensions/reference/filters) is lighter than a step. If only one rule needs it, a **Run script** step written directly in that rule needs no extension at all.

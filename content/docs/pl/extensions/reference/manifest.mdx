@@ -1,0 +1,133 @@
+---
+title: extension.yaml
+description: "Opis extension.yaml, manifestu rozszerzenia Opero: klucz, wersja, wydawca, wymagania, uprawnienia sieciowe z uzasadnieniem, połączenie, ustawienia, listy funkcji i języki."
+---
+
+`extension.yaml` to manifest: tożsamość paczki, jej wymagania, to, do czego ma dostęp, oraz lista wszystkich funkcji, które instaluje.
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: A starter extension with a greeting, a call to httpbin.org and a filter.
+publisher: Your company
+requires:
+  opero: ">=2026.1.0"
+  modules: [rules]
+permissions:
+  network:
+    - host: httpbin.org
+      reason: Checks the token and sends greetings to the httpbin.org test service.
+
+connection: connection
+settings: settings.yaml
+
+actions:
+  - actions/hello
+  - actions/verify
+  - actions/greet
+filters:
+  - filters/shout
+
+locales: [pl]
+```
+
+## Klucze
+
+<TypeTable
+  type={{
+    manifestVersion: {
+      type: '2',
+      description: 'Format paczki. Zawsze 2.',
+      required: true,
+    },
+    extension: {
+      type: 'string',
+      description: 'Klucz. Najpierw mała litera, potem litery, cyfry i myślniki; od 2 do 31 znaków; nie może zaczynać się od x-. Od niego biorą nazwy wszystkie elementy dodawane przez rozszerzenie.',
+      required: true,
+    },
+    version: {
+      type: 'string',
+      description: 'Trzy liczby, np. 1.4.0. Bez przyrostków. Każde przesłanie wymaga nowej wersji.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Widoczna na listach, do 120 znaków.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Jedno lub dwa zdania, do 2000 znaków.',
+      required: true,
+    },
+    publisher: {
+      type: 'string',
+      description: 'Kto je stworzył, do 120 znaków.',
+      required: true,
+    },
+    'requires.opero': {
+      type: 'string',
+      description: 'Najstarsze wydanie Opero, na którym działa, zapisane jako ">=2026.22.0" (w cudzysłowie). Starsza instalacja odmówi jego instalacji.',
+    },
+    'requires.modules': {
+      type: 'string[]',
+      description: 'Klucze modułów, które muszą być dostępne, np. rules.',
+    },
+    'permissions.network': {
+      type: '{ host, reason }[]',
+      description: 'Do 50 dokładnych nazw hostów, z którymi łączy się paczka, każda z uzasadnieniem. Bez symboli wieloznacznych i ścieżek. Wymagane, gdy paczka ma połączenie.',
+    },
+    'permissions.data': {
+      type: '{ scope, reason }[]',
+      description: 'Pokazywane instalującemu. Na razie nic nie korzysta z zakresów danych; pomiń to pole.',
+    },
+    connection: {
+      type: '"connection"',
+      description: 'Zawsze connection: folder z plikiem connection.yaml.',
+    },
+    settings: {
+      type: '"settings.yaml"',
+      description: 'Zawsze settings.yaml: plik na górze paczki, który deklaruje ustawienia rozszerzenia. Zobacz Ustawienia.',
+    },
+    actions: {
+      type: 'string[]',
+      description: 'Foldery akcji, zapisane jako actions/<folder>.',
+    },
+    filters: {
+      type: 'string[]',
+      description: 'Foldery filtrów, zapisane jako filters/<folder>.',
+    },
+    include: {
+      type: 'string[]',
+      description: 'Foldery modułów, każdy z plikiem module.yaml.',
+    },
+    locales: {
+      type: 'string[]',
+      description: 'Języki tłumaczeń, np. [pl, de]. Bez en: angielski jest w deskryptorach.',
+    },
+  }}
+/>
+
+## Uprawnienia sieciowe
+
+Każdy host, z którym łączy się paczka, jest wymieniony z uzasadnieniem. Administrator widzi każdy host i jego uzasadnienie w planie instalacji, zanim cokolwiek zostanie zainstalowane.
+
+```yaml title="extension.yaml"
+permissions:
+  network:
+    - host: api.example.com
+      reason: Creates shipments and reads their tracking numbers.
+    - host: auth.example.com
+      reason: Exchanges the API key for a short-lived access token.
+```
+
+- Wywołanie hosta spoza listy jest odrzucane, zarówno przy sprawdzaniu paczki, jak i w trakcie działania.
+- Host bez uzasadnienia jest odrzucany z kodem `permissions.reason_required`.
+- Paczka z połączeniem wymienia co najmniej jeden host.
+- Gdy aktualizacja prosi o nowe hosty, plan oznacza je jako nowe w tej wersji.
+
+## Zarezerwowane listy
+
+Nazwy list `objects`, `dictionaries`, `queries`, `blocks`, `components`, `triggers` i `schedules` są zarezerwowane dla przyszłych wersji i dziś odrzucane z kodem `manifest.unsupported_section`.

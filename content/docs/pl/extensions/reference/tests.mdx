@@ -1,0 +1,175 @@
+---
+title: Testy
+description: "Testy kontraktowe akcji rozszerzeń Opero: dane wejściowe, ustawienia, wartości połączenia, zaplanowane wymiany HTTP i oczekiwane wyniki, uruchamiane offline przy przesłaniu."
+---
+
+Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejściowe, wymienia wymiany HTTP, których akcja ma dokonać, i mówi, jak się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu paczki, niczego nie wysyłając przez sieć.
+
+```yaml title="actions/greet/tests.yaml"
+- name: the greeting is sent
+  input: { name: Ada }
+  settings: { language: pl }
+  connection: { token: test-token }
+  http:
+    - request:
+        method: POST
+        url: https://httpbin.org/anything?lang=pl
+        headers: { authorization: Bearer test-token }
+        body: { greeting: "Hello, Ada!" }
+      response:
+        status: 200
+        headers: { content-type: application/json }
+        body: { json: { greeting: "Hello, Ada!" } }
+  returns:
+    status: 200
+    headers: { content-type: application/json }
+    body: { json: { greeting: "Hello, Ada!" } }
+```
+
+## Przypadek testowy
+
+<TypeTable
+  type={{
+    name: {
+      type: 'string',
+      description: 'Widoczna w wynikach.',
+      required: true,
+    },
+    input: {
+      type: 'object',
+      description: 'Wejście akcji. Musi pasować do pól wejściowych. Pomiń je, jeśli akcja nie ma wejścia.',
+    },
+    settings: {
+      type: 'object',
+      description: 'Ustawienia rozszerzenia w tym przypadku. Dla pominiętych pól obowiązują wartości domyślne. Tylko w paczce z settings.yaml.',
+    },
+    connection: {
+      type: 'object',
+      description: 'Pola danych uwierzytelniających, dla paczki z połączeniem. Ustawień tu się nie podaje.',
+    },
+    companyId: {
+      type: 'string',
+      description: 'Dla paczek z danymi uwierzytelniającymi firmy.',
+    },
+    http: {
+      type: 'exchange[]',
+      description: 'Wymiany HTTP po kolei, do 50. Każde żądanie ma method, url i opcjonalnie headers oraz body; każda odpowiedź ma status i opcjonalnie headers oraz body.',
+    },
+  }}
+/>
+
+Porównywane są tylko nagłówki żądania, które wymienisz; ich nazwy pisz małymi literami.
+
+## Ustawienia w przypadku [#settings-in-a-case]
+
+Ustawienia przypadku, po uzupełnieniu wartościami domyślnymi, muszą pasować do `settings.yaml`. Wymagane ustawienie bez wartości domyślnej trzeba więc podać w każdym przypadku, także w przypadkach akcji, które go nie odczytują. Przypadek, który podaje ustawienia w paczce bez `settings.yaml` albo podaje je w `connection.config`, jest odrzucany z kodem `test.invalid`. Zobacz [Ustawienia w testach](/docs/pl/extensions/reference/settings#settings-in-tests).
+
+## Jak kończy się przypadek
+
+Każdy przypadek ma dokładnie jeden wynik:
+
+| Wynik | Przechodzi, gdy |
+| --- | --- |
+| `returns: <output>` | Akcja zwraca dokładnie ten wynik. |
+| `succeeds: true` | Akcja kończy się bez błędu, niezależnie od tego, co zwraca. |
+| `fails: true` | Akcja kończy się błędem. |
+| `fails: { status: 409 }` | Akcja kończy się błędem, bo usługa odpowiedziała tym statusem. |
+| `rateLimited: true` | Usługa odpowiedziała `429`. |
+| `rateLimited: { status: 429 }` | To samo, z wpisanym statusem. |
+
+<Tabs items={['Sukces', 'Błąd', 'Limit zapytań', 'Bez sieci']}>
+<Tab value="Sukces">
+
+```yaml
+- name: a valid token is accepted
+  connection: { token: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://httpbin.org/bearer
+        headers: { authorization: Bearer test-token }
+      response: { status: 200, body: { authenticated: true } }
+  succeeds: true
+```
+
+</Tab>
+<Tab value="Błąd">
+
+```yaml
+- name: a refused token fails
+  connection: { token: wrong-token }
+  http:
+    - request: { method: GET, url: https://httpbin.org/bearer }
+      response: { status: 401 }
+  fails: { status: 401 }
+```
+
+</Tab>
+<Tab value="Limit zapytań">
+
+```yaml
+- name: a 429 is reported as rate limited
+  input: { name: Ada }
+  connection: { token: test-token }
+  http:
+    - request: { method: POST, url: https://httpbin.org/anything?lang=en }
+      response: { status: 429, headers: { retry-after: "30" } }
+  rateLimited: { status: 429 }
+```
+
+</Tab>
+<Tab value="Bez sieci">
+
+Skrypt, który niczego nie wywołuje, nie potrzebuje listy `http`:
+
+```yaml
+- name: a price of 200 and a cost of 150 give 25 percent
+  input: { price: "200", cost: "150" }
+  returns: { margin: 50, marginPercent: 25 }
+```
+
+</Tab>
+</Tabs>
+
+## Kiedy przypadek nie przechodzi
+
+Przypadek jest oznaczany plikiem i pozycją, np. `actions/greet/tests.yaml#/0`. Nie przechodzi, gdy akcja:
+
+- wysyła żądanie, którego przypadek się nie spodziewał;
+- wysyła żądanie, które różni się metodą, URL-em, wymienionym nagłówkiem albo treścią;
+- zostawia niewykorzystaną zaplanowaną wymianę;
+- kończy się innym wynikiem;
+- zwraca wynik, który nie pasuje do `returns` albo do pól wyjściowych.
+
+Kody znajdziesz w [Kodach błędów](/docs/pl/extensions/error-codes#only-at-upload-when-the-tests-run).
+
+## Limity
+
+| Co | Limit |
+| --- | --- |
+| Przypadki na akcję | od 1 do 50 |
+| Przypadki na paczkę | 200 |
+| Wymiany na przypadek | 50 |
+| Czas na przypadek | 10 sekund |
+| Czas na wszystkie przypadki paczki | 60 sekund |
+
+## Kilka plików testów
+
+`tests` w `action.yaml` może wskazywać folder zamiast pliku. Wtedy każdy plik `.yaml` w tym folderze jest plikiem testów:
+
+<Files>
+  <Folder name="actions" defaultOpen>
+    <Folder name="greet" defaultOpen>
+      <File name="action.yaml" />
+      <File name="rule.yaml" />
+      <Folder name="tests" defaultOpen>
+        <File name="success.yaml" />
+        <File name="errors.yaml" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+```yaml title="actions/greet/action.yaml"
+tests: tests/
+```

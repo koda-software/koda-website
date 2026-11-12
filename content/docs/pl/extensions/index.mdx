@@ -1,0 +1,167 @@
+---
+title: Rozszerzenia
+description: "Buduj własne integracje Opero jako paczki rozszerzeń: połączenie z usługą zewnętrzną, gotowe kroki reguł i filtry szablonów, instalowane bez wdrażania kodu."
+---
+
+Rozszerzenie uczy Opero rozmawiać z usługą zewnętrzną. Piszesz je jako folder małych plików YAML i skryptów. Narzędzie wiersza poleceń sprawdza folder i pakuje go do pliku zip, a ty przesyłasz ten plik do Opero.
+
+Twoja organizacja dostaje wtedy ekran połączenia, nowe kroki reguł i nowe filtry szablonów. Żaden kod nie jest wdrażany, a serwer nie jest restartowany.
+
+<Files>
+  <Folder name="hello-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <File name="settings.yaml" />
+    <Folder name="connection">
+      <File name="connection.yaml" />
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="greet">
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+      <Folder name="hello">
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="filters">
+      <Folder name="shout">
+        <File name="filter.yaml" />
+        <File name="filter.js" />
+      </Folder>
+    </Folder>
+    <Folder name="locales">
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+Po spakowaniu i instalacji ten folder dodaje formularz ustawień, ekran połączenia z danymi uwierzytelniającymi, kroki reguł `x-hello-ext.greet` i `x-hello-ext.hello` oraz filtr szablonu `x_hello_ext_shout`.
+
+## Co zawiera paczka
+
+Opero już pozwala administratorowi budować [reguły](/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie): grafy kroków, które uruchamiają się, gdy coś się wydarzy. Rozszerzenie pakuje kilka fragmentów logiki wraz z opisem usługi, którą wywołują. Dzięki temu inni mogą używać każdego z nich jako gotowego kroku, bez zaglądania do środka.
+
+<Cards>
+  <Card title="Połączenie" href="/docs/pl/extensions/reference/connection-and-secrets">
+    Formularz na dane uwierzytelniające usługi, na przykład token API. Opero przechowuje sekret zaszyfrowany i nigdy więcej go nie pokazuje.
+  </Card>
+  <Card title="Ustawienia" href="/docs/pl/extensions/reference/settings">
+    Wartości wybierane przez administratora, które nie są sekretne, na przykład język albo region, w formularzu podzielonym na sekcje. Paczka może mieć ustawienia bez połączenia.
+  </Card>
+  <Card title="Akcje" href="/docs/pl/extensions/reference/actions">
+    Nazwane operacje, takie jak „utwórz fakturę” albo „znajdź klienta”. Każda ma typowane wejście, typowane wyjście, swoją logikę (regułę albo skrypt) i co najmniej jeden test.
+  </Card>
+  <Card title="Kroki reguł" href="/docs/pl/extensions/reference/actions">
+    Akcja opublikowana w edytorze reguł. Pojawia się jako krok typu `x-<key>.<name>`, którego może użyć każda reguła w organizacji.
+  </Card>
+  <Card title="Filtry szablonów" href="/docs/pl/extensions/reference/filters">
+    Małe funkcje JavaScript, których użyjesz w dowolnym szablonie jako `{{ value | x_<key>_<name> }}`, do formatowania lub przeliczania wartości.
+  </Card>
+</Cards>
+
+## Co możesz z nim zrobić
+
+- Wywołać dowolne API po HTTPS metodą `GET`, `POST`, `PUT`, `PATCH` albo `DELETE`, z sekretem w nagłówku albo w parametrze zapytania.
+- Połączyć kilka wywołań w łańcuch, rozgałęzić logikę zależnie od odpowiedzi, przejść w pętli po liście, przekształcać i filtrować dane oraz uruchamiać JavaScript w piaskownicy między wywołaniami.
+- Napisać logikę akcji jako jedną funkcję w JavaScript albo TypeScript, z typami wygenerowanymi z tego, co akcja deklaruje.
+- Dać autorom reguł jeden czytelny krok z formularzem wygenerowanym z pól wejściowych akcji, zamiast ręcznie pisanego wywołania webhooka.
+- Trzymać dane uwierzytelniające osobno dla każdej organizacji albo każdej firmy.
+- Pozwolić administratorowi wybrać na stronie rozszerzenia ustawienia, na przykład region albo język, bez zmieniania paczki.
+- Dostarczyć etykiety w kilku językach.
+
+## Czego jeszcze nie potrafi
+
+<Callout type="warn" title="Ograniczenia obecnego formatu paczki">
+- **Czytać ani zapisywać rekordów Opero bezpośrednio.** Akcja tylko liczy i wywołuje usługę zewnętrzną. Pracę na rekordach wykonuje z wynikiem reguła, która używa twojego kroku.
+- **Uruchamiać się sama.** Paczka nie ma jeszcze wyzwalaczy, przychodzących webhooków ani harmonogramów. Krok uruchamia się, gdy dojdzie do niego reguła organizacji.
+- **Dodawać ekranów, bloków ani przycisków w rekordach.**
+- **Przechowywać danych uwierzytelniających osobno dla każdego użytkownika.** Połączenie należy do organizacji albo do firmy.
+- **Wywoływać hosta, którego nie zadeklarowano,** ani niczego, co nie jest HTTPS.
+</Callout>
+
+Każdy plik paczki ma stały zestaw kluczy, a klucz, którego format nie zna, jest odrzucany. Paczka, która przechodzi walidację dziś, nie straci później po cichu żadnej części.
+
+## Jak to działa
+
+Od folderu do działającego kroku:
+
+<Steps>
+<Step>
+### Napisz
+
+Folder z `extension.yaml`, osobnym folderem na każdą akcję, testami i tłumaczeniami.
+</Step>
+<Step>
+### Zwaliduj i spakuj
+
+[Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli) sprawdza folder i pakuje do zip to, co wymienia `extension.yaml`.
+</Step>
+<Step>
+### Prześlij
+
+Opero ponownie sprawdza paczkę i uruchamia twoje testy.
+</Step>
+<Step>
+### Zainstaluj
+
+Administrator przegląda plan instalacji i go akceptuje.
+</Step>
+<Step>
+### Połącz
+
+Administrator uzupełnia ustawienia, wpisuje dane uwierzytelniające, uruchamia **Zweryfikuj** i włącza połączenie.
+</Step>
+<Step>
+### Używaj
+
+Kroki i filtry pojawiają się w edytorze reguł i w szablonach.
+</Step>
+</Steps>
+
+Co się dzieje za każdym razem, gdy reguła uruchamia twój krok:
+
+| # | Etap | Co się dzieje |
+| --- | --- | --- |
+| 1 | Reguła dochodzi do kroku | Na przykład `x-hello-ext.greet`. |
+| 2 | Sprawdzenie wejścia | Wartości, które reguła podaje krokowi, są sprawdzane względem pól wejściowych akcji. |
+| 3 | Uruchamia się twoja akcja | Jej plik reguły albo skrypt działa na danych wejściowych i ustawieniach rozszerzenia. |
+| 4 | Dodanie sekretu | Dane uwierzytelniające są wstawiane w chwili wysyłki i tylko dla zadeklarowanych hostów. |
+| 5 | Usługa odpowiada | Odpowiedź wraca do twojej akcji. |
+| 6 | Sprawdzenie wyjścia | Wynik jest sprawdzany względem pól wyjściowych, a potem oddawany regule. |
+
+## Słownik tych stron
+
+| Pojęcie | Znaczenie |
+| --- | --- |
+| Paczka | Jedna przesłana wersja rozszerzenia: plik zip z twoim folderem. Wersja nigdy się nie zmienia po przesłaniu. |
+| Klucz | Identyfikator rozszerzenia, na przykład `hello-ext`. Od niego pochodzą nazwy wszystkiego, co rozszerzenie dodaje. |
+| Manifest | `extension.yaml`, plik na górze folderu, który wymienia całą zawartość paczki. |
+| Deskryptor | Plik YAML opisujący jedną część: `action.yaml`, `filter.yaml`, `connection.yaml`, `settings.yaml`. Jego nazwa jest stała. |
+| Akcja | Folder z `action.yaml`, logiką (plikiem reguły albo skryptem) i testami. |
+| Plik reguły | Logika akcji zapisana jako reguła: kroki i krawędzie, które zapisuje edytor reguł. |
+| Krok | Akcja widoczna w edytorze reguł. |
+| Połączenie | Zapisane dane uwierzytelniające usługi zewnętrznej. |
+| Ustawienia | Wartości, które nie są sekretne, wybierane przez administratora dla zainstalowanego rozszerzenia i odczytywane przez jego akcje. |
+| Przypadek testowy | Jeden wpis w `tests.yaml` akcji: wejście, wymiany HTTP wykonywane przez akcję i oczekiwany wynik. Działa bez dostępu do sieci. |
+| Zarządzane | Zainstalowane przez rozszerzenie. Zarządzane reguły i skrypty są tylko do odczytu i ukryte na zwykłych listach; zmieniają się tylko przy uaktualnieniu rozszerzenia. |
+| Paczka prywatna | Paczka, którą organizacja przesłała dla siebie. Drugi rodzaj to paczka z katalogu, przesłana przez administratora instalacji i udostępniana organizacjom. |
+
+## Co dalej
+
+<Cards>
+  <Card title="Zanim zaczniesz" href="/docs/pl/extensions/before-you-start">
+    Uprawnienia, moduły i narzędzia, których potrzebujesz.
+  </Card>
+  <Card title="Samouczek: zbuduj Hello" href="/docs/pl/extensions/tutorial/start-the-package">
+    Zbuduj kompletne rozszerzenie z połączeniem, dwoma krokami i filtrem.
+  </Card>
+  <Card title="Przepis: krok, który liczy" href="/docs/pl/extensions/calculating-step">
+    Paczka z czterech plików, bez połączenia.
+  </Card>
+  <Card title="Dokumentacja techniczna" href="/docs/pl/extensions/reference/manifest">
+    Każdy plik, klucz, limit i polecenie.
+  </Card>
+</Cards>

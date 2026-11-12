@@ -1,0 +1,75 @@
+---
+title: Po instalacji
+description: "Działanie zainstalowanego rozszerzenia Opero: jego stany, ustawienia, co się dzieje, gdy krok się nie powiedzie, jak działają aktualizacje, co je blokuje i co usuwa odinstalowanie."
+---
+
+Zainstalowane rozszerzenie działa, gdy każde wymagane ustawienie ma wartość, a jeśli ma połączenie, to połączenie jest skonfigurowane, zweryfikowane i włączone. Ta strona opisuje jego stany, ustawienia, błędy kroków, aktualizacje i odinstalowanie.
+
+## Stany
+
+| Wyświetlany jako | Znaczenie |
+| --- | --- |
+| **Działa** | Zainstalowane, włączone, wymagane moduły są dostępne, każde wymagane ustawienie jest uzupełnione, a połączenie, jeśli jest, jest włączone. Kroki i filtry są dostępne w edytorach. |
+| **Nie działa: niekompletne ustawienia** | Wymagane ustawienie nie ma wartości. Uzupełnij je na karcie **Ustawienia**. |
+| **Nie działa: połączenie nie jest włączone** | Normalne zaraz po instalacji paczki z połączeniem. Skonfiguruj i włącz połączenie. |
+| **Nie działa** | Wymagany moduł jest niedostępny albo cofnięto dostęp do paczki z katalogu. |
+| **Wyłączone** | Wyłączone przez administratora. Wszystko zostaje na miejscu i się zatrzymuje. |
+| **Przerwane** | Instalacja lub aktualizacja nie powiodła się w połowie. Uruchom to samo polecenie jeszcze raz; zostanie wznowione. |
+
+Gdy ustawienia są niekompletne, a połączenie też nie jest włączone, najpierw pokazywane są ustawienia.
+
+Gdy rozszerzenie nie działa, jego kroków brakuje w edytorze reguł, a zapisana reguła, która do nich dotrze, kończy się błędem na tym kroku z kodem `extension_inactive`. Filtry działają, dopóki rozszerzenie nie zostanie wyłączone, bo niczego nie wywołują.
+
+Reguły i skrypty instalowane przez rozszerzenie są zarządzane przez rozszerzenie: tylko do odczytu i ukryte na zwykłych listach. Zainstalowaną regułę nadal możesz uruchomić ręcznie. Zmieniają się tylko przy aktualizacji rozszerzenia.
+
+## Ustawienia [#settings]
+
+Gdy paczka ma ustawienia, strona rozszerzenia ma kartę **Ustawienia** między kartami **Szczegóły** i **Połączenie**. Pokazuje ona jedną sekcję na każdą grupę zadeklarowaną w paczce, każde pole z etykietą, pomocą i wartością domyślną, i oznacza pola wymagane.
+
+- **Kto może je zmieniać.** Odczyt ustawień wymaga `org.extensions.read`, a zapis `org.extensions.update`. Bez tego uprawnienia formularz jest tylko do odczytu; jest też tylko do odczytu, gdy dla rozszerzenia trwa instalacja, aktualizacja albo inne polecenie.
+- **Jedna wartość na zainstalowane rozszerzenie.** Wartości obowiązują w całej organizacji, dla każdej firmy.
+- **Wartości domyślne.** Pole, którego nigdy nie ustawiono, ma wartość domyślną. Wyczyść pole i zapisz, żeby wrócić do wartości domyślnej.
+- **Wymagane ustawienia.** Formularz da się zapisać z pustym polem wymaganym, ale dopóki wymagane ustawienie nie ma wartości, zapisanej ani domyślnej, rozszerzenie nie działa: karta wymienia brakujące ustawienia, a rozszerzenie pokazuje **Nie działa: niekompletne ustawienia**. Zaczyna działać od razu, gdy je uzupełnisz i zapiszesz.
+
+O tym, jakie ustawienia istnieją, decyduje autor paczki; zobacz [Ustawienia](/docs/pl/extensions/reference/settings).
+
+## Gdy krok się nie powiedzie [#when-a-step-fails]
+
+Krok zakończony błędem ma jeden z tych kodów. Podłącz wyjście błędu kroku, żeby obsłużyć je w regule.
+
+| Kod na kroku | Przyczyna |
+| --- | --- |
+| `EXTENSION_ACTION_FAILED` | Akcja się nie powiodła, zwykle dlatego, że usługa odpowiedziała błędem. Zawiera `httpStatus`. |
+| `EXTENSION_ACTION_RATE_LIMITED` | Usługa odpowiedziała `429`. Zawiera `retryAfterSeconds`, jeśli usługa go wysłała. |
+| `EXTENSION_ACTION_INPUT_INVALID` | Wejście kroku nie pasowało do pól wejściowych. |
+| `EXTENSION_ACTION_OUTPUT_INVALID` | Wynik nie pasował do pól wyjściowych. |
+
+Komunikat nigdy nie cytuje tego, co odesłała usługa, bo treść błędu mogłaby powtórzyć sekret.
+
+<Callout type="idea" title="Ponawiaj przy limicie zapytań">
+`EXTENSION_ACTION_RATE_LIMITED` oznacza, że usługa jest zajęta, a nie że żądanie było błędne. Obsłuż go na wyjściu błędu osobno od innych błędów i użyj `retryAfterSeconds`, żeby zdecydować, kiedy spróbować ponownie.
+</Callout>
+
+## Aktualizacja [#upgrading]
+
+Prześlij paczkę z wyższą wersją. Zainstalowane rozszerzenie pokaże nowszą wersję; kliknij **Uaktualnij**, przejrzyj plan i potwierdź.
+
+- Wersja jest niezmienna po przesłaniu. Ponowne przesłanie tego samego pliku niczego nie zmienia; inny plik z tą samą wersją jest odrzucany.
+- Jeśli nowa wersja usuwa krok, którego używają reguły organizacji, aktualizacja jest zablokowana, dopóki te reguły go nie przestaną używać (`step.in_use`).
+- Jeśli usuwa filtr używany przez regułę, aktualizacja jest zablokowana (`filter.in_use`). Szablony w innych miejscach nie są sprawdzane, więc w każdym przypadku dostajesz ostrzeżenie.
+- Jeśli zmienia pola danych uwierzytelniających, po aktualizacji połączenie jest wyłączone, dopóki nie zostanie ponownie zweryfikowane. Zmiany ustawień nigdy tego nie powodują.
+- Jeśli usuwa ustawienie, które ma zapisaną wartość, albo zmienia ustawienie tak, że zapisana wartość już do niego nie pasuje, wartość jest odrzucana (`settings.value_dropped`).
+- Jeśli dodaje wymagane ustawienie bez wartości domyślnej, rozszerzenie po aktualizacji nie działa, dopóki go nie uzupełnisz (`settings.incomplete_after_upgrade`). Żaden z tych problemów z ustawieniami nie blokuje aktualizacji.
+- Jeśli prosi o nowe hosty, plan pokazuje je wraz z uzasadnieniami jako nowe w tej wersji.
+
+<Callout title="Nie zmieniaj nazw">
+Krok zachowuje tożsamość, dopóki nazwa akcji się nie zmienia, a krok w pliku reguły - dopóki nie zmienia się jego id. Nazwy folderów zmieniaj swobodnie; nazwy w `action` i id kroków zostaw bez zmian.
+</Callout>
+
+## Odinstalowanie
+
+Odinstalowanie usuwa zainstalowane reguły, filtry, zapisane ustawienia oraz połączenie razem ze wszystkimi zapisanymi danymi uwierzytelniającymi. Nigdy nie jest blokowane.
+
+<Callout type="warn" title="Reguły, które używają rozszerzenia, się zatrzymują">
+Reguły organizacji, które używają kroków rozszerzenia, są zatrzymywane i oznaczane jako objęte kwarantanną; potwierdzenie wymienia je na początku. Po ponownej instalacji rozszerzenia i włączeniu jego połączenia te reguły można znów zapisać i włączyć.
+</Callout>

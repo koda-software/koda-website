@@ -1,0 +1,129 @@
+---
+title: Scripts
+description: "Write Opero extension scripts in JavaScript or TypeScript: the module shape, the argument a run script receives, filter functions, generated types, the sandbox and errors."
+---
+
+Every script is a module with exactly one `export default` function, no `import` and no other export. Each runs on its own in a sandbox, without network or database access.
+
+<Tabs items={['JavaScript', 'TypeScript']}>
+<Tab value="JavaScript">
+
+```js title="actions/lookup/run.js"
+/** @type {import('../../.opero/types').Action<'lookup'>} */
+const run = async ({ input, settings, user }) => {
+  const email = input.email.trim().toLowerCase();
+  return {
+    email,
+    language: settings.language ?? 'en',
+    requestedBy: user.email,
+  };
+};
+export default run;
+```
+
+</Tab>
+<Tab value="TypeScript">
+
+```ts title="actions/lookup/run.ts"
+import type { Action } from '../../.opero/types';
+
+const run: Action<'lookup'> = async ({ input, settings, user }) => {
+  const email = input.email.trim().toLowerCase();
+  return {
+    email,
+    language: settings.language ?? 'en',
+    requestedBy: user.email,
+  };
+};
+export default run;
+```
+
+</Tab>
+</Tabs>
+
+Write `export default function name(…)`, or a constant followed by `export default name;` as the scaffold does.
+
+## Three kinds of script
+
+| Script | Receives | Returns |
+| --- | --- | --- |
+| `run: run.js` in `action.yaml` | One argument: `{ input, settings, company, user, context }` | The action's output. May be `async`. |
+| `code: { $file: step.js }` in a rule file | The same argument | The step's result, under its `contextKey`. |
+| A filter's `script` | `(value, args, context)` | The filtered value, at once: not `async`. |
+
+## The argument
+
+<TypeTable
+  type={{
+    input: {
+      type: 'object',
+      description: 'The action\'s input, matching its input fields.',
+    },
+    settings: {
+      type: 'object',
+      description: 'The extension\'s settings, with the defaults applied. {} in a package without settings.yaml. Never a secret.',
+    },
+    company: {
+      type: '{ id } | undefined',
+      description: 'The company the calling rule runs for, or none.',
+    },
+    user: {
+      type: '{ id, email, firstName, lastName }',
+      description: 'The user the run acts for.',
+    },
+    context: {
+      type: 'object',
+      description: 'The whole rule context, as a Run script step sees it.',
+    },
+  }}
+/>
+
+## Errors
+
+Throwing an error fails the action, and so the step that called it:
+
+```js
+if (!Number.isFinite(price)) {
+  throw new Error('The price is not a number.');
+}
+```
+
+Line numbers stay true: a problem the checks find on line 3 of your script is reported at line 3.
+
+<Callout type="warn">
+When a script throws while it runs, the step currently reports "Script execution failed" without a line number. Line numbers exist only for problems found when the package is read or built, so cover your error paths with [tests](/docs/en/extensions/reference/tests).
+</Callout>
+
+## Generated types
+
+`.opero/types/index.d.ts` is generated from the descriptors by `types`, and by `validate`, `pack`, `add` and `init` when the package is valid. It declares:
+
+| Type | For |
+| --- | --- |
+| `Action<'name'>` | A `run` script. |
+| `StepScript<'name'>` | A `$file` script in a rule file. |
+| `Filter` | A filter script. |
+| `Settings` | The extension's settings, from `settings.yaml`. A field with a default is not optional. |
+| `ScriptArgument<'name'>` | The argument of an action's scripts. |
+
+In JavaScript, apply one with the JSDoc line the scaffold writes, and check the scripts with:
+
+```bash title="Terminal"
+npx tsc -p jsconfig.json
+```
+
+## TypeScript
+
+A descriptor may name a `.ts` file. The tool strips the types and packs a `.js` with the same lines.
+
+Only TypeScript that becomes JavaScript by removing types is accepted:
+
+- no `enum`, `namespace`, parameter properties or `<T>` casts;
+- `import type` lines are removed with the types; any other `import` is refused;
+- a `.js` you keep beside a `.ts` is not used.
+
+A module problem found in a `.ts` script, such as a missing default export, is reported at the `.js` the tool built. What the type stripping refuses is reported at the `.ts`.
+
+<Callout type="warn" title="The module check reads lines">
+A line inside a template literal or a block comment that starts with `export` or `import` at the first column is read as a module statement, and refused. Indent such lines.
+</Callout>

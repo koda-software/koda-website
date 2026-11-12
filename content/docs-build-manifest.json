@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "fetchedAt": "2026-10-02T00:24:28.244Z",
   "sourceRevision": "fed9eaca844d44382bc0602ad73c5ef1c8683d28",
-  "contentHash": "06f19e5611fa9c6ea9e0248189b2d5b1e383fa31a3e04a8d7c0b78d655426d55",
+  "contentHash": "6894ac437b37d38020ac85cf763ec988284ecc171d127fb994cefa3a9e2f066c",
   "counts": {
     "en": {
-      "pages": 200,
+      "pages": 221,
       "operoPages": 64,
       "apiOperations": 114
     },
     "pl": {
-      "pages": 200,
+      "pages": 221,
       "operoPages": 64,
       "apiOperations": 114
     }
@@ -150,6 +150,27 @@
     "/docs/en/api/workflows/reassign-workflow-task",
     "/docs/en/api/workflows/start-workflow-instance",
     "/docs/en/api/workflows/update-workflow-instance-author",
+    "/docs/en/extensions",
+    "/docs/en/extensions/after-install",
+    "/docs/en/extensions/before-you-start",
+    "/docs/en/extensions/calculating-step",
+    "/docs/en/extensions/error-codes",
+    "/docs/en/extensions/reference/actions",
+    "/docs/en/extensions/reference/cli",
+    "/docs/en/extensions/reference/connection-and-secrets",
+    "/docs/en/extensions/reference/filters",
+    "/docs/en/extensions/reference/limits",
+    "/docs/en/extensions/reference/manifest",
+    "/docs/en/extensions/reference/package-folder",
+    "/docs/en/extensions/reference/rule-files",
+    "/docs/en/extensions/reference/scripts",
+    "/docs/en/extensions/reference/settings",
+    "/docs/en/extensions/reference/tests",
+    "/docs/en/extensions/reference/translations",
+    "/docs/en/extensions/tutorial/call-a-service",
+    "/docs/en/extensions/tutorial/check-and-pack",
+    "/docs/en/extensions/tutorial/install-and-use",
+    "/docs/en/extensions/tutorial/start-the-package",
     "/docs/en/getting-started",
     "/docs/en/opero",
     "/docs/en/opero/01-wprowadzenie/czym-jest-opero",
@@ -350,6 +371,27 @@
     "/docs/pl/api/workflows/reassign-workflow-task",
     "/docs/pl/api/workflows/start-workflow-instance",
     "/docs/pl/api/workflows/update-workflow-instance-author",
+    "/docs/pl/extensions",
+    "/docs/pl/extensions/after-install",
+    "/docs/pl/extensions/before-you-start",
+    "/docs/pl/extensions/calculating-step",
+    "/docs/pl/extensions/error-codes",
+    "/docs/pl/extensions/reference/actions",
+    "/docs/pl/extensions/reference/cli",
+    "/docs/pl/extensions/reference/connection-and-secrets",
+    "/docs/pl/extensions/reference/filters",
+    "/docs/pl/extensions/reference/limits",
+    "/docs/pl/extensions/reference/manifest",
+    "/docs/pl/extensions/reference/package-folder",
+    "/docs/pl/extensions/reference/rule-files",
+    "/docs/pl/extensions/reference/scripts",
+    "/docs/pl/extensions/reference/settings",
+    "/docs/pl/extensions/reference/tests",
+    "/docs/pl/extensions/reference/translations",
+    "/docs/pl/extensions/tutorial/call-a-service",
+    "/docs/pl/extensions/tutorial/check-and-pack",
+    "/docs/pl/extensions/tutorial/install-and-use",
+    "/docs/pl/extensions/tutorial/start-the-package",
     "/docs/pl/getting-started",
     "/docs/pl/opero",
     "/docs/pl/opero/01-wprowadzenie/czym-jest-opero",
@@ -1010,16 +1052,112 @@
       "sha256": "c7eef385aa59da6a29d2991c423151c714cd97c1dcd815d485c265ddacf42861",
       "owner": "generated"
     },
+    "content/docs/en/extensions/after-install.mdx": {
+      "sha256": "04cac39fc6597c3dac12889af61ae373e674a5a5abb32c61c8596a40c8798b81",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/before-you-start.mdx": {
+      "sha256": "2c111fbf37aaac1db2cb7b7d05965021688890d05af057c763ff32b373cede5b",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/calculating-step.mdx": {
+      "sha256": "3990a40bcc06c5d808117c83a24f2159ff840cdbc386c8c1a65f891f8e4fd6f1",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/error-codes.mdx": {
+      "sha256": "91700b6b37632e8c3ac4e62805c40efd354da4457ced006aa7e820619a777839",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/index.mdx": {
+      "sha256": "5790ed8abdb48f09fba3672cdaa7f476ab00356dc33ac156284ed8706664568c",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/meta.json": {
+      "sha256": "658d534025e9d65262ee22717970acb7c3e3e13aea0eb928464691adeae7f5e2",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/actions.mdx": {
+      "sha256": "ecdb690271b0e3a477dd8d109f93c567f7268392fdfc5f387407ae212ab81b01",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/cli.mdx": {
+      "sha256": "54e4a832f1a790b508c9ab77c6a471005ff34f027074c424c9381cb03b219a3f",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/connection-and-secrets.mdx": {
+      "sha256": "5d7c47924724454100ff29286db4eb2bc7c4aa3b29b6d64b36ebfa6966b77301",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/filters.mdx": {
+      "sha256": "b9348740b147a2153751532997aff1f12ebdcb34321a690a28b58a3c32f96862",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/limits.mdx": {
+      "sha256": "57ff0abcec13b653bedf6e735cbacc7f7bcd6fb053ac7aeb692d0a3f364c5b8c",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/manifest.mdx": {
+      "sha256": "0ac392b309f979c7085acc1744ed90e7ba9bed7bdb57bde602467be9c98a4cc8",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/meta.json": {
+      "sha256": "24e80d938eeb8e0520b88933ff37995ed34b2b507a80b489dfc47a50dde32a0e",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/package-folder.mdx": {
+      "sha256": "69414bc06c486372345ecdca8ae397f7cd57ddad607cb69ff3264b792d2cf1f1",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/rule-files.mdx": {
+      "sha256": "72b07cbe8203b33cb9a340ed07d2c580a138923e0ad7846483e645d49c961cc5",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/scripts.mdx": {
+      "sha256": "ad94392d71479906a4d0269273838cfc12dc02043a3224a202a59130f7250ebf",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/settings.mdx": {
+      "sha256": "54d5778dcdd0972d58eff972fbd57f9d9964e15f6fc4edf781a1a486ebadb6be",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/tests.mdx": {
+      "sha256": "47043b13e385dd82a8fe05f065ca02fa38d38950beafea74f68ac430349b0f3e",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/translations.mdx": {
+      "sha256": "fe41813de0cd52e4876d70a7432ee016a70a2f5b5ff95db5a6f0c4525442e87c",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/tutorial/call-a-service.mdx": {
+      "sha256": "49701e51748d5fa4d2a7d7813d16f25fcaf39cb354e84ff42ce65a785f02fdb1",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/tutorial/check-and-pack.mdx": {
+      "sha256": "f4bea9ea6ecf96bc780851201102a882e79e2113431072061da4d70fc055a2b5",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/tutorial/install-and-use.mdx": {
+      "sha256": "d73f1a29d860962de727fce82af75acf767b47727ba53b325c0f86af6472a7a2",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/tutorial/meta.json": {
+      "sha256": "83e036d1fae971a5ceaaf0fe6fc9782eee33a94d7d13927078b83f1004c3b8e2",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/tutorial/start-the-package.mdx": {
+      "sha256": "9cb35cc1ed7e6af07572a6aac1ffdcfbe60a7f9993016ac81586f5a1b83bba12",
+      "owner": "manual"
+    },
     "content/docs/en/getting-started.mdx": {
       "sha256": "763e014274776d0885b96db265f5cf2fffe03d3fe31f040e5024c28af457f139",
       "owner": "manual"
     },
     "content/docs/en/index.mdx": {
-      "sha256": "629499aa773ccbe444d939cfb88e860d83058015a1bbf27a267d0c51dfa26589",
+      "sha256": "d80c2337d59de8e4ec71c3d8e90d2b6a895a8cc0baa19344548d967632d8f053",
       "owner": "manual"
     },
     "content/docs/en/meta.json": {
-      "sha256": "f6f7c10da00107cfd7f957ad600c0b995b3ca90f704f5b70ff8ffbfe0a5aa3f3",
+      "sha256": "907e52871d1a264cd6eadb04395d7d8558bf1996112518759de8fa7dfa381ad0",
       "owner": "manual"
     },
     "content/docs/en/opero/01-wprowadzenie/czym-jest-opero.mdx": {
@@ -1922,16 +2060,112 @@
       "sha256": "faf51abaa6230157e5cc347035760b74d9e52d6371cce6e80863366d31473276",
       "owner": "generated"
     },
+    "content/docs/pl/extensions/after-install.mdx": {
+      "sha256": "59d6e5cb3b663fb617f3dd90cd4ae0b56e9893155efae7a937979e9aaf9faa34",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/before-you-start.mdx": {
+      "sha256": "3f84e5b1af5c563d13896c7d82ca88cfe07f604d239c6ebeb67ba79d8683370a",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/calculating-step.mdx": {
+      "sha256": "8734052e7b043399e2bc4f77c3163117382e5c676cfe70f115fa63df670af22c",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/error-codes.mdx": {
+      "sha256": "a97724c97d4b99623b19af44699a1623efd99cdcc6baa149fad99267b386dc1d",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/index.mdx": {
+      "sha256": "d3dc7fcd2bb9fa29977fbf4f92e09454a141530eb399a42e3dda29f347966f88",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/meta.json": {
+      "sha256": "5593291f9265a9423ce07cd34fec887bf71b8c6648f8b901e58fd9b65e3c5ca4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/actions.mdx": {
+      "sha256": "2a2f191638d118cacd6cd70c4685fe9fdc138cc260f6ed5d5361228aaace5569",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/cli.mdx": {
+      "sha256": "a7b77b005a77030cab43ba3ce5e66632a116aee49bbc72ef6abb42111d551ea5",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/connection-and-secrets.mdx": {
+      "sha256": "104a84896c3d8e46f7793840d37783a1577f41024849a12dd88a95d6e435e37c",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/filters.mdx": {
+      "sha256": "ac18a899126d3fec15f903267c4ca380af1e377f23b43a7585a3f6c300650985",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/limits.mdx": {
+      "sha256": "15b41d2d0b15aa71ac8a6780d5c1253250655d38074c5f3a5663b8c047d02166",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/manifest.mdx": {
+      "sha256": "6f9517bff1846fc88567b4b32689d05ef0ad8c5ce4e7014879c284665147d7a5",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/meta.json": {
+      "sha256": "16bea6007f1c7c8082bd2aa4659c3f62ac5e75f136356fbae8a5be7655eff19f",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/package-folder.mdx": {
+      "sha256": "9aa78e5563987e1cbc7b0284705e5252b1a745b77c2782f284bd4a479bf5cf1a",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/rule-files.mdx": {
+      "sha256": "c671cc2aa3fd880fe3627c3402bdefec512415b9160512d00e872642190c1e33",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/scripts.mdx": {
+      "sha256": "957ec1ebfc45651ee081a5a7c1927253f84c26bed798fb5eb0eb8d7d474d072b",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/settings.mdx": {
+      "sha256": "150803c1d1e924ee6d06632801f4dfd4f17dc22d9d45610c55869e7d2a93f240",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/tests.mdx": {
+      "sha256": "45b28a6badaacf3be4eca2a860513d221be8c859654b379e3d892eacf77c52d0",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/translations.mdx": {
+      "sha256": "094bb85111a195e489775c6ea24242d196edf3a38fd412fcfe17c4f0b7bcaeed",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/tutorial/call-a-service.mdx": {
+      "sha256": "18cc0aa0caf301bb97038c815265b75794414feeb7337e7132211348e833ff76",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/tutorial/check-and-pack.mdx": {
+      "sha256": "63931f3039ff6d3a0c6e27a8720fcfa80447834fb094718b257f0d0e0fab6f57",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/tutorial/install-and-use.mdx": {
+      "sha256": "6a4b69b78d4ccc181ea715e4e2ae5b66c278b3b7937da84d18fd9471eb5c0db4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/tutorial/meta.json": {
+      "sha256": "3ea7ffbe899ec9708d9b270b805005c4b5204c4a56f8a1727c04a590fc629bbc",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/tutorial/start-the-package.mdx": {
+      "sha256": "7f58daba60bc67ae992bd720ec95b221a67cfc4f0e9486b3845898369d64ccff",
+      "owner": "manual"
+    },
     "content/docs/pl/getting-started.mdx": {
       "sha256": "48b20abf9b6970e02cfc454542ef2e3fa96c43cd9a9e01bae4a2cf3b3fe61497",
       "owner": "manual"
     },
     "content/docs/pl/index.mdx": {
-      "sha256": "1d6ca0e54763ccb2a969e3542c4cd5ee0de3219a2227bc6bea2aeebbc0bd3e9c",
+      "sha256": "33c2ad4a30cae852ddfbe1be36c6d0978ea90fcaa346e8f8657d217d1817c6dc",
       "owner": "manual"
     },
     "content/docs/pl/meta.json": {
-      "sha256": "5c459c98848a68a0ae95c60ff9867797b62f61a97dcd4ebd28dbc542c2ffac62",
+      "sha256": "5dafc22224c2cd336f4f641223db136e67e581b80202176f3520ef59a8eb640c",
       "owner": "manual"
     },
     "content/docs/pl/opero/01-wprowadzenie/czym-jest-opero.mdx": {

@@ -1,0 +1,175 @@
+---
+title: Actions and field lists
+description: "Reference for action.yaml in Opero extensions: name, label, input and output field lists, field types, the run logic, tests, publishing a rule step, and how installed parts are named."
+---
+
+An action is a folder with an `action.yaml`, its logic (a rule file or a script) and its tests. Exposed as a rule step, it is what rule authors use.
+
+```yaml title="actions/greet/action.yaml"
+action: greet
+label: Greet
+description: Sends a greeting for a name to httpbin.org and returns its answer.
+
+input:
+  name: { type: text, label: Name, required: true }
+output:
+  status: { type: integer, label: HTTP status }
+  body: { type: object, label: Answer, fields: {} }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: integration }
+```
+
+## action.yaml
+
+<TypeTable
+  type={{
+    action: {
+      type: 'string',
+      description: 'The name: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the package. The folder name does not matter.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'The step\'s name in the rule builder, up to 120 characters. The installed rule is called "<package name>: <label>".',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Shown in the step list. Required when the action is exposed as a step.',
+    },
+    input: {
+      type: 'field list | schema file',
+      description: 'What the action takes. Without it the action takes no input. Fields the list does not name are refused.',
+    },
+    output: {
+      type: 'field list | schema file',
+      description: 'What the action returns. Without it any output is accepted. Fields the list does not name are accepted.',
+    },
+    run: {
+      type: 'string',
+      description: 'A rule file (.yaml) or a script (.js or .ts) in the folder.',
+      required: true,
+    },
+    tests: {
+      type: 'string',
+      description: 'A test file (tests.yaml) or a folder (tests/) whose .yaml files are all test files.',
+      required: true,
+    },
+    'expose.ruleStep': {
+      type: '{ category?, branches? }',
+      description: 'Publishes the action as the step x-<key>.<action>. category groups it in the step list. Without expose, the action is installed but rule authors do not see it.',
+    },
+  }}
+/>
+
+Top-level input fields of type `text`, `number`, `integer`, `boolean` and `select` also become the parameters of the installed rule's manual trigger, so the rule can be run by hand with a form. The first 20 such fields are used. A field of another type, a field whose key has an upper-case letter (write `order_id`, not `orderId`), and an input given as a schema file give no parameter.
+
+<Callout type="warn" title="Extra outcome ports">
+`expose.ruleStep.branches` lists extra outcome ports. They are shown on the step, but today only the default and error ports are ever taken.
+</Callout>
+
+## Field lists
+
+A field list maps field keys (letters, digits and `_`, not starting with a digit) to definitions. Input and output, connection credentials and the extension's [settings](/docs/en/extensions/reference/settings) are all field lists.
+
+```yaml
+input:
+  orderId: { type: text, label: Order number, required: true, help: As shown on the order. }
+  priority: { type: select, label: Priority, options: [low, normal, high], default: normal }
+  lines:
+    type: list
+    label: Lines
+    items:
+      type: object
+      fields:
+        sku: { type: text, label: SKU }
+        quantity: { type: integer, label: Quantity }
+```
+
+<TypeTable
+  type={{
+    type: {
+      type: 'string',
+      description: 'One of the field types below.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Shown in forms, up to 200 characters. Translatable.',
+    },
+    help: {
+      type: 'string',
+      description: 'Shown under the field, up to 1,000 characters. Translatable.',
+    },
+    required: {
+      type: 'boolean',
+      description: 'A required text may not be empty.',
+      default: 'false',
+    },
+    default: {
+      type: 'value',
+      description: 'A valid value of the field.',
+    },
+    options: {
+      type: 'string[]',
+      description: 'For select: 1 to 200 different texts.',
+    },
+    items: {
+      type: 'field definition',
+      description: 'For list: the definition of each item, without label or required.',
+    },
+    fields: {
+      type: 'field list',
+      description: 'For object: a nested field list. {} leaves the object\'s fields open.',
+    },
+    'secret, hint': {
+      type: 'boolean',
+      description: 'Credential fields of a connection method only; a setting refuses them. A credential is secret unless it says secret: false; hint: true shows its last four characters.',
+    },
+  }}
+/>
+
+### Field types
+
+| Type | Value |
+| --- | --- |
+| `text` | A text. |
+| `number` | A number. |
+| `integer` | A whole number. |
+| `boolean` | `true` or `false`. |
+| `date` | A text such as `2026-11-12`. |
+| `datetime` | An ISO 8601 date and time. |
+| `select` | One of `options`. |
+| `list` | A list of `items`. |
+| `object` | An object with `fields`. |
+
+Lists nest up to five levels and hold up to 100 fields.
+
+<Callout type="warn" title="Number and boolean inputs take fixed values">
+The values a rule gives a step are checked against its input fields when the rule is saved, so a `number` or `boolean` input accepts only a fixed value, not a template such as `{{ record.price }}`. Declare such inputs as `text` and convert them in a script. The [calculating recipe](/docs/en/extensions/calculating-step) shows how.
+</Callout>
+
+### Schema files
+
+A JSON Schema file in the action's folder can stand in place of a field list when you need more than field lists offer:
+
+```yaml title="actions/create-shipment/action.yaml"
+input: input.schema.json
+```
+
+A schema file is written in English only, and its fields are not typed in scripts.
+
+## How things are named after install
+
+| Thing | Name | For key `polar-eu` |
+| --- | --- | --- |
+| Rule step | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Template filter | `x_<key with _>_<filter>` | `x_polar_eu_pace` |
+| Connection | `x-<key>` | `x-polar-eu` |
+| Installed rule | `<name>: <action label>` | `Polar: Sync` |
+
+A step keeps its identity across versions as long as the action's name stays the same, so rules that use it keep working after an upgrade.

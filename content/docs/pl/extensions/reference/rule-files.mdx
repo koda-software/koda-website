@@ -1,0 +1,87 @@
+---
+title: Pliki reguł
+description: "Logika akcji rozszerzenia Opero jako plik reguły: entryStepId, kroki i krawędzie, lokalne id kroków, publikowanie wyniku, adresy webhooków, skrypty i dozwolone kroki."
+---
+
+Plik reguły to logika akcji zapisana jako reguła: `entryStepId`, `steps` i `edges`, które zapisuje edytor reguł. Nazwa, opis i wyzwalacz reguły pochodzą z `action.yaml`, więc ich nie wpisuj.
+
+```yaml title="actions/lookup/rule.yaml"
+entryStepId: call
+steps:
+  - id: call
+    type: CALL_WEBHOOK
+    name: Find customer
+    contextKey: answer
+    config:
+      url: "https://api.example.com/v1/customers?email={{ trigger.data.email }}"
+      method: GET
+      headers: { Authorization: "Bearer {{ connection.token }}" }
+  - id: shape
+    type: RUN_SCRIPT
+    name: Keep the first match
+    contextKey: output
+    config:
+      code: { $file: shape.js }
+edges:
+  - { fromStepId: call, toStepId: shape, branchKey: default }
+```
+
+## Zasady plików reguł
+
+- **Id kroków to lokalne nazwy**, np. `call` albo `map_items`: małe litery, cyfry i `_`, a nie UUID. Zostaw to samo id między wersjami, a krok zachowa swoją tożsamość.
+- **Krawędź** to `{ fromStepId, toStepId, branchKey }` z użyciem tych id.
+- **Opublikuj wynik pod kluczem kontekstu `output`.** To, co reguła zostawi pod `output`, jest wynikiem akcji.
+- **Adres URL kroku Wywołaj webhook** zaczyna się od `https://` i hosta wpisanego wprost z `permissions.network`. Host nie może pochodzić z szablonu.
+- **Krok Uruchom skrypt może trzymać kod w pliku skryptu** w folderze akcji: `code: { $file: step.js }`. To jedyne miejsce, w którym `$file` jest dozwolone.
+- **Reguła może używać kroków własnej paczki**, ale nie w cyklu, i nie może używać własnych filtrów paczki.
+
+## Wartości dostępne w pliku reguły
+
+| Wpisz | Aby dostać |
+| --- | --- |
+| `{{ trigger.data.<field> }}` | Pole wejścia akcji. |
+| `{{ trigger.settings.<field> }}` | Jedno z [ustawień](/docs/pl/extensions/reference/settings) rozszerzenia, z zastosowaną wartością domyślną. Nie jest sekretem; możesz go użyć wszędzie. |
+| `{{ connection.<field> }}` | Pole sekretne. Tylko w wartości nagłówka albo wartości parametru zapytania w URL kroku **Wywołaj webhook**. Zobacz [Sekrety](/docs/pl/extensions/reference/connection-and-secrets#secrets). |
+| `{{ <contextKey>.… }}` | Wynik wcześniejszego kroku, pod jego kluczem kontekstu. |
+
+Wynik kroku **Wywołaj webhook** to `{ status, headers, body }`. Status błędu powoduje błąd kroku, a więc i akcji.
+
+Wewnątrz akcji szablony mają dostęp tylko do wbudowanych filtrów Opero. Filtry z innych rozszerzeń ani z własnych skryptów organizacji nie są dostępne.
+
+## Kroki, których może używać plik reguły [#steps-a-rule-file-may-use]
+
+| Typ kroku | Do czego |
+| --- | --- |
+| `CALL_WEBHOOK` | Wywołanie zewnętrznej usługi. |
+| `RUN_SCRIPT` | Uruchomienie JavaScriptu w piaskownicy między wywołaniami. |
+| `CONDITION`, `SWITCH` | Rozgałęzienie zależnie od odpowiedzi. |
+| `LOOP` | Powtórzenie kroków dla każdego elementu listy. |
+| `FILTER`, `TRANSFORM`, `AGGREGATE`, `SORT`, `DEDUPE` | Przekształcanie list. |
+| `SAVE_TO_CONTEXT` | Zachowanie wartości na później. |
+| `LOG_OUTPUT` | Zapis w logu uruchomienia. |
+| `WAIT` | Pauza. |
+| `STOP` | Zakończenie reguły. |
+| `x-<key>.<name>` | Wywołanie innej akcji tej samej paczki. |
+
+<Callout type="warn" title="Bez kroków rekordów, e-maili i powiadomień">
+Kroki, które zmieniają rekordy, wysyłają e-maile albo powiadamiają ludzi, są odrzucane z kodem `step.type_not_allowed`. Ta praca należy do reguły organizacji, która używa twojego kroku.
+</Callout>
+
+## Z edytora reguł do pliku reguły
+
+Możesz najpierw zbudować logikę w edytorze reguł, wyeksportować regułę jako JSON i wkleić ją do pliku reguły: JSON jest poprawnym YAML-em. Potem:
+
+<Steps>
+<Step>
+Usuń `name`, `description` i `trigger`.
+</Step>
+<Step>
+Zamień UUID kroków na krótkie lokalne id, zarówno w krokach, jak i w krawędziach.
+</Step>
+<Step>
+Zamień wpisane na sztywno dane uwierzytelniające na `{{ connection.<field> }}`.
+</Step>
+<Step>
+Upewnij się, że ostatni krok publikuje swój wynik pod `output`.
+</Step>
+</Steps>

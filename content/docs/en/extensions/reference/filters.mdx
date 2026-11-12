@@ -1,0 +1,97 @@
+---
+title: Template filters
+description: "Add template filters to Opero with an extension: filter.yaml, the filter function, its arguments and context, naming after install, and when to use a filter instead of a step."
+---
+
+A template filter is a small JavaScript function that every template in the organization can use after install, for formatting or converting a value.
+
+```yaml title="filters/shout/filter.yaml"
+filter: shout
+description: Upper-cases a text and adds an exclamation mark.
+script: filter.js
+```
+
+```js title="filters/shout/filter.js"
+/** @type {import('../../.opero/types').Filter} */
+const filter = (value) => String(value ?? '').toUpperCase() + '!';
+export default filter;
+```
+
+In any template:
+
+```txt title="Template"
+{{ "hi" | x_hello_ext_shout }}
+```
+
+```txt title="Result"
+HI!
+```
+
+## filter.yaml
+
+<TypeTable
+  type={{
+    filter: {
+      type: 'string',
+      description: 'The name: lower-case letters and digits, starting with a letter, no _, up to 41 characters. Unique in the package.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Shown where filters are listed. Translatable.',
+      required: true,
+    },
+    script: {
+      type: 'string',
+      description: 'A .js or .ts module in the folder.',
+      required: true,
+    },
+  }}
+/>
+
+## The function
+
+The function receives the value piped into it, the filter's arguments and the template's context, and returns the filtered value at once.
+
+```js title="filters/trackingurl/filter.js"
+/** @type {import('../../.opero/types').Filter} */
+const filter = (value, args) => {
+  const carrier = String(args[0] ?? 'dhl');
+  const number = encodeURIComponent(String(value ?? ''));
+  return 'https://track.example.com/' + carrier + '/' + number;
+};
+export default filter;
+```
+
+Arguments follow a colon in the template, separated by commas, and arrive as the `args` array:
+
+```txt title="Template"
+{{ shipment.number | x_shipping_ext_trackingurl: "ups" }}
+```
+
+<Callout type="warn" title="Filters must answer at once">
+A filter may not be `async` and may not wait on anything. An async filter is refused with `script.invalid`, and one that waits is refused in the install plan with `filter.not_sync`.
+</Callout>
+
+## Naming after install
+
+A filter is installed as `x_<key with _>_<filter>`. The hyphens of the key become underscores:
+
+| Key | Filter | Name in templates |
+| --- | --- | --- |
+| `hello-ext` | `shout` | `x_hello_ext_shout` |
+| `polar-eu` | `pace` | `x_polar_eu_pace` |
+
+## Rules
+
+- A rule file of the same package may not use the package's own filters (`rule.own_filter_unsupported`). Do the conversion in a script instead.
+- Filters keep working while the extension is not running, because they call nothing. They stop when the extension is disabled.
+- An upgrade that removes a filter a rule uses is blocked. Templates elsewhere are not checked, so you get a warning either way.
+
+## A filter or a step?
+
+| Use a filter when | Use a step when |
+| --- | --- |
+| You convert or format one value. | You call a service or combine several values. |
+| The result is used inside templates. | The result feeds later steps of a rule. |
+| No credential is needed. | The work needs the connection. |

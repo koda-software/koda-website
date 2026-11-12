@@ -1,0 +1,71 @@
+---
+title: "Część 3: Sprawdź i spakuj"
+description: "Zwaliduj rozszerzenie Hello bez sieci, odczytaj raport problemów, spakuj powtarzalny plik zip i uruchom przypadki testowe na serwerze Opero przed przesłaniem."
+---
+
+W tej części sprawdzasz gotowy folder, pakujesz go do pliku zip i, jeśli chcesz, uruchamiasz jego testy w Opero przed przesłaniem.
+
+<Steps>
+<Step>
+### Zwaliduj folder
+
+```bash title="Terminal"
+extension-cli validate .
+```
+
+```txt title="Wynik"
+hello-ext 0.1.0 is valid.
+```
+
+W przeciwnym razie dostajesz jeden wpis na każdy problem: jego kod, plik i wiersz, miejsce w pliku i opis błędu. Przy literówce w kluczu w `actions/hello/action.yaml` i niezadeklarowanym hoście w regule greet wynik wygląda tak:
+
+```txt title="Wynik"
+  action.invalid  actions/hello/action.yaml:3 #/lable
+    "lable" is not a key actions/hello/action.yaml knows.
+  rule.host_not_declared  actions/greet/rule.yaml:9 #/steps/0/config/url
+    Host "api.httpbin.org" is not listed in permissions.network.
+
+2 problems found.
+The package is not valid.
+```
+
+Jedno uruchomienie zgłasza każdy problem w każdym pliku. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają kody i sposób naprawy każdego z nich.
+</Step>
+
+<Step>
+### Spakuj
+
+```bash title="Terminal"
+extension-cli pack .
+```
+
+```txt title="Wynik"
+Wrote …/hello-ext-0.1.0.zip (4793 bytes)
+```
+
+Plik zip zawiera piętnaście plików, do których prowadzi `extension.yaml`, i nic więcej: bez `README.md`, bez `jsconfig.json`, bez `.vscode` ani `.opero`, a w przypadku TypeScriptu zbudowany `.js` zamiast `.ts`.
+
+Ten sam folder zawsze daje ten sam plik zip, bajt w bajt. `--out` wybiera nazwę pliku.
+</Step>
+
+<Step>
+### Uruchom testy na serwerze
+
+Ten krok przed przesłaniem jest opcjonalny. Zaloguj się raz, a potem uruchom wszystkie przypadki testowe w Opero bez zapisywania czegokolwiek:
+
+```bash title="Terminal"
+extension-cli login --server https://opero.example.com/mcp
+extension-cli test . --server https://opero.example.com/mcp
+```
+
+Polecenie wypisuje jeden wiersz na przypadek (wynik, akcja, przypadek, nazwa) i liczbę przypadków, które przeszły. Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji.
+
+<Callout type="idea" title="Najszybsza pętla">
+Uruchamiaj `validate` po każdej zmianie, `test`, gdy pliki są poprawne, i przesyłaj paczkę, gdy testy przechodzą.
+</Callout>
+</Step>
+</Steps>
+
+## Dalej
+
+Przejdź do [części 4: Zainstaluj i używaj](/docs/pl/extensions/tutorial/install-and-use).

@@ -1,0 +1,190 @@
+---
+title: "Part 1: Start the package"
+description: "Scaffold an Opero extension with extension-cli init, read the manifest, the first action, its script and its test, then validate the package."
+---
+
+In this tutorial you build an extension called `hello-ext` against [httpbin.org](https://httpbin.org), a public service that echoes requests back. It ends with a token connection, a check that the token works, a step called `greet` that calls the service, a step called `hello` that only computes, and a filter called `shout`.
+
+Every file shown is the complete file as the finished package holds it.
+
+| Part | What you do |
+| --- | --- |
+| 1. Start the package | Scaffold with `init` and read what it wrote. |
+| 2. [Call a service](/docs/en/extensions/tutorial/call-a-service) | A connection, a check, a step that calls an API, a filter, a translation. |
+| 3. [Check and pack](/docs/en/extensions/tutorial/check-and-pack) | Validate, pack, run the tests on the server. |
+| 4. [Install and use](/docs/en/extensions/tutorial/install-and-use) | Upload, install, connect, use it in a rule, ship a new version. |
+
+<Steps>
+<Step>
+### Create the folder
+
+Let the command-line tool write a working package:
+
+```bash title="Terminal"
+extension-cli init hello-ext --name Hello
+```
+
+```txt title="Output"
+  extension.yaml
+  actions/hello/action.yaml
+  actions/hello/tests.yaml
+  actions/hello/run.js
+  README.md
+  .gitignore
+  jsconfig.json
+  .vscode/settings.json
+Wrote 8 files in …/hello-ext.
+```
+
+The folder name gives the key; pass `--key` to choose another, and `--publisher` for your company's name. The package already validates, and its one action already has a passing test.
+
+<Files>
+  <Folder name="hello-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="actions" defaultOpen>
+      <Folder name="hello" defaultOpen>
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <File name="README.md" />
+    <File name=".gitignore" />
+    <File name="jsconfig.json" />
+    <Folder name=".vscode">
+      <File name="settings.json" />
+    </Folder>
+    <Folder name=".opero" disabled />
+  </Folder>
+</Files>
+
+| File | Holds | Packed |
+| --- | --- | --- |
+| `extension.yaml` | The list of everything the package installs. | Yes |
+| `actions/hello/action.yaml` | What the action is called, takes and returns. | Yes |
+| `actions/hello/run.js` | Its logic. | Yes |
+| `actions/hello/tests.yaml` | Its test. | Yes |
+| `README.md`, `.gitignore` | For you and your repository. | No |
+| `jsconfig.json` | Type checking for the scripts. | No |
+| `.vscode/settings.json` | Editor completion for the YAML files. | No |
+| `.opero/` | Generated types and schemas. | No |
+</Step>
+
+<Step>
+### Read the manifest
+
+`extension.yaml` holds the identity of the package and lists every part it installs:
+
+```yaml title="extension.yaml"
+# The package's contents: every feature it installs is listed here.
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: Hello, an Opero extension.
+publisher: Your company
+requires:
+  modules: [rules]
+
+actions:
+  - actions/hello
+```
+
+- `extension` is the key. It names everything the extension adds: lower-case letters, digits and hyphens, 2 to 31 characters, starting with a letter and not with `x-`.
+- `version` is three numbers. Each upload needs a new one.
+- `name` and `description` are shown in the extension list, in English. Translations come later.
+- `actions` lists action folders as `actions/<folder>`. A folder that is not listed is not part of the package, and an `action.yaml` that no list names is refused, so this file is always the whole truth.
+</Step>
+
+<Step>
+### Read the hello action
+
+Change the scaffold's placeholder description, and the descriptor reads:
+
+```yaml title="actions/hello/action.yaml"
+action: hello
+label: Hello
+description: Builds a greeting for a name.
+
+input:
+  name: { type: text, label: Name, required: true }
+output:
+  greeting: { type: text, label: Greeting }
+
+run: run.js
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+
+- `action` is the action's name. The folder name does not matter: you can move or rename the folder without changing anything that uses the action.
+- `input` and `output` are [field lists](/docs/en/extensions/reference/actions#field-lists). Each field has a type and a label; the input becomes the step's form in the rule builder.
+- `run` names the logic: a script, or a rule file as you will see in Part 2.
+- `expose.ruleStep` publishes the action as the step `x-hello-ext.hello`. Without `expose`, the action is installed but rule authors do not see it.
+
+The script is a module with one exported function. It receives one argument and returns the action's output. Pick the language you scaffolded with:
+
+<Tabs items={['JavaScript', 'TypeScript']}>
+<Tab value="JavaScript">
+
+```js title="actions/hello/run.js"
+/** @type {import('../../.opero/types').Action<'hello'>} */
+const run = ({ input }) => {
+  return { greeting: 'Hello, ' + input.name + '!' };
+};
+export default run;
+```
+
+The comment on the first line gives the function its type, which the tool generates from `action.yaml` into `.opero/types`. Your editor then completes `input.name` and flags a field the action does not declare.
+
+</Tab>
+<Tab value="TypeScript">
+
+Scaffold with `--typescript`. The script is then `run.ts`, the descriptor says `run: run.ts`, and the folder has a `tsconfig.json`:
+
+```ts title="actions/hello/run.ts"
+import type { Action } from '../../.opero/types';
+
+const run: Action<'hello'> = ({ input }) => {
+  return { greeting: 'Hello, ' + input.name + '!' };
+};
+export default run;
+```
+
+The tool removes the types when it checks and packs. The zip carries a `run.js`, and Opero never sees TypeScript.
+
+</Tab>
+</Tabs>
+
+The argument also holds `settings`, `company`, `user` and `context`; see [Scripts](/docs/en/extensions/reference/scripts).
+
+The test gives an input and the exact output expected:
+
+```yaml title="actions/hello/tests.yaml"
+- name: a name gets a greeting
+  input:
+    name: Ada
+  returns:
+    greeting: Hello, Ada!
+```
+</Step>
+
+<Step>
+### Validate
+
+```bash title="Terminal"
+extension-cli validate hello-ext
+```
+
+```txt title="Output"
+hello-ext 0.1.0 is valid.
+```
+
+This check works offline and takes a moment, so run it after every edit. When the package is valid, it also writes `.opero/` again, so the types follow your descriptors.
+</Step>
+</Steps>
+
+## Next
+
+Continue with [Part 2: Call a service](/docs/en/extensions/tutorial/call-a-service).

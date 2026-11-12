@@ -1,0 +1,71 @@
+---
+title: "Part 3: Check and pack"
+description: "Validate the Hello extension offline, read the problem report, pack a reproducible zip and run the test cases on an Opero server before uploading."
+---
+
+In this part you check the finished folder, pack it into a zip and, optionally, run its tests on Opero before uploading.
+
+<Steps>
+<Step>
+### Validate the folder
+
+```bash title="Terminal"
+extension-cli validate .
+```
+
+```txt title="Output"
+hello-ext 0.1.0 is valid.
+```
+
+Otherwise you get one entry per problem: its code, the file and line, the place inside the file, and what is wrong. With a misspelt key in `actions/hello/action.yaml` and an undeclared host in the greet rule, the output is:
+
+```txt title="Output"
+  action.invalid  actions/hello/action.yaml:3 #/lable
+    "lable" is not a key actions/hello/action.yaml knows.
+  rule.host_not_declared  actions/greet/rule.yaml:9 #/steps/0/config/url
+    Host "api.httpbin.org" is not listed in permissions.network.
+
+2 problems found.
+The package is not valid.
+```
+
+Every problem in every file is reported in one run. [Error codes](/docs/en/extensions/error-codes) lists the codes and how to fix each.
+</Step>
+
+<Step>
+### Pack it
+
+```bash title="Terminal"
+extension-cli pack .
+```
+
+```txt title="Output"
+Wrote …/hello-ext-0.1.0.zip (4793 bytes)
+```
+
+The zip holds the fifteen files `extension.yaml` reaches and nothing else: no `README.md`, no `jsconfig.json`, no `.vscode` or `.opero`, and for TypeScript the built `.js` instead of the `.ts`.
+
+The same folder always produces the same zip, byte for byte. `--out` chooses the file name.
+</Step>
+
+<Step>
+### Run the tests on the server
+
+This step is optional before uploading. Sign in once, then run every test case on Opero without storing anything:
+
+```bash title="Terminal"
+extension-cli login --server https://opero.example.com/mcp
+extension-cli test . --server https://opero.example.com/mcp
+```
+
+It prints one row per case (result, action, case, name) and how many passed. Add `--org <organizationId>` when you belong to more than one organization.
+
+<Callout type="idea" title="The quickest loop">
+Run `validate` after every edit, `test` when the files are valid, and upload when the tests pass.
+</Callout>
+</Step>
+</Steps>
+
+## Next
+
+Continue with [Part 4: Install and use](/docs/en/extensions/tutorial/install-and-use).

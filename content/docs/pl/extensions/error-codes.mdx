@@ -1,0 +1,111 @@
+---
+title: Kody błędów
+description: "Wszystkie kody, które Opero i extension-cli zgłaszają, gdy paczka rozszerzenia jest odrzucana, testy nie przechodzą przy przesłaniu albo plan instalacji wykrywa problem."
+---
+
+Każdy problem ma kod, plik, linię w tym pliku i miejsce w jego wnętrzu, np. `actions/greet/rule.yaml:9 #/steps/0/config/url`. Wszystkie problemy we wszystkich plikach są zgłaszane w jednym przebiegu.
+
+## Gdy paczka jest odrzucana
+
+Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
+
+### Manifest i pliki
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `manifest.missing` | Brak `extension.yaml` na najwyższym poziomie zipa. | Spakuj folder, który go zawiera. |
+| `manifest.unsupported_version` | Paczka z `manifest.json` (stary format) albo inna wartość `manifestVersion`. | Przepisz ją w obecnym formacie. |
+| `manifest.invalid` | Klucz, którego nie zna `extension.yaml` ani `module.yaml`, albo błędna wartość. | Sprawdź pisownię w [dokumentacji](/docs/pl/extensions/reference/manifest). |
+| `manifest.unsupported_section` | Zarezerwowana lista, np. `schedules`. | Usuń ją. |
+| `manifest.missing_file` | Deskryptor wskazuje plik, którego nie ma. | Dodaj plik albo popraw nazwę. |
+| `file.invalid_yaml` | Plik nie jest poprawnym YAML-em: wcięcia, zabłąkany `:`, pusty plik. | Popraw wskazaną linię; tekst zawierający `: ` weź w cudzysłów. |
+| `file.yaml_feature_not_allowed` | Kotwica, alias, tag, klucz scalania albo drugi dokument. | Wpisz wartości wprost. |
+| `archive.invalid_path` | Wielkie litery lub spacje w nazwie pliku używanego przez paczkę. | Używaj małych liter, cyfr, `.`, `_`, `-`. |
+
+### Struktura i nazwy
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `layout.invalid_path` | Pozycja listy, która nie ma postaci `actions/<folder>`, albo nazwa pliku spoza folderu funkcji. | Użyj pokazanej postaci; trzymaj pliki w folderze funkcji. |
+| `layout.missing_descriptor` | Wymieniony folder bez `action.yaml` lub `filter.yaml` albo `settings: settings.yaml` bez tego pliku. | Dodaj plik albo popraw pozycję. |
+| `layout.unlisted_feature` | `action.yaml` lub `filter.yaml`, którego nie wymienia żadna lista, albo `settings.yaml`, którego nie wskazuje `extension.yaml`. | Dodaj jego folder do listy lub wskaż plik albo go usuń. |
+| `name.duplicate` | Dwie akcje, filtry lub moduły o tej samej nazwie albo dwie grupy ustawień lub dwa pola ustawień o tym samym kluczu. | Zmień nazwę jednego z nich. |
+| `permissions.reason_required` | Host lub zakres bez uzasadnienia. | Wpisz `{ host, reason }`. |
+| `field.invalid` | Lista pól z nieznanym typem lub kluczem, `select` bez `options` albo `secret` lub `hint` w ustawieniu. | Zobacz [Listy pól](/docs/pl/extensions/reference/actions#field-lists). |
+
+### Akcje, reguły i skrypty
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `action.invalid` | Klucz, którego nie zna `action.yaml`, błędna nazwa albo krok bez opisu. | Sprawdź pisownię. |
+| `action.run_invalid` | `run` wskazuje coś, co nie jest ani `.yaml`, ani `.js`, ani `.ts`. | Wskaż plik reguły albo skrypt. |
+| `action.missing_test` | Akcja bez przypadku testowego. | Napisz go. |
+| `action.cycle` | Akcje wywołują się nawzajem w cyklu. | Przerwij cykl. |
+| `rule.invalid` | Plik reguły zawiera `name` lub `trigger` albo ma nieznany klucz. | Zostaw tylko `entryStepId`, `steps`, `edges`. |
+| `rule.invalid_step_id` | Id kroku to UUID albo ma nietypowe znaki. | Użyj krótkiej lokalnej nazwy. |
+| `rule.host_not_declared` | Webhook wywołuje host, którego brakuje w `permissions.network`. | Dodaj host z uzasadnieniem. |
+| `rule.host_not_literal` | Host pochodzi z szablonu albo URL nie używa HTTPS. | Wpisz host wprost. |
+| `rule.own_filter_unsupported` | Reguła paczki używa własnego filtra paczki. | Zrób konwersję w skrypcie. |
+| `step.type_not_allowed` | Typ kroku spoza [listy dozwolonych](/docs/pl/extensions/reference/rule-files#steps-a-rule-file-may-use). | Przenieś tę pracę do reguły, która używa twojego kroku. |
+| `script.invalid` | Skrypt, który nie jest modułem z jednym `export default`, coś importuje, jest asynchronicznym filtrem albo jest TypeScriptem, z którego nie da się usunąć typów. | Zobacz [Skrypty](/docs/pl/extensions/reference/scripts). |
+| `script.not_built` | Zip wskazuje skrypt `.ts` bez jego `.js`. | Spakuj narzędziem wiersza poleceń. |
+| `filter.invalid` | Nazwa filtra z podkreśleniem albo inny problem z kluczem. | Tylko litery i cyfry. |
+
+### Ustawienia
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `settings.invalid` | `settings.yaml` ma nieznany klucz, nie ma grup, ma więcej niż 20 grup, grupę bez `label` lub `fields` albo łącznie więcej niż 100 pól. | Zobacz [Ustawienia](/docs/pl/extensions/reference/settings). |
+
+### Połączenie i sekrety
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `connection.invalid` | Klucz, którego nie zna `connection.yaml`, albo błędna wartość. Tak odrzucany jest blok `settings`: ustawienia nie są już częścią połączenia. | Przenieś ustawienia do [settings.yaml](/docs/pl/extensions/reference/settings); sprawdź pisownię pozostałych kluczy. |
+| `connection.placeholder_position` | Sekret poza wartością nagłówka lub parametru zapytania. | Przenieś go albo ustaw `secretsInBody`. |
+| `connection.placeholder_not_bare` | Sekret otoczony filtrem lub wyrażeniem. | Wpisz go samego w nawiasach klamrowych. |
+| `connection.unknown_field` | Pole sekretne, którego nie deklaruje żadna metoda. | Dodaj je do pól metody albo popraw nazwę. |
+| `connection.undeclared` | Sekret w paczce bez połączenia. | Dodaj `connection.yaml`. |
+| `connection.hosts_required` | Połączenie bez hostów. | Uzupełnij `permissions.network`. |
+
+<Callout>
+Gdy akcja wskazana w `verify` ma problem, zgłaszany jest też `connection.yaml` („verify names no action”). Popraw akcję, a drugi problem zniknie.
+</Callout>
+
+### Tłumaczenia i testy
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `locale.missing_file` | Język z `locales` bez swojego pliku. | Dodaj `locales/<lang>.yaml`. |
+| `locale.unknown_text` | Klucz tłumaczenia, który nie wskazuje niczego w paczce. | Popraw klucz. |
+| `test.invalid` | Przypadek testowy o złej strukturze, z dwoma wynikami, z wejściem niepasującym do pól wejściowych, z ustawieniami niepasującymi do `settings.yaml` (brakuje wymaganego ustawienia bez wartości domyślnej), z ustawieniami w paczce bez `settings.yaml` albo z ustawieniami w `connection.config`. | Popraw przypadek; podawaj ustawienia w `settings:`. |
+
+## Tylko przy przesłaniu, gdy działają testy [#only-at-upload-when-the-tests-run]
+
+Te kody wskazują przypadek (`actions/greet/tests.yaml#/1`), a przy wymianie HTTP - miejsce w nim (`…#/1/http/0`), bez numeru linii.
+
+| Kod | Co się stało |
+| --- | --- |
+| `test.unexpected_request` | Akcja wysłała żądanie, którego przypadek nie przewidział. |
+| `test.request_mismatch` | Metoda, URL, wymieniony nagłówek albo treść różnią się od przypadku. |
+| `test.unused_exchange` | Przypadek przewidział żądanie, którego akcja nie wysłała. |
+| `test.outcome_mismatch` | Akcja zakończyła się inaczej, niż mówi przypadek. |
+| `test.output_mismatch` | Wynik różni się od `returns`. |
+| `test.output_schema` | Wynik nie pasuje do pól wyjściowych. |
+| `test.failed` | Przypadek nie mógł się zakończyć, np. zabrakło czasu. |
+| `manifest.unsupported_by_server` | To Opero nie instaluje jeszcze części, której używa paczka. |
+
+## Tylko w planie instalacji
+
+| Kod | Znaczenie |
+| --- | --- |
+| `requires.release` | To Opero jest starsze, niż wymaga paczka. |
+| `requires.module` | Wymagany moduł nie jest tu dostępny. |
+| `permission.missing` | Osobie instalującej brakuje uprawnienia, którego wymaga zawartość. |
+| `version.not_newer` | Aktualizacja do tej samej lub starszej wersji. |
+| `rule.save_validation` | Reguły akcji nie da się zapisać. Komunikat mówi dlaczego. |
+| `filter.save_validation` | Skryptu filtra nie da się zapisać: nie przechodzi walidacji albo jego nazwa jest zajęta. |
+| `filter.not_sync` | Filtr na coś czeka. Filtry muszą odpowiadać od razu. |
+| `step.in_use`, `filter.in_use` | Aktualizacja usuwa coś, czego używają reguły organizacji. |
+| `settings.value_dropped` | Aktualizacja odrzuca zapisaną wartość ustawienia: nowa wersja nie ma już tego ustawienia albo wartość już do niego nie pasuje. Nie blokuje. |
+| `settings.incomplete_after_upgrade` | Nowa wersja ma wymagane ustawienie bez wartości domyślnej i bez zapisanej wartości. Po aktualizacji rozszerzenie nie działa, dopóki go nie uzupełnisz. Nie blokuje. |

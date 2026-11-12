@@ -22,6 +22,15 @@ These docs describe public Opero concepts and the external Opero API. English is
 - [Record Lists](https://kodasoft.pl/docs/en/opero/04-listy-rekordow/lista-rekordow): Record lists, list views, search, filtering, and export.
 - [Automation](https://kodasoft.pl/docs/en/opero/07-automatyzacja/reguly-wprowadzenie): Automation rules, triggers, actions, notifications, and custom scripts.
 
+## Extensions
+
+- [Extensions](https://kodasoft.pl/docs/en/extensions): Build Opero integrations as extension packages: a connection, rule steps and template filters, installed without deploying code.
+- [Tutorial: build Hello](https://kodasoft.pl/docs/en/extensions/tutorial/start-the-package): Scaffold, write, test, pack, upload and install a complete extension.
+- [extension.yaml](https://kodasoft.pl/docs/en/extensions/reference/manifest): The extension manifest: key, version, permissions, connection, settings and feature lists.
+- [Settings](https://kodasoft.pl/docs/en/extensions/reference/settings): The extension's own settings in settings.yaml: groups, defaults, required settings, reading them in rules and scripts, tests and upgrades.
+- [Connection and secrets](https://kodasoft.pl/docs/en/extensions/reference/connection-and-secrets): Credentials, verification, organization or company scopes and where a secret may appear.
+- [Error codes](https://kodasoft.pl/docs/en/extensions/error-codes): Every code reported when a package is refused, its tests fail, or the install plan finds a problem.
+
 ## API Resource Guides
 
 - [Contractors](https://kodasoft.pl/docs/en/api/companies/get-companies-companyid-contractors): Work with contractors, suppliers, customers, and other business partners.

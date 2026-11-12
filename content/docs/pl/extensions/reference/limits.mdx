@@ -1,0 +1,31 @@
+---
+title: Limity
+description: "Limity rozmiaru i liczby dla paczek rozszerzeń Opero: rozmiar zipa, pliki, akcje, filtry, przypadki testowe, wymiany HTTP, hosty, języki, listy pól i ustawienia."
+---
+
+Paczka, która przekracza którykolwiek z tych limitów, jest odrzucana przy przesłaniu.
+
+| Co | Limit |
+| --- | --- |
+| Rozmiar zipa | 10 MB |
+| Pliki w paczce | 500, każdy do 2 MB, 30 MB po rozpakowaniu |
+| Pozycje na każdej liście | 200 akcji, 200 filtrów, 50 pozycji include |
+| Przypadki testowe | od 1 do 50 na akcję, 200 na paczkę |
+| Wymiany HTTP | 50 na przypadek |
+| Czas testów | 10 sekund na przypadek, 60 sekund na paczkę |
+| Hosty | 50 |
+| Języki | 40 |
+| Listy pól | 100 pól, 5 poziomów, 200 opcji |
+| Metody połączenia | 10 |
+| Ustawienia | od 1 do 20 grup, łącznie 100 pól |
+
+## Długości tekstów
+
+| Tekst | Maksymalnie |
+| --- | --- |
+| Klucz rozszerzenia | od 2 do 31 znaków |
+| Nazwy akcji i filtrów | 41 znaków |
+| `name` i `publisher` paczki, `label` akcji | 120 znaków |
+| `label` pola, `label` grupy ustawień | 200 znaków |
+| `help` pola, `description` grupy ustawień | 1000 znaków |
+| `description` paczki, każde tłumaczenie | 2000 znaków |

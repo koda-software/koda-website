@@ -1,0 +1,175 @@
+---
+title: Akcje i listy pól
+description: "Opis action.yaml w rozszerzeniach Opero: nazwa, etykieta, listy pól wejścia i wyjścia, typy pól, logika run, testy, krok reguły i nazwy zainstalowanych części."
+---
+
+Akcja to folder z `action.yaml`, jej logiką (plikiem reguły albo skryptem) i testami. Udostępniona jako krok reguły, jest tym, z czego korzystają autorzy reguł.
+
+```yaml title="actions/greet/action.yaml"
+action: greet
+label: Greet
+description: Sends a greeting for a name to httpbin.org and returns its answer.
+
+input:
+  name: { type: text, label: Name, required: true }
+output:
+  status: { type: integer, label: HTTP status }
+  body: { type: object, label: Answer, fields: {} }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: integration }
+```
+
+## action.yaml
+
+<TypeTable
+  type={{
+    action: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce. Nazwa folderu nie ma znaczenia.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Nazwa kroku w edytorze reguł, do 120 znaków. Zainstalowana reguła nazywa się "<nazwa paczki>: <label>".',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Widoczny na liście kroków. Wymagany, gdy akcja jest udostępniona jako krok.',
+    },
+    input: {
+      type: 'field list | schema file',
+      description: 'Co akcja przyjmuje. Bez niego akcja nie przyjmuje danych wejściowych. Pola spoza listy są odrzucane.',
+    },
+    output: {
+      type: 'field list | schema file',
+      description: 'Co akcja zwraca. Bez niego przyjmowany jest dowolny wynik. Pola spoza listy są przyjmowane.',
+    },
+    run: {
+      type: 'string',
+      description: 'Plik reguły (.yaml) albo skrypt (.js lub .ts) w folderze.',
+      required: true,
+    },
+    tests: {
+      type: 'string',
+      description: 'Plik testów (tests.yaml) albo folder (tests/), w którym wszystkie pliki .yaml są plikami testów.',
+      required: true,
+    },
+    'expose.ruleStep': {
+      type: '{ category?, branches? }',
+      description: 'Publikuje akcję jako krok x-<key>.<action>. category grupuje go na liście kroków. Bez expose akcja jest instalowana, ale autorzy reguł jej nie widzą.',
+    },
+  }}
+/>
+
+Pola wejściowe najwyższego poziomu typu `text`, `number`, `integer`, `boolean` i `select` stają się też parametrami ręcznego wyzwalacza zainstalowanej reguły, więc regułę można uruchomić ręcznie z formularza. Używanych jest pierwszych 20 takich pól. Pole innego typu, pole, którego klucz zawiera wielką literę (pisz `order_id`, nie `orderId`), oraz wejście podane jako plik schematu nie dają parametru.
+
+<Callout type="warn" title="Dodatkowe wyjścia wyników">
+`expose.ruleStep.branches` wymienia dodatkowe wyjścia wyników. Są widoczne na kroku, ale dziś wybierane jest zawsze tylko wyjście domyślne albo wyjście błędu.
+</Callout>
+
+## Listy pól [#field-lists]
+
+Lista pól mapuje klucze pól (litery, cyfry i `_`, nie zaczynają się od cyfry) na definicje. Wejście i wyjście, dane uwierzytelniające połączenia i [ustawienia](/docs/pl/extensions/reference/settings) rozszerzenia to wszystko listy pól.
+
+```yaml
+input:
+  orderId: { type: text, label: Order number, required: true, help: As shown on the order. }
+  priority: { type: select, label: Priority, options: [low, normal, high], default: normal }
+  lines:
+    type: list
+    label: Lines
+    items:
+      type: object
+      fields:
+        sku: { type: text, label: SKU }
+        quantity: { type: integer, label: Quantity }
+```
+
+<TypeTable
+  type={{
+    type: {
+      type: 'string',
+      description: 'Jeden z typów pól opisanych niżej.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Widoczna w formularzach, do 200 znaków. Do przetłumaczenia.',
+    },
+    help: {
+      type: 'string',
+      description: 'Widoczny pod polem, do 1000 znaków. Do przetłumaczenia.',
+    },
+    required: {
+      type: 'boolean',
+      description: 'Wymagany tekst nie może być pusty.',
+      default: 'false',
+    },
+    default: {
+      type: 'value',
+      description: 'Poprawna wartość pola.',
+    },
+    options: {
+      type: 'string[]',
+      description: 'Dla select: od 1 do 200 różnych tekstów.',
+    },
+    items: {
+      type: 'field definition',
+      description: 'Dla list: definicja każdego elementu, bez label i required.',
+    },
+    fields: {
+      type: 'field list',
+      description: 'Dla object: zagnieżdżona lista pól. {} zostawia pola obiektu otwarte.',
+    },
+    'secret, hint': {
+      type: 'boolean',
+      description: 'Tylko pola danych uwierzytelniających metody połączenia; ustawienie ich nie przyjmuje. Dane uwierzytelniające są sekretne, chyba że mają secret: false; hint: true pokazuje ich ostatnie cztery znaki.',
+    },
+  }}
+/>
+
+### Typy pól
+
+| Typ | Wartość |
+| --- | --- |
+| `text` | Tekst. |
+| `number` | Liczba. |
+| `integer` | Liczba całkowita. |
+| `boolean` | `true` lub `false`. |
+| `date` | Tekst, np. `2026-11-12`. |
+| `datetime` | Data i godzina w formacie ISO 8601. |
+| `select` | Jedna z `options`. |
+| `list` | Lista `items`. |
+| `object` | Obiekt z `fields`. |
+
+Listy zagnieżdżają się do pięciu poziomów i mieszczą do 100 pól.
+
+<Callout type="warn" title="Wejścia number i boolean przyjmują stałe wartości">
+Wartości, które reguła podaje krokowi, są sprawdzane względem jego pól wejściowych przy zapisie reguły, więc wejście `number` lub `boolean` przyjmuje tylko stałą wartość, a nie szablon w rodzaju `{{ record.price }}`. Zadeklaruj takie wejścia jako `text` i przekonwertuj je w skrypcie. [Przepis na obliczenia](/docs/pl/extensions/calculating-step) pokazuje, jak to zrobić.
+</Callout>
+
+### Pliki schematów
+
+Plik JSON Schema w folderze akcji może zastąpić listę pól, gdy potrzebujesz więcej, niż dają listy pól:
+
+```yaml title="actions/create-shipment/action.yaml"
+input: input.schema.json
+```
+
+Plik schematu piszesz tylko po angielsku, a jego pola nie są typowane w skryptach.
+
+## Jak nazywane są elementy po instalacji
+
+| Element | Nazwa | Dla klucza `polar-eu` |
+| --- | --- | --- |
+| Krok reguły | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Filtr szablonu | `x_<key with _>_<filter>` | `x_polar_eu_pace` |
+| Połączenie | `x-<key>` | `x-polar-eu` |
+| Zainstalowana reguła | `<name>: <action label>` | `Polar: Sync` |
+
+Krok zachowuje tożsamość między wersjami, dopóki nazwa akcji się nie zmienia, więc reguły, które z niego korzystają, działają dalej po aktualizacji.

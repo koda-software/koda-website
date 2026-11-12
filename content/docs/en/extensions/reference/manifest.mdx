@@ -1,0 +1,133 @@
+---
+title: extension.yaml
+description: "Reference for extension.yaml, the Opero extension manifest: key, version, publisher, requirements, network permissions with reasons, connection, settings, feature lists and locales."
+---
+
+`extension.yaml` is the manifest: the package's identity, what it requires, what it may access, and the list of every feature it installs.
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: A starter extension with a greeting, a call to httpbin.org and a filter.
+publisher: Your company
+requires:
+  opero: ">=2026.1.0"
+  modules: [rules]
+permissions:
+  network:
+    - host: httpbin.org
+      reason: Checks the token and sends greetings to the httpbin.org test service.
+
+connection: connection
+settings: settings.yaml
+
+actions:
+  - actions/hello
+  - actions/verify
+  - actions/greet
+filters:
+  - filters/shout
+
+locales: [pl]
+```
+
+## Keys
+
+<TypeTable
+  type={{
+    manifestVersion: {
+      type: '2',
+      description: 'The package format. Always 2.',
+      required: true,
+    },
+    extension: {
+      type: 'string',
+      description: 'The key. A lower-case letter first, then letters, digits and hyphens; 2 to 31 characters; not starting with x-. Everything the extension adds is named after it.',
+      required: true,
+    },
+    version: {
+      type: 'string',
+      description: 'Three numbers, such as 1.4.0. No suffixes. Each upload needs a new version.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Shown in lists, up to 120 characters.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'One or two sentences, up to 2,000 characters.',
+      required: true,
+    },
+    publisher: {
+      type: 'string',
+      description: 'Who made it, up to 120 characters.',
+      required: true,
+    },
+    'requires.opero': {
+      type: 'string',
+      description: 'The oldest Opero release it works on, written ">=2026.22.0" (quoted). An older installation refuses to install it.',
+    },
+    'requires.modules': {
+      type: 'string[]',
+      description: 'Module keys that must be available, for example rules.',
+    },
+    'permissions.network': {
+      type: '{ host, reason }[]',
+      description: 'Up to 50 exact host names the package calls, each with why. No wildcards, no paths. Required when the package has a connection.',
+    },
+    'permissions.data': {
+      type: '{ scope, reason }[]',
+      description: 'Shown to the installer. Nothing uses data scopes yet; leave it out.',
+    },
+    connection: {
+      type: '"connection"',
+      description: 'Always connection: the folder holding connection.yaml.',
+    },
+    settings: {
+      type: '"settings.yaml"',
+      description: 'Always settings.yaml: the file at the top of the package that declares the extension\'s settings. See Settings.',
+    },
+    actions: {
+      type: 'string[]',
+      description: 'Action folders, written actions/<folder>.',
+    },
+    filters: {
+      type: 'string[]',
+      description: 'Filter folders, written filters/<folder>.',
+    },
+    include: {
+      type: 'string[]',
+      description: 'Module folders, each with a module.yaml.',
+    },
+    locales: {
+      type: 'string[]',
+      description: 'Translation languages, such as [pl, de]. Not en: English is in the descriptors.',
+    },
+  }}
+/>
+
+## Network permissions
+
+Every host the package calls is listed with a reason. The administrator sees each host and its reason in the install plan, before anything is installed.
+
+```yaml title="extension.yaml"
+permissions:
+  network:
+    - host: api.example.com
+      reason: Creates shipments and reads their tracking numbers.
+    - host: auth.example.com
+      reason: Exchanges the API key for a short-lived access token.
+```
+
+- A call to a host that is not listed is refused, both when the package is checked and when it runs.
+- A host without a reason is refused with `permissions.reason_required`.
+- A package with a connection lists at least one host.
+- When an upgrade asks for new hosts, the plan marks them as new in that version.
+
+## Reserved lists
+
+The list names `objects`, `dictionaries`, `queries`, `blocks`, `components`, `triggers` and `schedules` are reserved for later versions and refused today with `manifest.unsupported_section`.

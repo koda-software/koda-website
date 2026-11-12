@@ -1,0 +1,38 @@
+---
+title: Zanim zaczniesz
+description: "Czego potrzebujesz, by zbudować i zainstalować rozszerzenie Opero: uprawnień administratora, modułu Reguły, narzędzia extension-cli, edytora i testowego tokenu."
+---
+
+Potrzebujesz konta administratora w organizacji z modułem Reguły, narzędzia wiersza poleceń i dokumentacji API usługi, którą chcesz wywoływać.
+
+| Potrzebujesz | Dlaczego |
+| --- | --- |
+| Konta administratora | Przesyłanie i instalacja wymagają uprawnień `org.extensions.*` oraz uprawnień do tworzenia reguł i skryptów własnych, bo paczka tworzy jedne i drugie w twoim imieniu. Wbudowana rola administratora ma je wszystkie. |
+| Włączonego modułu Reguły | Rozszerzenia instalują reguły. |
+| Narzędzia wiersza poleceń | `extension-cli` tworzy szkielet folderu, sprawdza go i zapisuje plik zip. Zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli). |
+| Edytora z obsługą YAML | Opcjonalnie. Folder utworzony przez `init` podpowiada VS Code (z rozszerzeniem YAML), jakiego schematu używa każdy plik, więc klucze się uzupełniają, a błędy są podkreślane w trakcie pisania. |
+| Dokumentacji API usługi | Potrzebujesz dokładnych adresów URL, sposobu uwierzytelniania i tego, co usługa zwraca. |
+| Testowych danych uwierzytelniających do tej usługi | Do końcowego sprawdzenia na żywo. Testy kontraktowe ich nie potrzebują. |
+
+<Callout title="Jak zdobyć narzędzie wiersza poleceń">
+Na tych stronach narzędzie jest wywoływane jako `extension-cli`. Aby uzyskać do niego dostęp, napisz na <SupportEmail />.
+</Callout>
+
+## Najpierw poznaj edytor reguł
+
+Warto zbudować w Opero choć jedną regułę z krokiem **Wywołaj webhook**, bo plik reguły to dokładnie to samo, tylko zapisane jako tekst. Jeśli jeszcze tego nie znasz, przeczytaj [Reguły](/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie) i [Akcje](/docs/pl/opero/07-automatyzacja/akcje).
+
+## Wybierz właściwe narzędzie
+
+Rozszerzenie nie zawsze jest najlżejszym rozwiązaniem.
+
+| Chcesz | Użyj |
+| --- | --- |
+| Przeliczyć lub sformatować pojedynczą wartość w szablonach | [Filtra szablonu](/docs/pl/extensions/reference/filters) w rozszerzeniu albo skryptu własnego, jeśli potrzebuje go tylko twoja organizacja. |
+| Uruchomić trochę logiki tylko w jednej regule | Kroku **Uruchom skrypt** napisanego bezpośrednio w tej regule. Rozszerzenie nie jest potrzebne. |
+| Dać wielu regułom albo wielu organizacjom jeden czytelny krok, który wywołuje usługę | Rozszerzenia z [połączeniem](/docs/pl/extensions/reference/connection-and-secrets) i akcjami. |
+| Reagować na zdarzenia w usłudze zewnętrznej | W paczce to jeszcze niemożliwe: paczki nie mają wyzwalaczy, przychodzących webhooków ani harmonogramów. |
+
+## Następny krok
+
+Zacznij [samouczek](/docs/pl/extensions/tutorial/start-the-package), w którym zbudujesz kompletne rozszerzenie w czterech częściach.

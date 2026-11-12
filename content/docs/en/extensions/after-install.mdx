@@ -1,0 +1,75 @@
+---
+title: After install
+description: "Run an installed Opero extension: its states, its settings, what happens when a step fails, how upgrades work and what can block them, and what uninstalling removes."
+---
+
+An installed extension runs once every required setting has a value and, when it has a connection, the connection is configured, verified and switched on. This page covers its states, its settings, step failures, upgrades and uninstalling.
+
+## States
+
+| Shown as | Meaning |
+| --- | --- |
+| **Running** | Installed, enabled, required modules available, every required setting filled in, and the connection, if there is one, switched on. Steps and filters are offered in the builders. |
+| **Not running: settings incomplete** | A required setting has no value. Fill it in on the **Settings** tab. |
+| **Not running: connection not enabled** | Normal right after install of a package with a connection. Set up and switch on the connection. |
+| **Not running** | A required module is unavailable, or a catalog package's grant was withdrawn. |
+| **Disabled** | Switched off by an administrator. Everything stays in place and stops. |
+| **Stopped part-way** | An install or upgrade failed in the middle. Run the same command again; it resumes. |
+
+When the settings are incomplete and the connection is not enabled either, the settings are shown first.
+
+While an extension is not running, its steps are missing from the rule builder, and a saved rule that reaches one fails at that step with `extension_inactive`. Filters keep working until the extension is disabled, because they call nothing.
+
+The rules and scripts an extension installs are managed: read-only and hidden from the normal lists. You can still run an installed rule by hand. They change only when the extension is upgraded.
+
+## Settings
+
+When the package has settings, the extension's page has a **Settings** tab between **Details** and **Connection**. It shows one section per group the package declares, each field with its label, help and default, and marks the required ones.
+
+- **Who can change them.** Reading the settings needs `org.extensions.read`; saving them needs `org.extensions.update`. Without it the form is read-only, and it is also read-only while an install, upgrade or other command runs for the extension.
+- **One value per installed extension.** The values apply to the whole organization, for every company.
+- **Defaults.** A field you never set uses its default. Clear a field and save to go back to the default.
+- **Required settings.** You can save the form with a required field empty, but while a required setting has no value, stored or default, the extension does not run: the tab lists the missing settings and the extension shows **Not running: settings incomplete**. It runs again as soon as you fill them in and save.
+
+The package's author decides which settings exist; see [Settings](/docs/en/extensions/reference/settings).
+
+## When a step fails
+
+A failed step carries one of these codes. Connect the step's error port to handle them in the rule.
+
+| Code on the step | Cause |
+| --- | --- |
+| `EXTENSION_ACTION_FAILED` | The action failed, usually because the service answered with an error. Carries `httpStatus`. |
+| `EXTENSION_ACTION_RATE_LIMITED` | The service answered `429`. Carries `retryAfterSeconds` when the service sent it. |
+| `EXTENSION_ACTION_INPUT_INVALID` | The step's input did not match the input fields. |
+| `EXTENSION_ACTION_OUTPUT_INVALID` | The result did not match the output fields. |
+
+The message never quotes what the service sent back, because an error body could repeat a secret.
+
+<Callout type="idea" title="Retry on rate limits">
+`EXTENSION_ACTION_RATE_LIMITED` means the service is busy, not that the request was wrong. Handle it on the error port separately from other failures, and use `retryAfterSeconds` to decide when to try again.
+</Callout>
+
+## Upgrading
+
+Upload a package with a higher version. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm.
+
+- A version is fixed once uploaded. Uploading the same file again changes nothing; a different file with the same version is refused.
+- If the new version removes a step that the organization's rules use, the upgrade is blocked until those rules stop using it (`step.in_use`).
+- If it removes a filter a rule uses, the upgrade is blocked (`filter.in_use`). Templates elsewhere are not checked, so you get a warning either way.
+- If it changes the credential fields, the connection is switched off after the upgrade until it is verified again. Changes to the settings never do this.
+- If it removes a setting that has a stored value, or changes a setting so that its stored value no longer fits, the value is dropped (`settings.value_dropped`).
+- If it adds a required setting without a default, the extension does not run after the upgrade until you fill it in (`settings.incomplete_after_upgrade`). Neither of these settings problems blocks the upgrade.
+- If it asks for new hosts, the plan shows them, with their reasons, as new in this version.
+
+<Callout title="Keep names stable">
+A step keeps its identity as long as the action's name stays the same, and a rule-file step keeps its identity as long as its id stays the same. Rename folders freely; keep `action` names and step ids.
+</Callout>
+
+## Uninstalling
+
+Uninstalling removes the installed rules, the filters, the stored settings, and the connection with every stored credential. It is never blocked.
+
+<Callout type="warn" title="Rules that use the extension stop">
+The organization's rules that use the extension's steps are stopped and marked as quarantined; the confirmation lists them first. Reinstalling the extension and switching its connection on lets those rules be saved and enabled again.
+</Callout>

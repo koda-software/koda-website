@@ -1,0 +1,4 @@
+{
+  "title": "Dokumentacja techniczna",
+  "pages": ["package-folder", "manifest", "actions", "rule-files", "scripts", "settings", "connection-and-secrets", "tests", "filters", "translations", "cli", "limits"]
+}

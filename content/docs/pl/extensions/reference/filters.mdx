@@ -1,0 +1,97 @@
+---
+title: Filtry szablonów
+description: "Dodaj filtry szablonów do Opero przez rozszerzenie: filter.yaml, funkcja filtra, jej argumenty i kontekst, nazwy po instalacji i kiedy wybrać filtr zamiast kroku."
+---
+
+Filtr szablonu to mała funkcja JavaScript, której po instalacji może używać każdy szablon w organizacji, żeby sformatować albo przekonwertować wartość.
+
+```yaml title="filters/shout/filter.yaml"
+filter: shout
+description: Upper-cases a text and adds an exclamation mark.
+script: filter.js
+```
+
+```js title="filters/shout/filter.js"
+/** @type {import('../../.opero/types').Filter} */
+const filter = (value) => String(value ?? '').toUpperCase() + '!';
+export default filter;
+```
+
+W dowolnym szablonie:
+
+```txt title="Szablon"
+{{ "hi" | x_hello_ext_shout }}
+```
+
+```txt title="Rezultat"
+HI!
+```
+
+## filter.yaml
+
+<TypeTable
+  type={{
+    filter: {
+      type: 'string',
+      description: 'Nazwa: małe litery i cyfry, zaczyna się od litery, bez _, do 41 znaków. Unikalna w paczce.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Widoczny tam, gdzie wyświetlana jest lista filtrów. Do przetłumaczenia.',
+      required: true,
+    },
+    script: {
+      type: 'string',
+      description: 'Moduł .js lub .ts w folderze.',
+      required: true,
+    },
+  }}
+/>
+
+## Funkcja
+
+Funkcja otrzymuje przekazaną do niej wartość, argumenty filtra i kontekst szablonu, a przefiltrowaną wartość zwraca od razu.
+
+```js title="filters/trackingurl/filter.js"
+/** @type {import('../../.opero/types').Filter} */
+const filter = (value, args) => {
+  const carrier = String(args[0] ?? 'dhl');
+  const number = encodeURIComponent(String(value ?? ''));
+  return 'https://track.example.com/' + carrier + '/' + number;
+};
+export default filter;
+```
+
+Argumenty wpisujesz w szablonie po dwukropku, oddzielone przecinkami, a trafiają do tablicy `args`:
+
+```txt title="Szablon"
+{{ shipment.number | x_shipping_ext_trackingurl: "ups" }}
+```
+
+<Callout type="warn" title="Filtry muszą odpowiadać od razu">
+Filtr nie może być `async` ani na nic czekać. Filtr asynchroniczny jest odrzucany z kodem `script.invalid`, a taki, który czeka, jest odrzucany w planie instalacji z kodem `filter.not_sync`.
+</Callout>
+
+## Nazwy po instalacji
+
+Filtr jest instalowany jako `x_<key with _>_<filter>`. Myślniki w kluczu zamieniają się na podkreślenia:
+
+| Klucz | Filtr | Nazwa w szablonach |
+| --- | --- | --- |
+| `hello-ext` | `shout` | `x_hello_ext_shout` |
+| `polar-eu` | `pace` | `x_polar_eu_pace` |
+
+## Zasady
+
+- Plik reguły z tej samej paczki nie może używać własnych filtrów paczki (`rule.own_filter_unsupported`). Zrób konwersję w skrypcie.
+- Filtry działają dalej, gdy rozszerzenie nie działa, bo niczego nie wywołują. Przestają działać, gdy rozszerzenie zostanie wyłączone.
+- Aktualizacja, która usuwa filtr używany przez regułę, jest blokowana. Szablony w innych miejscach nie są sprawdzane, więc w każdym przypadku dostajesz ostrzeżenie.
+
+## Filtr czy krok?
+
+| Użyj filtra, gdy | Użyj kroku, gdy |
+| --- | --- |
+| Konwertujesz lub formatujesz jedną wartość. | Wywołujesz usługę albo łączysz kilka wartości. |
+| Wynik jest używany w szablonach. | Wynik trafia do kolejnych kroków reguły. |
+| Nie potrzebujesz danych uwierzytelniających. | Praca wymaga połączenia. |

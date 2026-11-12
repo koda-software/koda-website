@@ -1,0 +1,154 @@
+---
+title: "Przepis: krok, który tylko liczy"
+description: "Zbuduj rozszerzenie Opero z czterech plików z krokiem reguły Calculate margin napisanym jako skrypt, bez połączenia i bez dostępu do sieci."
+---
+
+Krok nie musi niczego wywoływać. Pomiń połączenie i uprawnienia sieciowe, a logikę napisz jako skrypt. Skoro nie ma połączenia do skonfigurowania, rozszerzenie działa zaraz po instalacji. Cała paczka to cztery pliki.
+
+Przykład dodaje krok **Calculate margin** (`x-calc-ext.margin`), który przyjmuje cenę i koszt, a zwraca marżę i jej wartość procentową.
+
+<Steps>
+<Step>
+### Utwórz szkielet
+
+Zacznij od szkieletu, dodaj akcję i usuń przykład:
+
+```bash title="Terminal"
+extension-cli init calc-ext --name Calc
+cd calc-ext
+extension-cli add action margin
+```
+
+Usuń folder `actions/hello`. Paczka ma wtedy cztery pliki:
+
+<Files>
+  <Folder name="calc-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="actions" defaultOpen>
+      <Folder name="margin" defaultOpen>
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+
+<Step>
+### Napisz manifest
+
+```yaml title="extension.yaml"
+# The package's contents: every feature it installs is listed here.
+manifestVersion: 2
+extension: calc-ext
+version: 0.1.0
+name: Calc
+description: Calculation steps for rules.
+publisher: Your company
+requires:
+  modules: [rules]
+
+actions:
+  - actions/margin
+```
+</Step>
+
+<Step>
+### Opisz akcję
+
+```yaml title="actions/margin/action.yaml"
+action: margin
+label: Calculate margin
+description: Works out the margin between a price and a cost.
+
+input:
+  price: { type: text, label: Price, required: true }
+  cost: { type: text, label: Cost, required: true }
+output:
+  margin: { type: number, label: Margin }
+  marginPercent: { type: number, label: Margin (%) }
+
+run: run.js
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+
+<Callout type="warn" title="Deklaruj wejścia jako tekst">
+Wartości, które reguła podaje krokowi, są sprawdzane względem jego pól wejściowych przy zapisie reguły, więc pole typu `number` przyjmie tylko stałą liczbę, a nie `{{ record.price }}`. Nadaj wejściom typ `text` i przelicz je w skrypcie.
+</Callout>
+</Step>
+
+<Step>
+### Napisz skrypt
+
+```js title="actions/margin/run.js"
+/** @type {import('../../.opero/types').Action<'margin'>} */
+const run = ({ input }) => {
+  const price = Number(input.price);
+  const cost = Number(input.cost);
+  if (!Number.isFinite(price) || !Number.isFinite(cost) || price <= 0) {
+    throw new Error('The price and the cost are numbers, and the price is above zero.'); // [!code highlight]
+  }
+  const margin = Math.round((price - cost) * 100) / 100;
+  return {
+    margin,
+    marginPercent: Math.round((margin / price) * 10000) / 100,
+  };
+};
+export default run;
+```
+
+Rzucenie błędu kończy krok błędem.
+</Step>
+
+<Step>
+### Przetestuj
+
+Pierwszy przypadek porównuje dokładny wynik, drugi dowodzi, że błędne wejście kończy się błędem:
+
+```yaml title="actions/margin/tests.yaml"
+- name: a price of 200 and a cost of 150 give 25 percent
+  input: { price: "200", cost: "150" }
+  returns: { margin: 50, marginPercent: 25 }
+
+- name: text that is not a number fails the step
+  input: { price: abc, cost: "150" }
+  fails: true
+```
+</Step>
+
+<Step>
+### Zwaliduj i spakuj
+
+```bash title="Terminal"
+extension-cli validate .
+extension-cli pack .
+```
+
+```txt title="Wynik"
+calc-ext 0.1.0 is valid.
+Wrote …/calc-ext-0.1.0.zip (1309 bytes)
+```
+
+Prześlij i zainstaluj paczkę jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use); nie ma kroku konfigurowania połączenia.
+</Step>
+</Steps>
+
+## Użyj go w regule
+
+W regule krok zapisuje się tak, a kolejne kroki odczytują `{{ result.marginPercent }}`:
+
+```json title="Krok w jednej z reguł organizacji"
+{
+  "type": "x-calc-ext.margin",
+  "contextKey": "result",
+  "config": { "price": "{{ trigger.data.price }}", "cost": "{{ trigger.data.cost }}" }
+}
+```
+
+## Gdy krok to za dużo
+
+Jeśli obliczenie to jednowierszowe przeliczenie pojedynczej wartości, [filtr szablonu](/docs/pl/extensions/reference/filters) jest lżejszy niż krok. Jeśli potrzebuje go tylko jedna reguła, krok **Uruchom skrypt** napisany bezpośrednio w tej regule w ogóle nie wymaga rozszerzenia.

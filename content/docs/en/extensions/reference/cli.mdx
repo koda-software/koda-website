@@ -1,0 +1,115 @@
+---
+title: Command-line tool
+description: "Reference for extension-cli, the Opero extension tool: init, add, validate, pack, types, schema, login, test and push, with their options and output."
+---
+
+`extension-cli` scaffolds a package, checks it, writes the zip and talks to Opero. Most commands work offline; only `login`, `test` and `push` need the server.
+
+<Callout title="Getting the tool">
+To get access to the command-line tool, write to <SupportEmail />.
+</Callout>
+
+## Commands
+
+| Command | Does | Needs the server |
+| --- | --- | --- |
+| `init <folder>` | Writes a working package with one action. | No |
+| `add action <name>` | Adds an action folder and lists it in the manifest. | No |
+| `add filter <name>` | Adds a filter folder and lists it. | No |
+| `validate <folder or zip>` | Checks the package offline. | No |
+| `pack <folder>` | Checks, then writes the zip. | No |
+| `types [folder]` | Writes `.opero/types/index.d.ts`, with the `Settings` type from `settings.yaml`. | No |
+| `schema [folder]` | Writes `.opero/schemas/`, the editor schemas, including one for `settings.yaml`. | No |
+| `login --server <mcp-url>` | Signs you in with Opero in the browser. | Yes |
+| `test <folder or zip> --server <mcp-url>` | Runs every test case on the server and prints each result. Stores nothing. | Yes |
+| `push <folder or zip> --server <mcp-url>` | Uploads as a private package. | Yes |
+
+There is no `add` command for settings, and `init` writes none: create `settings.yaml` by hand and name it in `extension.yaml` with `settings: settings.yaml`. See [Settings](/docs/en/extensions/reference/settings). `validate` checks it with the rest of the package and, for a valid folder, refreshes the types and editor schemas.
+
+## Options
+
+<Accordions type="multiple">
+<Accordion title="init">
+
+```bash title="Terminal"
+extension-cli init hello-ext --name Hello --publisher "Your company" --typescript
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--key <key>` | The extension's key. By default the folder name. |
+| `--name <name>` | The package's name. |
+| `--publisher <name>` | Your company's name. |
+| `--typescript` | Write scripts as `.ts`, with a `tsconfig.json`. |
+
+</Accordion>
+<Accordion title="add action, add filter">
+
+```bash title="Terminal"
+extension-cli add action greet --rule
+extension-cli add filter shout
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--rule` | Start the action from a rule file with a script step instead of a script alone. Actions only. |
+| `--module <folder>` | Add it to an included module instead of the manifest. |
+| `--package <folder>` | The package folder, when you run the command from elsewhere. |
+| `--typescript` | Write the script as `.ts`. |
+
+`add` keeps your comments in `extension.yaml`. When the file ends with a comment, it inserts one blank line before that comment.
+
+</Accordion>
+<Accordion title="pack">
+
+```bash title="Terminal"
+extension-cli pack . --out dist/hello-ext.zip
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--out <file.zip>` | The zip's name. By default `<key>-<version>.zip`. |
+
+The zip holds only the files `extension.yaml` reaches; TypeScript is packed as the built `.js`. The same folder always produces the same zip, byte for byte.
+
+</Accordion>
+<Accordion title="login, test, push">
+
+```bash title="Terminal"
+extension-cli login --server https://opero.example.com/mcp
+extension-cli test . --server https://opero.example.com/mcp --org <organizationId>
+extension-cli push . --server https://opero.example.com/mcp --org <organizationId>
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--server <mcp-url>` | Your Opero's MCP address. |
+| `--org <organizationId>` | Needed when you belong to more than one organization. |
+
+</Accordion>
+</Accordions>
+
+## Reading a problem
+
+A problem prints as its code, then `file:line #/place`, then the message:
+
+```txt title="Output"
+  rule.host_not_declared  actions/greet/rule.yaml:9 #/steps/0/config/url
+    Host "api.httpbin.org" is not listed in permissions.network.
+```
+
+The offline check covers the files and their shape; only the server can run the tests. [Error codes](/docs/en/extensions/error-codes) lists every code.
+
+## The working loop
+
+<Steps>
+<Step>
+Run `validate` after every edit. It is offline and fast, and keeps `.opero/` types in step with your descriptors.
+</Step>
+<Step>
+Run `test` when the files are valid.
+</Step>
+<Step>
+Run `push`, or upload the zip from `pack`, when the tests pass.
+</Step>
+</Steps>

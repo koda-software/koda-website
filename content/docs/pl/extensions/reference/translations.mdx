@@ -1,0 +1,73 @@
+---
+title: Tłumaczenia
+description: "Tłumaczenie rozszerzenia Opero: angielski w deskryptorach, jeden plik locales na język, klucze do przetłumaczenia, limity i powrót do angielskiego przy brakach."
+---
+
+Angielski piszesz w deskryptorach. Każdy inny język to jeden plik, `locales/<lang>.yaml`, zagnieżdżony tak jak paczka. Tekst, który pominiesz, wyświetla się po angielsku.
+
+<Steps>
+<Step>
+### Wymień język
+
+```yaml title="extension.yaml"
+locales: [pl, de]
+```
+
+Nie wymieniaj `en`: angielski jest w deskryptorach.
+</Step>
+<Step>
+### Dodaj jeden plik na język
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Hello
+  description: Rozszerzenie startowe z powitaniem, wywołaniem httpbin.org i filtrem.
+permissions:
+  network:
+    httpbin.org: { reason: Sprawdza token i wysyła powitania do testowej usługi httpbin.org. }
+connection:
+  methods:
+    token:
+      label: Token API
+      fields: { token: { label: Token API } }
+settings:
+  groups:
+    general:
+      label: Ogólne
+      description: Jak wysyłane są powitania.
+  fields:
+    language: { label: Język }
+actions:
+  greet:
+    label: Pozdrów
+    description: Wysyła powitanie dla imienia do httpbin.org i zwraca jego odpowiedź.
+    input: { name: { label: Imię } }
+filters:
+  shout: { description: Zamienia tekst na wielkie litery i dodaje wykrzyknik. }
+```
+</Step>
+<Step>
+### Zwaliduj
+
+`extension-cli validate .` zgłasza język bez pliku (`locale.missing_file`) i klucz, który nie wskazuje niczego w paczce (`locale.unknown_text`), więc literówka się nie ukryje.
+</Step>
+</Steps>
+
+## Klucze do przetłumaczenia
+
+| Klucz | Tłumaczy |
+| --- | --- |
+| `extension.name`, `extension.description` | Nazwę i opis paczki. |
+| `permissions.network.<host>.reason` | Uzasadnienie hosta. Także `permissions.data.<scope>.reason`. |
+| `connection.methods.<method>.label` | Etykietę metody; jej pola w `fields.<field>.label` i `help`. |
+| `settings.groups.<group>.label`, `description` | Tytuł i opis grupy ustawień. |
+| `settings.fields.<field>.label` | Etykietę ustawienia oraz `help`, według klucza pola, bez jego grupy; pola zagnieżdżone w `fields`, elementy listy w `items`. |
+| `actions.<action>.label`, `description` | Akcję i jej krok. |
+| `actions.<action>.input.<field>.label` | Etykietę pola i `help`; także `output`, zagnieżdżone pola w `fields`, elementy listy w `items`. |
+| `filters.<filter>.description` | Opis filtra. |
+
+## Zasady
+
+- Każde tłumaczenie to tekst do 2000 znaków.
+- Paczka może mieć do 40 języków.
+- Teksty pliku schematu są tylko po angielsku.

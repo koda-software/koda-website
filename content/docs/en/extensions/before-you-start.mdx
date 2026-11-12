@@ -1,0 +1,38 @@
+---
+title: Before you start
+description: "What you need to build and install an Opero extension: administrator permissions, the Rules module, the extension-cli command-line tool, an editor and a test credential."
+---
+
+You need an administrator account in an organization with the Rules module, the command-line tool, and the API documentation of the service you want to call.
+
+| You need | Why |
+| --- | --- |
+| An administrator account | Uploading and installing need the `org.extensions.*` permissions, plus the permissions to create rules and custom scripts, because the package creates both on your behalf. The built-in administrator role has them all. |
+| The Rules module switched on | Extensions install rules. |
+| The command-line tool | `extension-cli` scaffolds a folder, checks it and writes the zip. See [Command-line tool](/docs/en/extensions/reference/cli). |
+| An editor with YAML support | Optional. The folder `init` writes tells VS Code (with the YAML extension) which schema each file follows, so keys complete and mistakes are underlined as you type. |
+| The service's API documentation | You need the exact URLs, how it authenticates, and what it answers. |
+| A test credential for that service | For the final live check. The contract tests do not need it. |
+
+<Callout title="Getting the command-line tool">
+These pages call the tool as `extension-cli`. To get access to it, write to <SupportEmail />.
+</Callout>
+
+## Know the rule builder first
+
+It helps to have built at least one rule in Opero with a **Call webhook** step, because a rule file is the same thing written as text. Read [Rules](/docs/en/opero/07-automatyzacja/reguly-wprowadzenie) and [Actions](/docs/en/opero/07-automatyzacja/akcje) if you have not.
+
+## Choose the right tool for the job
+
+An extension is not always the lightest answer.
+
+| You want to | Use |
+| --- | --- |
+| Convert or format a single value in templates | A [template filter](/docs/en/extensions/reference/filters) in an extension, or a custom script if only your organization needs it. |
+| Run a bit of logic in one rule only | A **Run script** step written directly in that rule. No extension needed. |
+| Give many rules, or many organizations, one clean step that calls a service | An extension with a [connection](/docs/en/extensions/reference/connection-and-secrets) and actions. |
+| React to something that happens in the outside service | Not possible in a package yet: packages have no triggers, incoming webhooks or schedules. |
+
+## Next step
+
+Start the [tutorial](/docs/en/extensions/tutorial/start-the-package), which builds a complete extension in four parts.

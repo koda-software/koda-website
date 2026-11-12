@@ -1,0 +1,111 @@
+---
+title: Error codes
+description: "Every code Opero and extension-cli report when an extension package is refused, when its tests fail at upload, or when the install plan finds a problem, with how to fix each."
+---
+
+Each problem has a code, a file, the line in that file and the place inside it, for example `actions/greet/rule.yaml:9 #/steps/0/config/url`. Every problem in every file is reported in one run.
+
+## When a package is refused
+
+These are found by `extension-cli validate` and again by Opero at upload.
+
+### Manifest and files
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `manifest.missing` | No `extension.yaml` at the top of the zip. | Pack the folder that holds it. |
+| `manifest.unsupported_version` | A `manifest.json` package (the old format), or another `manifestVersion`. | Rewrite it in the current format. |
+| `manifest.invalid` | A key `extension.yaml` or `module.yaml` does not know, or a wrong value. | Check the spelling against the [reference](/docs/en/extensions/reference/manifest). |
+| `manifest.unsupported_section` | A reserved list such as `schedules`. | Remove it. |
+| `manifest.missing_file` | A descriptor names a file that is not there. | Add the file or fix the name. |
+| `file.invalid_yaml` | The file is not YAML: indentation, a stray `:`, an empty file. | Fix the line given; quote a text that contains `: `. |
+| `file.yaml_feature_not_allowed` | An anchor, alias, tag, merge key or second document. | Write the values out. |
+| `archive.invalid_path` | Upper-case letters or spaces in the name of a file the package uses. | Use lower-case letters, digits, `.`, `_`, `-`. |
+
+### Layout and names
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `layout.invalid_path` | A list entry that is not `actions/<folder>`, or a file name outside its feature's folder. | Use the form shown; keep files in the feature's folder. |
+| `layout.missing_descriptor` | A listed folder without its `action.yaml` or `filter.yaml`, or `settings: settings.yaml` without the file. | Add it or fix the entry. |
+| `layout.unlisted_feature` | An `action.yaml` or `filter.yaml` that no list names, or a `settings.yaml` that `extension.yaml` does not name. | List its folder or name the file, or delete it. |
+| `name.duplicate` | Two actions, filters or modules with the same name, or two settings groups or settings fields with the same key. | Rename one. |
+| `permissions.reason_required` | A host or scope without a reason. | Write `{ host, reason }`. |
+| `field.invalid` | A field list with an unknown type or key, a `select` without `options`, or `secret` or `hint` on a setting. | See [Field lists](/docs/en/extensions/reference/actions#field-lists). |
+
+### Actions, rules and scripts
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `action.invalid` | A key `action.yaml` does not know, a bad name, or a step without a description. | Check the spelling. |
+| `action.run_invalid` | `run` names something that is neither `.yaml`, `.js` nor `.ts`. | Name a rule file or a script. |
+| `action.missing_test` | An action without a test case. | Write one. |
+| `action.cycle` | Actions call each other in a circle. | Break the circle. |
+| `rule.invalid` | A rule file says `name` or `trigger`, or has an unknown key. | Keep only `entryStepId`, `steps`, `edges`. |
+| `rule.invalid_step_id` | A step id is a UUID or has odd characters. | Use a short local name. |
+| `rule.host_not_declared` | A webhook calls a host missing from `permissions.network`. | Add the host with a reason. |
+| `rule.host_not_literal` | The host comes from a template, or the URL is not HTTPS. | Write the host out. |
+| `rule.own_filter_unsupported` | A rule of the package uses the package's own filter. | Do the conversion in a script. |
+| `step.type_not_allowed` | A step type outside the [allowed list](/docs/en/extensions/reference/rule-files#steps-a-rule-file-may-use). | Move that work to the rule that uses your step. |
+| `script.invalid` | A script that is not a module with one `export default`, imports something, is an async filter, or is TypeScript that cannot be stripped. | See [Scripts](/docs/en/extensions/reference/scripts). |
+| `script.not_built` | A zip names a `.ts` script without its `.js`. | Pack with the command-line tool. |
+| `filter.invalid` | A filter name with an underscore, or another key problem. | Letters and digits only. |
+
+### Settings
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `settings.invalid` | `settings.yaml` has an unknown key, no groups, more than 20 groups, a group without `label` or `fields`, or more than 100 fields in all. | See [Settings](/docs/en/extensions/reference/settings). |
+
+### Connection and secrets
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `connection.invalid` | A key `connection.yaml` does not know, or a wrong value. A `settings` block is refused this way: settings are no longer part of the connection. | Move the settings to [settings.yaml](/docs/en/extensions/reference/settings); check the other keys' spelling. |
+| `connection.placeholder_position` | A secret outside a header or query value. | Move it, or set `secretsInBody`. |
+| `connection.placeholder_not_bare` | A secret with a filter or expression around it. | Write it alone inside the braces. |
+| `connection.unknown_field` | A secret field no method declares. | Add it to the method's fields or fix the name. |
+| `connection.undeclared` | A secret in a package without a connection. | Add `connection.yaml`. |
+| `connection.hosts_required` | A connection but no hosts. | Fill `permissions.network`. |
+
+<Callout>
+When the action `verify` names has a problem, `connection.yaml` is also reported ("verify names no action"). Fix the action and the second problem goes away.
+</Callout>
+
+### Translations and tests
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `locale.missing_file` | A language in `locales` without its file. | Add `locales/<lang>.yaml`. |
+| `locale.unknown_text` | A translation key that names nothing in the package. | Fix the key. |
+| `test.invalid` | A test case of the wrong shape, two outcomes, an input that does not match the input fields, settings that do not match `settings.yaml` (a required setting without a default is missing), settings in a package without `settings.yaml`, or settings under `connection.config`. | Fix the case; give settings under `settings:`. |
+
+## Only at upload, when the tests run
+
+These point at the case (`actions/greet/tests.yaml#/1`) and, for an exchange, inside it (`…#/1/http/0`), without a line.
+
+| Code | What happened |
+| --- | --- |
+| `test.unexpected_request` | The action made a request the case did not script. |
+| `test.request_mismatch` | The method, URL, a named header or the body differs from the case. |
+| `test.unused_exchange` | The case scripted a request the action never made. |
+| `test.outcome_mismatch` | The action ended differently than the case says. |
+| `test.output_mismatch` | The output differs from `returns`. |
+| `test.output_schema` | The output does not match the output fields. |
+| `test.failed` | The case could not finish, for example it ran out of time. |
+| `manifest.unsupported_by_server` | This Opero does not install a part the package uses yet. |
+
+## Only in the install plan
+
+| Code | Meaning |
+| --- | --- |
+| `requires.release` | This Opero is older than the package needs. |
+| `requires.module` | A required module is not available here. |
+| `permission.missing` | The person installing lacks a permission the content needs. |
+| `version.not_newer` | An upgrade to the same or an older version. |
+| `rule.save_validation` | An action's rule would not save. The message says why. |
+| `filter.save_validation` | A filter script would not save: it does not validate or its name is taken. |
+| `filter.not_sync` | A filter waits on something. Filters must answer at once. |
+| `step.in_use`, `filter.in_use` | An upgrade removes something the organization's rules use. |
+| `settings.value_dropped` | An upgrade drops a stored setting value: the new version no longer has that setting, or the value no longer fits it. Does not block. |
+| `settings.incomplete_after_upgrade` | The new version has a required setting without a default or stored value. The extension does not run after the upgrade until it is filled in. Does not block. |

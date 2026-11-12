@@ -1,0 +1,115 @@
+---
+title: Narzędzie wiersza poleceń
+description: "Opis extension-cli, narzędzia do rozszerzeń Opero: init, add, validate, pack, types, schema, login, test i push, wraz z ich opcjami i wynikiem działania."
+---
+
+`extension-cli` tworzy szkielet paczki, sprawdza ją, zapisuje plik zip i komunikuje się z Opero. Większość poleceń działa offline; tylko `login`, `test` i `push` potrzebują serwera.
+
+<Callout title="Jak zdobyć narzędzie">
+Aby uzyskać dostęp do narzędzia wiersza poleceń, napisz na <SupportEmail />.
+</Callout>
+
+## Polecenia
+
+| Polecenie | Co robi | Potrzebuje serwera |
+| --- | --- | --- |
+| `init <folder>` | Zapisuje działającą paczkę z jedną akcją. | Nie |
+| `add action <name>` | Dodaje folder akcji i wpisuje go do manifestu. | Nie |
+| `add filter <name>` | Dodaje folder filtra i wpisuje go na listę. | Nie |
+| `validate <folder or zip>` | Sprawdza paczkę offline. | Nie |
+| `pack <folder>` | Sprawdza, a potem zapisuje plik zip. | Nie |
+| `types [folder]` | Zapisuje `.opero/types/index.d.ts`, z typem `Settings` z `settings.yaml`. | Nie |
+| `schema [folder]` | Zapisuje `.opero/schemas/`, schematy dla edytora, w tym schemat dla `settings.yaml`. | Nie |
+| `login --server <mcp-url>` | Loguje cię do Opero w przeglądarce. | Tak |
+| `test <folder or zip> --server <mcp-url>` | Uruchamia wszystkie przypadki testowe na serwerze i wypisuje każdy wynik. Niczego nie zapisuje. | Tak |
+| `push <folder or zip> --server <mcp-url>` | Przesyła jako paczkę prywatną. | Tak |
+
+Nie ma polecenia `add` dla ustawień, a `init` ich nie zapisuje: utwórz `settings.yaml` ręcznie i wskaż go w `extension.yaml` przez `settings: settings.yaml`. Zobacz [Ustawienia](/docs/pl/extensions/reference/settings). `validate` sprawdza go razem z resztą paczki, a dla poprawnego folderu odświeża typy i schematy dla edytora.
+
+## Opcje
+
+<Accordions type="multiple">
+<Accordion title="init">
+
+```bash title="Terminal"
+extension-cli init hello-ext --name Hello --publisher "Your company" --typescript
+```
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--key <key>` | Klucz rozszerzenia. Domyślnie nazwa folderu. |
+| `--name <name>` | Nazwa paczki. |
+| `--publisher <name>` | Nazwa twojej firmy. |
+| `--typescript` | Zapisuje skrypty jako `.ts`, z plikiem `tsconfig.json`. |
+
+</Accordion>
+<Accordion title="add action, add filter">
+
+```bash title="Terminal"
+extension-cli add action greet --rule
+extension-cli add filter shout
+```
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--rule` | Zaczyna akcję od pliku reguły z krokiem skryptu zamiast od samego skryptu. Tylko akcje. |
+| `--module <folder>` | Dodaje ją do dołączonego modułu zamiast do manifestu. |
+| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. |
+| `--typescript` | Zapisuje skrypt jako `.ts`. |
+
+`add` zachowuje twoje komentarze w `extension.yaml`. Gdy plik kończy się komentarzem, wstawia przed nim jedną pustą linię.
+
+</Accordion>
+<Accordion title="pack">
+
+```bash title="Terminal"
+extension-cli pack . --out dist/hello-ext.zip
+```
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--out <file.zip>` | Nazwa pliku zip. Domyślnie `<key>-<version>.zip`. |
+
+Zip zawiera tylko pliki, do których prowadzi `extension.yaml`; TypeScript jest pakowany jako zbudowany `.js`. Ten sam folder zawsze daje ten sam zip, bajt w bajt.
+
+</Accordion>
+<Accordion title="login, test, push">
+
+```bash title="Terminal"
+extension-cli login --server https://opero.example.com/mcp
+extension-cli test . --server https://opero.example.com/mcp --org <organizationId>
+extension-cli push . --server https://opero.example.com/mcp --org <organizationId>
+```
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--server <mcp-url>` | Adres MCP twojego Opero. |
+| `--org <organizationId>` | Potrzebne, gdy należysz do więcej niż jednej organizacji. |
+
+</Accordion>
+</Accordions>
+
+## Jak czytać problem
+
+Problem jest wypisywany jako kod, potem `file:line #/place`, a potem komunikat:
+
+```txt title="Wynik"
+  rule.host_not_declared  actions/greet/rule.yaml:9 #/steps/0/config/url
+    Host "api.httpbin.org" is not listed in permissions.network.
+```
+
+Kontrola offline obejmuje pliki i ich strukturę; tylko serwer może uruchomić testy. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają wszystkie kody.
+
+## Cykl pracy
+
+<Steps>
+<Step>
+Uruchamiaj `validate` po każdej zmianie. Działa offline i szybko, a do tego utrzymuje typy w `.opero/` w zgodzie z twoimi deskryptorami.
+</Step>
+<Step>
+Uruchom `test`, gdy pliki są poprawne.
+</Step>
+<Step>
+Uruchom `push` albo prześlij zip z `pack`, gdy testy przechodzą.
+</Step>
+</Steps>

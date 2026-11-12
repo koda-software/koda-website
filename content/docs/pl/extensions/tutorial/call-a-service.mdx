@@ -1,0 +1,390 @@
+---
+title: "Część 2: Wywołaj usługę"
+description: "Dodaj do rozszerzenia Hello połączenie z tokenem, ustawienie języka, akcję weryfikującą, krok reguły wywołujący httpbin.org z sekretem, filtr szablonu i polskie tłumaczenie."
+---
+
+W tej części paczka dostaje połączenie z tokenem API, ustawienie języka powitania, sprawdzenie, czy token działa, krok `greet`, który wywołuje httpbin.org, filtr `shout` i polskie tłumaczenie.
+
+<Steps>
+<Step>
+### Dodaj dwie akcje i filtr
+
+Z wnętrza folderu paczki:
+
+```bash title="Terminal"
+cd hello-ext
+extension-cli add action verify --rule
+extension-cli add action greet --rule
+extension-cli add filter shout
+```
+
+```txt title="Wynik pierwszego polecenia"
+  actions/verify/action.yaml
+  actions/verify/tests.yaml
+  actions/verify/rule.yaml
+  actions/verify/step.js
+  extension.yaml
+Wrote 5 files in …/hello-ext.
+```
+
+Każde polecenie zapisuje działający przykład w nowym folderze i dopisuje jego wiersz na końcu listy w `extension.yaml`, zachowując twoje komentarze. `--rule` tworzy akcję z pliku reguły z krokiem skryptu zamiast samego skryptu.
+
+W kolejnych krokach zastąpisz te przykłady. Usuń oba pliki `step.js`, bo reguły poniżej ich nie używają.
+</Step>
+
+<Step>
+### Opisz połączenie
+
+Połączenie mieszka w folderze `connection` na najwyższym poziomie paczki. Utwórz go z jednym plikiem:
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: token
+    kind: api_token
+    label: API token
+    fields:
+      token: { type: text, label: API token, required: true, hint: true }
+verify: verify
+```
+
+- `methods` to sposoby logowania; tutaj jeden, token API. `fields` to lista pól z sekretnymi wartościami, które wpisuje administrator. Każde pole metody jest sekretem. `hint: true` pozwala Opero pokazać ostatnie cztery znaki zapisanego tokenu, żeby administrator wiedział, który jest zapisany; bez tego wartość widać tylko jako `***`.
+- `verify` wskazuje akcję, którą Opero uruchamia, gdy administrator naciśnie **Zweryfikuj**. Napiszesz ją za chwilę.
+
+Następnie zadeklaruj w `extension.yaml` host, który wywołuje paczka, powód i połączenie:
+
+```yaml title="extension.yaml"
+requires:
+  modules: [rules]
+permissions: # [!code ++]
+  network: # [!code ++]
+    - host: httpbin.org # [!code ++]
+      reason: Checks the token and sends greetings to the httpbin.org test service. # [!code ++]
+connection: connection # [!code ++]
+```
+
+Przed instalacją administrator widzi każdy host wraz z powodem, a wywołanie innego hosta jest odrzucane. Uprawnienie bez powodu też jest odrzucane.
+</Step>
+
+<Step>
+### Dodaj ustawienie
+
+Powitanie można wysłać po angielsku albo po polsku. Ten wybór nie jest sekretem, więc jest ustawieniem, a nie częścią połączenia. Ustawienia mieszkają w jednym pliku na najwyższym poziomie paczki:
+
+```yaml title="settings.yaml"
+groups:
+  - group: general
+    label: General
+    description: How the greetings are sent.
+    fields:
+      language: { type: select, label: Language, options: [en, pl], default: en }
+```
+
+- `groups` to sekcje formularza ustawień, które widzi administrator; tutaj jedna. `fields` to lista pól, taka jak wejście akcji.
+- `default: en` obowiązuje, dopóki administrator nie wybierze czegoś innego. Wymagane ustawienie bez wartości domyślnej nie pozwoliłoby rozszerzeniu działać, dopóki nie zostanie uzupełnione.
+
+Wskaż plik w `extension.yaml`:
+
+```yaml title="extension.yaml"
+connection: connection
+settings: settings.yaml # [!code ++]
+```
+
+Wszystkie klucze opisuje strona [Ustawienia](/docs/pl/extensions/reference/settings).
+</Step>
+
+<Step>
+### Napisz sprawdzenie
+
+Sprawdzenie to zwykła akcja, której nic nie publikuje. Nie przyjmuje wejścia i zwraca to, co odpowie usługa, więc jej deskryptor nie ma ani `input`, ani `output`:
+
+```yaml title="actions/verify/action.yaml"
+# The connection check: connection.yaml names it. It exposes nothing.
+action: verify
+label: Verify
+description: Checks the connection's token with httpbin.org.
+
+run: rule.yaml
+tests: tests.yaml
+```
+
+Jej logika to [plik reguły](/docs/pl/extensions/reference/rule-files). Plik reguły zawiera to, co zapisuje edytor reguł (`entryStepId`, `steps`, `edges`), z krótkimi identyfikatorami kroków, które wybierasz sam. Nazwa reguły i jej wyzwalacz pochodzą z `action.yaml`.
+
+```yaml title="actions/verify/rule.yaml"
+# The rule-save graph; the reader supplies its name and MANUAL trigger.
+entryStepId: call
+steps:
+  - id: call
+    type: CALL_WEBHOOK
+    name: Check token
+    contextKey: output
+    config:
+      url: https://httpbin.org/bearer
+      method: GET
+      headers: { Authorization: "Bearer {{ connection.token }}" } # [!code highlight]
+edges: []
+```
+
+Dwie rzeczy są tu sercem każdego rozszerzenia:
+
+- `{{ connection.token }}` to sekret. Wskazuje pole `token` połączenia. Opero wstawia prawdziwą wartość dopiero podczas wysyłania żądania, więc nigdy nie trafia ona do logu, historii uruchomień ani skryptu.
+- `contextKey: output` publikuje wynik kroku pod nazwą `output`. To, co reguła zostawi pod `output`, jest wynikiem akcji. Wynik kroku **Wywołaj webhook** to `{ status, headers, body }`.
+
+Jeśli usługa odpowie statusem błędu, reguła kończy się błędem, a razem z nią weryfikacja. Testy pokazują oba przypadki:
+
+```yaml title="actions/verify/tests.yaml"
+- name: a valid token is accepted
+  connection: { token: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://httpbin.org/bearer
+        headers: { authorization: Bearer test-token }
+      response: { status: 200, body: { authenticated: true, token: test-token } }
+  succeeds: true
+
+- name: a refused token fails
+  connection: { token: wrong-token }
+  http:
+    - request: { method: GET, url: https://httpbin.org/bearer }
+      response: { status: 401 }
+  fails: { status: 401 }
+```
+
+Przypadek testowy wymienia po kolei żądania, które akcja powinna wysłać, z odpowiedzią na każde, i określa, jak się kończy: `succeeds`, `fails`, `rateLimited` albo `returns` z dokładnym wyjściem. Opero uruchamia wszystkie przypadki przy przesłaniu, nie wysyłając niczego przez sieć.
+
+`connection` podaje wartości danych uwierzytelniających do testu. Porównywane są tylko nagłówki żądania, które wymienisz; ich nazwy pisz małymi literami. Zobacz [Testy](/docs/pl/extensions/reference/tests).
+</Step>
+
+<Step>
+### Napisz krok greet
+
+Tej operacji będą używać autorzy reguł. Przyjmuje imię i wysyła powitanie:
+
+```yaml title="actions/greet/action.yaml"
+action: greet
+label: Greet
+description: Sends a greeting for a name to httpbin.org and returns its answer.
+
+input:
+  name: { type: text, label: Name, required: true }
+output:
+  status: { type: integer, label: HTTP status }
+  body: { type: object, label: Answer, fields: {} }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: integration }
+```
+
+Wyjście opisuje wynik webhooka: status i odpowiedź z otwartą listą pól (`fields: {}`). Lista wyjściowa przyjmuje pola, których nie wymienia, więc `headers` też przechodzi.
+
+```yaml title="actions/greet/rule.yaml"
+# The rule-save graph; the reader supplies its name and MANUAL trigger.
+entryStepId: call
+steps:
+  - id: call
+    type: CALL_WEBHOOK
+    name: Greet
+    contextKey: output
+    config:
+      url: "https://httpbin.org/anything?lang={{ trigger.settings.language }}"
+      method: POST
+      headers: { Authorization: "Bearer {{ connection.token }}" }
+      body: { greeting: "Hello, {{ trigger.data.name }}!" }
+edges: []
+```
+
+W pliku reguły dostępne są trzy rodzaje wartości:
+
+| Napisz | Aby dostać |
+| --- | --- |
+| `{{ trigger.data.name }}` | Pole wejścia akcji. |
+| `{{ trigger.settings.language }}` | Ustawienie, z zastosowaną wartością domyślną. Nie jest sekretem; można go używać wszędzie. |
+| `{{ connection.token }}` | Pole sekretne. Tylko w wartości nagłówka albo w wartości parametru zapytania w URL kroku **Wywołaj webhook**. |
+
+Testy dowodzą, że reguła buduje właściwe żądanie (ustawienie języka w URL, token w nagłówku, imię w treści) i że `429` jest zgłaszane jako przekroczenie limitu, więc wywołująca reguła może poczekać i ponowić próbę:
+
+```yaml title="actions/greet/tests.yaml"
+- name: the greeting is sent
+  input: { name: Ada }
+  settings: { language: pl }
+  connection: { token: test-token }
+  http:
+    - request:
+        method: POST
+        url: https://httpbin.org/anything?lang=pl
+        headers: { authorization: Bearer test-token }
+        body: { greeting: "Hello, Ada!" }
+      response:
+        status: 200
+        headers: { content-type: application/json }
+        body: { json: { greeting: "Hello, Ada!" } }
+  returns:
+    status: 200
+    headers: { content-type: application/json }
+    body: { json: { greeting: "Hello, Ada!" } }
+
+- name: a 429 is reported as rate limited
+  input: { name: Ada }
+  connection: { token: test-token }
+  http:
+    - request: { method: POST, url: https://httpbin.org/anything?lang=en }
+      response: { status: 429, headers: { retry-after: "30" } }
+  rateLimited: { status: 429 }
+```
+
+`settings` podaje ustawienia przypadku. Drugi przypadek nie podaje żadnych, więc językiem jest wartość domyślna, `en`.
+</Step>
+
+<Step>
+### Napisz filtr
+
+Filtr to także moduł. Jego funkcja dostaje wartość przekazaną do filtra, argumenty filtra i kontekst szablonu, a wynik zwraca od razu: nie może być `async`.
+
+```yaml title="filters/shout/filter.yaml"
+filter: shout
+description: Upper-cases a text and adds an exclamation mark.
+script: filter.js
+```
+
+```js title="filters/shout/filter.js"
+/** @type {import('../../.opero/types').Filter} */
+const filter = (value) => String(value ?? '').toUpperCase() + '!';
+export default filter;
+```
+
+Po instalacji każdy szablon w organizacji może zawierać `{{ "hi" | x_hello_ext_shout }}` i dostać `HI!`. Nazwa filtra składa się tylko z liter i cyfr, bez podkreślnika.
+</Step>
+
+<Step>
+### Przetłumacz
+
+Wersję angielską zapisujesz w deskryptorach. Każdy inny język to jeden plik, który odwzorowuje paczkę; pomiń to, czego nie tłumaczysz, a zostanie wyświetlone po angielsku. Dodaj język do `extension.yaml`:
+
+```yaml title="extension.yaml"
+locales: [pl] # [!code ++]
+```
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Hello
+  description: Rozszerzenie startowe z powitaniem, wywołaniem httpbin.org i filtrem.
+permissions:
+  network:
+    httpbin.org: { reason: Sprawdza token i wysyła powitania do testowej usługi httpbin.org. }
+connection:
+  methods:
+    token:
+      label: Token API
+      fields: { token: { label: Token API } }
+settings:
+  groups:
+    general:
+      label: Ogólne
+      description: Jak wysyłane są powitania.
+  fields:
+    language: { label: Język }
+actions:
+  hello:
+    label: Powitanie
+    description: Tworzy powitanie dla imienia.
+    input: { name: { label: Imię } }
+    output: { greeting: { label: Powitanie } }
+  greet:
+    label: Pozdrów
+    description: Wysyła powitanie dla imienia do httpbin.org i zwraca jego odpowiedź.
+    input: { name: { label: Imię } }
+filters:
+  shout: { description: Zamienia tekst na wielkie litery i dodaje wykrzyknik. }
+```
+
+Klucz, który nie wskazuje niczego w paczce, jest odrzucany, więc literówka się nie ukryje. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations).
+</Step>
+</Steps>
+
+## Gotowa paczka
+
+<Accordions type="single">
+<Accordion title="Gotowy extension.yaml">
+
+```yaml title="extension.yaml"
+# The package's contents: every feature it installs is listed here.
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: A starter extension with a greeting, a call to httpbin.org and a filter.
+publisher: Your company
+requires:
+  opero: ">=2026.1.0"
+  modules: [rules]
+permissions:
+  network:
+    - host: httpbin.org
+      reason: Checks the token and sends greetings to the httpbin.org test service.
+
+connection: connection
+settings: settings.yaml
+
+actions:
+  - actions/hello
+  - actions/verify
+  - actions/greet
+filters:
+  - filters/shout
+
+locales: [pl]
+```
+
+</Accordion>
+<Accordion title="Gotowy folder">
+
+<Files>
+  <Folder name="hello-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <File name="settings.yaml" />
+    <Folder name="connection" defaultOpen>
+      <File name="connection.yaml" />
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="hello" defaultOpen>
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+      <Folder name="verify" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+      <Folder name="greet" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="filters" defaultOpen>
+      <Folder name="shout" defaultOpen>
+        <File name="filter.yaml" />
+        <File name="filter.js" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+    <File name="README.md" />
+    <File name=".gitignore" />
+    <File name="jsconfig.json" />
+    <Folder name=".vscode" disabled />
+    <Folder name=".opero" disabled />
+  </Folder>
+</Files>
+
+</Accordion>
+</Accordions>
+
+## Dalej
+
+Przejdź do [części 3: Sprawdź i spakuj](/docs/pl/extensions/tutorial/check-and-pack).

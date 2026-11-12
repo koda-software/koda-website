@@ -1,0 +1,167 @@
+---
+title: Extensions
+description: "Build your own Opero integrations as extension packages: a connection to an outside service, ready-made rule steps and template filters, installed without deploying code."
+---
+
+An extension teaches Opero to talk to an outside service. You write it as a folder of small YAML files and scripts. The command-line tool checks the folder and packs it into a zip, and you upload the zip to Opero.
+
+Your organization then gets a connection screen, new rule steps and new template filters. No code is deployed and the server is not restarted.
+
+<Files>
+  <Folder name="hello-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <File name="settings.yaml" />
+    <Folder name="connection">
+      <File name="connection.yaml" />
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="greet">
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+      <Folder name="hello">
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="filters">
+      <Folder name="shout">
+        <File name="filter.yaml" />
+        <File name="filter.js" />
+      </Folder>
+    </Folder>
+    <Folder name="locales">
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+Packed and installed, this folder adds a settings form, a connection screen for the credentials, the rule steps `x-hello-ext.greet` and `x-hello-ext.hello`, and the template filter `x_hello_ext_shout`.
+
+## What a package contains
+
+Opero already lets an administrator build [rules](/docs/en/opero/07-automatyzacja/reguly-wprowadzenie): graphs of steps that run when something happens. An extension packages a few pieces of logic, with a description of the service they call, so other people can use each one as a ready-made step without seeing how it works.
+
+<Cards>
+  <Card title="A connection" href="/docs/en/extensions/reference/connection-and-secrets">
+    A form for the service's credentials, such as an API token. Opero stores the secret encrypted and never shows it again.
+  </Card>
+  <Card title="Settings" href="/docs/en/extensions/reference/settings">
+    Values the administrator chooses that are not secret, such as a language or a region, in a form grouped into sections. A package can have settings without a connection.
+  </Card>
+  <Card title="Actions" href="/docs/en/extensions/reference/actions">
+    Named operations such as "create invoice" or "look up customer". Each has a typed input, a typed output, its logic (a rule or a script) and at least one test.
+  </Card>
+  <Card title="Rule steps" href="/docs/en/extensions/reference/actions">
+    An action published to the rule builder. It appears as a step of type `x-<key>.<name>` that any rule in the organization can use.
+  </Card>
+  <Card title="Template filters" href="/docs/en/extensions/reference/filters">
+    Small JavaScript functions usable in any template as `{{ value | x_<key>_<name> }}`, for formatting or converting values.
+  </Card>
+</Cards>
+
+## What you can do with it
+
+- Call any HTTPS API with `GET`, `POST`, `PUT`, `PATCH` or `DELETE`, with the secret placed in a header or a query parameter.
+- Chain several calls, branch on the answer, loop over a list, transform and filter data, and run sandboxed JavaScript between calls.
+- Write the logic of an action as one JavaScript or TypeScript function, with types generated from what the action declares.
+- Give rule authors one clean step with a form, generated from the action's input fields, instead of a hand-written webhook call.
+- Keep credentials per organization or per company.
+- Let the administrator choose settings such as a region or a language on the extension's page, without changing the package.
+- Ship labels in several languages.
+
+## What it cannot do yet
+
+<Callout type="warn" title="Limits of the current package format">
+- **Read or write Opero records directly.** An action only computes and calls the outside service. The rule that uses your step does the record work with the result.
+- **Start by itself.** A package has no triggers, incoming webhooks or schedules yet. A step runs when a rule of the organization reaches it.
+- **Add screens, blocks or record buttons.**
+- **Hold one credential per user.** A connection belongs to the organization or to a company.
+- **Call a host you did not declare,** or anything that is not HTTPS.
+</Callout>
+
+Every file of a package has a fixed set of keys, and a key the format does not know is refused. A package that validates today will not silently lose a part later.
+
+## How it works
+
+From folder to running step:
+
+<Steps>
+<Step>
+### Write
+
+A folder with `extension.yaml`, one folder per action, tests and translations.
+</Step>
+<Step>
+### Validate and pack
+
+The [command-line tool](/docs/en/extensions/reference/cli) checks the folder and zips what `extension.yaml` lists.
+</Step>
+<Step>
+### Upload
+
+Opero checks the package again and runs your tests.
+</Step>
+<Step>
+### Install
+
+An administrator reviews the install plan and agrees to it.
+</Step>
+<Step>
+### Connect
+
+The administrator fills in the settings, enters the credentials, runs **Verify** and switches the connection on.
+</Step>
+<Step>
+### Use
+
+The steps and filters appear in the rule builder and in templates.
+</Step>
+</Steps>
+
+What happens each time a rule runs your step:
+
+| # | Stage | What happens |
+| --- | --- | --- |
+| 1 | A rule reaches the step | For example `x-hello-ext.greet`. |
+| 2 | Input check | The values the rule gives the step are checked against the action's input fields. |
+| 3 | Your action runs | Its rule file or script runs with the input and the extension's settings. |
+| 4 | Secret added | The credential is inserted at the moment of sending, and only for declared hosts. |
+| 5 | The service answers | The response goes back to your action. |
+| 6 | Output check | The result is checked against the output fields, then handed back to the rule. |
+
+## Words used in these pages
+
+| Word | Meaning |
+| --- | --- |
+| Package | One uploaded version of an extension: a zip of your folder. A version never changes after upload. |
+| Key | The extension's identifier, for example `hello-ext`. Everything it adds is named after it. |
+| Manifest | `extension.yaml`, the file at the top of the folder that lists everything in the package. |
+| Descriptor | The YAML file that describes one part: `action.yaml`, `filter.yaml`, `connection.yaml`, `settings.yaml`. Its name is fixed. |
+| Action | A folder with an `action.yaml`, its logic (a rule file or a script) and its tests. |
+| Rule file | An action's logic written as a rule: the steps and edges the rule builder saves. |
+| Step | An action shown in the rule builder. |
+| Connection | The stored credentials for the outside service. |
+| Settings | Values that are not secret, chosen by the administrator for the installed extension and read by its actions. |
+| Test case | One entry of an action's `tests.yaml`: an input, the HTTP exchanges the action makes, and the expected result. It runs without touching the network. |
+| Managed | Installed by an extension. Managed rules and scripts are read-only and hidden from the normal lists; they change only when the extension is upgraded. |
+| Private package | A package an organization uploaded for itself. The other kind is a catalog package, uploaded by the installation's administrator and granted to organizations. |
+
+## Where to go next
+
+<Cards>
+  <Card title="Before you start" href="/docs/en/extensions/before-you-start">
+    Permissions, modules and tools you need.
+  </Card>
+  <Card title="Tutorial: build Hello" href="/docs/en/extensions/tutorial/start-the-package">
+    Build a complete extension with a connection, two steps and a filter.
+  </Card>
+  <Card title="Recipe: a calculating step" href="/docs/en/extensions/calculating-step">
+    A four-file package with no connection.
+  </Card>
+  <Card title="Reference" href="/docs/en/extensions/reference/manifest">
+    Every file, key, limit and command.
+  </Card>
+</Cards>

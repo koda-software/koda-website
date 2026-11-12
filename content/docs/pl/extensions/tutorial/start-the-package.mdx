@@ -1,0 +1,190 @@
+---
+title: "Część 1: Utwórz paczkę"
+description: "Utwórz szkielet rozszerzenia Opero poleceniem extension-cli init, poznaj manifest, pierwszą akcję, jej skrypt i test, a potem zwaliduj gotową paczkę."
+---
+
+W tym samouczku budujesz rozszerzenie `hello-ext` dla [httpbin.org](https://httpbin.org), publicznej usługi, która odsyła otrzymane żądania. Na końcu będzie miało połączenie z tokenem, sprawdzenie, czy token działa, krok `greet`, który wywołuje usługę, krok `hello`, który tylko liczy, i filtr `shout`.
+
+Każdy pokazany plik jest kompletny, w takiej postaci, w jakiej trafia do gotowej paczki.
+
+| Część | Co robisz |
+| --- | --- |
+| 1. Utwórz paczkę | Tworzysz szkielet poleceniem `init` i czytasz, co powstało. |
+| 2. [Wywołaj usługę](/docs/pl/extensions/tutorial/call-a-service) | Połączenie, sprawdzenie, krok wywołujący API, filtr, tłumaczenie. |
+| 3. [Sprawdź i spakuj](/docs/pl/extensions/tutorial/check-and-pack) | Walidacja, pakowanie, uruchomienie testów na serwerze. |
+| 4. [Zainstaluj i używaj](/docs/pl/extensions/tutorial/install-and-use) | Przesłanie, instalacja, połączenie, użycie w regule, wydanie nowej wersji. |
+
+<Steps>
+<Step>
+### Utwórz folder
+
+Niech narzędzie wiersza poleceń zapisze działającą paczkę:
+
+```bash title="Terminal"
+extension-cli init hello-ext --name Hello
+```
+
+```txt title="Wynik"
+  extension.yaml
+  actions/hello/action.yaml
+  actions/hello/tests.yaml
+  actions/hello/run.js
+  README.md
+  .gitignore
+  jsconfig.json
+  .vscode/settings.json
+Wrote 8 files in …/hello-ext.
+```
+
+Nazwa folderu staje się kluczem; podaj `--key`, żeby wybrać inny, i `--publisher` z nazwą twojej firmy. Paczka od razu przechodzi walidację, a jej jedyna akcja ma już przechodzący test.
+
+<Files>
+  <Folder name="hello-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="actions" defaultOpen>
+      <Folder name="hello" defaultOpen>
+        <File name="action.yaml" />
+        <File name="run.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <File name="README.md" />
+    <File name=".gitignore" />
+    <File name="jsconfig.json" />
+    <Folder name=".vscode">
+      <File name="settings.json" />
+    </Folder>
+    <Folder name=".opero" disabled />
+  </Folder>
+</Files>
+
+| Plik | Zawiera | W paczce |
+| --- | --- | --- |
+| `extension.yaml` | Listę wszystkiego, co instaluje paczka. | Tak |
+| `actions/hello/action.yaml` | Nazwę akcji, jej wejście i wyjście. | Tak |
+| `actions/hello/run.js` | Jej logikę. | Tak |
+| `actions/hello/tests.yaml` | Jej test. | Tak |
+| `README.md`, `.gitignore` | Dla ciebie i twojego repozytorium. | Nie |
+| `jsconfig.json` | Sprawdzanie typów w skryptach. | Nie |
+| `.vscode/settings.json` | Podpowiedzi edytora dla plików YAML. | Nie |
+| `.opero/` | Wygenerowane typy i schematy. | Nie |
+</Step>
+
+<Step>
+### Przeczytaj manifest
+
+`extension.yaml` określa tożsamość paczki i wymienia każdą część, którą instaluje:
+
+```yaml title="extension.yaml"
+# The package's contents: every feature it installs is listed here.
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: Hello, an Opero extension.
+publisher: Your company
+requires:
+  modules: [rules]
+
+actions:
+  - actions/hello
+```
+
+- `extension` to klucz. Od niego pochodzą nazwy wszystkiego, co dodaje rozszerzenie: małe litery, cyfry i myślniki, od 2 do 31 znaków, na początku litera i nigdy `x-`.
+- `version` to trzy liczby. Każde przesłanie wymaga nowej wersji.
+- `name` i `description` są widoczne na liście rozszerzeń, po angielsku. Tłumaczenia dodasz później.
+- `actions` wymienia foldery akcji jako `actions/<folder>`. Folder, którego nie ma na liście, nie należy do paczki, a `action.yaml`, którego nie wskazuje żadna lista, jest odrzucany. Ten plik zawsze mówi więc całą prawdę.
+</Step>
+
+<Step>
+### Przeczytaj akcję hello
+
+Zmień opis z szablonu, a deskryptor będzie wyglądał tak:
+
+```yaml title="actions/hello/action.yaml"
+action: hello
+label: Hello
+description: Builds a greeting for a name.
+
+input:
+  name: { type: text, label: Name, required: true }
+output:
+  greeting: { type: text, label: Greeting }
+
+run: run.js
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+
+- `action` to nazwa akcji. Nazwa folderu nie ma znaczenia: możesz przenieść folder albo zmienić jego nazwę bez zmieniania czegokolwiek, co używa akcji.
+- `input` i `output` to [listy pól](/docs/pl/extensions/reference/actions#field-lists). Każde pole ma typ i etykietę; wejście staje się formularzem kroku w edytorze reguł.
+- `run` wskazuje logikę: skrypt albo plik reguły, jak zobaczysz w części 2.
+- `expose.ruleStep` publikuje akcję jako krok `x-hello-ext.hello`. Bez `expose` akcja jest zainstalowana, ale autorzy reguł jej nie widzą.
+
+Skrypt to moduł z jedną eksportowaną funkcją. Funkcja dostaje jeden argument i zwraca wyjście akcji. Wybierz język, w którym utworzyłeś szkielet:
+
+<Tabs items={['JavaScript', 'TypeScript']}>
+<Tab value="JavaScript">
+
+```js title="actions/hello/run.js"
+/** @type {import('../../.opero/types').Action<'hello'>} */
+const run = ({ input }) => {
+  return { greeting: 'Hello, ' + input.name + '!' };
+};
+export default run;
+```
+
+Komentarz w pierwszym wierszu nadaje funkcji typ, który narzędzie generuje z `action.yaml` do `.opero/types`. Edytor podpowiada wtedy `input.name` i oznacza pole, którego akcja nie deklaruje.
+
+</Tab>
+<Tab value="TypeScript">
+
+Utwórz szkielet z flagą `--typescript`. Skrypt to wtedy `run.ts`, deskryptor zawiera `run: run.ts`, a w folderze jest `tsconfig.json`:
+
+```ts title="actions/hello/run.ts"
+import type { Action } from '../../.opero/types';
+
+const run: Action<'hello'> = ({ input }) => {
+  return { greeting: 'Hello, ' + input.name + '!' };
+};
+export default run;
+```
+
+Narzędzie usuwa typy podczas sprawdzania i pakowania. Plik zip zawiera `run.js`, a Opero nigdy nie widzi TypeScriptu.
+
+</Tab>
+</Tabs>
+
+Argument zawiera też `settings`, `company`, `user` i `context`; zobacz [Skrypty](/docs/pl/extensions/reference/scripts).
+
+Test podaje wejście i dokładne oczekiwane wyjście:
+
+```yaml title="actions/hello/tests.yaml"
+- name: a name gets a greeting
+  input:
+    name: Ada
+  returns:
+    greeting: Hello, Ada!
+```
+</Step>
+
+<Step>
+### Zwaliduj
+
+```bash title="Terminal"
+extension-cli validate hello-ext
+```
+
+```txt title="Wynik"
+hello-ext 0.1.0 is valid.
+```
+
+To sprawdzenie działa bez sieci i trwa chwilę, więc uruchamiaj je po każdej zmianie. Gdy paczka jest poprawna, narzędzie zapisuje też ponownie `.opero/`, więc typy nadążają za deskryptorami.
+</Step>
+</Steps>
+
+## Dalej
+
+Przejdź do [części 2: Wywołaj usługę](/docs/pl/extensions/tutorial/call-a-service).

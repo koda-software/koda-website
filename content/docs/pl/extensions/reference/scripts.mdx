@@ -1,0 +1,129 @@
+---
+title: Skrypty
+description: "Skrypty rozszerzeń Opero w JavaScripcie lub TypeScripcie: budowa modułu, argument skryptu akcji, funkcje filtrów, generowane typy, piaskownica i błędy."
+---
+
+Każdy skrypt to moduł z dokładnie jedną funkcją `export default`, bez `import` i bez innych eksportów. Każdy działa osobno w piaskownicy, bez dostępu do sieci i bazy danych.
+
+<Tabs items={['JavaScript', 'TypeScript']}>
+<Tab value="JavaScript">
+
+```js title="actions/lookup/run.js"
+/** @type {import('../../.opero/types').Action<'lookup'>} */
+const run = async ({ input, settings, user }) => {
+  const email = input.email.trim().toLowerCase();
+  return {
+    email,
+    language: settings.language ?? 'en',
+    requestedBy: user.email,
+  };
+};
+export default run;
+```
+
+</Tab>
+<Tab value="TypeScript">
+
+```ts title="actions/lookup/run.ts"
+import type { Action } from '../../.opero/types';
+
+const run: Action<'lookup'> = async ({ input, settings, user }) => {
+  const email = input.email.trim().toLowerCase();
+  return {
+    email,
+    language: settings.language ?? 'en',
+    requestedBy: user.email,
+  };
+};
+export default run;
+```
+
+</Tab>
+</Tabs>
+
+Napisz `export default function name(…)` albo stałą, a po niej `export default name;`, tak jak robi to szkielet.
+
+## Trzy rodzaje skryptów
+
+| Skrypt | Otrzymuje | Zwraca |
+| --- | --- | --- |
+| `run: run.js` w `action.yaml` | Jeden argument: `{ input, settings, company, user, context }` | Wynik akcji. Może być `async`. |
+| `code: { $file: step.js }` w pliku reguły | Ten sam argument | Wynik kroku, pod jego `contextKey`. |
+| `script` filtra | `(value, args, context)` | Przefiltrowaną wartość, od razu: nie `async`. |
+
+## Argument
+
+<TypeTable
+  type={{
+    input: {
+      type: 'object',
+      description: 'Wejście akcji, zgodne z jej polami wejściowymi.',
+    },
+    settings: {
+      type: 'object',
+      description: 'Ustawienia rozszerzenia, z zastosowanymi wartościami domyślnymi. {} w paczce bez settings.yaml. Nigdy nie zawiera sekretu.',
+    },
+    company: {
+      type: '{ id } | undefined',
+      description: 'Firma, dla której działa wywołująca reguła, albo brak.',
+    },
+    user: {
+      type: '{ id, email, firstName, lastName }',
+      description: 'Użytkownik, w imieniu którego działa uruchomienie.',
+    },
+    context: {
+      type: 'object',
+      description: 'Cały kontekst reguły, tak jak widzi go krok Uruchom skrypt.',
+    },
+  }}
+/>
+
+## Błędy
+
+Rzucenie błędu powoduje błąd akcji, a więc i kroku, który ją wywołał:
+
+```js
+if (!Number.isFinite(price)) {
+  throw new Error('The price is not a number.');
+}
+```
+
+Numery linii się zgadzają: problem znaleziony przez kontrole w linii 3 twojego skryptu jest zgłaszany w linii 3.
+
+<Callout type="warn">
+Gdy skrypt rzuci błąd w trakcie działania, krok zgłasza obecnie „Script execution failed” bez numeru linii. Numery linii są tylko dla problemów wykrytych przy odczycie lub budowaniu paczki, więc pokryj ścieżki błędów [testami](/docs/pl/extensions/reference/tests).
+</Callout>
+
+## Generowane typy
+
+`.opero/types/index.d.ts` jest generowany z deskryptorów przez `types`, a także przez `validate`, `pack`, `add` i `init`, gdy paczka jest poprawna. Deklaruje:
+
+| Typ | Dla |
+| --- | --- |
+| `Action<'name'>` | Skryptu `run`. |
+| `StepScript<'name'>` | Skryptu `$file` w pliku reguły. |
+| `Filter` | Skryptu filtra. |
+| `Settings` | Ustawień rozszerzenia z `settings.yaml`. Pole z wartością domyślną nie jest opcjonalne. |
+| `ScriptArgument<'name'>` | Argumentu skryptów akcji. |
+
+W JavaScripcie użyj typu przez linię JSDoc, którą zapisuje szkielet, i sprawdź skrypty poleceniem:
+
+```bash title="Terminal"
+npx tsc -p jsconfig.json
+```
+
+## TypeScript
+
+Deskryptor może wskazywać plik `.ts`. Narzędzie usuwa typy i pakuje plik `.js` z tymi samymi liniami.
+
+Akceptowany jest tylko TypeScript, który staje się JavaScriptem po usunięciu typów:
+
+- bez `enum`, `namespace`, właściwości parametrów i rzutowań `<T>`;
+- linie `import type` są usuwane razem z typami; każdy inny `import` jest odrzucany;
+- plik `.js` trzymany obok `.ts` nie jest używany.
+
+Problem z modułem wykryty w skrypcie `.ts`, np. brak domyślnego eksportu, jest zgłaszany w pliku `.js` zbudowanym przez narzędzie. To, co odrzuca usuwanie typów, jest zgłaszane w pliku `.ts`.
+
+<Callout type="warn" title="Kontrola modułu czyta linie">
+Linia wewnątrz literału szablonowego albo komentarza blokowego, która zaczyna się od `export` lub `import` w pierwszej kolumnie, jest odczytywana jako instrukcja modułu i odrzucana. Dodaj wcięcie do takich linii.
+</Callout>

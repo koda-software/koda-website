@@ -1,0 +1,112 @@
+---
+title: "Part 4: Install and use"
+description: "Upload the Hello extension to Opero, review the install plan, check its settings, set up and verify the connection, use the new step and filter in a rule, and ship a new version."
+---
+
+In this part you upload the package, install it, check its settings, connect it, use its step in a rule and ship a second version.
+
+<Steps>
+<Step>
+### Upload
+
+In Opero open **Manage → Extensions**, choose **Upload package** and pick the zip. Opero repeats the offline checks and then runs your test cases.
+
+If anything fails, nothing is stored and you see the list of problems with their files and lines. If all pass, the package appears under **Available to install** as a private package of your organization.
+
+You can also upload from a terminal or let an AI assistant do it:
+
+<Tabs items={['Opero screen', 'Command-line tool', 'AI assistant']}>
+<Tab value="Opero screen">
+
+**Manage → Extensions → Upload package**, then pick the zip. The limit is 10 MB.
+
+</Tab>
+<Tab value="Command-line tool">
+
+```bash title="Terminal"
+extension-cli push . --server https://opero.example.com/mcp
+```
+
+Add `--org <organizationId>` when you belong to more than one organization.
+
+</Tab>
+<Tab value="AI assistant">
+
+An AI assistant connected to Opero's MCP server can upload the zip for you. Ask it to upload the package file to your organization; it runs the same checks and tests.
+
+</Tab>
+</Tabs>
+</Step>
+
+<Step>
+### Install
+
+Press **Install**. Opero shows a plan before it changes anything:
+
+- what will be created: three rules (`Hello: Hello`, `Hello: Verify`, `Hello: Greet`) and one template filter;
+- the hosts the package may call, each with your reason (`httpbin.org`);
+- the permissions you need and whether you have them;
+- any problem, marked blocking or not.
+
+Confirm to install. The extension now shows as **Not running: connection not enabled**.
+
+<Callout>
+That status is expected: installing never creates a connection.
+</Callout>
+</Step>
+
+<Step>
+### Check the settings
+
+Open the extension and go to its **Settings** tab, between **Details** and **Connection**. It shows the **General** section from `settings.yaml` with the **Language** field, set to its default, English. Choose Polish and save if you want greetings sent with `lang=pl`.
+
+The language has a default, so the extension does not wait for it. A required setting without a default would show the extension as **Not running: settings incomplete** until it is filled in.
+</Step>
+
+<Step>
+### Set up the connection
+
+Go to the extension's **Connection** tab. Enter a token (httpbin accepts any text), save, and press **Verify**.
+
+Opero runs your `verify` action with the values you saved. When it passes, switch the connection on. The extension is now **Running**.
+</Step>
+
+<Step>
+### Use the steps and the filter
+
+Create or open a rule. The steps **Greet** and **Hello** are in the step list, each with a **Name** field generated from its input. In the rule as saved, a greet step looks like this:
+
+```json title="A step in one of the organization's rules"
+{
+  "type": "x-hello-ext.greet",
+  "contextKey": "greeting",
+  "config": { "name": "{{ trigger.data.firstName }}" }
+}
+```
+
+The action's output lands under the step's context key, here `greeting`, for later steps to use: `{{ greeting.status }}`, `{{ greeting.body.json.greeting }}`.
+
+If the action fails, the step fails; connect its error port to handle that. See [When a step fails](/docs/en/extensions/after-install#when-a-step-fails).
+
+In any template, try `{{ "hello" | x_hello_ext_shout }}`.
+</Step>
+
+<Step>
+### Ship a new version
+
+Change something, raise `version` to `0.1.1`, validate, pack and upload. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm.
+
+Rules that use your step keep working, because a step keeps its identity across versions as long as the action's name stays the same. [Upgrading](/docs/en/extensions/after-install#upgrading) lists what can block an upgrade.
+</Step>
+</Steps>
+
+## What next
+
+<Cards>
+  <Card title="Recipe: a calculating step" href="/docs/en/extensions/calculating-step">
+    A step with no connection, written as a script.
+  </Card>
+  <Card title="Reference" href="/docs/en/extensions/reference/manifest">
+    Every key of every file.
+  </Card>
+</Cards>
