@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "additionalDirectories": ["/kodasoft/kodasoft-vault"]
+  }
+}
