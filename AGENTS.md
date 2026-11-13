@@ -20,7 +20,7 @@ tools/get-low -w path/to/image.png
 
 Plans, docs, handovers and reports for this repository live in the Obsidian vault at
 `/kodasoft/kodasoft-vault` (private repo `koda-software/kodasoft-vault`), under
-`/kodasoft/kodasoft-vault/website/`. Read `/kodasoft/kodasoft-vault/AGENTS.md` before creating or
+`/kodasoft/kodasoft-vault/website/`. Use the `vault-notes` skill (or read `/kodasoft/kodasoft-vault/AGENTS.md`) before creating or
 changing a note.
 
 - New plan or doc: copy a template from `/kodasoft/kodasoft-vault/_meta/templates/` into the area
