@@ -11,6 +11,7 @@ import { OpenAPIPage } from '@/components/docs/api-page';
 import { getMDXComponents } from '@/components/docs/mdx';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
 import { preloadOperations } from '@/lib/docs/openapi';
+import { getFooterItems } from '@/lib/docs/page-tree';
 import { docsOgImage, getPublicUrl, metaDescription, siteDescription, siteName } from '@/lib/docs/site';
 import { source } from '@/lib/docs/source';
 import { ArticleJsonLd } from '@/lib/seo/json-ld';
@@ -93,7 +94,12 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
   const MDX = page.data.body;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage
+      toc={page.data.toc}
+      full={page.data.full}
+      // The sidebar tree carries no page descriptions, so the footer gets its own.
+      footer={{ items: getFooterItems(source.pageTree[locale], page.url) }}
+    >
       <ArticleJsonLd
         type="TechArticle"
         headline={page.data.title}

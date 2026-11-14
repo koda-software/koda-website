@@ -9,6 +9,7 @@ import { Providers } from '@/components/docs/providers';
 import { baseOptions, createI18nProvider } from '@/lib/docs/layout.shared';
 import { isLocale, locales, type Locale } from '@/lib/docs/i18n';
 import { docsBasePath, docsOgImage, getSiteUrl, siteDescription, siteName } from '@/lib/docs/site';
+import { withoutPageDescriptions } from '@/lib/docs/page-tree';
 import { source } from '@/lib/docs/source';
 
 export const dynamicParams = false;
@@ -67,7 +68,7 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col">
         <Providers i18n={createI18nProvider(safeLocale)}>
           <DocsLayout
-            tree={source.pageTree[safeLocale]}
+            tree={withoutPageDescriptions(source.pageTree[safeLocale])}
             {...baseOptions(safeLocale)}
           >
             {children}
