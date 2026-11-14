@@ -90,7 +90,7 @@ actions:
   - actions/hello
 ```
 
-- `extension` to klucz. Od niego pochodzą nazwy wszystkiego, co dodaje rozszerzenie: małe litery, cyfry i myślniki, od 2 do 31 znaków, na początku litera i nigdy `x-`.
+- `extension` to klucz. Od niego pochodzą nazwy wszystkiego, co dodaje rozszerzenie: małe litery, cyfry i myślniki, od 2 do 31 znaków, na początku litera i nigdy `x-`. Wybierz taki, który nie jest kluczem innego rozszerzenia z dopisanym `-…` (ani odwrotnie): organizacja nie zainstaluje jednocześnie `order` i `order-sync`.
 - `version` to trzy liczby. Każde przesłanie wymaga nowej wersji.
 - `name` i `description` są widoczne na liście rozszerzeń, po angielsku. Tłumaczenia dodasz później.
 - `actions` wymienia foldery akcji jako `actions/<folder>`. Folder, którego nie ma na liście, nie należy do paczki, a `action.yaml`, którego nie wskazuje żadna lista, jest odrzucany. Ten plik zawsze mówi więc całą prawdę.

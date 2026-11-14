@@ -227,6 +227,7 @@ These point at the case (`actions/greet/tests.yaml#/1`) and, for an exchange or 
 | `permission.missing` | The person installing lacks a permission the content needs. |
 | `permission.owner_required` | The package declares data scopes and the person installing is not an organization owner. |
 | `version.not_newer` | An upgrade to the same or an older version. |
+| `key.overlaps_installed` | Another installed extension's key overlaps this one: one is the other followed by `-` and more, as `order` and `order-sync`. Their names could collide, so only one of them can be installed. |
 | `rule.save_validation` | An action's rule would not save. The message says why. |
 | `filter.save_validation` | A filter script would not save: it does not validate or its name is taken. |
 | `filter.not_sync` | A filter waits on something. Filters must answer at once. |

@@ -227,6 +227,7 @@ Te kody wskazują przypadek (`actions/greet/tests.yaml#/1`), a przy wymianie HTT
 | `permission.missing` | Osobie instalującej brakuje uprawnienia, którego wymaga zawartość. |
 | `permission.owner_required` | Paczka deklaruje zakresy danych, a osoba instalująca nie jest właścicielem organizacji. |
 | `version.not_newer` | Aktualizacja do tej samej lub starszej wersji. |
+| `key.overlaps_installed` | Klucz innego zainstalowanego rozszerzenia nakłada się na ten: jeden to drugi z dopisanym `-` i resztą, jak `order` i `order-sync`. Ich nazwy mogłyby się pokryć, więc można zainstalować tylko jedno z nich. |
 | `rule.save_validation` | Reguły akcji nie da się zapisać. Komunikat mówi dlaczego. |
 | `filter.save_validation` | Skryptu filtra nie da się zapisać: nie przechodzi walidacji albo jego nazwa jest zajęta. |
 | `filter.not_sync` | Filtr na coś czeka. Filtry muszą odpowiadać od razu. |

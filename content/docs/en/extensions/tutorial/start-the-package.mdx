@@ -90,7 +90,7 @@ actions:
   - actions/hello
 ```
 
-- `extension` is the key. It names everything the extension adds: lower-case letters, digits and hyphens, 2 to 31 characters, starting with a letter and not with `x-`.
+- `extension` is the key. It names everything the extension adds: lower-case letters, digits and hyphens, 2 to 31 characters, starting with a letter and not with `x-`. Pick one that is not another extension's key plus `-…` (or the other way round): an organization cannot install both `order` and `order-sync`.
 - `version` is three numbers. Each upload needs a new one.
 - `name` and `description` are shown in the extension list, in English. Translations come later.
 - `actions` lists action folders as `actions/<folder>`. A folder that is not listed is not part of the package, and an `action.yaml` that no list names is refused, so this file is always the whole truth.
