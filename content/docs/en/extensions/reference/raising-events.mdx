@@ -1,0 +1,133 @@
+---
+title: Raising events
+description: "Reference for the EMIT_EVENT step in Opero extension rule files: its settings, items and keys, dedupe and what unchanged means, limits and failures, where it may be used, and at-least-once delivery."
+---
+
+A packaged rule raises the events of the package's own [triggers](/docs/en/extensions/reference/triggers) with the step `EMIT_EVENT`. Each item of a list becomes one event, and each event can start the organization's rules on that trigger.
+
+```yaml title="actions/sync-orders/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: Open orders
+    contextKey: orders
+    config:
+      method: GET
+      url: "https://api.example.com/v1/orders?company={{ trigger.data.subject.companyId }}&status=open"
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise order events
+    contextKey: output
+    config:
+      event: order_changed
+      items: "{{ orders.body.items }}"
+      key: number
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+## Settings
+
+<TypeTable
+  type={{
+    event: {
+      type: 'string',
+      description: 'The name of one of the package\'s triggers, written out. Not a template, and never another extension\'s trigger.',
+      required: true,
+    },
+    items: {
+      type: 'string',
+      description: 'One {{ expression }} and nothing around it, resolving to a list of objects: one event per object.',
+      required: true,
+    },
+    key: {
+      type: 'string',
+      description: 'A top-level data field of the trigger, written out, that identifies an item, such as an order number. Required with dedupe.',
+    },
+    dedupe: {
+      type: 'boolean',
+      description: 'Raise an item only when it is new or changed since it was last raised.',
+      default: 'false',
+    },
+  }}
+/>
+
+Nothing else is accepted (`step.config_not_allowed`). In particular the step sets no company and no actor: an event belongs to the company of the run that raises it, comes from the extension, and carries the run's chain of rules, so a rule already in that chain does not start again.
+
+## Items
+
+`items` resolves to a list. Each element is an object that must match the trigger's `data`:
+
+- a field the trigger's field list does not name is refused, and so is a missing required field or a value of the wrong type;
+- a field marked `nullable` may be `null`;
+- one item is at most 32 KB of JSON.
+
+When the service's answer does not have the trigger's shape, reshape it first with a **Run script** step or the list steps (`TRANSFORM`, `FILTER` and others) and give `EMIT_EVENT` the result.
+
+`key` names the field whose value identifies the item. In every item, that value must be a text of 1 to 200 characters or a number.
+
+## The step's result
+
+The step returns `{ emitted, unchanged }`: how many events it raised, and how many items it left out because they had not changed. Under the context key `output` it becomes the action's result, as in the example; under another key, later steps can read it.
+
+## Dedupe
+
+Without `dedupe`, every item is raised on every run. With `dedupe: true` and a `key`:
+
+- An item is raised when Opero has no memory of its key, or when its content differs from what was last raised for that key. It is then remembered.
+- An item is **unchanged** when all of its data is the same as when it was last raised for that key. The order of the fields does not matter; any other difference, even in a field rules do not read, counts as a change.
+- The memory is kept per run subject: the installation, one company, or one connected member. The same key in two companies is two items.
+- A key that repeats within one step is compared with what the step itself just raised.
+- How long an item is remembered is the trigger's [`dedupe.retentionDays`](/docs/en/extensions/reference/triggers#dedupe-retention).
+
+`dedupe: true` without a `key` is refused with `event.key_required`.
+
+## Delivered at least once
+
+With dedupe, Opero raises an event first and remembers it afterwards. If something stops in between, the next run raises the same item again. Without dedupe, every run raises every item anyway. The organization's rules on the trigger should therefore be written so that receiving an event twice does no harm: look the record up by the item's key and update it, or create it when it is missing.
+
+## Where it may be used
+
+`EMIT_EVENT` runs only in runs Opero starts for the extension itself:
+
+| The action that uses it is run by | Allowed |
+| --- | --- |
+| A [schedule](/docs/en/extensions/reference/schedules) | Yes |
+| The `afterConnect` or `beforeDisconnect` hook of a [member connection](/docs/en/extensions/reference/member-connections) | Yes |
+| An organization rule, as a rule step (`expose.ruleStep`) | No: `event.emitted_from_step` |
+| **Test connection** on the connection (`verify`) | No: `event.emitted_from_step` |
+
+- An action whose rule uses `EMIT_EVENT` is therefore never exposed as a step. See [Actions](/docs/en/extensions/reference/actions).
+- The organization's own rules cannot use `EMIT_EVENT`: the rule builder does not offer it, and saving a rule that contains it is refused (`step_type_managed_only`).
+- An action that uses it needs at least one test case that lists the events it expects (`test.event_untested`). See [Tests](/docs/en/extensions/reference/tests#events).
+
+## Limits and failures
+
+| What | Limit |
+| --- | --- |
+| Items in one step | 500 |
+| Events in one run | 2,000 |
+| One item | 32 KB of JSON |
+
+Every item is checked before any is raised. When a check fails, the step fails, raises nothing, and the run stops there unless the step's error port is connected. Events raised by earlier steps of the run stay raised.
+
+| Code | Cause |
+| --- | --- |
+| `EXTENSION_EVENT_INVALID` | `items` is not a list, an item is not an object, does not match the trigger's data, is over 32 KB, or has no usable key. |
+| `EXTENSION_EVENT_LIMIT` | More than 500 items in the step, or more than 2,000 events in the run. |
+| `EXTENSION_EVENT_NOT_ALLOWED` | The run is not one Opero started for the extension, or the trigger is not one the installed version declares. A package that passed its checks does not meet it. |
+
+The failure shows on the run of the action's rule; for a schedule, it counts as a failed run.
+
+## Problems
+
+| Code | What is wrong |
+| --- | --- |
+| `event.unknown` | `event` names no trigger of the package. |
+| `event.not_literal` | `event` is a template. |
+| `event.key_required` | `dedupe: true` without `key`. |
+| `event.emitted_from_step` | An action that raises events is exposed as a rule step, or is the connection's verify action. |
+| `step.config_not_allowed` | A setting other than the four above, `items` that is not one expression, `dedupe` that is not true or false, or a `key` that is not a data field of the trigger. |
+| `test.event_untested` | No test case of the action lists the events it expects. |

@@ -1,0 +1,364 @@
+---
+title: Bloki
+description: "Opis block.yaml w rozszerzeniach Opero: HTML, CSS i skrypt bloku, jego dane wejściowe, zapytania paczki i odczyty rekordów, które pokazuje, odświeżanie, Liquid, z którym jest renderowany, przyciski run-action, renderowanie innych bloków paczki, testy renderowania oraz to, co z blokami robią instalacja, aktualizacja i odinstalowanie."
+---
+
+Blok to fragment strony: HTML napisany w Liquid, z własnym CSS i, jeśli paczka to deklaruje, ze skryptem działającym w przeglądarce oglądającego. Zainstalowany blok jest blokiem własnym (Custom Block) organizacji, który organizacja umieszcza na stronach rekordów i stronach własnych tak jak swoje bloki. Pokazuje dane paczki, przez jej zapytania i odczyty rekordów, a jego przyciski uruchamiają akcje paczki.
+
+<Files>
+  <Folder name="blocks" defaultOpen>
+    <Folder name="parcel-card" defaultOpen>
+      <File name="block.yaml" />
+      <File name="block.html" />
+      <File name="block.css" />
+      <File name="block.js" />
+      <File name="tests.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+```yaml title="blocks/parcel-list/block.yaml"
+block: parcel_list
+label: Parcels by status
+description: The parcels in one status, and the five newest parcels.
+html: block.html
+css: block.css
+inputs:
+  status:
+    type: select
+    label: Status
+    options: [new, in_transit, delivered]
+    default: in_transit
+queries:
+  parcels:
+    query: parcels_by_status
+    params: { status: "{{ inputs.status }}" }
+    rowLimit: 50
+records:
+  newest:
+    object: parcels
+    fields: [number, status]
+    sort: [{ field: number, direction: desc }]
+    limit: 5
+refresh: { intervalSeconds: 300 }
+tests: tests.yaml
+```
+
+Wymień folder w liście `blocks` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add block <name>` zapisuje blok z HTML, CSS i jednym testem renderowania i dopisuje go do listy.
+
+## block.yaml [#blockyaml]
+
+<TypeTable
+  type={{
+    block: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce. Blok jest instalowany jako x_<klucz z _>_<block>, który może mieć najwyżej 64 znaki (block.name_too_long).',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Nazwa bloku w bibliotece bloków, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Co blok pokazuje, do 1000 znaków. Do przetłumaczenia.',
+    },
+    html: {
+      type: 'string',
+      description: 'Plik HTML z Liquid w folderze bloku, do 256 000 znaków.',
+      required: true,
+    },
+    css: {
+      type: 'string',
+      description: 'Plik CSS w folderze, do 64 000 znaków. Dotyczy tylko tego bloku.',
+    },
+    script: {
+      type: 'string',
+      description: 'Moduł skryptu (.js albo .ts) w folderze, do 64 000 znaków. Wymaga permissions.pageScript w extension.yaml (block.script_undeclared).',
+    },
+    inputs: {
+      type: 'map',
+      description: 'Do 20 wartości, które wypełnia strona umieszczająca blok. Zobacz Dane wejściowe.',
+    },
+    queries: {
+      type: 'map',
+      description: 'Do 5 własnych zapytań paczki, które blok uruchamia. Zobacz Zapytania.',
+    },
+    records: {
+      type: 'map',
+      description: 'Do 5 odczytów własnych obiektów paczki. Zobacz Odczyty rekordów.',
+    },
+    'refresh.intervalSeconds': {
+      type: 'integer',
+      description: 'Odświeżaj blok co tyle sekund, od 30 do 86 400.',
+    },
+    'refresh.live': {
+      type: 'boolean',
+      description: 'Odświeżaj blok, gdy zmieniają się rekordy obiektów, które czytają jego zapytania.',
+    },
+    tests: {
+      type: 'string',
+      description: 'Plik testów renderowania (.yaml). Każdy blok ma co najmniej jeden przypadek (block.test_missing). Zobacz Testy renderowania.',
+      required: true,
+    },
+  }}
+/>
+
+## Dane wejściowe [#inputs]
+
+Dane wejściowe to wartość, którą wybiera każde umieszczenie bloku: tytuł, status, rekord. Klucz to litera, a po niej litery, cyfry i `_`, do 64 znaków.
+
+```yaml
+inputs:
+  title: { type: text, label: Title, default: Parcels }
+  status: { type: select, label: Status, options: [new, in_transit, delivered], default: in_transit }
+  parcel: { type: record, object: parcels, label: Parcel, required: true }
+```
+
+<TypeTable
+  type={{
+    type: {
+      type: 'string',
+      description: 'text, number, boolean, date, select, object, record albo rows.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Do 120 znaków.',
+      required: true,
+    },
+    required: {
+      type: 'boolean',
+      description: 'Umieszczenie musi je wypełnić, chyba że mają wartość domyślną.',
+    },
+    default: {
+      type: 'value',
+      description: 'Używana, gdy umieszczenie ich nie wypełnia.',
+    },
+    object: {
+      type: 'string',
+      description: 'Dla record: obiekt paczki, wskazany kluczem. Dane typu record przechowują identyfikator jednego z jego rekordów.',
+    },
+    options: {
+      type: 'string[]',
+      description: 'Dla select: od 1 do 100 wartości.',
+    },
+    description: {
+      type: 'string',
+      description: 'Do 500 znaków.',
+    },
+  }}
+/>
+
+Wartość złego typu jest zastępowana wartością domyślną. Dane typu `rows` przechowują listę obiektów, zwykle przekazaną przez inny blok, który renderuje ten.
+
+## Zapytania [#queries]
+
+Blok uruchamia do pięciu własnych [zapytań](/docs/pl/extensions/reference/queries) paczki, wskazanych nazwą z `query.yaml`. Pokazać można tylko zapytania FETCH.
+
+```yaml
+queries:
+  parcels:
+    query: parcels_by_status
+    params: { status: "{{ inputs.status }}" }
+    rowLimit: 50
+```
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `query` | Nazwa zapytania paczki (w przeciwnym razie `block.unknown_query`). Jest ono instalowane jako `x_<key>_<name>` i blok uruchamia właśnie je. |
+| `params` | Wartość dla każdego parametru zapytania: stała albo Liquid, na przykład `"{{ inputs.status }}"`. Teksty są zamieniane na typ parametru. |
+| `rowLimit` | Od 1 do 500 wierszy. 100, gdy pominięte. |
+
+Wynik to `queries.<key>` w HTML: `rows`, `first`, `rowCount`, `hasMore` i `state` (`ready` albo `error` lub `unavailable`, gdy zapytanie nie mogło się wykonać, bez wierszy). Jedno nieudane zapytanie nigdy nie psuje bloku. Na stronie firmy zapytanie działa w tej firmie. Jak każde zapisane zapytanie nie stosuje widoczności własnych rekordów.
+
+Plan instalacji sprawdza parametry względem zapytania. Blok może też wskazać zapytanie, które tworzy ta sama instalacja.
+
+## Odczyty rekordów [#record-reads]
+
+Odczyt rekordów listuje rekordy jednego z własnych [obiektów](/docs/pl/extensions/reference/objects) paczki przez mechanizm dostępu do rekordów Opero, jako oglądający: członek widzi tylko rekordy, które może widzieć, w firmie danej strony.
+
+Blok, który pokazuje jeden rekord, na przykład „tę przesyłkę”, musi filtrować swój odczyt. Bez filtra odczyt listuje rekordy obiektu od najnowszych i blok pokazałby najnowszą przesyłkę zamiast wybranej. Tutaj umieszczenie wybiera przesyłkę w danych wejściowych typu rekord, a odczyt filtruje po niej:
+
+```yaml
+inputs:
+  parcel: { type: record, object: parcels, label: Parcel, required: true }
+records:
+  parcel:
+    object: parcels
+    fields: [number, status]
+    limit: 1
+    filter: { op: AND, items: [{ field: id, operator: eq, value: "{{ inputs.parcel }}" }] }
+```
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `object` | Obiekt paczki, wskazany kluczem (w przeciwnym razie `block.unknown_object`). |
+| `fields` | Od 1 do 50 kluczy pól, które niesie każdy wiersz, oprócz `id`, `created_at` i `updated_at`. |
+| `filter` | Grupa filtrów zapisana jak filtr bazowy listy własnej: `{ op: AND, items: [{ field, operator, value }] }`. `value` może być Liquidem renderowanym w kontekście bloku: `inputs` oraz `record`, `company` i reszta tego, co widzi HTML. Sprawdza ją plan instalacji. |
+| `sort` | Do 5 wpisów `{ field, direction }`. Od najnowszych, gdy pominięte. |
+| `limit` | Od 1 do 50 wierszy. 10, gdy pominięte. |
+
+Wynik to `records.<key>`: `rows`, `first`, `total` (wszystkie pasujące, nie tylko pokazane wiersze) i `state`. Odczyt, którego oglądający nie może wykonać, ma stan `unavailable` i nie ma wierszy. Bloku, który odczytuje rekordy, nie może renderować inny blok.
+
+## HTML [#the-html]
+
+HTML to Liquid renderowany na serwerze za każdym razem, gdy strona pokazuje blok. Może używać:
+
+| Napisz | Aby dostać |
+| --- | --- |
+| `{{ inputs.<key> }}` | Dane wejściowe, tak jak wypełniło je umieszczenie, albo ich wartość domyślną. |
+| `{{ queries.<key>.rows }}` | Wiersze zapytania; także `first`, `rowCount`, `hasMore`, `state`. |
+| `{{ records.<key>.rows }}` | Wiersze odczytu rekordów; także `first`, `total`, `state`. |
+| `{{ record.<field> }}`, `{{ record.id }}` | Na stronie rekordu: rekord, który strona pokazuje. Puste na stronie własnej. |
+| `{{ company.name }}`, `{{ actor.locale }}`, `{{ today }}` | Firmę strony, język oglądającego (`pl` albo `en`), dzień kalendarzowy firmy; także `company.id`, `now` i resztę Liquid strony. |
+| `extension_actions['x-<key>.<action>']` | Czy oglądający może uruchomić tę akcję bloku. Zobacz [Przyciski, które uruchamiają akcje](#buttons-that-run-actions). |
+
+```html title="blocks/parcel-list/block.html"
+<section class="parcels">
+  <ul>
+    {% for parcel in queries.parcels.rows %}
+      <li>{{ parcel.number }} {% render 'x_parcels_status_badge', status: parcel.status %}</li>
+    {% else %}
+      <li>No parcels.</li>
+    {% endfor %}
+  </ul>
+  <p>Newest: {% for parcel in records.newest.rows %}{{ parcel.number }} {% endfor %}</p>
+</section>
+```
+
+- **Tylko wbudowane filtry Opero.** Blok paczki jest renderowany z filtrami, które ma każda instalacja. Własne filtry szablonów organizacji i filtry rozszerzeń, także twojej paczki, nie są dostępne.
+- **Renderuj inny blok paczki** przez `{% render 'x_<key>_<block>', name: value %}`, jego zainstalowanym kluczem. Renderowany blok odczytuje każdy argument jako `inputs.<name>`, nie uruchamia zapytań, a bloki renderują się nawzajem najwyżej na trzech poziomach, bez cyklu. Renderować można tylko własne bloki paczki (`block.render_not_own`), a klucz musi być wypisany wprost (`block.reference_not_literal`).
+- **Jeden język.** HTML nie jest tłumaczony. Użyj `actor.locale`, żeby wybrać tekst.
+- Nazwa, która nie istnieje, renderuje się jako pusta, bez błędu.
+
+## Przyciski, które uruchamiają akcje [#buttons-that-run-actions]
+
+Przycisk z `data-opero-action="run-action"` uruchamia akcję paczki udostępnioną blokom (`expose.blockAction`) dla rekordu, który pokazuje strona, albo bez rekordu na stronie własnej. `data-action` podaje jej końcowy klucz, `x-<key>.<action>`:
+
+```html title="blocks/parcel-card/block.html"
+{% if extension_actions['x-parcels.track_parcel'] %}
+  <button type="button" data-opero-action="run-action"
+          data-action="x-parcels.track_parcel">Track now</button>
+{% endif %}
+```
+
+| Atrybut | Znaczenie |
+| --- | --- |
+| `data-action` | `x-<key>.<action>`, wypisany wprost. Musi wskazywać akcję tej paczki z `expose.blockAction` (`block.unknown_action`). |
+| `data-input` | Opcjonalny. Dane wejściowe akcji jako obiekt JSON: `data-input='{"note": "{{ inputs.note }}"}'`. Sprawdzane względem pól wejściowych akcji w chwili naciśnięcia przycisku. |
+| `data-confirm` | Opcjonalny. Pytanie, na które członek odpowiada przed uruchomieniem akcji. |
+
+`extension_actions['<key>']` ma wartość `true`, gdy oglądający może uruchomić akcję, a `false` w przeciwnym razie, więc blok może dla niego pominąć przycisk. Opero sprawdza to ponownie po naciśnięciu przycisku. Kto może uruchomić akcję, opisuje strona [Akcje bloków i polecenia rekordów](/docs/pl/extensions/reference/member-actions#who-may-use-them).
+
+Gdy akcja się zakończy, jej wynik trafia do bloku:
+
+- główny element bloku dostaje zdarzenie `opero:action-done`, a `event.detail` zawiera `{ action, output, message }`;
+- tekst `message` w wyniku jest pokazywany członkowi;
+- potem blok jest odświeżany.
+
+Przy niepowodzeniu członek widzi jego komunikat. Blok paczki może uruchamiać tylko akcje swojej paczki: pozostałe akcje bloków własnych są odrzucane. `run-rule` daje `block.rule_unsupported`, a `open-form`, `set-field` i `<opero-rating>` dają `block.form_unsupported`.
+
+## Skrypt [#the-script]
+
+Skrypt bloku działa w przeglądarce oglądającego po każdym renderowaniu bloku. Wymaga `permissions.pageScript` w `extension.yaml`, z uzasadnieniem, które administrator czyta przed instalacją:
+
+```yaml title="extension.yaml"
+permissions:
+  pageScript:
+    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
+```
+
+Jak każdy skrypt paczki jest modułem z jedną funkcją `export default`. Funkcja dostaje `ctx`, kontekst bloku:
+
+```js title="blocks/parcel-card/block.js"
+/** @type {import('../../.opero/types').Block} */
+export default function parcelCard(ctx) {
+  const answer = ctx.dom.querySelector('[data-answer]');
+  const last = ctx.state.get('answer');
+  if (answer && typeof last === 'string') answer.textContent = last;
+  ctx.dom.root.addEventListener('opero:action-done', (event) => {
+    const message = event.detail?.output?.message;
+    if (typeof message !== 'string' || !answer) return;
+    ctx.state.set('answer', message);
+    answer.textContent = message;
+  });
+}
+```
+
+| Element `ctx` | Daje |
+| --- | --- |
+| `ctx.dom.root`, `ctx.dom.querySelector(…)` | Znaczniki bloku i wyszukiwanie w nich. Po każdym odświeżeniu znaczniki są nowe. |
+| `ctx.inputs`, `ctx.data.queries` | Dane wejściowe i wyniki zapytań użyte przy renderowaniu na serwerze. |
+| `ctx.state` | `get`, `set`, `has`, `delete`, `keys`: wartości zachowywane między odświeżeniami bloku, dopóki strona jest otwarta. |
+| `ctx.actions.run('run-action', { action, input })` | Uruchamia akcję bloku ze skryptu. Zwraca `{ outcome, output, message }`, a przy niepowodzeniu jest odrzucane z jego komunikatem. Klucz musi być wypisany w skrypcie jako cały tekst. |
+| `ctx.record`, `ctx.user` | Rekord strony (zapisane wartości) i oglądającego. |
+| `ctx.notifications` | `success`, `warning`, `error`: komunikat dla oglądającego. |
+
+Funkcja może zwrócić funkcję, która sprząta przed kolejnym uruchomieniem. Skrypt nie ma dostępu do `document`, `window`, timerów ani sieci. `.opero/types` deklaruje `Block`, typ tej funkcji.
+
+## Testy renderowania [#render-tests]
+
+Każdy blok ma `tests.yaml` z 1 do 20 przypadkami renderowania. Opero renderuje każdy przypadek przy przesłaniu, a `opero-ext test` robi to na serwerze, po testach akcji. `opero-ext validate` sprawdza tylko ich kształt.
+
+```yaml title="blocks/parcel-list/tests.yaml"
+- name: lists the parcels of the chosen status
+  inputs: { status: delivered }
+  queries:
+    parcels: [{ number: P-1, status: delivered }]
+  records:
+    newest: [{ number: P-2, status: new }]
+  contains: ["P-1", "badge--delivered", "Newest: P-2"]
+- name: says so when there are none
+  contains: ["No parcels."]
+```
+
+<TypeTable
+  type={{
+    name: {
+      type: 'string',
+      description: 'Pokazywana w wynikach.',
+      required: true,
+    },
+    inputs: {
+      type: 'object',
+      description: 'Wartości, które wypełnia umieszczenie. Typowane i uzupełniane wartościami domyślnymi jak na stronie.',
+    },
+    queries: {
+      type: '{ <key>: rows }',
+      description: 'Wiersze zwracane przez każde zapytanie. Zapytanie pominięte w przypadku nie zwraca wierszy.',
+    },
+    records: {
+      type: '{ <key>: rows }',
+      description: 'Wiersze zwracane przez każdy odczyt rekordów. Odczyt pominięty w przypadku nie zwraca wierszy.',
+    },
+    record: {
+      type: '{ type, id, object? }',
+      description: 'Rekord, który pokazuje strona: record.id w Liquid. type to custom_record, contractor, sales_invoice, cost_invoice, budget albo helpdesk_ticket; object wskazuje obiekt paczki.',
+    },
+    extensionActions: {
+      type: '{ <klucz akcji>: boolean }',
+      description: 'Czy oglądający może uruchomić każdą akcję bloku, którą blok wskazuje. false, gdy pominięte.',
+    },
+    contains: {
+      type: 'string[]',
+      description: 'Teksty, które musi zawierać wyrenderowany HTML.',
+    },
+    notContains: {
+      type: 'string[]',
+      description: 'Teksty, których nie może zawierać. Przypadek ma contains, notContains albo oba.',
+    },
+  }}
+/>
+
+Nic nie jest odczytywane ani uruchamiane: żadne zapytanie, odczyt rekordów ani skrypt. Bloki paczki renderowane przez `{% render %}` działają. Przypadek kończy się błędem `test.render_mismatch` przy tekście, który się nie zgadza, albo `test.render_failed`, gdy szablonu nie da się wyrenderować, na przykład bo używa filtra spoza wbudowanych filtrów Opero. Przypadki renderowania wliczają się do 200 testów paczki i dzielą jej 60 sekund.
+
+## Po instalacji [#after-install]
+
+- **Tylko do odczytu.** Zainstalowany blok to zarządzany blok własny `x_<key>_<block>`. Organizacja umieszcza go tak jak swoje bloki i wypełnia jego dane wejściowe, ale nie może go zmienić ani zarchiwizować. Jej własne bloki nie mogą mieć kluczy zaczynających się od `x_`.
+- **Plan instalacji** wymienia każdy blok z zapytaniami, które uruchamia, i akcjami, które oferuje, a dla bloku ze skryptem także sam skrypt, bo działa on w przeglądarkach członków. Wersję, która po raz pierwszy prosi o skrypty stron, trzeba zaakceptować ponownie. Instalacja bloków wymaga `org.customBlocks.create`, `org.customBlocks.update` i `org.customHtml.update`.
+- **Plan blokuje instalację**, gdy istnieje blok o tym kluczu, który nie należy do rozszerzenia (`block.adopts_existing`), gdy bloku nie da się zapisać (`block.save_validation`) albo gdy zmiana zepsułaby strony, które go umieszczają, lub bloki, które go renderują (`block.breaking_change`).
+- **Wyłączone.** Dopóki rozszerzenie jest wyłączone, jego bloki pokazują komunikat zamiast swojego HTML i nie uruchamiają zapytań.
+- **Aktualizacja.** Blok zachowuje tożsamość i umieszczenia między wersjami, dopóki jego nazwa `block` się nie zmienia. Wersja, która usuwa umieszczony blok, daje ostrzeżenie (`block.removed_placed`); blok jest archiwizowany, a jego umieszczenia pokazują, że rozszerzenie go usunęło. Organizacja nie może sama go przywrócić; przywraca go instalacja wersji rozszerzenia, która znów ma ten blok. Wersja, która usuwa akcję bloku wskazywaną przez jeden z własnych bloków organizacji, jest zablokowana (`block_action.in_use`).
+- **Odinstalowanie.** Bloki są archiwizowane, nie usuwane. Ich umieszczenia zostają i pokazują, że rozszerzenie zostało usunięte, a odinstalowanie wymienia je wcześniej. Organizacja nie może sama przywrócić takiego bloku; ponowna instalacja rozszerzenia przywraca te same bloki, a ich umieszczenia znów działają.

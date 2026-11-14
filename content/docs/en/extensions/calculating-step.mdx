@@ -14,9 +14,9 @@ The example adds a step **Calculate margin** (`x-calc-ext.margin`) that takes a 
 Start with the scaffold, add the action, and remove the example:
 
 ```bash title="Terminal"
-extension-cli init calc-ext --name Calc
+opero-ext init calc-ext --name Calc
 cd calc-ext
-extension-cli add action margin
+opero-ext add action margin
 ```
 
 Delete the `actions/hello` folder. The package then holds four files:
@@ -124,8 +124,8 @@ The first case compares the exact result; the second proves that bad input fails
 ### Validate and pack
 
 ```bash title="Terminal"
-extension-cli validate .
-extension-cli pack .
+opero-ext validate .
+opero-ext pack .
 ```
 
 ```txt title="Output"

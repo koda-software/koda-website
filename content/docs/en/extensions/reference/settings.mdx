@@ -74,7 +74,7 @@ The values belong to the organization's installed extension: one value per setti
 
 ## What the administrator sees
 
-The extension's page has a **Settings** tab between **Details** and **Connection**, shown when the package has settings. It has one section per group, with the group's label and description, and each field with its label, help, default and required mark, in the viewer's language.
+The extension's page has a **Settings** tab right after **Details**, shown when the package has settings. It has one section per group, with the group's label and description, and each field with its label, help, default and required mark, in the viewer's language.
 
 Reading the settings needs `org.extensions.read`, and saving them needs `org.extensions.update`; without it the form is read-only. It is also read-only while an install, upgrade or other command runs for the extension.
 
@@ -84,7 +84,7 @@ A save may leave a required field empty. The value of every field that is filled
 
 A field with `required: true` must have a value, stored or default. While one has none:
 
-- the extension shows **Not running: settings incomplete**, and the **Settings** tab lists the missing settings;
+- the extension shows **Not running: settings incomplete**, and the **Settings** tab shows **Settings incomplete** with the missing settings by label;
 - its steps are missing from the rule builder, and a saved rule that reaches one fails at that step with `extension_inactive`.
 
 It starts running again as soon as the administrator fills the missing settings in and saves. This condition is independent of the connection: an extension with a connection must have both its settings complete and its connection switched on.

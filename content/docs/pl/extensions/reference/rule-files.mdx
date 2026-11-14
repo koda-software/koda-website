@@ -1,6 +1,6 @@
 ---
 title: Pliki reguł
-description: "Logika akcji rozszerzenia Opero jako plik reguły: entryStepId, kroki i krawędzie, lokalne id kroków, publikowanie wyniku, adresy webhooków, skrypty i dozwolone kroki."
+description: "Logika akcji rozszerzenia Opero jako plik reguły: entryStepId, kroki i krawędzie, lokalne id kroków, publikowanie wyniku, adresy webhooków, skrypty, dozwolone kroki, kroki danych i zgłaszanie zdarzeń."
 ---
 
 Plik reguły to logika akcji zapisana jako reguła: `entryStepId`, `steps` i `edges`, które zapisuje edytor reguł. Nazwa, opis i wyzwalacz reguły pochodzą z `action.yaml`, więc ich nie wpisuj.
@@ -42,9 +42,15 @@ edges:
 | `{{ trigger.data.<field> }}` | Pole wejścia akcji. |
 | `{{ trigger.settings.<field> }}` | Jedno z [ustawień](/docs/pl/extensions/reference/settings) rozszerzenia, z zastosowaną wartością domyślną. Nie jest sekretem; możesz go użyć wszędzie. |
 | `{{ connection.<field> }}` | Pole sekretne. Tylko w wartości nagłówka albo wartości parametru zapytania w URL kroku **Wywołaj webhook**. Zobacz [Sekrety](/docs/pl/extensions/reference/connection-and-secrets#secrets). |
+| `{{ userConnection.<field> }}` | Token albo sekretna wartość członka, tylko w akcji członka, z tymi samymi ograniczeniami co sekret połączenia. Zobacz [Połączenia członków](/docs/pl/extensions/reference/member-connections#the-members-values-in-rules). |
+| `{{ trigger.record.id }}` | W [akcji bloku albo poleceniu rekordu](/docs/pl/extensions/reference/member-actions#the-record-the-action-runs-for): rekord, dla którego działa; także `type`, `moduleKey` i `objectKey`. |
 | `{{ <contextKey>.… }}` | Wynik wcześniejszego kroku, pod jego kluczem kontekstu. |
 
-Wynik kroku **Wywołaj webhook** to `{ status, headers, body }`. Status błędu powoduje błąd kroku, a więc i akcji.
+Wynik kroku **Wywołaj webhook** to `{ status, headers, body }`. Status błędu powoduje błąd kroku, a więc i akcji, chyba że port błędu kroku jest podłączony.
+
+`auth: connection` w kroku **Wywołaj webhook** wysyła dane uwierzytelniające połączenia jako HTTP Basic, gdy każda metoda połączenia deklaruje `scheme`. Żadne inne `auth` nie jest przyjmowane. Zobacz [HTTP Basic z połączenia](/docs/pl/extensions/reference/connection-and-secrets#http-basic-from-the-connection).
+
+W akcji uruchamianej przez [harmonogram](/docs/pl/extensions/reference/schedules) `{{ trigger.data.… }}` to wejście, które przekazuje harmonogram: `subject`, `lastSucceededAt` i `firstRun`.
 
 Wewnątrz akcji szablony mają dostęp tylko do wbudowanych filtrów Opero. Filtry z innych rozszerzeń ani z własnych skryptów organizacji nie są dostępne.
 
@@ -62,9 +68,24 @@ Wewnątrz akcji szablony mają dostęp tylko do wbudowanych filtrów Opero. Filt
 | `WAIT` | Pauza. |
 | `STOP` | Zakończenie reguły. |
 | `x-<key>.<name>` | Wywołanie innej akcji tej samej paczki. |
+| `EMIT_EVENT` | Zgłoszenie zdarzeń własnych wyzwalaczy paczki, w akcji uruchamianej przez harmonogram albo przez `afterConnect` lub `beforeDisconnect` połączenia członka. Zobacz [Zgłaszanie zdarzeń](/docs/pl/extensions/reference/raising-events). |
 
-<Callout type="warn" title="Bez kroków rekordów, e-maili i powiadomień">
-Kroki, które zmieniają rekordy, wysyłają e-maile albo powiadamiają ludzi, są odrzucane z kodem `step.type_not_allowed`. Ta praca należy do reguły organizacji, która używa twojego kroku.
+### Kroki danych [#data-steps]
+
+Te kroki są dozwolone, gdy paczka deklaruje [zakres danych](/docs/pl/extensions/reference/data-permissions), którego każdy z nich potrzebuje, i tylko na własnych obiektach i zapytaniach paczki. Zobacz [Kroki danych](/docs/pl/extensions/reference/data-steps).
+
+| Typ kroku | Do czego | Zakres |
+| --- | --- | --- |
+| `FETCH_RECORDS` | Odczyt rekordów obiektów paczki. | `records:read` |
+| `CREATE_RECORD`, `UPDATE_RECORD` | Tworzenie i zmiana rekordów obiektów paczki. | `records:write` |
+| `RUN_QUERY` | Uruchomienie zapytania paczki. | `queries:run` albo `queries:mutate` |
+| `UPDATE_CONTRACTOR` | Zmiana kontrahenta. | `contractors:write` |
+| `SEND_EMAIL` | Wysłanie e-maila. | `email:send` |
+| `SEND_NOTIFICATION` | Powiadomienie członków organizacji. | `notifications:send` |
+| `GENERATE_DOCUMENT` | Wygenerowanie dokumentu z szablonu, który wybiera autor reguły. | `documents:generate` |
+
+<Callout type="warn" title="Inne kroki są odrzucane">
+Każdy inny typ kroku, na przykład dołączanie plików, wywołanie innej reguły czy uruchomienie procesu, jest odrzucany z kodem `step.type_not_allowed`, a krok danych na czymkolwiek poza własnymi obiektami i zapytaniami paczki z kodem `step.target_not_own`. Ta praca należy do reguły organizacji, która używa twojego kroku.
 </Callout>
 
 ## Z edytora reguł do pliku reguły

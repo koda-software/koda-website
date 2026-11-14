@@ -1,0 +1,202 @@
+---
+title: Wyzwalacze
+description: "Opis trigger.yaml w rozszerzeniach Opero: dane każdego zdarzenia, filtry z match, czas pamiętania przy deduplikacji, przykład, wyzwalacz x-<key>.<name> w edytorze reguł oraz co się dzieje przy aktualizacji, wyłączeniu i odinstalowaniu."
+---
+
+Wyzwalacz pozwala własnym regułom organizacji zaczynać się, gdy coś dzieje się w usłudze zewnętrznej. Paczka deklaruje wyzwalacz i zgłasza jego zdarzenia, a organizacja buduje na nim reguły, tak jak na każdym innym [wyzwalaczu reguł](/docs/pl/opero/07-automatyzacja/wyzwalacze).
+
+```yaml title="triggers/order-changed/trigger.yaml"
+trigger: order_changed
+label: Order changed
+description: An open order is new, or one of its values changed.
+data:
+  number: { type: text, label: Order number, required: true }
+  status: { type: select, label: Status, options: [open, packed, shipped], required: true }
+  total: { type: number, label: Total, nullable: true }
+  updatedAt: { type: datetime, label: Updated at }
+config:
+  status: { type: select, label: Only this status, options: [open, packed, shipped], match: status }
+dedupe: { retentionDays: 30 }
+example: { number: A-1, status: open, total: 120.5, updatedAt: "2026-11-01T10:00:00Z" }
+```
+
+Każdy wyzwalacz to folder `triggers/<folder>` z plikiem `trigger.yaml`, wymieniony w `extension.yaml` (albo w `module.yaml` modułu):
+
+```yaml title="extension.yaml"
+triggers:
+  - triggers/order-changed
+```
+
+`opero-ext add trigger <name>` tworzy folder i wpis na liście; zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli).
+
+<Callout title="Sam wyzwalacz niczego nie zgłasza">
+Zdarzenia wyzwalacza zgłasza tylko paczka, krokiem [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events), w uruchomieniu [harmonogramu](/docs/pl/extensions/reference/schedules) albo w akcji [połączenia członka](/docs/pl/extensions/reference/member-connections). Reguła organizacji nie może ich zgłaszać.
+</Callout>
+
+## trigger.yaml [#triggeryaml]
+
+<TypeTable
+  type={{
+    trigger: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce. Typ wyzwalacza to x-<key>.<trigger>.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Nazwa wyzwalacza w edytorze reguł, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Kiedy wyzwalacz działa, do 2000 znaków. Widoczny w edytorze reguł i w planie instalacji. Do przetłumaczenia.',
+      required: true,
+    },
+    data: {
+      type: 'field list | schema file',
+      description: 'Co niesie każde zdarzenie: to, co reguły odczytują jako trigger.data. Lista pól albo plik JSON Schema w folderze.',
+      required: true,
+    },
+    config: {
+      type: 'field list',
+      description: 'Filtry, które może ustawić reguła. Każde pole wskazuje kluczem match pole danych, z którym jest porównywane.',
+    },
+    'dedupe.retentionDays': {
+      type: 'integer',
+      description: 'Przez ile dni element jest pamiętany na potrzeby deduplikacji, od 1 do 365.',
+      default: '90',
+    },
+    example: {
+      type: 'object',
+      description: 'Dane jednego zdarzenia, podsuwane jako dane przykładowe przy testowaniu reguły. Musi pasować do data; do 32 KB.',
+    },
+  }}
+/>
+
+Klucz, którego plik nie zna, jest odrzucany z kodem `trigger.invalid`.
+
+## Dane [#the-data]
+
+`data` to umowa między paczką a regułami zbudowanymi na wyzwalaczu: reguła uruchomiona przez zdarzenie odczytuje `{{ trigger.data.<field> }}`, a dane każdego zdarzenia zostają w historii uruchomień reguły.
+
+- `data` to [lista pól](/docs/pl/extensions/reference/actions#field-lists) albo plik JSON Schema w folderze wyzwalacza. Przy liście pól pole, którego lista nie wymienia, jest odrzucane.
+- Pole danych może mieć `nullable: true`: wtedy jego wartością może być też `null`. Powyżej `total` to liczba albo `null`. `nullable` przyjmują tylko wejście i wyjście akcji oraz dane wyzwalacza.
+- Każde zdarzenie jest sprawdzane względem `data`, zanim zostanie zgłoszone. Zdarzenie, które nie pasuje, powoduje błąd kroku, który je zgłasza, i nic nie zostaje zgłoszone (zobacz [Zgłaszanie zdarzeń](/docs/pl/extensions/reference/raising-events#limits-and-failures)).
+- Dane jednego zdarzenia to najwyżej 32 KB JSON.
+
+Narzędzie wiersza poleceń generuje w `.opero/types/index.d.ts` typ `Triggers` z danych każdego wyzwalacza, więc skrypt, który buduje elementy, zna ich kształt:
+
+```ts title=".opero/types/index.d.ts (fragment)"
+export interface Triggers {
+  order_changed: {
+    /** Order number */
+    number: string;
+    /** Status */
+    status: "open" | "packed" | "shipped";
+    /** Total */
+    total?: number | null;
+    /** Updated at */
+    updatedAt?: string;
+  };
+}
+```
+
+## Filtry [#filters]
+
+`config` wymienia filtry, które autor reguły może ustawić na wyzwalaczu. Każde pole ma `type` równe `text`, `number`, `boolean` albo `select` oraz `match`: pole danych najwyższego poziomu, z którym jest porównywane.
+
+```yaml title="triggers/activity/trigger.yaml (fragment)"
+config:
+  member: { type: text, label: Only this member, match: userId }
+```
+
+- Reguła zaczyna się tylko dla zdarzeń, w których pole danych jest równe ustawionej wartości. Gdy pole danych jest listą, lista musi zawierać tę wartość.
+- Pusty filtr niczego nie filtruje. Bez ustawionych filtrów reguła zaczyna się przy każdym zdarzeniu.
+- Wartości są porównywane dokładnie, bez konwersji: `10` nie pasuje do `"10"`.
+- `match`, które nie wskazuje pola danych najwyższego poziomu, jest odrzucane z kodem `trigger.match_unknown_field`; filtr bez `match` albo innego typu z kodem `trigger.invalid`.
+
+Wyzwalacz bez `config` nie ma filtrów.
+
+## Czas pamiętania przy deduplikacji [#dedupe-retention]
+
+Gdy krok [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events#dedupe) działa z `dedupe: true`, Opero pamięta każdy zgłoszony element po jego kluczu, żeby nie zgłaszać ponownie elementu, który się nie zmienił. `dedupe.retentionDays` mówi, jak długo:
+
+- Element jest zapominany, gdy przez tyle dni nie był zgłoszony. Jeśli usługa nadal go potem zwraca, zostaje zgłoszony jeszcze raz, jak nowy.
+- Wybierz czas dłuższy niż okres, przez który usługa zwraca niezmieniony element, albo pytaj usługę tylko o najnowsze elementy.
+- Bez `dedupe` w `trigger.yaml` elementy są pamiętane przez 90 dni.
+- Pamięć jest osobna dla każdej instalacji, wyzwalacza i podmiotu uruchomienia (instalacji, firmy albo członka): to samo zamówienie w dwóch firmach jest pamiętane dwa razy. Odinstalowanie wszystko zapomina; aktualizacja zachowuje.
+
+## Przykład [#the-example]
+
+`example` to dane jednego zdarzenia. Gdy reguła na wyzwalaczu jest testowana i nie ma wcześniejszego uruchomienia do powtórzenia, Opero podsuwa przykład jako dane przykładowe. Musi pasować do `data` (w przeciwnym razie `trigger.invalid`). Bez przykładu Opero buduje go z pól danych: ich wartości domyślnych, pierwszej opcji pola wyboru, daty dla pola daty, etykiety pola tekstowego, `0`, `false` i pustych list.
+
+## W edytorze reguł [#in-the-rule-builder]
+
+Gdy rozszerzenie jest zainstalowane i działa, wyzwalacz pojawia się w edytorze reguł organizacji jako typ `x-<key>.<trigger>`, z etykietą i opisem w języku oglądającego. W wyborze wyzwalacza jest w sekcji **Integracje**, w grupie nazwanej kluczem rozszerzenia (`order-events` dla `x-order-events`). Jego filtry to formularz wygenerowany z `config`.
+
+```json title="Wyzwalacz jednej z reguł organizacji"
+{
+  "trigger": {
+    "type": "x-order-events.order_changed",
+    "config": { "status": "packed" }
+  }
+}
+```
+
+Ta reguła zaczyna się przy każdym zdarzeniu `order_changed`, którego `status` to `packed`, i odczytuje zamówienie jako `{{ trigger.data.number }}`, `{{ trigger.data.total }}` i tak dalej.
+
+- **Firma.** Zdarzenie zgłoszone przez uruchomienie dla firmy uruchamia reguły tej firmy. Zdarzenie zgłoszone przez uruchomienie bez firmy (harmonogram z `forEach: installation`) uruchamia tylko reguły, które nie są ograniczone do konkretnych firm.
+- **Wykonawca.** Zdarzenie pochodzi od rozszerzenia, nie od członka: reguła działa w imieniu rozszerzenia.
+- **Co najmniej raz.** To samo zdarzenie może dotrzeć dwa razy, na przykład po restarcie. Pisz reguły, które je odbierają, tak, żeby drugie uruchomienie niczego nie zmieniało: znajdź rekord po kluczu, takim jak numer zamówienia, i zaktualizuj go albo utwórz, gdy go brakuje.
+
+## Gdy rozszerzenie nie działa [#when-the-extension-is-not-running]
+
+Gdy rozszerzenie [nie działa](/docs/pl/extensions/after-install#states) (jest wyłączone, ma niepełne ustawienia, wyłączone połączenie albo niedostępny moduł):
+
+- jego wyzwalaczy brakuje w edytorze reguł i nie można ich przypisać regule;
+- reguła, która już ma taki wyzwalacz, zachowuje go i nadal można ją zapisać, ale żadne zdarzenie jej nie uruchamia, nawet zgłoszone, zanim rozszerzenie przestało działać. Edytor reguł pokazuje jej wyzwalacz jako **Wyzwalacz niedostępny**.
+
+Wszystko wraca, gdy rozszerzenie znów działa.
+
+## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
+
+| Nowa wersja | Co się dzieje | W planie |
+| --- | --- | --- |
+| Usuwa wyzwalacz, którego używa reguła organizacji | Aktualizacja jest zablokowana, dopóki żadna reguła go nie używa. | `trigger.in_use` (blokuje) |
+| Usuwa pola danych najwyższego poziomu wyzwalacza, którego używa reguła | Aktualizacja się odbywa. Reguły nie są przeszukiwane pod kątem miejsc, w których odczytują te pola, więc sprawdź je. | `trigger.data_field_removed` (ostrzeżenie) |
+| Dodaje wyzwalacz albo zmienia etykiety, filtry lub przykład | Nic poza planem do potwierdzenia. | Nic |
+
+Wyzwalacz zachowuje tożsamość, dopóki jego nazwa `trigger` się nie zmienia; foldery możesz zmieniać dowolnie.
+
+Odinstalowanie zatrzymuje aktywne reguły organizacji, których wyzwalacz należy do rozszerzenia, i obejmuje je kwarantanną, tak jak reguły używające jego kroków. Ponowna instalacja, uruchomienie rozszerzenia i zapisanie takiej reguły zdejmuje kwarantannę.
+
+## Tłumaczenia [#translations]
+
+```yaml title="locales/pl.yaml"
+triggers:
+  order_changed:
+    label: Zmiana zamówienia
+    description: Otwarte zamówienie jest nowe albo zmieniła się jedna z jego wartości.
+    data:
+      number: { label: Numer zamówienia }
+      total: { label: Kwota }
+    config:
+      status: { label: Tylko ten status }
+```
+
+| Klucz | Tłumaczy |
+| --- | --- |
+| `triggers.<trigger>.label`, `description` | Nazwę i opis wyzwalacza. |
+| `triggers.<trigger>.data.<field>.label`, `help` | Pole danych. |
+| `triggers.<trigger>.config.<field>.label`, `help` | Filtr. |
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `trigger.invalid` | Nieznany klucz, brak `label`, `description` albo `data`, filtr bez `match` albo typu innego niż text, number, boolean lub select, `retentionDays` spoza zakresu 1–365, przykład, który nie pasuje do danych albo ma ponad 32 KB, albo więcej niż 50 wyzwalaczy. |
+| `trigger.match_unknown_field` | `match` filtra nie wskazuje pola danych najwyższego poziomu. |
+| `field.invalid` | Pole danych albo filtra o złym kształcie, w tym `nullable` na filtrze. |
+| `name.duplicate` | Dwa wyzwalacze o tej samej nazwie. |
+
+Wszystkie kody są w [Kodach błędów](/docs/pl/extensions/error-codes).

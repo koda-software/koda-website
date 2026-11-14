@@ -24,12 +24,26 @@ These docs describe public Opero concepts and the external Opero API. English is
 
 ## Extensions
 
-- [Extensions](https://kodasoft.pl/docs/en/extensions): Build Opero integrations as extension packages: a connection, rule steps and template filters, installed without deploying code.
+- [Extensions](https://kodasoft.pl/docs/en/extensions): Build Opero integrations as extension packages: a connection, rule steps and template filters, the package's own objects, dictionaries and queries, triggers raised on a schedule, and per-member connections, installed without deploying code.
 - [Tutorial: build Hello](https://kodasoft.pl/docs/en/extensions/tutorial/start-the-package): Scaffold, write, test, pack, upload and install a complete extension.
-- [extension.yaml](https://kodasoft.pl/docs/en/extensions/reference/manifest): The extension manifest: key, version, permissions, connection, settings and feature lists.
+- [Recipe: a package with its own data](https://kodasoft.pl/docs/en/extensions/own-data): An object with a dictionary-backed field, a saved query, and a step that fetches, calls a service and writes back, tested with effects.
+- [Recipe: events from a service](https://kodasoft.pl/docs/en/extensions/scheduled-events): A trigger, a schedule that reads a service and raises an event for each changed item with dedupe, a rule that listens, and the same for each connected member.
+- [Start from your organization](https://kodasoft.pl/docs/en/extensions/start-from-your-organization): Export an organization's own dictionaries, objects, saved queries, template filters and Custom Blocks as a package folder with opero-ext pull, then finish, test and install it elsewhere.
+- [Command-line tool](https://kodasoft.pl/docs/en/extensions/reference/cli): opero-ext: install and update, sign-in, every command, consent for install and upgrade, --json output and exit codes.
+- [extension.yaml](https://kodasoft.pl/docs/en/extensions/reference/manifest): The extension manifest: key, version, network and data permissions, connection, settings and feature lists.
 - [Settings](https://kodasoft.pl/docs/en/extensions/reference/settings): The extension's own settings in settings.yaml: groups, defaults, required settings, reading them in rules and scripts, tests and upgrades.
-- [Connection and secrets](https://kodasoft.pl/docs/en/extensions/reference/connection-and-secrets): Credentials, verification, organization or company scopes and where a secret may appear.
-- [Error codes](https://kodasoft.pl/docs/en/extensions/error-codes): Every code reported when a package is refused, its tests fail, or the install plan finds a problem.
+- [Connection and secrets](https://kodasoft.pl/docs/en/extensions/reference/connection-and-secrets): Credentials, verification, organization or company scopes, HTTP Basic with auth: connection, and where a secret may appear.
+- [Member connections](https://kodasoft.pl/docs/en/extensions/reference/member-connections): connection/member.yaml: each member connects their own account by OAuth, the member's form, afterConnect and beforeDisconnect, {{ userConnection.<field> }} in member actions, refused tokens and reconsent.
+- [Objects](https://kodasoft.pl/docs/en/extensions/reference/objects): object.yaml: the package's own objects and fields in the x-<key> module, references to its dictionaries and objects, upgrades and uninstalling.
+- [Dictionaries](https://kodasoft.pl/docs/en/extensions/reference/dictionaries): dictionary.yaml: entries, the installed key x-<key>-<name>, select fields, translated entry labels.
+- [Queries](https://kodasoft.pl/docs/en/extensions/reference/queries): query.yaml and its SQL file: {{object.<key>}} placeholders, FETCH and MUTATION, parameters, the installed key x_<key_snake>_<name>.
+- [Data permissions](https://kodasoft.pl/docs/en/extensions/reference/data-permissions): permissions.data: the eight data scopes, what each step may name, the owner-only install, and when it is checked.
+- [Data steps](https://kodasoft.pl/docs/en/extensions/reference/data-steps): Fetch, create and update records, run queries, update contractors, send email and notifications and generate documents from a rule file, each with its test.
+- [Triggers](https://kodasoft.pl/docs/en/extensions/reference/triggers): trigger.yaml: the rule trigger x-<key>.<trigger>, its event data, filters, example and dedupe retention, and how it behaves while the extension is not running.
+- [Raising events](https://kodasoft.pl/docs/en/extensions/reference/raising-events): The EMIT_EVENT step: items, keys, dedupe and unchanged items, limits, where it may be used, and at-least-once delivery.
+- [Schedules](https://kodasoft.pl/docs/en/extensions/reference/schedules): schedule.yaml: an action run every 15 minutes to 24 hours once, for each company or for each connected member, its input, outcomes, retries and parking.
+- [After install](https://kodasoft.pl/docs/en/extensions/after-install): What the administrator sees: the install and upgrade plan, states, settings, installed data, schedules and connected members, failed steps, upgrades that delete data, and uninstalling with or without the data.
+- [Error codes](https://kodasoft.pl/docs/en/extensions/error-codes): Every code reported when a package is refused, its tests fail, the install plan finds a problem, a step, an event or a schedule run fails, a member's connection fails, or an administrator's command is refused.
 
 ## API Resource Guides
 

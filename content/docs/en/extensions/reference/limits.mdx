@@ -1,6 +1,6 @@
 ---
 title: Limits
-description: "Size and count limits for Opero extension packages: zip size, files, actions, filters, test cases, HTTP exchanges, hosts, languages, field lists and settings."
+description: "Size and count limits for Opero extension packages: zip size, files, actions, filters, objects, dictionaries, queries, triggers, schedules, blocks, links, forms, lists, pages, package permissions, events, test cases, HTTP exchanges and effects, hosts, data scopes, languages, field lists, settings and the member connection."
 ---
 
 A package that crosses one of these limits is refused at upload.
@@ -9,23 +9,51 @@ A package that crosses one of these limits is refused at upload.
 | --- | --- |
 | Zip size | 10 MB |
 | Files in a package | 500, each up to 2 MB, 30 MB unpacked |
-| Entries in each list | 200 actions, 200 filters, 50 includes |
-| Test cases | 1 to 50 per action, 200 per package |
+| Entries in each list | 200 actions, 200 filters, 50 objects, 50 dictionaries, 100 queries, 50 triggers, 10 schedules, 50 blocks, 20 links, 100 forms, 50 lists, 50 pages, 50 includes |
+| List actions | 50 per list, `OPEN_LINK` only |
+| Blocks | 256,000 characters of HTML, 64,000 of CSS and 64,000 of script each; 20 inputs, 5 queries of up to 500 rows, 5 record reads of up to 50 rows and 50 fields; rendered 3 levels deep at most |
+| Block render cases | 1 to 20 per block |
+| Links | 1 to 20 targets and 50 fields each; 20 link hosts, shared with the URLs of forms, lists and pages |
+| Record commands | 1 to 20 targets, 20 result details |
+| Package permissions | 30 |
+| Objects | 200 fields each |
+| Dictionaries | 1,000 entries each |
+| Queries | 10,000 characters of SQL, 50 parameters each |
+| Test cases | 1 to 50 per action, 200 per package with the block render cases |
 | HTTP exchanges | 50 per case |
+| Effects | 50 per case |
+| Expected events (`events`) and remembered items (`seen`) | 500 each per case |
 | Test time | 10 seconds per case, 60 seconds for the package |
 | Hosts | 50 |
+| Data scopes | Each of the 8 at most once |
 | Languages | 40 |
 | Field lists | 100 fields, 5 levels, 200 options |
 | Connection methods | 10 |
 | Settings | 1 to 20 groups, 100 fields in all |
+| Member connection | 1 per package; 50 OAuth scopes, 20 data texts, 50 stored outputs, 50 failures |
+| Events | 500 items per `EMIT_EVENT` step, 2,000 per run, 32 KB each (also a trigger's `example`) |
+| Dedupe retention | 1 to 365 days, 90 by default |
+| Schedule intervals | 15m, 30m, 1h, 2h, 6h, 12h, 24h |
 
 ## Text lengths
 
 | Text | Up to |
 | --- | --- |
 | Extension key | 2 to 31 characters |
-| Action and filter names | 41 characters |
-| Package `name`, `publisher`, action `label` | 120 characters |
+| Action, filter, query, trigger, schedule, block, link, list, page and package permission names | 41 characters |
+| Form names | 63 characters |
+| Installed list key `x-<key>-<list>` | 64 characters |
+| Object and field keys | 50 characters |
+| Dictionary names | 40 characters |
+| Package `name`, `publisher`, action, trigger, schedule, block, link, package permission and member connection `label` | 120 characters |
+| Block and list `description` | 1,000 characters |
+| List `name` | 120 characters |
+| List action `label` | 160 characters |
+| Form `name`, form `config.title`, page `title` | 200 characters |
+| Installed block key `x_<key>_<block>` | 64 characters |
 | Field `label`, settings group `label` | 200 characters |
 | Field `help`, settings group `description` | 1,000 characters |
-| Package `description`, each translation | 2,000 characters |
+| Item key of an event | 200 characters |
+| Member connection `data` text | 200 characters |
+| Connect failure `message` | 500 characters |
+| Package, trigger, schedule, member connection and page `description`, form `config.description` and `successMessage`, each translation | 2,000 characters |

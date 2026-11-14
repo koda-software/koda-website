@@ -1,9 +1,9 @@
 ---
 title: Tests
-description: "Write contract tests for Opero extension actions: inputs, settings, connection values, scripted HTTP exchanges and expected outcomes, run offline at upload."
+description: "Write contract tests for Opero extension actions: inputs, settings, connection values, scripted HTTP exchanges, scripted data and messaging steps (effects), expected events, member values, the record a block action or record command runs for, expected outcomes, and block render cases, run offline at upload."
 ---
 
-Every action has at least one test case. A case gives an input, lists the HTTP exchanges the action is expected to make, and says how it ends. Opero runs every case at upload, without sending anything over the network.
+Every action has at least one test case. A case gives an input, lists the HTTP exchanges and the data steps the action is expected to make and the events it is expected to raise, and says how it ends. Opero runs every case at upload, without sending anything over the network, without reading or writing any data and without starting any rule.
 
 ```yaml title="actions/greet/tests.yaml"
 - name: the greeting is sent
@@ -55,6 +55,26 @@ Every action has at least one test case. A case gives an input, lists the HTTP e
       type: 'exchange[]',
       description: 'The exchanges, in order, up to 50. Each request has method, url and optionally headers and body; each response has status and optionally headers and body.',
     },
+    effects: {
+      type: 'effect[]',
+      description: 'The data and messaging steps, in order, up to 50. Only in a package with data scopes. See below.',
+    },
+    events: {
+      type: '{ event, key?, data? }[]',
+      description: 'The events the action must raise, in order, up to 500. Only for an action that raises events. See Events.',
+    },
+    seen: {
+      type: '{ event, key, data }[]',
+      description: 'What Opero already remembers for dedupe when the case starts, up to 500. Only for an action that raises events.',
+    },
+    userConnection: {
+      type: 'object',
+      description: 'The member\'s values: accessToken, refreshToken or a secret output of afterConnect, as texts. Only for a member action.',
+    },
+    record: {
+      type: '{ type, id, object? }',
+      description: 'The record the action runs for, read as trigger.record. type is custom_record, contractor, sales_invoice, cost_invoice, budget or helpdesk_ticket; object names a package object. See Block actions and record commands.',
+    },
   }}
 />
 
@@ -63,6 +83,102 @@ Only the request headers you name are compared; write their names in lower case.
 ## Settings in a case
 
 The settings of a case, with the defaults applied, must match `settings.yaml`. A required setting without a default must therefore be given in every case, including cases of actions that do not read it. A case that gives settings in a package without `settings.yaml`, or that gives them under `connection.config`, is refused with `test.invalid`. See [Settings in tests](/docs/en/extensions/reference/settings#settings-in-tests).
+
+## Data and messaging steps
+
+When the action's rule uses [data steps](/docs/en/extensions/reference/data-steps), the case scripts them in `effects`, the way `http` scripts the calls. No record is read or written and nothing is sent: each step takes its effect and returns the effect's `response`.
+
+```yaml title="actions/sync-order/tests.yaml"
+- name: the open order gets the status the carrier answers
+  input: { status: synced }
+  http:
+    - request:
+        method: POST
+        url: https://api.example.com/v1/orders
+        body: { number: A-1, status: synced }
+      response: { status: 200, body: { status: synced } }
+  effects:
+    - request: { step: FETCH_RECORDS, objectKey: orders }
+      response:
+        rows: [{ id: 7d1c2a34-0000-4000-8000-000000000001, number: A-1, status: open }]
+        rowCount: 1
+        truncated: false
+    - request:
+        step: UPDATE_RECORD
+        targetObjectKey: orders
+        fieldUpdates: { status: synced }
+  succeeds: true
+```
+
+| Key | Meaning |
+| --- | --- |
+| `request.step` | The step type: `FETCH_RECORDS`, `CREATE_RECORD`, `UPDATE_RECORD`, `RUN_QUERY`, `UPDATE_CONTRACTOR`, `SEND_EMAIL`, `SEND_NOTIFICATION` or `GENERATE_DOCUMENT`. Required. |
+| Other `request` keys | Keys of the step's settings, compared with what the step was given after its templates were filled in. Keys you leave out are not compared. |
+| `response` | What the step returns. It must have the shape the real step returns. Leave it out for a step that returns nothing: `UPDATE_RECORD`, `UPDATE_CONTRACTOR` and `SEND_EMAIL`. |
+
+- `effects` and `http` are two separate lists, each in the order the action uses them.
+- A `RUN_QUERY` effect names the query by its installed key, as the rule does: `queryKey: x_orders_ext_orders_by_day`.
+- A case with `effects` in a package without [data scopes](/docs/en/extensions/reference/data-permissions) is refused with `test.invalid`.
+- The step is checked against the declared scopes before it takes its effect, so a test cannot pass with a step the scopes do not allow.
+
+## Events
+
+For an action whose rule uses [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events), a case lists the events the run must raise under `events`, and may say under `seen` what Opero already remembers when the case starts, to test dedupe.
+
+```yaml title="actions/sync-orders/tests.yaml"
+- name: an order seen before, unchanged, raises nothing
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events: []
+  returns: { emitted: 0, unchanged: 1 }
+```
+
+| Key | Meaning |
+| --- | --- |
+| `events[].event` | The trigger's name. Required. |
+| `events[].key` | The item's key. Compared when given. |
+| `events[].data` | The event's data. Compared exactly when given. |
+| `seen[]` | `event`, `key` and `data` of an item as it was last raised. An item with the same key and the same data is unchanged. |
+
+- `events` is compared in order. `events: []` says the run raises nothing; a case without `events` does not check events at all.
+- Each raised event is checked against the trigger's data, as in a real run, so a case cannot pass with an event the trigger would refuse.
+- Nothing is queued and no rule starts: the events are only recorded.
+- An action that raises events needs at least one case whose `events` is not empty (`test.event_untested`). A non-empty `events` or `seen` on an action that raises none is refused with `test.invalid`, and an event name that is not a trigger of the package with `event.unknown`.
+
+## Member actions
+
+A [member action](/docs/en/extensions/reference/member-connections#the-members-values-in-rules) uses `{{ userConnection.<field> }}`. Its case gives those values under `userConnection`, and the `input` the hook or the schedule passes:
+
+```yaml title="actions/sync-member/tests.yaml"
+- name: a revoked token
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: "2026-11-02T10:00:00Z"
+    firstRun: false
+  userConnection: { accessToken: revoked-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer revoked-token }
+      response: { status: 401 }
+  credentialRevoked: true
+```
+
+- `userConnection` is accepted only on a member action, and only with `accessToken`, `refreshToken` and the `secret` outputs of `afterConnect` (`test.invalid` otherwise).
+- `credentialRevoked: true` is the outcome of a member action whose request with the member's token was answered `401`. In a real run, that member is then [parked](/docs/en/extensions/reference/member-connections#a-refused-token). A `401` to a request without the member's token is an ordinary failure: expect `fails: { status: 401 }`.
+
+## Block render cases
+
+Each [block](/docs/en/extensions/reference/blocks#render-tests) has its own `tests.yaml` of render cases: the inputs, query rows and record rows to render with, and texts the HTML must or must not contain. Opero renders them at upload, after the action cases, within the same limits.
 
 ## How a case ends
 
@@ -76,6 +192,7 @@ Each case has exactly one outcome:
 | `fails: { status: 409 }` | The action fails because the service answered with that status. |
 | `rateLimited: true` | The service answered `429`. |
 | `rateLimited: { status: 429 }` | The same, with the status written out. |
+| `credentialRevoked: true` | A member action: a request that carried the member's token was answered `401`. |
 
 <Tabs items={['Success', 'Failure', 'Rate limit', 'No network']}>
 <Tab value="Success">
@@ -138,6 +255,10 @@ A case is named by its file and position, for example `actions/greet/tests.yaml#
 - makes a request the case did not expect;
 - makes a request that differs in method, URL, a named header or the body;
 - leaves a scripted exchange unused;
+- runs a data step the case did not script next, or one whose settings differ from a key the effect names;
+- is given a `response` that does not have the shape the step returns;
+- leaves a scripted effect unused;
+- raises an event the case does not list next, raises one whose trigger, key or data differs, or does not raise one the case lists;
 - ends in a different outcome;
 - returns an output that does not match `returns`, or does not match the output fields.
 
@@ -148,8 +269,11 @@ The codes are listed under [Error codes](/docs/en/extensions/error-codes#only-at
 | What | Limit |
 | --- | --- |
 | Cases per action | 1 to 50 |
-| Cases per package | 200 |
+| Cases per package | 200, action cases and block render cases together |
+| Render cases per block | 1 to 20 |
 | Exchanges per case | 50 |
+| Effects per case | 50 |
+| `events` and `seen` per case | 500 each |
 | Time per case | 10 seconds |
 | Time for all cases of a package | 60 seconds |
 

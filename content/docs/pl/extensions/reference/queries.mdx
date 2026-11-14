@@ -1,0 +1,149 @@
+---
+title: Zapytania
+description: "Opis query.yaml w rozszerzeniach Opero: zapisane zapytanie i jego plik SQL, {{object.<key>}} dla własnych tabel paczki, FETCH i MUTATION, parametry, zainstalowany klucz i uruchamianie go z reguły."
+---
+
+Zapytanie to zapisane zapytanie SQL, które rozszerzenie przynosi ze sobą. Odczytuje albo zmienia rekordy własnych [obiektów](/docs/pl/extensions/reference/objects) paczki. Po instalacji jest zwykłym zapisanym zapytaniem organizacji: mogą go używać jej listy SQL, raporty i bloki, a własne reguły paczki mogą je uruchamiać krokiem `RUN_QUERY`.
+
+```yaml title="queries/orders-by-day/query.yaml"
+query: orders_by_day
+name: Orders by day
+kind: FETCH
+sql: query.sql
+```
+
+```sql title="queries/orders-by-day/query.sql"
+SELECT f_ordered_on AS day, count(*) AS orders
+FROM {{object.orders}}
+GROUP BY f_ordered_on
+```
+
+Każde zapytanie ma własny folder w `queries/` ze swoim `query.yaml` i plikiem SQL i jest wymienione w `extension.yaml`. Paczka z zapytaniami wymienia moduł `queries` w `requires.modules`:
+
+```yaml title="extension.yaml"
+requires:
+  modules: [rules, objects, queries]
+queries:
+  - queries/orders-by-day
+```
+
+## query.yaml
+
+<TypeTable
+  type={{
+    query: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczynająca się od litery, do 41 znaków. Unikalna w paczce.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Widoczna wszędzie, gdzie wybiera się zapytanie, do 100 znaków. Tylko po angielsku.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 500 znaków. Tylko po angielsku.',
+    },
+    kind: {
+      type: '"FETCH" | "MUTATION"',
+      description: 'FETCH odczytuje, MUTATION zmienia dane. Musi odpowiadać temu, co robi SQL, i decyduje o zakresie danych, którego reguła potrzebuje do uruchomienia zapytania.',
+      required: true,
+    },
+    mutationOperation: {
+      type: '"INSERT" | "UPDATE" | "DELETE"',
+      description: 'Tylko w zapytaniu MUTATION.',
+    },
+    sql: {
+      type: 'string',
+      description: 'Nazwa pliku .sql w folderze zapytania.',
+      required: true,
+    },
+    parameters: {
+      type: 'parameter[]',
+      description: 'Do 50 wartości przyjmowanych przez SQL, opisanych niżej.',
+    },
+  }}
+/>
+
+## Plik SQL [#the-sql-file]
+
+Plik zawiera jedną instrukcję SQL do 10 000 znaków, w UTF-8.
+
+- **`{{object.<key>}}`** oznacza tabelę jednego z obiektów paczki, po jego kluczu `object`. Przy instalacji zapytania Opero wpisuje w to miejsce prawdziwą nazwę tabeli. Spacje wewnątrz nawiasów są dozwolone. Zapytanie nie może wskazywać tabel własnych obiektów organizacji.
+- **Kolumny** pól obiektu to `f_<klucz pola>`. Pole wyboru przechowuje klucz pozycji.
+- **Parametry** zapisuje się jako `:name` i deklaruje w `parameters`.
+
+```yaml title="queries/close-old-orders/query.yaml"
+query: close_old_orders
+name: Close old orders
+kind: MUTATION
+mutationOperation: UPDATE
+sql: query.sql
+parameters:
+  - { name: before, type: date, required: true, description: Orders placed before this day are closed. }
+```
+
+```sql title="queries/close-old-orders/query.sql"
+UPDATE {{object.orders}}
+SET f_status = 'closed'
+WHERE f_ordered_on < :before
+```
+
+Każdy parametr:
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `name` | Nazwa, której SQL używa po `:`. Litery, cyfry i `_`, nie zaczyna się od cyfry. Unikalna w zapytaniu. |
+| `type` | `string`, `number`, `date`, `uuid` albo `boolean`. |
+| `required` | Czy zapytanie potrzebuje dla niego wartości. Wymagany. |
+| `description` | Opcjonalny. |
+
+Narzędzie wiersza poleceń sprawdza pliki i odwołania do obiektów. Sam SQL sprawdza Opero, gdy planuje instalację paczki, tak samo jak zapisane zapytanie napisane przez administratora: musi to być instrukcja, którą przyjmują zapisane zapytania, a jej `kind` musi do niej pasować. Zapytanie na tabeli, którą tworzy ta sama instalacja, przechodzi pełne sprawdzenie przy instalacji.
+
+Zapytanie działa tak jak każde zapisane zapytanie: na ograniczonych rolach bazy danych, których używają zapisane zapytania, w firmie, dla której jest uruchamiane.
+
+## Zainstalowane zapytanie [#the-installed-query]
+
+Zapytanie jest instalowane z kluczem `x_<klucz z _>_<name>`: `orders_by_day` rozszerzenia `orders-ext` to `x_orders_ext_orders_by_day`. Organizacja nie może utworzyć zapisanego zapytania, którego klucz zaczyna się od `x_`, ani zmienić klucza istniejącego tak, żeby się od tego zaczynał.
+
+Reguła paczki uruchamia je tym zainstalowanym kluczem, z [zakresem danych](/docs/pl/extensions/reference/data-permissions) odpowiadającym jego rodzajowi:
+
+```yaml title="actions/count-open/rule.yaml (fragment)"
+  - id: close
+    type: RUN_QUERY
+    name: Close old orders
+    contextKey: closed
+    config:
+      queryKey: x_shop_ext_close_old_orders
+      params: { before: "{{ trigger.data.before }}" }
+```
+
+Zobacz [Kroki danych](/docs/pl/extensions/reference/data-steps#run-a-query).
+
+## Gdzie widzi je administrator [#where-the-administrator-sees-them]
+
+Plan instalacji wymienia każde zapytanie w sekcji **Co się zmieni**, oznaczone jako **Odczytuje dane** (FETCH) albo **Zmienia dane** (MUTATION); **Pokaż SQL zapytania** rozwija SQL w postaci, w jakiej je napisałeś, z symbolami zastępczymi. Karta **Zainstalowane dane** rozszerzenia wymienia zapytania tylko do odczytu w sekcji **Zainstalowane zapisane zapytania**, z liczbą list SQL, raportów i bloków niestandardowych organizacji, które używają każdego z nich, oraz z SQL w postaci zainstalowanej, z prawdziwymi nazwami tabel. Zapytania są pominięte na liście zarządzania **Zapytania SQL** i pozostają dostępne wszędzie, gdzie wybiera się zapisane zapytanie.
+
+SQL i pozostałe części zapytania należą do rozszerzenia i zmieniają się tylko przy aktualizacji. Zapytanie otwarte z odnośnika zaczyna się od „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” i odnośnika **Otwórz rozszerzenie**; nie da się go edytować ani usunąć, ale można je uruchomić.
+
+Paczkę z zapytaniem MUTATION może zainstalować tylko ktoś, kto ma `org.savedQueries.executeMutation`; plan wymienia to uprawnienie w sekcji **Wymagania**.
+
+## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
+
+- Nowa wersja może zmienić SQL zapytania; plan to pokazuje.
+- Nowej wersji, która usuwa zapytanie wciąż używane przez aktywną listę SQL, raport albo blok, nie da się zainstalować, dopóki one go nie przestaną używać (`query.in_use`).
+- Odinstalowanie usuwa zapytania, których nic nie używa. Zapytanie, którego coś używa, zostaje jako własne zapytanie organizacji. Usunięcie danych rozszerzenia jest odrzucane, dopóki takie zapytanie czyta tabelę, którą usunięcie by skasowało.
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `query.invalid` | Nieznany klucz, brak `kind`, `mutationOperation` w zapytaniu FETCH, dwa parametry o tej samej nazwie, plik SQL, który nie jest plikiem `.sql`, nie jest w UTF-8, jest pusty albo ma ponad 10 000 znaków, albo więcej niż 100 zapytań. |
+| `query.unknown_object` | `{{object.<key>}}` nie wskazuje żadnego obiektu paczki. Komunikat podaje linię w pliku SQL. |
+| `manifest.missing_file` | Brakuje pliku SQL, który wskazuje `sql`. |
+| `name.duplicate` | Dwa zapytania o tej samej nazwie. |
+| `requires.module_undeclared` | Paczka ma zapytania, ale w `requires.modules` brakuje `queries`. |
+| `query.save_validation` | W planie instalacji: SQL nie da się zapisać albo `kind` nie odpowiada temu, co robi SQL. Blokuje instalację. |
+| `query.adopts_existing` | W planie instalacji: przejmowane jest zapytanie zachowane przy wcześniejszym odinstalowaniu. Ostrzeżenie. |
+| `query.in_use` | W planie aktualizacji: nowa wersja usuwa zapytanie, które jest nadal używane. Blokuje aktualizację. |

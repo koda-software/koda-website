@@ -1,11 +1,11 @@
 ---
 title: Extensions
-description: "Build your own Opero integrations as extension packages: a connection to an outside service, ready-made rule steps and template filters, installed without deploying code."
+description: "Build your own Opero integrations as extension packages: a connection to an outside service, ready-made rule steps and template filters, triggers raised on a schedule, connections of members' own accounts, the package's own objects, dictionaries and queries with their forms, lists and pages, and blocks, record commands and links that members use on pages, installed without deploying code."
 ---
 
 An extension teaches Opero to talk to an outside service. You write it as a folder of small YAML files and scripts. The command-line tool checks the folder and packs it into a zip, and you upload the zip to Opero.
 
-Your organization then gets a connection screen, new rule steps and new template filters. No code is deployed and the server is not restarted.
+Your organization then gets a connection screen, new rule steps and new template filters, and, when the package brings them, new rule triggers fed by schedules, a way for each member to connect their own account, its own objects, dictionaries and saved queries with forms, lists and pages to work with them, and blocks for pages, commands on records and links to the service that its members use. No code is deployed and the server is not restarted.
 
 <Files>
   <Folder name="hello-ext" defaultOpen>
@@ -60,6 +60,36 @@ Opero already lets an administrator build [rules](/docs/en/opero/07-automatyzacj
   <Card title="Template filters" href="/docs/en/extensions/reference/filters">
     Small JavaScript functions usable in any template as `{{ value | x_<key>_<name> }}`, for formatting or converting values.
   </Card>
+  <Card title="Objects, dictionaries and queries" href="/docs/en/extensions/reference/objects">
+    The package's own tables of records, lists of values and saved SQL queries, installed in the module `x-<key>`. The organization uses them like its own; their shape belongs to the extension.
+  </Card>
+  <Card title="Data permissions" href="/docs/en/extensions/reference/data-permissions">
+    What the package's rules may do with data: read and write its own records, run its own queries, update contractors, send email and notifications, generate documents. The administrator agrees to each.
+  </Card>
+  <Card title="Triggers" href="/docs/en/extensions/reference/triggers">
+    Rule triggers of type `x-<key>.<name>`: the organization's own rules start when the package raises their events, for example when an order changes at the service.
+  </Card>
+  <Card title="Schedules" href="/docs/en/extensions/reference/schedules">
+    An action run on its own every 15 minutes to every day, once for the installation, for each company or for each connected member, usually to raise events.
+  </Card>
+  <Card title="Member connections" href="/docs/en/extensions/reference/member-connections">
+    Each member connects their own account at the service by OAuth, and the package's runs for that member use their token only.
+  </Card>
+  <Card title="Blocks" href="/docs/en/extensions/reference/blocks">
+    Pieces of pages written in HTML and Liquid, with CSS and an optional script, that show the package's data and offer buttons that run its actions. The organization places them like its own blocks.
+  </Card>
+  <Card title="Forms, lists and pages" href="/docs/en/extensions/reference/screens">
+    Forms on the package's objects, Custom Lists of their records, and workspace pages that put lists, forms, blocks and counters together. An administrator adds the pages to a menu.
+  </Card>
+  <Card title="Block actions and record commands" href="/docs/en/extensions/reference/member-actions">
+    Actions that members run themselves, from a block's button or from the actions of a record, as themselves and for that record.
+  </Card>
+  <Card title="Record links" href="/docs/en/extensions/reference/record-links">
+    A record action that opens the service's page for the record, at an address built from the record's id and fields.
+  </Card>
+  <Card title="Package permissions" href="/docs/en/extensions/reference/package-permissions">
+    Company permissions the package declares, granted in roles, that decide who may use its block actions, commands and links.
+  </Card>
 </Cards>
 
 ## What you can do with it
@@ -70,15 +100,34 @@ Opero already lets an administrator build [rules](/docs/en/opero/07-automatyzacj
 - Give rule authors one clean step with a form, generated from the action's input fields, instead of a hand-written webhook call.
 - Keep credentials per organization or per company.
 - Let the administrator choose settings such as a region or a language on the extension's page, without changing the package.
+- Bring your own objects, with fields that use your own dictionaries and point at each other, and saved queries over them.
+- Fetch, create and update the records of your objects in a step, run your queries, and keep contractors up to date with what a service answers.
+- Send an email with a generated document attached, and notify members of the organization.
+- Read a service on a schedule and raise an event for each new or changed item, so that the organization's rules start on it.
+- Let each member connect their own account at the service, and read each member's data with their own token.
+- Send the connection's credentials as HTTP Basic.
+- Show the package's data on record pages and custom pages in blocks, with buttons that run its actions.
+- Bring the screens to work with your objects: forms, Custom Lists and workspace pages.
+- Offer an action as a command on records of its objects, contractors, invoices, budgets or helpdesk tickets, run by the member for that record.
+- Link a record to its page at the service.
+- Decide with your own company permissions who may use each of these.
 - Ship labels in several languages.
 
 ## What it cannot do yet
 
 <Callout type="warn" title="Limits of the current package format">
-- **Read or write Opero records directly.** An action only computes and calls the outside service. The rule that uses your step does the record work with the result.
-- **Start by itself.** A package has no triggers, incoming webhooks or schedules yet. A step runs when a rule of the organization reaches it.
-- **Add screens, blocks or record buttons.**
-- **Hold one credential per user.** A connection belongs to the organization or to a company.
+- **Reach the organization's own objects.** A package reads and writes only the objects it brings itself, and contractors. The rule that uses your step does any other record work with the result.
+- **Place anything in a menu.** An administrator adds the package's pages to a menu by hand.
+- **Bring forms for objects that are not its own,** public forms, portal pages, or list actions that run a rule or a script.
+- **Send from a mailbox, or use email and document templates of its own.** Email goes through the installation's email service, and documents use a template the organization picks.
+- **Receive webhooks.** A service cannot call the package; the package reads the service on a [schedule](/docs/en/extensions/reference/schedules) instead. Incoming webhooks are planned for a later version.
+- **Raise events from a step.** Only schedule runs and member connection hooks raise a package's events, never a step an organization rule runs.
+- **Run on a cron expression, or at an interval the administrator picks.** A schedule runs at one of seven fixed intervals the package sets.
+- **Renew a member's token.** When the service stops accepting it, the member connects again.
+- **Bring images, fonts or other files** for its blocks.
+- **Use form actions in its blocks.** A block cannot open a form or write a field (`open-form`, `set-field`, `<opero-rating>`), nor run a rule by id; its buttons run the package's actions.
+- **Raise events or use a member's connection from a block action or a record command,** or run a command in the background.
+- **Offer its block actions, commands and links to API tokens,** or on the external API and MCP.
 - **Call a host you did not declare,** or anything that is not HTTPS.
 </Callout>
 
@@ -107,17 +156,17 @@ Opero checks the package again and runs your tests.
 <Step>
 ### Install
 
-An administrator reviews the install plan and agrees to it.
+An administrator reviews the [install plan](/docs/en/extensions/after-install#the-install-plan) and agrees to it. A package that asks for data scopes is installed only by an organization owner.
 </Step>
 <Step>
 ### Connect
 
-The administrator fills in the settings, enters the credentials, runs **Verify** and switches the connection on.
+The administrator fills in the settings, enters the credentials, presses **Test connection** and switches the connection on.
 </Step>
 <Step>
 ### Use
 
-The steps and filters appear in the rule builder and in templates.
+The steps and filters appear in the rule builder and in templates, and the triggers in the rule builder. Schedules start running, and members can connect their own accounts. The organization places the blocks on its pages and grants the package permissions in its roles; members then use the blocks, commands and links.
 </Step>
 </Steps>
 
@@ -139,14 +188,24 @@ What happens each time a rule runs your step:
 | Package | One uploaded version of an extension: a zip of your folder. A version never changes after upload. |
 | Key | The extension's identifier, for example `hello-ext`. Everything it adds is named after it. |
 | Manifest | `extension.yaml`, the file at the top of the folder that lists everything in the package. |
-| Descriptor | The YAML file that describes one part: `action.yaml`, `filter.yaml`, `connection.yaml`, `settings.yaml`. Its name is fixed. |
+| Descriptor | The YAML file that describes one part: `action.yaml`, `filter.yaml`, `connection.yaml`, `member.yaml`, `settings.yaml`, `object.yaml`, `dictionary.yaml`, `query.yaml`, `trigger.yaml`, `schedule.yaml`, `block.yaml`, `link.yaml`, `form.yaml`, `list.yaml`, `page.yaml`. Its name is fixed. |
 | Action | A folder with an `action.yaml`, its logic (a rule file or a script) and its tests. |
 | Rule file | An action's logic written as a rule: the steps and edges the rule builder saves. |
 | Step | An action shown in the rule builder. |
 | Connection | The stored credentials for the outside service. |
+| Member connection | A member's own account at the outside service, connected by the member through OAuth. |
+| Trigger | A rule trigger the package declares, `x-<key>.<name>`. The package raises its events; the organization's rules start on them. |
+| Event | One occurrence of a trigger, with its data, raised by the package's `EMIT_EVENT` step. |
+| Schedule | An action the package runs on its own at a fixed interval, for the installation, each company or each connected member. |
 | Settings | Values that are not secret, chosen by the administrator for the installed extension and read by its actions. |
-| Test case | One entry of an action's `tests.yaml`: an input, the HTTP exchanges the action makes, and the expected result. It runs without touching the network. |
-| Managed | Installed by an extension. Managed rules and scripts are read-only and hidden from the normal lists; they change only when the extension is upgraded. |
+| Test case | One entry of an action's `tests.yaml`: an input, the HTTP exchanges and data steps the action makes, the events it raises, and the expected result. It runs without touching the network or any data. |
+| Data scope | One entry of `permissions.data`: something the package's rules may do with data, such as `records:write`. |
+| Managed | Installed by an extension. Managed rules and scripts are read-only and hidden from the normal lists. Of managed objects, dictionaries and queries the shape is read-only, while their records are the organization's; they are listed on the extension's **Installed data** tab instead of the management screens. Managed forms, lists and pages are read-only, while who sees them stays the organization's choice. They change only when the extension is upgraded. |
+| Block | A piece of a page that the package brings: HTML with Liquid, CSS and an optional script. Installed as a managed Custom Block `x_<key>_<name>`. |
+| Block action | An action a button in one of the package's blocks runs, as the member who pressed it. |
+| Record command | An action offered among a record's actions, run by the member for that record. |
+| Record link | A record action that opens the service's page for the record in the member's browser. |
+| Package permission | A company permission the package declares, `company.x-<key>.<name>`, that members need to use its block actions, commands and links. |
 | Private package | A package an organization uploaded for itself. The other kind is a catalog package, uploaded by the installation's administrator and granted to organizations. |
 
 ## Where to go next
@@ -160,6 +219,15 @@ What happens each time a rule runs your step:
   </Card>
   <Card title="Recipe: a calculating step" href="/docs/en/extensions/calculating-step">
     A four-file package with no connection.
+  </Card>
+  <Card title="Recipe: a package with its own data" href="/docs/en/extensions/own-data">
+    An object, a dictionary, a query and a step that reads and writes its records.
+  </Card>
+  <Card title="Recipe: events from a service" href="/docs/en/extensions/scheduled-events">
+    A trigger, an hourly schedule that raises an event for each new or changed order, and a rule that listens; then the same for each member.
+  </Card>
+  <Card title="Recipe: a block, a button and a link" href="/docs/en/extensions/blocks-and-actions">
+    A block on a record's page with a button that runs an action, the same action as a record command, and a link to the service.
   </Card>
   <Card title="Reference" href="/docs/en/extensions/reference/manifest">
     Every file, key, limit and command.

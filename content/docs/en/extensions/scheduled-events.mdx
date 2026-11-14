@@ -1,0 +1,466 @@
+---
+title: "Recipe: events from a service"
+description: "Build an Opero extension that reads a service every hour for each company and raises a trigger event for each new or changed item, tested with events and seen, then start an organization rule on it; and the same for each connected member."
+---
+
+This recipe builds a package that watches **orders** at an outside service. It brings:
+
+- a trigger **Order changed** (`x-order-events.order_changed`), on which the organization builds its own rules;
+- a schedule that runs every hour for each company;
+- the action that schedule runs: it reads the company's open orders and raises one event for each order that is new or changed since the last run.
+
+<Files>
+  <Folder name="order-events" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="triggers" defaultOpen>
+      <Folder name="order-changed" defaultOpen>
+        <File name="trigger.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="sync-orders" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="schedules" defaultOpen>
+      <Folder name="sync-orders" defaultOpen>
+        <File name="schedule.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+The service in this recipe, `api.example.com`, needs no key, so the package has no connection. With a real service, add one as in the [tutorial](/docs/en/extensions/tutorial/call-a-service).
+
+<Steps>
+<Step>
+### Write the manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: order-events
+version: 1.0.0
+name: Order events
+description: Raises an event for every new or changed open order, checked every hour for each company.
+publisher: Your company
+requires:
+  opero: ">=2026.1.0"
+  modules: [rules]
+permissions:
+  network:
+    - host: api.example.com
+      reason: Reads each company's open orders.
+
+actions:
+  - actions/sync-orders
+triggers:
+  - triggers/order-changed
+schedules:
+  - schedules/sync-orders
+
+locales: [pl]
+```
+
+Starting from `opero-ext init order-events`, `opero-ext add trigger order_changed` writes the trigger's folder and list entry. Add the schedule once the action exists (step 5).
+</Step>
+
+<Step>
+### Declare the trigger
+
+```yaml title="triggers/order-changed/trigger.yaml"
+trigger: order_changed
+label: Order changed
+description: An open order is new, or one of its values changed.
+data:
+  number: { type: text, label: Order number, required: true }
+  status: { type: select, label: Status, options: [open, packed, shipped], required: true }
+  total: { type: number, label: Total, nullable: true }
+  updatedAt: { type: datetime, label: Updated at }
+config:
+  status: { type: select, label: Only this status, options: [open, packed, shipped], match: status }
+dedupe: { retentionDays: 30 }
+example: { number: A-1, status: open, total: 120.5, updatedAt: "2026-11-01T10:00:00Z" }
+```
+
+- `data` is what each event carries, and what the organization's rules read as `{{ trigger.data.<field> }}`. Every event is checked against it. `total` may be `null`.
+- `config` gives rule authors one filter: a rule with **Only this status** set starts only for orders in that status.
+- `dedupe.retentionDays: 30`: an order not raised for 30 days is forgotten.
+- `example` is offered as sample data when a rule on the trigger is tested.
+
+See [Triggers](/docs/en/extensions/reference/triggers).
+</Step>
+
+<Step>
+### Describe the action
+
+```yaml title="actions/sync-orders/action.yaml"
+action: sync_orders
+label: Sync orders
+description: Reads the company's open orders and raises an event for each new or changed one.
+
+input:
+  subject:
+    type: object
+    label: Subject
+    required: true
+    fields:
+      kind: { type: text, required: true }
+      companyId: { type: text, nullable: true }
+  lastSucceededAt: { type: datetime, nullable: true }
+  firstRun: { type: boolean, required: true }
+output:
+  emitted: { type: integer, label: Raised }
+  unchanged: { type: integer, label: Unchanged }
+
+run: rule.yaml
+tests: tests.yaml
+```
+
+The input is what a schedule passes each run: the subject (here, the company), when the last run succeeded, and whether this is the first. There is no `expose`: an action that raises events is never a rule step. See [The input each run receives](/docs/en/extensions/reference/schedules#the-input-each-run-receives).
+</Step>
+
+<Step>
+### Write the rule
+
+Read, then raise:
+
+```yaml title="actions/sync-orders/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: Open orders
+    contextKey: orders
+    config:
+      method: GET
+      url: "https://api.example.com/v1/orders?company={{ trigger.data.subject.companyId }}&status=open"
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise order events
+    contextKey: output
+    config:
+      event: order_changed
+      items: "{{ orders.body.items }}"
+      key: number
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+- `items` is the list the service answered; each order becomes one event and must match the trigger's `data`.
+- `key: number` with `dedupe: true`: an order is raised only when it is new, or when anything in it changed since it was last raised for this company.
+- The step's result, `{ emitted, unchanged }`, is published under `output` as the action's result.
+
+The event belongs to the company of the run. See [Raising events](/docs/en/extensions/reference/raising-events).
+</Step>
+
+<Step>
+### Add the schedule
+
+```bash title="Terminal"
+opero-ext add schedule sync_orders --action sync_orders --every 1h --for-each company
+```
+
+```yaml title="schedules/sync-orders/schedule.yaml"
+schedule: sync_orders
+label: Sync open orders
+description: Reads each company's open orders every hour.
+every: 1h
+forEach: company
+action: sync_orders
+```
+
+Every hour, each active company of the organization gets one run of `sync_orders`. See [Schedules](/docs/en/extensions/reference/schedules).
+</Step>
+
+<Step>
+### Test it
+
+Three cases: a new order raises an event, the same order unchanged raises nothing, and the order with a new status raises it again.
+
+```yaml title="actions/sync-orders/tests.yaml"
+- name: a new order raises an event
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: null, firstRun: true }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events:
+    - event: order_changed
+      key: A-1
+      data: { number: A-1, status: open, total: 120.5 }
+  returns: { emitted: 1, unchanged: 0 }
+
+- name: an order seen before, unchanged, raises nothing
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events: []
+  returns: { emitted: 0, unchanged: 1 }
+
+- name: an order whose status changed raises it again
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: packed, total: 120.5 }] }
+  events:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: packed, total: 120.5 } }
+  returns: { emitted: 1, unchanged: 0 }
+```
+
+- `events` lists the events the run must raise, in order. `events: []` says it raises none.
+- `seen` is what Opero already remembers when the case starts: here, order `A-1` as it was last raised. The second case gets the same order back and raises nothing; the third gets it with another status and raises it.
+- No event is queued and no rule runs while the tests run.
+
+See [Tests](/docs/en/extensions/reference/tests#events).
+</Step>
+
+<Step>
+### Translate it
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Zdarzenia zamówień
+  description: Zgłasza zdarzenie dla każdego nowego lub zmienionego otwartego zamówienia, sprawdzanego co godzinę w każdej firmie.
+permissions:
+  network:
+    api.example.com: { reason: Odczytuje otwarte zamówienia każdej firmy. }
+actions:
+  sync_orders:
+    label: Synchronizacja zamówień
+    description: Odczytuje otwarte zamówienia firmy i zgłasza zdarzenie dla każdego nowego lub zmienionego.
+triggers:
+  order_changed:
+    label: Zmiana zamówienia
+    description: Otwarte zamówienie jest nowe albo zmieniła się jedna z jego wartości.
+    data:
+      number: { label: Numer zamówienia }
+      status: { label: Status }
+      total: { label: Kwota }
+      updatedAt: { label: Zaktualizowano }
+    config:
+      status: { label: Tylko ten status }
+schedules:
+  sync_orders:
+    label: Synchronizacja otwartych zamówień
+    description: Co godzinę odczytuje otwarte zamówienia każdej firmy.
+```
+</Step>
+
+<Step>
+### Validate, test and pack
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Output"
+order-events 1.0.0 is valid.
+```
+</Step>
+</Steps>
+
+## After install
+
+An administrator installs the package as in the [tutorial](/docs/en/extensions/tutorial/install-and-use). Before confirming, the install plan shows the trigger with its data fields and the schedule with how often it runs and for what. The package has no data scopes, so any administrator who may install extensions can install it.
+
+Within the first hour, each company gets its first run; from then on, one an hour. The extension's **Schedules** tab shows how the schedule is doing: see [Schedules and connected members](/docs/en/extensions/after-install#schedules-and-connected-members).
+
+### A rule that listens
+
+In the rule builder, the organization picks the trigger **Order changed** under **Integrations**, in the extension's group (`order-events`), optionally sets **Only this status**, and adds its steps. Saved, the rule's trigger is:
+
+```json title="The trigger of one of the organization's rules"
+{
+  "trigger": {
+    "type": "x-order-events.order_changed",
+    "config": { "status": "packed" }
+  }
+}
+```
+
+The rule then starts for each packed order the hourly run finds new or changed, in that order's company, and reads it as `{{ trigger.data.number }}`, `{{ trigger.data.total }}` and so on. With no past run, testing the rule offers the trigger's `example` as sample data.
+
+The same order may occasionally arrive twice. Build the rule so that a second run changes nothing: look the record up by `{{ trigger.data.number }}` and update it, or create it when it is missing.
+
+## The same for each member
+
+When the data belongs to people rather than companies, such as each member's activities in a fitness or travel service, each member connects their own account and the schedule runs once per member, with that member's token. The changes against the package above:
+
+<Steps>
+<Step>
+### Add a connection and a member connection
+
+The organization's connection holds the OAuth client; `member.yaml` describes how members connect. See [Member connections](/docs/en/extensions/reference/member-connections) for every key.
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: client
+    kind: custom
+    label: Sandbox API client
+    fields:
+      clientId: { type: text, label: Client ID, required: true, secret: false }
+      clientSecret: { type: text, label: Client secret, required: true }
+    scheme: { kind: basic, username: clientId, password: clientSecret }
+verify: verify_client
+member: member.yaml
+```
+
+```yaml title="connection/member.yaml"
+label: Sandbox account
+description: Sends your sandbox activities to your company's rules.
+oauth:
+  authorize: https://auth.example.com/oauth2/authorize
+  token: https://api.example.com/oauth2/token
+  scopes: [activities.read]
+  client: { id: clientId, secret: clientSecret }
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+data:
+  - Activities
+afterConnect:
+  action: register_member
+  output:
+    sandboxUserId: meta
+```
+
+`extension.yaml` gets `connection: connection` and lists both hosts, `auth.example.com` and `api.example.com`, under `permissions.network`. The `register_member` action, which registers the member at the service and returns `sandboxUserId`, is shown under [Connecting: afterConnect](/docs/en/extensions/reference/member-connections#connecting-afterconnect); `verify_client` checks the client with `auth: connection` (see [HTTP Basic from the connection](/docs/en/extensions/reference/connection-and-secrets#http-basic-from-the-connection)).
+</Step>
+
+<Step>
+### Declare a trigger that names the member
+
+```yaml title="triggers/activity/trigger.yaml"
+trigger: activity
+label: Activity synced
+description: A member's activity is new or changed in the sandbox.
+data:
+  userId: { type: text, label: Member, required: true }
+  id: { type: text, label: Activity, required: true }
+  kind: { type: text, label: Kind, required: true }
+  distanceMeters: { type: number, label: Distance in meters, nullable: true }
+config:
+  member: { type: text, label: Only this member, match: userId }
+```
+
+The data carries the member (`userId`), and the filter **Only this member** lets a rule follow one person.
+</Step>
+
+<Step>
+### Run the schedule for each member
+
+```yaml title="schedules/sync-members/schedule.yaml"
+schedule: sync_members
+label: Sync connected members
+description: Reads each connected member's new activities every hour.
+every: 1h
+forEach: userConnection
+action: sync_member
+```
+
+The action is a member action: its rule sends `{{ userConnection.accessToken }}`, and the run's `subject` carries the member's `meta`.
+
+```yaml title="actions/sync-member/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: New activities
+    contextKey: activities
+    config:
+      method: GET
+      url: "https://api.example.com/v1/activities?user={{ trigger.data.subject.meta.sandboxUserId }}"
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise activity events
+    config:
+      event: activity
+      items: "{{ activities.body.items }}"
+      key: id
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+Its input takes the member's subject; a schema file that leaves `subject` open is the simplest:
+
+```yaml title="actions/sync-member/input.yaml"
+type: object
+properties:
+  subject: { type: object }
+  lastSucceededAt: { type: [string, "null"] }
+  firstRun: { type: boolean }
+required: [subject, firstRun]
+```
+</Step>
+
+<Step>
+### Test with the member's values
+
+```yaml title="actions/sync-member/tests.yaml"
+- name: a new activity raises an event
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: null
+    firstRun: true
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer test-token }
+      response:
+        status: 200
+        body: { items: [{ userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }] }
+  events:
+    - event: activity
+      key: a-1
+      data: { userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }
+  succeeds: true
+
+- name: a revoked token
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: "2026-11-02T10:00:00Z"
+    firstRun: false
+  userConnection: { accessToken: revoked-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer revoked-token }
+      response: { status: 401 }
+  credentialRevoked: true
+```
+
+`userConnection` gives the member's token for the case. The second case shows what happens when the service refuses it: in a real run, nothing more runs for that member until they connect again.
+</Step>
+</Steps>
+
+Each member's events go to the company they chose in their form, and dedupe remembers each member's activities separately.
+
+After install, the administrator sets up and switches on the connection with the OAuth client; then each member connects their own account on **Connected apps and services** in their account settings. The extension's **Connected members** tab lists them and how their runs are going.

@@ -1,6 +1,6 @@
 ---
 title: Actions and field lists
-description: "Reference for action.yaml in Opero extensions: name, label, input and output field lists, field types, the run logic, tests, publishing a rule step, and how installed parts are named."
+description: "Reference for action.yaml in Opero extensions: name, label, input and output field lists, field types, the run logic, tests, publishing a rule step, offering the action to members from blocks and records, and how installed parts are named."
 ---
 
 An action is a folder with an `action.yaml`, its logic (a rule file or a script) and its tests. Exposed as a rule step, it is what rule authors use.
@@ -39,7 +39,7 @@ expose:
     },
     description: {
       type: 'string',
-      description: 'Shown in the step list. Required when the action is exposed as a step.',
+      description: 'Shown in the step list. Required when the action is exposed as a step, a block action or a record command.',
     },
     input: {
       type: 'field list | schema file',
@@ -61,20 +61,51 @@ expose:
     },
     'expose.ruleStep': {
       type: '{ category?, branches? }',
-      description: 'Publishes the action as the step x-<key>.<action>. category groups it in the step list. Without expose, the action is installed but rule authors do not see it.',
+      description: 'Publishes the action as the step x-<key>.<action>. category groups it in the step list. Without expose, the action is installed but rule authors do not see it. Not allowed for an action that raises events, a member action, or one a schedule or a member connection hook runs.',
+    },
+    'expose.blockAction': {
+      type: '{ permission }',
+      description: 'Lets a button in one of the package\'s blocks run the action, as the member who pressed it. See Block actions and record commands.',
+    },
+    'expose.recordCommand': {
+      type: '{ permission, targets, … }',
+      description: 'Offers the action as a command on the records it targets, run by the member for that record. See Block actions and record commands.',
     },
   }}
 />
 
-Top-level input fields of type `text`, `number`, `integer`, `boolean` and `select` also become the parameters of the installed rule's manual trigger, so the rule can be run by hand with a form. The first 20 such fields are used. A field of another type, a field whose key has an upper-case letter (write `order_id`, not `orderId`), and an input given as a schema file give no parameter.
+Top-level input fields of type `text`, `number`, `integer`, `boolean` and `select` also become the parameters of the installed rule's manual trigger. The first 20 such fields are used. A field of another type, a field whose key has an upper-case letter (write `order_id`, not `orderId`), and an input given as a schema file give no parameter.
+
+The installed rule runs only through its step. Running, testing or replaying it by hand, or calling it from another rule with **Call rule**, is refused with `EXTENSION_MANAGED_RULE_RUN`. To try an action, use it as a step in a rule of the organization, or run its [tests](/docs/en/extensions/reference/tests).
 
 <Callout type="warn" title="Extra outcome ports">
 `expose.ruleStep.branches` lists extra outcome ports. They are shown on the step, but today only the default and error ports are ever taken.
 </Callout>
 
+## Actions that are not steps
+
+An action without `expose` is still installed, and runs when something of the package runs it:
+
+| Run by | Example |
+| --- | --- |
+| **Test connection** on the connection | `verify: verify` in `connection.yaml`. |
+| A [schedule](/docs/en/extensions/reference/schedules) | `action: sync_orders` in `schedule.yaml`. |
+| A [member connection](/docs/en/extensions/reference/member-connections) hook | `afterConnect` or `beforeDisconnect` in `member.yaml`. |
+
+Two kinds of action can never be exposed as a rule step:
+
+- **An action that raises events**, one whose rule uses [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events): only schedule runs and member connection hooks raise a package's events (`event.emitted_from_step`). It cannot be the verify action either.
+- **A member action**, one whose rule uses `{{ userConnection.<field> }}`: it runs only for one member, from a member connection hook or a schedule over members (`action.member_outside_member_run`). It cannot be the verify action either.
+
+A schedule's action and a hook's action may not be exposed either (`schedule.action_exposed`, `member.invalid`), as a rule step, a block action or a record command. An action that raises events, or one that uses `{{ userConnection.<field> }}`, cannot be a block action or a record command.
+
+<Callout title="Two meanings of “member”">
+A *member action* on this page is one that uses a member's own connection. The actions members run themselves from blocks and records are [block actions and record commands](/docs/en/extensions/reference/member-actions).
+</Callout>
+
 ## Field lists
 
-A field list maps field keys (letters, digits and `_`, not starting with a digit) to definitions. Input and output, connection credentials and the extension's [settings](/docs/en/extensions/reference/settings) are all field lists.
+A field list maps field keys (letters, digits and `_`, not starting with a digit) to definitions. Input and output, connection credentials, the extension's [settings](/docs/en/extensions/reference/settings), a [trigger](/docs/en/extensions/reference/triggers)'s data and filters, and a [member connection](/docs/en/extensions/reference/member-connections)'s form are all field lists.
 
 ```yaml
 input:
@@ -108,6 +139,11 @@ input:
     required: {
       type: 'boolean',
       description: 'A required text may not be empty.',
+      default: 'false',
+    },
+    nullable: {
+      type: 'boolean',
+      description: 'The value may also be null. Only in an action\'s input and output and a trigger\'s data.',
       default: 'false',
     },
     default: {
@@ -146,6 +182,7 @@ input:
 | `select` | One of `options`. |
 | `list` | A list of `items`. |
 | `object` | An object with `fields`. |
+| `company` | One of the member's companies. Only at the top of a [member connection](/docs/en/extensions/reference/member-connections#the-members-form)'s `config`, at most once. |
 
 Lists nest up to five levels and hold up to 100 fields.
 
@@ -170,6 +207,11 @@ A schema file is written in English only, and its fields are not typed in script
 | Rule step | `x-<key>.<action>` | `x-polar-eu.sync` |
 | Template filter | `x_<key with _>_<filter>` | `x_polar_eu_pace` |
 | Connection | `x-<key>` | `x-polar-eu` |
+| Rule trigger | `x-<key>.<trigger>` | `x-polar-eu.daily_activity` |
+| Block | `x_<key with _>_<block>` | `x_polar_eu_week_card` |
+| Block action, record command | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Record link | `x-<key>.<link>` | `x-polar-eu.open_profile` |
+| Package permission | `company.x-<key>.<name>` | `company.x-polar-eu.sync` |
 | Installed rule | `<name>: <action label>` | `Polar: Sync` |
 
 A step keeps its identity across versions as long as the action's name stays the same, so rules that use it keep working after an upgrade.

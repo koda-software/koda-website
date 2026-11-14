@@ -1,6 +1,6 @@
 ---
 title: The package folder
-description: "How an Opero extension package folder is laid out: the manifest, settings, connection, action and filter folders, modules, translations, file naming and YAML rules."
+description: "How an Opero extension package folder is laid out: the manifest, settings, connection and member connection, action, filter, object, dictionary, query, trigger, schedule, block, link, form, list and page folders, modules, translations, file naming and YAML rules."
 ---
 
 A package is a folder with `extension.yaml` at the top and one folder per feature. Only what the manifest lists is part of the package.
@@ -11,6 +11,7 @@ A package is a folder with `extension.yaml` at the top and one folder per featur
     <File name="settings.yaml" />
     <Folder name="connection" defaultOpen>
       <File name="connection.yaml" />
+      <File name="member.yaml" />
     </Folder>
     <Folder name="actions" defaultOpen>
       <Folder name="create-shipment" defaultOpen>
@@ -23,6 +24,63 @@ A package is a folder with `extension.yaml` at the top and one folder per featur
       <Folder name="tracking-url" defaultOpen>
         <File name="filter.yaml" />
         <File name="filter.js" />
+      </Folder>
+    </Folder>
+    <Folder name="objects" defaultOpen>
+      <Folder name="shipments" defaultOpen>
+        <File name="object.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="dictionaries" defaultOpen>
+      <Folder name="carrier" defaultOpen>
+        <File name="dictionary.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="queries" defaultOpen>
+      <Folder name="shipments-by-day" defaultOpen>
+        <File name="query.yaml" />
+        <File name="query.sql" />
+      </Folder>
+    </Folder>
+    <Folder name="triggers" defaultOpen>
+      <Folder name="shipment-delivered" defaultOpen>
+        <File name="trigger.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="schedules" defaultOpen>
+      <Folder name="sync-shipments" defaultOpen>
+        <File name="schedule.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="blocks" defaultOpen>
+      <Folder name="shipment-card" defaultOpen>
+        <File name="block.yaml" />
+        <File name="block.html" />
+        <File name="block.css" />
+        <File name="block.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="links" defaultOpen>
+      <Folder name="open-tracking" defaultOpen>
+        <File name="link.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="forms" defaultOpen>
+      <Folder name="shipment" defaultOpen>
+        <File name="form.yaml" />
+        <File name="layout.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="lists" defaultOpen>
+      <Folder name="open-shipments" defaultOpen>
+        <File name="list.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="pages" defaultOpen>
+      <Folder name="shipments" defaultOpen>
+        <File name="page.yaml" />
+        <File name="layout.yaml" />
       </Folder>
     </Folder>
     <Folder name="locales" defaultOpen>
@@ -39,14 +97,24 @@ A package is a folder with `extension.yaml` at the top and one folder per featur
 | `extension.yaml` | The identity, requirements and permissions, and the lists of everything else. Required. See [extension.yaml](/docs/en/extensions/reference/manifest). |
 | `actions/<folder>/` | `action.yaml`, the file `run` names (a rule file, a script, or a rule file and the scripts its steps name), the test file or folder, and any schema files. See [Actions](/docs/en/extensions/reference/actions). |
 | `filters/<folder>/` | `filter.yaml` and its script. See [Filters](/docs/en/extensions/reference/filters). |
+| `objects/<folder>/` | `object.yaml`: one object of the package. See [Objects](/docs/en/extensions/reference/objects). |
+| `dictionaries/<folder>/` | `dictionary.yaml`: one dictionary. See [Dictionaries](/docs/en/extensions/reference/dictionaries). |
+| `queries/<folder>/` | `query.yaml` and the `.sql` file it names. See [Queries](/docs/en/extensions/reference/queries). |
+| `triggers/<folder>/` | `trigger.yaml`: one rule trigger of the package, and its data schema file when it uses one. See [Triggers](/docs/en/extensions/reference/triggers). |
+| `schedules/<folder>/` | `schedule.yaml`: one schedule. See [Schedules](/docs/en/extensions/reference/schedules). |
+| `blocks/<folder>/` | `block.yaml`, the HTML file, the CSS and script files it names, and its render tests. See [Blocks](/docs/en/extensions/reference/blocks). |
+| `links/<folder>/` | `link.yaml`: one record link. See [Record links](/docs/en/extensions/reference/record-links). |
+| `forms/<folder>/` | `form.yaml` and its layout file: one form on an object of the package. See [Forms, lists and pages](/docs/en/extensions/reference/screens#formyaml). |
+| `lists/<folder>/` | `list.yaml`: one Custom List. See [Forms, lists and pages](/docs/en/extensions/reference/screens#listyaml). |
+| `pages/<folder>/` | `page.yaml` and its layout file: one workspace page. See [Forms, lists and pages](/docs/en/extensions/reference/screens#pageyaml). |
 | `settings.yaml` | The extension's settings, when `extension.yaml` says `settings: settings.yaml`. See [Settings](/docs/en/extensions/reference/settings). |
-| `connection/` | `connection.yaml`, when `extension.yaml` says `connection: connection`. See [Connection and secrets](/docs/en/extensions/reference/connection-and-secrets). |
+| `connection/` | `connection.yaml`, when `extension.yaml` says `connection: connection`, and `member.yaml`, when `connection.yaml` says `member: member.yaml`. See [Connection and secrets](/docs/en/extensions/reference/connection-and-secrets) and [Member connections](/docs/en/extensions/reference/member-connections). |
 | `<module>/module.yaml` | A group of features in its own folder, for a large package. See [Modules](#modules). |
 | `locales/<lang>.yaml` | One translation per language listed in `locales`. See [Translations](/docs/en/extensions/reference/translations). |
 | Anything else | A README, a changelog, a licence, CI files, your editor settings: ignored and not packed. |
 
 <Callout type="warn">
-A descriptor file (`action.yaml`, `filter.yaml` and so on) that no list names is refused with `layout.unlisted_feature`. List its folder, or delete it. The same goes for a `settings.yaml` that `extension.yaml` does not name.
+A descriptor file (`action.yaml`, `filter.yaml`, `object.yaml` and so on) that no list names is refused with `layout.unlisted_feature`. List its folder, or delete it. The same goes for a `settings.yaml` that `extension.yaml` does not name, and a `connection/member.yaml` that `connection.yaml` does not name.
 </Callout>
 
 ## Naming
@@ -83,7 +151,7 @@ filters:
 | `module` | The module's key. |
 | `name` | Its name. |
 | `description` | Optional. |
-| `actions`, `filters` | Its own lists, relative to the module's folder. |
+| `actions`, `filters`, `objects`, `dictionaries`, `queries`, `triggers`, `schedules`, `blocks`, `links`, `forms`, `lists`, `pages` | Its own lists, relative to the module's folder. The objects of every module folder still go into the one module `x-<key>` of the extension. |
 
 `extension.yaml` names the module folder under `include`. Modules go one level deep only.
 

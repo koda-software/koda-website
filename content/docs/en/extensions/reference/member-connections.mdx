@@ -1,0 +1,318 @@
+---
+title: Member connections
+description: "Reference for connection/member.yaml in Opero extensions: OAuth for each member, the client from the connection's fields, the member's form and company, the afterConnect and beforeDisconnect actions, userConnection values, refused tokens, re-consent and what members and administrators see."
+---
+
+A member connection lets each member of the organization connect their own account at the outside service, by OAuth. The package's actions then call the service with that member's token, for that member only. A typical use is a [schedule](/docs/en/extensions/reference/schedules) that reads each connected member's new data every hour and [raises events](/docs/en/extensions/reference/raising-events) for it.
+
+It belongs to the package's [connection](/docs/en/extensions/reference/connection-and-secrets): the organization's administrator enters the OAuth client there, and `connection.yaml` names the member connection.
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: client
+    kind: custom
+    label: Sandbox API client
+    fields:
+      clientId: { type: text, label: Client ID, required: true, secret: false }
+      clientSecret: { type: text, label: Client secret, required: true }
+    scheme: { kind: basic, username: clientId, password: clientSecret }
+verify: verify_client
+member: member.yaml # [!code highlight]
+```
+
+```yaml title="connection/member.yaml"
+label: Sandbox account
+description: Sends your sandbox activities to your company's rules.
+oauth:
+  authorize: https://auth.example.com/oauth2/authorize
+  token: https://api.example.com/oauth2/token
+  scopes: [activities.read]
+  clientAuth: basic
+  pkce: false
+  client: { id: clientId, secret: clientSecret }
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+data:
+  - Activities
+afterConnect:
+  action: register_member
+  output:
+    sandboxUserId: meta
+    signingKey: secret
+  failures:
+    "403":
+      name: consents_missing
+      message: Accept every data consent in the sandbox, then connect again.
+    "409": already_registered
+beforeDisconnect:
+  action: deregister_member
+```
+
+`extension.yaml` must say `connection: connection`, and `member: member.yaml` is the only value `connection.yaml` accepts. A package has at most one member connection.
+
+## member.yaml
+
+<TypeTable
+  type={{
+    label: {
+      type: 'string',
+      description: 'The name members see for the connection, up to 120 characters. Translatable.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Up to 2,000 characters. Translatable. Not shown on any screen today.',
+    },
+    'oauth.authorize': {
+      type: 'string',
+      description: 'The address the member\'s browser is sent to, to sign in and agree. An https:// URL written out in full.',
+      required: true,
+    },
+    'oauth.token': {
+      type: 'string',
+      description: 'The address where Opero exchanges the member\'s sign-in for a token. An https:// URL written out in full.',
+      required: true,
+    },
+    'oauth.scopes': {
+      type: 'string[]',
+      description: 'The OAuth scopes members are asked for, up to 50.',
+      default: '[]',
+    },
+    'oauth.clientAuth': {
+      type: '"basic" | "post"',
+      description: 'How the client identifies itself at the token address: HTTP Basic, or in the request body.',
+      default: 'basic',
+    },
+    'oauth.pkce': {
+      type: 'boolean',
+      description: 'Use PKCE.',
+      default: 'false',
+    },
+    'oauth.client': {
+      type: '{ id, secret }',
+      description: 'Two credential fields of one connection method: the OAuth client\'s id and secret.',
+      required: true,
+    },
+    config: {
+      type: 'field list',
+      description: 'The form each member fills in. At most one field of type company.',
+    },
+    data: {
+      type: 'string[]',
+      description: 'What the connection brings in, up to 20 short texts of up to 200 characters. Shown to members and in the install plan. Translatable.',
+    },
+    afterConnect: {
+      type: '{ action, output?, failures? }',
+      description: 'The action run when a member connects.',
+      required: true,
+    },
+    beforeDisconnect: {
+      type: '{ action }',
+      description: 'The action run before a member\'s connection is removed.',
+    },
+  }}
+/>
+
+## OAuth
+
+Members connect with the OAuth authorization code flow; no other kind of member sign-in is supported.
+
+- **Both addresses are written out.** No template, port or user name in them, and both hosts are listed in `permissions.network` (`member.host_not_listed` otherwise), so the administrator sees them before installing.
+- **The client is the organization's.** `client` names two credential fields of one method of the connection. The administrator enters them on the connection screen, and they are stored encrypted like any credential. `member.client_field_unknown` means the two fields are not both fields of one method.
+- **Register Opero at the provider.** The OAuth client must accept Opero's callback address for member connections as a redirect address. The address is set per Opero installation; ask its administrator for it.
+- **What is stored.** For each member, Opero keeps the access token, the refresh token and the expiry time when the provider sends them, encrypted. Nothing can read them back.
+- **No token refresh.** Opero does not renew an access token. When the provider stops accepting it, the member must connect again; see [A refused token](#a-refused-token).
+
+## The member's form
+
+`config` is a [field list](/docs/en/extensions/reference/actions#field-lists): the form each member fills in for their connection. Its values reach the actions as `config`. It holds no secrets.
+
+One field may be of type `company`, at the top of the list:
+
+```yaml
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+```
+
+The member picks one of their own companies in the organization. A company they do not belong to is refused. The company chosen is the company of that member's runs: the schedule's runs and the hooks run in it, data steps work in it, and the events they raise go to it. The `company` type is accepted only here; anywhere else it is `field.invalid`, and a second company field is `member.invalid`.
+
+## Connecting: afterConnect
+
+When a member has agreed at the provider and Opero has their token, Opero runs the `afterConnect` action. Use it to register the member at the service and keep what later runs need, such as the service's id for that member.
+
+```yaml title="actions/register-member/rule.yaml"
+entryStepId: register
+steps:
+  - id: register
+    type: CALL_WEBHOOK
+    name: Register
+    contextKey: registered
+    config:
+      method: POST
+      url: https://api.example.com/v1/users
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+      body: { memberId: "{{ trigger.data.credentialId }}" }
+  - id: keep
+    type: SAVE_TO_CONTEXT
+    name: Keep the ids
+    contextKey: output
+    config:
+      value:
+        sandboxUserId: "{{ registered.body.id }}"
+        signingKey: "{{ registered.body.signingKey }}"
+edges:
+  - { fromStepId: register, toStepId: keep }
+```
+
+**Its input** is:
+
+| Field | Value |
+| --- | --- |
+| `credentialId` | The id of the member's connection. |
+| `token.scopes`, `token.expiresAt` | What the provider granted, and until when, when it says. |
+| `token.extra` | Other plain values from the provider's token answer, such as the provider's user id. Values whose name contains `token`, `secret`, `password` or `key` are left out. |
+| `config` | The member's form. |
+
+The access token is never part of the input: the rule sends it with `{{ userConnection.accessToken }}`.
+
+**Its output** is stored with the connection, field by field, as `output` says:
+
+| `output` | Stored | Used as |
+| --- | --- | --- |
+| `<field>: secret` | Encrypted, never shown or read back. | `{{ userConnection.<field> }}` in later member actions, like the token. |
+| `<field>: meta` | As plain, public information about the connection. | `subject.meta` in each scheduled run, `meta` in `beforeDisconnect`; shown to the member. |
+
+Every field `output` names must be an output field of the action (`member.invalid` otherwise). Output fields `output` does not name are not stored.
+
+**Failures.** When the action fails, the connect fails and nothing is stored. `failures` maps the HTTP status of the failed request (written in quotes: `"403"`) to a name:
+
+- `"409": already_registered` gives the failure the code `x-<key>.member.already_registered`. The member sees a general message that the connection failed.
+- `"403": { name: consents_missing, message: … }` gives it the code `x-<key>.member.consents_missing` and shows the member that sentence, translated through `locales/<lang>.yaml`. One name has one message.
+- A status `failures` does not list ends in Opero's general connect failure. The provider's answer is never shown.
+
+Only `4xx` and `5xx` statuses can be listed. To treat a status as success instead, such as `409` for a member who is already registered, connect the webhook step's error port (an edge with `branchKey: error`), check `{{ error.httpStatus }}` there, and finish the action from that branch.
+
+## Disconnecting: beforeDisconnect
+
+`beforeDisconnect` names an action run before a member's connection is removed: when the member disconnects, when they leave the organization, and for every member when the extension is uninstalled. Use it to unregister the member at the service.
+
+- Its input is `{ meta, config }`: the public values `afterConnect` stored and the member's form. `{{ userConnection.<field> }}` still gives the member's token and secret values.
+- It is best-effort: when it fails, the connection is removed anyway.
+- During an uninstall, the organization's connection is already off, so the action should use only the member's values, not `{{ connection.<field> }}`.
+
+## The member's values in rules
+
+A rule file writes the member's secrets as `{{ userConnection.<field> }}`:
+
+| Field | Value |
+| --- | --- |
+| `accessToken` | The member's access token. |
+| `refreshToken` | The refresh token, when the provider sent one. |
+| A `secret` output of `afterConnect` | That stored value. |
+
+They follow every rule of [connection secrets](/docs/en/extensions/reference/connection-and-secrets#secrets): alone inside the braces, only in a header value or a URL query value of a **Call webhook** step (also the path and body with `secretsInBody: true`), and put in only while the request is sent. Anything else is `connection.placeholder_position`, `connection.placeholder_not_bare` or `connection.unknown_field`. In a package without a member connection, `userConnection` is `rule.connection_unsupported`.
+
+An action whose rule uses `{{ userConnection.<field> }}` is a **member action**. It runs only for one member, with that member's values and nobody else's:
+
+- from the `afterConnect` or `beforeDisconnect` hook;
+- from a schedule `forEach: userConnection`.
+
+A member action is never exposed as a rule step and is never the connection's verify action (`action.member_outside_member_run`), and a schedule over members runs only a member action.
+
+## A refused token
+
+When a request that carried the member's token is answered `401` in a scheduled run, the run ends as **credential revoked**, with the code `EXTENSION_ACTION_CREDENTIAL_REVOKED`:
+
+- nothing more runs for that member;
+- the member's connection is marked, and the member is asked to connect again: "Your account stopped accepting Opero's requests. Connect it again to resume syncing.";
+- once they connect again, they run on the next check, within a minute.
+
+A `401` to a request that carried only the organization's connection is an ordinary failure, not this: the administrator's connection needs attention. A `401` while a member connects is a connect failure (`failures`), since there is nothing stored yet.
+
+## Changes that ask members again
+
+An upgrade that asks members for more raises the warning `member.reconsent_required` in the plan:
+
+- an OAuth scope is added;
+- the `authorize` or `token` host changes;
+- `afterConnect` stores a new output.
+
+A dropped scope, a changed path or a changed `clientAuth` does not. When the upgrade is applied, every connected member is asked to connect again ("This extension changed what it needs from your account. Connect it again to resume syncing."), and nothing runs for them until they do. After they do, they run at their schedule's next time, within one interval.
+
+## What members see
+
+Members connect on their own account page: **Connected apps** in their account settings opens **Connected apps and services**. There every organization they belong to that has the extension installed and running shows the member connection's `label` and its `data` texts. A member:
+
+- presses **Connect**, which sends them to the provider and back;
+- fills in the form from `config`, including the company their data goes to;
+- opens the connection to see **Connected on**, **Last synced** and **What reaches Opero**;
+- finds it under **Needs attention** when it stopped, with the reason, and presses **Reconnect account**;
+- presses **Disconnect** in the opened connection.
+
+A member sees only their own connection. Installing the extension connects nobody: each member decides.
+
+## What the administrator sees
+
+- **Before installing**, the install plan shows the member connection in the section **Member accounts: `<label>`**: its label, the hosts members sign in at, the scopes they are asked for, the data it brings in, and the names of the values it stores encrypted and as public information. It says that each connected member's data reaches the organization's rules and appears in rule run history.
+- **After installing**, the extension's **Connected members** tab lists them: name, chosen company, when they connected, their last successful sync (**Last successful sync**), a status (**Active**, **Last sync failed** or **Waiting for the member to reconnect**) and the last error. See [After install](/docs/en/extensions/after-install#schedules-and-connected-members).
+
+Any administrator who may install the extension may install one with a member connection.
+
+## Disable and uninstall
+
+- **Disabled or not running:** members' connections are kept, but the member connection disappears from their account page, nothing is sent with their tokens and their schedules wait. Everything comes back when the extension runs again.
+- **Uninstalled:** `beforeDisconnect` runs for each member, then every member's connection is removed.
+
+## Tests
+
+A test case of a member action gives the member's values in `userConnection`, and a member action whose request is refused ends with `credentialRevoked: true`:
+
+```yaml title="actions/deregister-member/tests.yaml"
+- name: a member is deregistered
+  input: { meta: { sandboxUserId: "1234" }, config: { companyId: co_1 } }
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: DELETE
+        url: https://api.example.com/v1/users/1234
+        headers: { authorization: Bearer test-token }
+      response: { status: 204 }
+  succeeds: true
+```
+
+See [Tests](/docs/en/extensions/reference/tests#member-actions).
+
+## Translations
+
+```yaml title="locales/pl.yaml"
+member:
+  label: Konto sandboksa
+  data:
+    "0": Aktywności
+  failures:
+    consents_missing: Zaakceptuj wszystkie zgody na dane w sandboksie i połącz się ponownie.
+  config:
+    companyId:
+      label: Firma otrzymująca Twoje dane
+```
+
+| Key | Translates |
+| --- | --- |
+| `member.label`, `member.description` | The connection's name and description. |
+| `member.data."<i>"` | The data text at that position, counted from 0, in quotes. |
+| `member.failures.<name>` | A failure's message. |
+| `member.config.<field>.label`, `help` | A field of the member's form. |
+
+## Problems
+
+| Code | What is wrong |
+| --- | --- |
+| `member.invalid` | An unknown key, a missing `label`, `oauth` or `afterConnect`, an address that is not written out in full, a hook action exposed as a rule step, an `output` field the action does not return, two company fields, or one failure name with two messages. |
+| `member.host_not_listed` | The `authorize` or `token` host is not in `permissions.network`. |
+| `member.client_field_unknown` | `oauth.client` does not name two credential fields of one connection method. |
+| `member.action_unknown` | A hook names no action of the package. |
+| `member.requires_connection` | `connection/member.yaml` in a package whose `extension.yaml` has no `connection`. |
+| `layout.unlisted_feature` | `connection/member.yaml` that `connection.yaml` does not name. |
+| `action.member_outside_member_run` | A member action exposed as a step, used as the verify action, or run by a schedule that is not over members. |
+| `rule.connection_unsupported` | `{{ userConnection.<field> }}` in a package without a member connection. |
+| `file.yaml_feature_not_allowed` | A status in `failures` written without quotes. |

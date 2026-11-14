@@ -13,9 +13,9 @@ From inside the package folder:
 
 ```bash title="Terminal"
 cd hello-ext
-extension-cli add action verify --rule
-extension-cli add action greet --rule
-extension-cli add filter shout
+opero-ext add action verify --rule
+opero-ext add action greet --rule
+opero-ext add filter shout
 ```
 
 ```txt title="Output of the first command"
@@ -48,7 +48,7 @@ verify: verify
 ```
 
 - `methods` are the ways to sign in; here one, an API token. `fields` is a field list of the secret values the administrator enters. Every field of a method is secret. `hint: true` lets Opero show the last four characters of a stored token so the administrator can tell which one is saved; without it the value shows only as `***`.
-- `verify` names the action Opero runs when the administrator presses **Verify**. You write it next.
+- `verify` names the action Opero runs when the administrator presses **Test connection**. You write it next.
 
 Then declare the host the package calls, why, and the connection, in `extension.yaml`:
 

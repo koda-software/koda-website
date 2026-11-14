@@ -1,0 +1,212 @@
+---
+title: Harmonogramy
+description: "Opis schedule.yaml w rozszerzeniach Opero: odstępy, uruchamianie raz dla instalacji, dla każdej firmy albo dla każdego połączonego członka, wejście każdego uruchomienia, limity zapytań, błędy oraz co się dzieje, gdy rozszerzenie jest wyłączone, aktualizowane albo odinstalowywane."
+---
+
+Harmonogram uruchamia jedną z akcji paczki samodzielnie, w stałych odstępach, bez udziału reguł organizacji. Użyj go, żeby regularnie odczytywać usługę i [zgłaszać zdarzenia](/docs/pl/extensions/reference/raising-events) dla tego, co nowe albo zmienione.
+
+```yaml title="schedules/sync-orders/schedule.yaml"
+schedule: sync_orders
+label: Sync open orders
+description: Reads each company's open orders every hour.
+every: 1h
+forEach: company
+action: sync_orders
+```
+
+Każdy harmonogram to folder `schedules/<folder>` z plikiem `schedule.yaml`, wymieniony w `extension.yaml` (albo w `module.yaml` modułu):
+
+```yaml title="extension.yaml"
+schedules:
+  - schedules/sync-orders
+```
+
+`opero-ext add schedule <name> --action <action>` tworzy folder i wpis na liście; zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli).
+
+## schedule.yaml [#scheduleyaml]
+
+<TypeTable
+  type={{
+    schedule: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Widoczna dla administratora, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Co robi harmonogram, do 2000 znaków. Do przetłumaczenia.',
+    },
+    every: {
+      type: '"15m" | "30m" | "1h" | "2h" | "6h" | "12h" | "24h"',
+      description: 'Jak często uruchamia się każdy podmiot.',
+      required: true,
+    },
+    forEach: {
+      type: '"installation" | "company" | "userConnection"',
+      description: 'Dla czego jest jedno uruchomienie: zobacz niżej.',
+      required: true,
+    },
+    action: {
+      type: 'string',
+      description: 'Nazwa akcji, którą wykonuje każde uruchomienie. Akcja paczki, która nie jest udostępniona jako krok reguły.',
+      required: true,
+    },
+  }}
+/>
+
+Odstęp ustala paczka: administrator nie może go zmienić i nie ma wyrażeń cron. Paczka ma najwyżej 10 harmonogramów.
+
+## Dla czego jest jedno uruchomienie [#what-one-run-is-for]
+
+`forEach` decyduje, ile jest uruchomień w każdym odstępie i dla kogo. Każde z nich to **podmiot**.
+
+| `forEach` | Podmioty | Firma uruchomienia |
+| --- | --- | --- |
+| `installation` | Jeden, dla całego zainstalowanego rozszerzenia. | Brak. |
+| `company` | Każda aktywna firma organizacji. | Ta firma. |
+| `userConnection` | Każdy członek, który połączył swoje konto przez [połączenie członka](/docs/pl/extensions/reference/member-connections) paczki. | Firma wybrana przez członka w polu firmy połączenia; brak, gdy połączenie członka nie ma pola firmy. |
+
+Firma ma znaczenie dla tego, co robi uruchomienie: działają w niej [kroki danych](/docs/pl/extensions/reference/data-steps) i do niej trafiają zdarzenia zgłoszone przez uruchomienie. Zdarzenie zgłoszone bez firmy uruchamia tylko te reguły organizacji, które nie są ograniczone do konkretnych firm.
+
+Nowa firma albo nowo połączony członek dostaje pierwsze uruchomienie w ciągu pierwszego odstępu od chwili, gdy Opero go zauważy (w ciągu minuty). Firma, która stanie się nieaktywna albo zostanie usunięta, i członek, który się odłączy, nie mają już uruchomień.
+
+`forEach: userConnection` wymaga połączenia członka (w przeciwnym razie `schedule.invalid`), a jego akcja musi być akcją członka, czyli taką, która używa `{{ userConnection.<field> }}`. I odwrotnie: akcję członka uruchamia tylko taki harmonogram albo akcja połączenia (`action.member_outside_member_run`).
+
+## Wejście każdego uruchomienia [#the-input-each-run-receives]
+
+Opero wypełnia wejście akcji. Plik reguły odczytuje je jako `{{ trigger.data.… }}`, skrypt jako `input`:
+
+<Tabs items={['company', 'installation', 'userConnection']}>
+<Tab value="company">
+
+```yaml
+subject:
+  kind: company
+  companyId: cmp_8f2a…
+lastSucceededAt: "2026-11-12T09:00:04.512Z"   # null before the first success
+firstRun: false
+```
+
+</Tab>
+<Tab value="installation">
+
+```yaml
+subject:
+  kind: installation
+  companyId: null
+lastSucceededAt: null
+firstRun: true
+```
+
+</Tab>
+<Tab value="userConnection">
+
+```yaml
+subject:
+  kind: userConnection
+  companyId: cmp_8f2a…        # null without a company field
+  userId: usr_51c0…
+  credentialId: cred_77d1…
+  config: { companyId: cmp_8f2a… }   # the member's config form
+  meta: { sandboxUserId: "1234" }    # what afterConnect stored as meta
+lastSucceededAt: "2026-11-12T09:00:04.512Z"
+firstRun: false
+```
+
+</Tab>
+</Tabs>
+
+| Pole | Znaczenie |
+| --- | --- |
+| `subject.kind` | `forEach` harmonogramu. |
+| `subject.companyId` | Firma uruchomienia albo `null`. |
+| `subject.userId`, `credentialId`, `config`, `meta` | Tylko dla członka: kim jest, jego połączenie, jego formularz i jawne wartości zapisane przez `afterConnect`. Nigdy jego token. |
+| `lastSucceededAt` | Kiedy zakończyło się ostatnie udane uruchomienie tego podmiotu, albo `null` przed pierwszym. Użyj go, żeby pytać usługę tylko o to, co zmieniło się od tamtej pory; pytaj z zapasem, na przykład godzinę wcześniej, i zostaw [deduplikacji](/docs/pl/extensions/reference/raising-events#dedupe) pominięcie tego, co już zgłoszono. |
+| `firstRun` | `true`, dopóki ten podmiot nie miał udanego uruchomienia. Użyj go na przykład do odczytania dłuższego okresu za pierwszym razem. |
+
+`input` akcji musi to przyjmować. Zadeklaruj je jako listę pól:
+
+```yaml title="actions/sync-orders/action.yaml (fragment)"
+input:
+  subject:
+    type: object
+    label: Subject
+    required: true
+    fields:
+      kind: { type: text, required: true }
+      companyId: { type: text, nullable: true }
+  lastSucceededAt: { type: datetime, nullable: true }
+  firstRun: { type: boolean, required: true }
+```
+
+albo podaj plik JSON Schema, który zostawia `subject` otwarte:
+
+```yaml title="actions/sync-member/input.yaml"
+type: object
+properties:
+  subject: { type: object }
+  lastSucceededAt: { type: [string, "null"] }
+  firstRun: { type: boolean }
+required: [subject, firstRun]
+```
+
+Lista pól zamyka obiekt, więc przy `forEach: userConnection` musi wymienić też `userId`, `credentialId`, `config` i `meta`; tam prostszy jest otwarty plik schematu. Przy sprawdzaniu paczki wejście jest porównywane z tym, co przekazuje harmonogram, a wejście, które tego nie przyjmuje, jest zgłaszane jako `schedule.invalid` z pierwszą różnicą.
+
+## W czyim imieniu działa uruchomienie [#who-the-run-acts-as]
+
+Uruchomienie harmonogramu to uruchomienie zainstalowanej reguły akcji, rozpoczęte przez samo rozszerzenie. Działa w imieniu rozszerzenia, z [zakresami danych](/docs/pl/extensions/reference/data-permissions), na które zgodził się administrator, z [ustawieniami](/docs/pl/extensions/reference/settings) rozszerzenia jako `{{ trigger.settings.<field> }}` i z jego połączeniem. Uruchomienie dla połączeń członków ma też wartości tego członka jako `{{ userConnection.<field> }}`, i tylko jego. Uruchomienie widać w historii reguły akcji.
+
+## Kiedy się uruchamia [#when-it-runs]
+
+- Każdy podmiot uruchamia się raz na odstęp. Jego pierwsze uruchomienie przypada w jakimś momencie pierwszego odstępu po instalacji, rozłożone tak, żeby podmioty nie startowały wszystkie w tej samej minucie.
+- Podmiot ma najwyżej jedno uruchomienie naraz, także gdy Opero działa na kilku serwerach.
+- Każdy odstęp liczy się od końca poprzedniego uruchomienia, zależnie od jego wyniku:
+
+| Jak skończyło się uruchomienie | Następne uruchomienie |
+| --- | --- |
+| Sukces | Po jednym odstępie. |
+| Limit zapytań: żądanie dostało odpowiedź `429` | Po czasie, o który usługa poprosiła w `Retry-After`, a w drugiej kolejności `RateLimit-Reset`; po 15 minutach, gdy nie podała żadnego; nigdy później niż po jednym odstępie. Nie liczy się jako błąd. |
+| Błąd: błąd HTTP, wejście lub wyjście niezgodne z polami, nieudany krok | Po 15 minutach, potem po 30 minutach, godzinie i tak dalej, za każdym razem dwa razy dłużej, ale nigdy później niż po jednym odstępie. Podmiot liczy się jako mający błędy, dopóki uruchomienie się nie powiedzie. |
+| Token członka odrzucony (`401` na żądanie, które go niosło) | Dopiero gdy członek połączy się ponownie; zobacz [Połączenia członków](/docs/pl/extensions/reference/member-connections#a-refused-token). |
+
+Pominięte odstępy nigdy nie są nadrabiane: podmiot, który czekał kilka odstępów, uruchamia się raz.
+
+Członek jest pomijany, bez błędu, dopóki jego połączenia nie można użyć: nie wybrał jeszcze firmy, wybrana firma nie jest już jego albo połączenie czeka, aż połączy się ponownie.
+
+## Gdy rozszerzenie nie działa [#when-the-extension-does-not-run]
+
+Gdy rozszerzenie [nie działa](/docs/pl/extensions/after-install#states), z jakiegokolwiek powodu, jego harmonogramy niczego nie uruchamiają. Gdy znów działa, każdy podmiot, na który przyszła pora, uruchamia się raz i harmonogram toczy się dalej.
+
+## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
+
+- Aktualizacja, która usuwa harmonogram albo zmienia jego `forEach`, usuwa podmioty starego. Krótszy odstęp obowiązuje od razu.
+- Harmonogramy są pokazywane w [planie instalacji](/docs/pl/extensions/after-install#the-install-plan), więc aktualizacja, która dodaje harmonogram albo zmienia jego odstęp, `forEach` lub akcję, wymaga zgody administratora jak każda inna zmiana w planie.
+- Odinstalowanie zatrzymuje wszystkie harmonogramy.
+
+## Co widzi administrator [#what-the-administrator-sees]
+
+Plan instalacji wymienia każdy harmonogram z etykietą, informacją, jak często i dla czego się uruchamia, oraz akcją, którą wykonuje. Po instalacji strona rozszerzenia pokazuje stan każdego harmonogramu: ile ma podmiotów, ile czeka na swoją kolej, działa, ma błędy albo czeka na członka, i kiedy ostatnio się powiódł. Zobacz [Po instalacji](/docs/pl/extensions/after-install#schedules-and-connected-members).
+
+## Tłumaczenia [#translations]
+
+```yaml title="locales/pl.yaml"
+schedules:
+  sync_orders:
+    label: Synchronizacja otwartych zamówień
+    description: Co godzinę odczytuje otwarte zamówienia każdej firmy.
+```
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `schedule.invalid` | Nieznany klucz, `every` spoza siedmiu odstępów, `forEach` spoza trzech wartości, `forEach: userConnection` bez połączenia członka albo z akcją, która nie jest akcją członka, wejście akcji, które nie przyjmuje tego, co przekazuje harmonogram, albo więcej niż 10 harmonogramów. |
+| `schedule.action_unknown` | `action` nie wskazuje akcji paczki. |
+| `schedule.action_exposed` | Akcja jest udostępniona jako krok reguły. |
+| `action.member_outside_member_run` | Akcję członka uruchamia harmonogram inny niż `forEach: userConnection`. |
+| `name.duplicate` | Dwa harmonogramy o tej samej nazwie. |

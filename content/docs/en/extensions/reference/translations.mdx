@@ -49,7 +49,7 @@ filters:
 <Step>
 ### Validate
 
-`extension-cli validate .` reports a language without its file (`locale.missing_file`) and a key that names nothing in the package (`locale.unknown_text`), so a typo cannot hide.
+`opero-ext validate .` reports a language without its file (`locale.missing_file`) and a key that names nothing in the package (`locale.unknown_text`), so a typo cannot hide.
 </Step>
 </Steps>
 
@@ -65,9 +65,24 @@ filters:
 | `actions.<action>.label`, `description` | An action, and its step. |
 | `actions.<action>.input.<field>.label` | A field's label and `help`; also `output`, nested fields under `fields`, list items under `items`. |
 | `filters.<filter>.description` | A filter's description. |
+| `dictionaries.<dictionary>.entries.<key>.label` | A dictionary entry's label. |
+| `triggers.<trigger>.label`, `description` | A trigger's name and description; its data fields under `data.<field>` and its filters under `config.<field>`, each with `label` and `help`. |
+| `schedules.<schedule>.label`, `description` | A schedule's name and description. |
+| `member.label`, `member.description` | The member connection's name and description. |
+| `member.data."<i>"` | One of the member connection's `data` texts, by its position from 0, in quotes. |
+| `member.failures.<name>` | The message of a connect failure. |
+| `member.config.<field>.label` | A field of the member's form, and its `help`. |
+| `actions.<action>.confirm.title`, `message` | A record command's confirmation. |
+| `blocks.<block>.label`, `description` | A block's name and description. Its HTML is not translated. |
+| `links.<link>.label`, `description` | A record link's label and description; its fields under `fields.<field>.label`. |
+| `permissions.links.<host>.reason`, `permissions.pageScript.reason` | The reason for a link host and for page scripts. |
+| `permissions.company.<name>.label`, `description`, `reason` | A package permission's texts. |
+| `pages.<page>.title`, `description` | A page's title and description. |
+| `forms.<object>.<form>.config.title`, `successMessage` | A form's title and success message. Checked, but the form is installed with its English texts. |
 
 ## Rules
 
 - Each translation is a text of up to 2,000 characters.
 - A package can have up to 40 languages.
 - A schema file's texts are English only.
+- The names of objects and their fields, of dictionaries and of queries are English only, and so are form names, list names and descriptions, column labels and list action labels: Opero stores no translation for them, so a translation that names one is refused with `locale.unknown_text`. Of a dictionary, only the entry labels are translated.

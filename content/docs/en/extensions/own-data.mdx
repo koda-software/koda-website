@@ -1,0 +1,301 @@
+---
+title: "Recipe: a package with its own data"
+description: "Build an Opero extension that brings an object with a dictionary-backed field and a saved query, and a step that fetches its own records, calls a service and writes the answer back, tested with effects."
+---
+
+This recipe builds a package that keeps **orders**. It brings:
+
+- a dictionary **Priority** and an object **Order** whose priority field uses it;
+- a saved query **Orders by day** over the orders, for the organization's lists and reports;
+- a step **Sync order** (`x-orders-ext.sync_order`) that fetches the first open order, sends it to a carrier's API and stores the status the carrier answers.
+
+<Files>
+  <Folder name="orders-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="dictionaries" defaultOpen>
+      <Folder name="priority" defaultOpen>
+        <File name="dictionary.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="objects" defaultOpen>
+      <Folder name="orders" defaultOpen>
+        <File name="object.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="queries" defaultOpen>
+      <Folder name="orders-by-day" defaultOpen>
+        <File name="query.yaml" />
+        <File name="query.sql" />
+      </Folder>
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="sync-order" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+There is no `add` command for objects, dictionaries and queries: create their folders and files by hand. Start from `opero-ext init orders-ext`, or from an empty folder.
+
+<Steps>
+<Step>
+### Write the manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: orders-ext
+version: 0.1.0
+name: Orders
+description: Keeps orders and sends the open ones to the carrier.
+publisher: Your company
+requires:
+  modules: [rules, objects, queries]
+permissions:
+  network:
+    - host: api.example.com
+      reason: Sends each order to the carrier.
+  data:
+    - scope: records:read
+      reason: Reads the open orders.
+    - scope: records:write
+      reason: Stores the status the carrier answers.
+
+dictionaries:
+  - dictionaries/priority
+objects:
+  - objects/orders
+queries:
+  - queries/orders-by-day
+actions:
+  - actions/sync-order
+
+locales: [pl]
+```
+
+- `objects` and `queries` in `requires.modules` are needed because the package has objects and queries.
+- The two [data scopes](/docs/en/extensions/reference/data-permissions) are what the step needs: it reads orders and changes one. The query is not run by a rule of the package, so no query scope is declared; a scope nothing uses is refused.
+- Because of the data scopes, only an organization owner can install this package.
+</Step>
+
+<Step>
+### Add the dictionary
+
+```yaml title="dictionaries/priority/dictionary.yaml"
+dictionary: priority
+name: Priority
+entries:
+  - { key: low, label: Low }
+  - { key: high, label: High, color: "#DC2626" }
+```
+
+It is installed as `x-orders-ext-priority`. See [Dictionaries](/docs/en/extensions/reference/dictionaries).
+</Step>
+
+<Step>
+### Add the object
+
+```yaml title="objects/orders/object.yaml"
+object: orders
+name: Order
+namePlural: Orders
+icon: package
+fields:
+  - { key: number, name: Number, type: TEXT }
+  - { key: status, name: Status, type: TEXT }
+  - { key: ordered_on, name: Ordered on, type: DATE }
+  - key: priority
+    name: Priority
+    type: SELECT
+    options: { dictionary: priority }
+```
+
+The object is installed in the module `x-orders-ext`, with no form. `options: { dictionary: priority }` names the package's own dictionary by its name. See [Objects](/docs/en/extensions/reference/objects).
+</Step>
+
+<Step>
+### Add the query
+
+```yaml title="queries/orders-by-day/query.yaml"
+query: orders_by_day
+name: Orders by day
+kind: FETCH
+sql: query.sql
+```
+
+```sql title="queries/orders-by-day/query.sql"
+SELECT f_ordered_on AS day, count(*) AS orders
+FROM {{object.orders}}
+GROUP BY f_ordered_on
+```
+
+`{{object.orders}}` stands for the table of the `orders` object, and `f_ordered_on` is its field `ordered_on`. It is installed as `x_orders_ext_orders_by_day`. See [Queries](/docs/en/extensions/reference/queries).
+</Step>
+
+<Step>
+### Describe the action
+
+```yaml title="actions/sync-order/action.yaml"
+action: sync_order
+label: Sync order
+description: Sends the first open order to the carrier and stores the status it answers.
+
+input:
+  status: { type: text, label: Status, required: true }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+</Step>
+
+<Step>
+### Write the rule
+
+Fetch, call, update:
+
+```yaml title="actions/sync-order/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: FETCH_RECORDS
+    name: Open orders
+    contextKey: orders
+    config:
+      moduleKey: x-orders-ext
+      objectKey: orders
+      filters:
+        - { field: status, operator: eq, value: open }
+      limit: 1
+  - id: send
+    type: CALL_WEBHOOK
+    name: Send to the carrier
+    contextKey: sent
+    config:
+      url: https://api.example.com/v1/orders
+      method: POST
+      body:
+        number: "{{ orders.rows[0].number }}"
+        status: "{{ trigger.data.status }}"
+  - id: mark
+    type: UPDATE_RECORD
+    name: Mark the order
+    contextKey: output
+    config:
+      target: "{{ orders.rows[0].id }}"
+      targetModuleKey: x-orders-ext
+      targetObjectKey: orders
+      fieldUpdates: { status: "{{ sent.body.status }}" }
+edges:
+  - { fromStepId: fetch, toStepId: send }
+  - { fromStepId: send, toStepId: mark }
+```
+
+- The module and object are written out: `x-orders-ext` and `orders`. A template there is refused.
+- `UPDATE_RECORD` names the record by its id, taken from the fetched row.
+- The host is in `permissions.network`, as for any **Call webhook** step.
+
+See [Data steps](/docs/en/extensions/reference/data-steps).
+</Step>
+
+<Step>
+### Test it
+
+The case scripts the HTTP exchange in `http` and the two data steps in `effects`. The two lists are independent, each in its own order.
+
+```yaml title="actions/sync-order/tests.yaml"
+- name: the open order gets the status the carrier answers
+  input: { status: synced }
+  http:
+    - request:
+        method: POST
+        url: https://api.example.com/v1/orders
+        body: { number: A-1, status: synced }
+      response: { status: 200, body: { status: synced } }
+  effects:
+    - request: { step: FETCH_RECORDS, objectKey: orders }
+      response:
+        rows: [{ id: 7d1c2a34-0000-4000-8000-000000000001, number: A-1, status: open }]
+        rowCount: 1
+        truncated: false
+    - request:
+        step: UPDATE_RECORD
+        targetObjectKey: orders
+        fieldUpdates: { status: synced }
+  succeeds: true
+```
+
+The fetch effect gives the step the row it would have read. The update effect checks the object and the new status, and has no `response`, because `UPDATE_RECORD` returns nothing. No record is read or written while the test runs. See [Tests](/docs/en/extensions/reference/tests#data-and-messaging-steps).
+</Step>
+
+<Step>
+### Translate it
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Zamówienia
+  description: Przechowuje zamówienia i wysyła otwarte do przewoźnika.
+permissions:
+  network:
+    api.example.com: { reason: Wysyła każde zamówienie do przewoźnika. }
+  data:
+    records:read: { reason: Odczytuje otwarte zamówienia. }
+    records:write: { reason: Zapisuje status zwrócony przez przewoźnika. }
+actions:
+  sync_order:
+    label: Synchronizuj zamówienie
+    description: Wysyła pierwsze otwarte zamówienie do przewoźnika i zapisuje zwrócony status.
+    input: { status: { label: Status } }
+dictionaries:
+  priority:
+    entries:
+      low: { label: Niski }
+      high: { label: Wysoki }
+```
+
+Dictionary entry labels are translatable; the names of the object, its fields, the dictionary and the query are English only.
+</Step>
+
+<Step>
+### Validate, test and pack
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Output"
+orders-ext 0.1.0 is valid.
+```
+
+`validate` checks the files offline; `test` runs the test case on the server.
+</Step>
+</Steps>
+
+## After install
+
+An organization owner installs the package as in the [tutorial](/docs/en/extensions/tutorial/install-and-use). The install dialog starts with the notice that only an owner can install an extension that asks for access to data. Under **What will change** it lists the dictionary, the module, the object and the query, which shows **Reads data** and, behind **Show the query's SQL**, the SQL as you wrote it. Under **Data scopes** it shows "Read the records of this extension's own objects." and "Create and change records of this extension's own objects.", each with your reason. There is no connection to set up. See [The install plan](/docs/en/extensions/after-install#the-install-plan).
+
+Then:
+
+- the extension's page has an **Installed data** tab, which lists the object with its fields and record count, the dictionary with its entries, and the query with its SQL as installed. The **Custom Modules**, **Dictionaries** and **SQL queries** screens do not list them;
+- the organization adds orders through whatever form or list it builds on the object, and uses **Orders by day** in its SQL lists and reports;
+- its rules get the step **Sync order**. In a rule it is saved like this:
+
+```json title="A step in one of the organization's rules"
+{
+  "type": "x-orders-ext.sync_order",
+  "contextKey": "synced",
+  "config": { "status": "sent" }
+}
+```
+
+Whoever writes that rule, the step reads and writes only the `orders` records, in the company the rule runs for.

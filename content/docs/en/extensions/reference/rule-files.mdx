@@ -1,6 +1,6 @@
 ---
 title: Rule files
-description: "Write an Opero extension action as a rule file: entryStepId, steps and edges, local step ids, publishing the output, Call webhook URLs, script files and the allowed step types."
+description: "Write an Opero extension action as a rule file: entryStepId, steps and edges, local step ids, publishing the output, Call webhook URLs, script files, the allowed step types, data steps and raising events."
 ---
 
 A rule file is an action's logic written as a rule: the `entryStepId`, `steps` and `edges` the rule builder saves. The rule's name, description and trigger come from `action.yaml`, so do not write them.
@@ -42,9 +42,15 @@ edges:
 | `{{ trigger.data.<field> }}` | A field of the action's input. |
 | `{{ trigger.settings.<field> }}` | One of the extension's [settings](/docs/en/extensions/reference/settings), with its default applied. Not secret; usable anywhere. |
 | `{{ connection.<field> }}` | A secret field. Only in a header value or a URL query value of a **Call webhook** step. See [Secrets](/docs/en/extensions/reference/connection-and-secrets#secrets). |
+| `{{ userConnection.<field> }}` | A member's token or secret value, in a member action only, with the same limits as a connection secret. See [Member connections](/docs/en/extensions/reference/member-connections#the-members-values-in-rules). |
+| `{{ trigger.record.id }}` | In a [block action or record command](/docs/en/extensions/reference/member-actions#the-record-the-action-runs-for): the record it runs for; also `type`, `moduleKey` and `objectKey`. |
 | `{{ <contextKey>.… }}` | The result of an earlier step, under its context key. |
 
-A **Call webhook** step's result is `{ status, headers, body }`. An error status fails the step, and so the action.
+A **Call webhook** step's result is `{ status, headers, body }`. An error status fails the step, and so the action, unless the step's error port is connected.
+
+`auth: connection` on a **Call webhook** step sends the connection's credentials as HTTP Basic, when every method of the connection declares a `scheme`. No other `auth` is accepted. See [HTTP Basic from the connection](/docs/en/extensions/reference/connection-and-secrets#http-basic-from-the-connection).
+
+In an action run by a [schedule](/docs/en/extensions/reference/schedules), `{{ trigger.data.… }}` is the input the schedule passes: `subject`, `lastSucceededAt` and `firstRun`.
 
 Inside an action, templates get Opero's built-in filters only. Filters from other extensions or from the organization's own scripts are not available.
 
@@ -62,9 +68,24 @@ Inside an action, templates get Opero's built-in filters only. Filters from othe
 | `WAIT` | Pause. |
 | `STOP` | End the rule. |
 | `x-<key>.<name>` | Call another action of the same package. |
+| `EMIT_EVENT` | Raise events of the package's own triggers, in an action run by a schedule or a member connection hook. See [Raising events](/docs/en/extensions/reference/raising-events). |
 
-<Callout type="warn" title="No record, email or notification steps">
-Steps that touch records, send email or notify people are refused with `step.type_not_allowed`. That work belongs in the organization's rule that uses your step.
+### Data steps
+
+These steps are allowed when the package declares the [data scope](/docs/en/extensions/reference/data-permissions) each needs, and only on the package's own objects and queries. See [Data steps](/docs/en/extensions/reference/data-steps).
+
+| Step type | Use it to | Scope |
+| --- | --- | --- |
+| `FETCH_RECORDS` | Read records of the package's objects. | `records:read` |
+| `CREATE_RECORD`, `UPDATE_RECORD` | Create or change records of the package's objects. | `records:write` |
+| `RUN_QUERY` | Run a query of the package. | `queries:run` or `queries:mutate` |
+| `UPDATE_CONTRACTOR` | Change a contractor. | `contractors:write` |
+| `SEND_EMAIL` | Send an email. | `email:send` |
+| `SEND_NOTIFICATION` | Notify members of the organization. | `notifications:send` |
+| `GENERATE_DOCUMENT` | Generate a document from a template the rule author picks. | `documents:generate` |
+
+<Callout type="warn" title="Other steps are refused">
+Any other step type, such as attaching files, calling another rule or starting a workflow, is refused with `step.type_not_allowed`, and a data step on anything but the package's own objects and queries with `step.target_not_own`. That work belongs in the organization's rule that uses your step.
 </Callout>
 
 ## From the rule builder to a rule file

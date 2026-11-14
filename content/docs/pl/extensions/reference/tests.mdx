@@ -1,9 +1,9 @@
 ---
 title: Testy
-description: "Testy kontraktowe akcji rozszerzeń Opero: dane wejściowe, ustawienia, wartości połączenia, zaplanowane wymiany HTTP i oczekiwane wyniki, uruchamiane offline przy przesłaniu."
+description: "Testy kontraktowe akcji rozszerzeń Opero: dane wejściowe, ustawienia, wartości połączenia, zaplanowane wymiany HTTP, zaplanowane kroki danych i wiadomości (effects), oczekiwane zdarzenia, wartości członka, rekord, dla którego działa akcja bloku albo polecenie rekordu, oczekiwane wyniki oraz przypadki renderowania bloków, uruchamiane offline przy przesłaniu."
 ---
 
-Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejściowe, wymienia wymiany HTTP, których akcja ma dokonać, i mówi, jak się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu paczki, niczego nie wysyłając przez sieć.
+Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejściowe, wymienia wymiany HTTP i kroki danych, których akcja ma dokonać, oraz zdarzenia, które ma zgłosić, i mówi, jak się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu paczki, niczego nie wysyłając przez sieć, nie odczytując ani nie zapisując żadnych danych i nie uruchamiając żadnej reguły.
 
 ```yaml title="actions/greet/tests.yaml"
 - name: the greeting is sent
@@ -55,6 +55,26 @@ Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejś
       type: 'exchange[]',
       description: 'Wymiany HTTP po kolei, do 50. Każde żądanie ma method, url i opcjonalnie headers oraz body; każda odpowiedź ma status i opcjonalnie headers oraz body.',
     },
+    effects: {
+      type: 'effect[]',
+      description: 'Kroki danych i wiadomości po kolei, do 50. Tylko w paczce z zakresami danych. Zobacz niżej.',
+    },
+    events: {
+      type: '{ event, key?, data? }[]',
+      description: 'Zdarzenia, które akcja musi zgłosić, po kolei, do 500. Tylko dla akcji, która zgłasza zdarzenia. Zobacz Zdarzenia.',
+    },
+    seen: {
+      type: '{ event, key, data }[]',
+      description: 'To, co Opero już pamięta na potrzeby deduplikacji, gdy przypadek się zaczyna, do 500. Tylko dla akcji, która zgłasza zdarzenia.',
+    },
+    userConnection: {
+      type: 'object',
+      description: 'Wartości członka: accessToken, refreshToken albo sekretne wyjście afterConnect, jako teksty. Tylko dla akcji członka.',
+    },
+    record: {
+      type: '{ type, id, object? }',
+      description: 'Rekord, dla którego działa akcja, odczytywany jako trigger.record. type to custom_record, contractor, sales_invoice, cost_invoice, budget albo helpdesk_ticket; object wskazuje obiekt paczki. Zobacz Akcje bloków i polecenia rekordów.',
+    },
   }}
 />
 
@@ -63,6 +83,102 @@ Porównywane są tylko nagłówki żądania, które wymienisz; ich nazwy pisz ma
 ## Ustawienia w przypadku [#settings-in-a-case]
 
 Ustawienia przypadku, po uzupełnieniu wartościami domyślnymi, muszą pasować do `settings.yaml`. Wymagane ustawienie bez wartości domyślnej trzeba więc podać w każdym przypadku, także w przypadkach akcji, które go nie odczytują. Przypadek, który podaje ustawienia w paczce bez `settings.yaml` albo podaje je w `connection.config`, jest odrzucany z kodem `test.invalid`. Zobacz [Ustawienia w testach](/docs/pl/extensions/reference/settings#settings-in-tests).
+
+## Kroki danych i wiadomości [#data-and-messaging-steps]
+
+Gdy reguła akcji używa [kroków danych](/docs/pl/extensions/reference/data-steps), przypadek planuje je w `effects`, tak jak `http` planuje wywołania. Żaden rekord nie jest odczytywany ani zapisywany i nic nie jest wysyłane: każdy krok bierze swój efekt i zwraca jego `response`.
+
+```yaml title="actions/sync-order/tests.yaml"
+- name: the open order gets the status the carrier answers
+  input: { status: synced }
+  http:
+    - request:
+        method: POST
+        url: https://api.example.com/v1/orders
+        body: { number: A-1, status: synced }
+      response: { status: 200, body: { status: synced } }
+  effects:
+    - request: { step: FETCH_RECORDS, objectKey: orders }
+      response:
+        rows: [{ id: 7d1c2a34-0000-4000-8000-000000000001, number: A-1, status: open }]
+        rowCount: 1
+        truncated: false
+    - request:
+        step: UPDATE_RECORD
+        targetObjectKey: orders
+        fieldUpdates: { status: synced }
+  succeeds: true
+```
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `request.step` | Typ kroku: `FETCH_RECORDS`, `CREATE_RECORD`, `UPDATE_RECORD`, `RUN_QUERY`, `UPDATE_CONTRACTOR`, `SEND_EMAIL`, `SEND_NOTIFICATION` albo `GENERATE_DOCUMENT`. Wymagany. |
+| Inne klucze `request` | Klucze ustawień kroku, porównywane z tym, co krok dostał po wypełnieniu szablonów. Klucze, które pominiesz, nie są porównywane. |
+| `response` | To, co krok zwraca. Musi mieć kształt, jaki zwraca prawdziwy krok. Pomiń go dla kroku, który nic nie zwraca: `UPDATE_RECORD`, `UPDATE_CONTRACTOR` i `SEND_EMAIL`. |
+
+- `effects` i `http` to dwie osobne listy, każda w kolejności, w jakiej akcja ich używa.
+- Efekt `RUN_QUERY` wskazuje zapytanie zainstalowanym kluczem, tak jak reguła: `queryKey: x_orders_ext_orders_by_day`.
+- Przypadek z `effects` w paczce bez [zakresów danych](/docs/pl/extensions/reference/data-permissions) jest odrzucany z kodem `test.invalid`.
+- Krok jest sprawdzany względem zadeklarowanych zakresów, zanim weźmie swój efekt, więc test nie przejdzie z krokiem, na który zakresy nie pozwalają.
+
+## Zdarzenia [#events]
+
+Dla akcji, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events), przypadek wymienia w `events` zdarzenia, które uruchomienie musi zgłosić, a w `seen` może podać, co Opero już pamięta, gdy przypadek się zaczyna, żeby przetestować deduplikację.
+
+```yaml title="actions/sync-orders/tests.yaml"
+- name: an order seen before, unchanged, raises nothing
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events: []
+  returns: { emitted: 0, unchanged: 1 }
+```
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `events[].event` | Nazwa wyzwalacza. Wymagana. |
+| `events[].key` | Klucz elementu. Porównywany, gdy jest podany. |
+| `events[].data` | Dane zdarzenia. Porównywane dokładnie, gdy są podane. |
+| `seen[]` | `event`, `key` i `data` elementu w postaci, w jakiej został ostatnio zgłoszony. Element z tym samym kluczem i tymi samymi danymi jest niezmieniony. |
+
+- `events` jest porównywane po kolei. `events: []` mówi, że uruchomienie niczego nie zgłasza; przypadek bez `events` w ogóle nie sprawdza zdarzeń.
+- Każde zgłoszone zdarzenie jest sprawdzane względem danych wyzwalacza, jak w prawdziwym uruchomieniu, więc przypadek nie przejdzie ze zdarzeniem, które wyzwalacz by odrzucił.
+- Nic nie trafia do kolejki i żadna reguła się nie uruchamia: zdarzenia są tylko zapisywane.
+- Akcja, która zgłasza zdarzenia, potrzebuje co najmniej jednego przypadku z niepustym `events` (`test.event_untested`). Niepuste `events` albo `seen` w akcji, która nie zgłasza zdarzeń, jest odrzucane z kodem `test.invalid`, a nazwa zdarzenia, która nie jest wyzwalaczem paczki, z kodem `event.unknown`.
+
+## Akcje członka [#member-actions]
+
+[Akcja członka](/docs/pl/extensions/reference/member-connections#the-members-values-in-rules) używa `{{ userConnection.<field> }}`. Jej przypadek podaje te wartości w `userConnection`, a w `input` to, co przekazuje akcja połączenia albo harmonogram:
+
+```yaml title="actions/sync-member/tests.yaml"
+- name: a revoked token
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: "2026-11-02T10:00:00Z"
+    firstRun: false
+  userConnection: { accessToken: revoked-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer revoked-token }
+      response: { status: 401 }
+  credentialRevoked: true
+```
+
+- `userConnection` jest przyjmowane tylko w akcji członka i tylko z `accessToken`, `refreshToken` i sekretnymi wyjściami `afterConnect` (w przeciwnym razie `test.invalid`).
+- `credentialRevoked: true` to wynik akcji członka, której żądanie z tokenem członka dostało odpowiedź `401`. W prawdziwym uruchomieniu ten członek jest wtedy [wstrzymywany](/docs/pl/extensions/reference/member-connections#a-refused-token). `401` na żądanie bez tokenu członka to zwykły błąd: oczekuj `fails: { status: 401 }`.
+
+## Przypadki renderowania bloków [#block-render-cases]
+
+Każdy [blok](/docs/pl/extensions/reference/blocks#render-tests) ma własny `tests.yaml` z przypadkami renderowania: dane wejściowe, wiersze zapytań i rekordów, z którymi ma zostać wyrenderowany, oraz teksty, które HTML musi albo nie może zawierać. Opero renderuje je przy przesłaniu, po przypadkach akcji, w tych samych limitach.
 
 ## Jak kończy się przypadek
 
@@ -76,6 +192,7 @@ Każdy przypadek ma dokładnie jeden wynik:
 | `fails: { status: 409 }` | Akcja kończy się błędem, bo usługa odpowiedziała tym statusem. |
 | `rateLimited: true` | Usługa odpowiedziała `429`. |
 | `rateLimited: { status: 429 }` | To samo, z wpisanym statusem. |
+| `credentialRevoked: true` | Akcja członka: żądanie, które niosło token członka, dostało odpowiedź `401`. |
 
 <Tabs items={['Sukces', 'Błąd', 'Limit zapytań', 'Bez sieci']}>
 <Tab value="Sukces">
@@ -138,6 +255,10 @@ Przypadek jest oznaczany plikiem i pozycją, np. `actions/greet/tests.yaml#/0`. 
 - wysyła żądanie, którego przypadek się nie spodziewał;
 - wysyła żądanie, które różni się metodą, URL-em, wymienionym nagłówkiem albo treścią;
 - zostawia niewykorzystaną zaplanowaną wymianę;
+- uruchamia krok danych, którego przypadek nie zaplanował jako następnego, albo krok, którego ustawienia różnią się od klucza wymienionego w efekcie;
+- dostaje `response`, który nie ma kształtu zwracanego przez krok;
+- zostawia niewykorzystany zaplanowany efekt;
+- zgłasza zdarzenie, którego przypadek nie wymienia jako następnego, zgłasza zdarzenie o innym wyzwalaczu, kluczu albo danych albo nie zgłasza zdarzenia, które przypadek wymienia;
 - kończy się innym wynikiem;
 - zwraca wynik, który nie pasuje do `returns` albo do pól wyjściowych.
 
@@ -148,8 +269,11 @@ Kody znajdziesz w [Kodach błędów](/docs/pl/extensions/error-codes#only-at-upl
 | Co | Limit |
 | --- | --- |
 | Przypadki na akcję | od 1 do 50 |
-| Przypadki na paczkę | 200 |
+| Przypadki na paczkę | 200, przypadki akcji i przypadki renderowania bloków razem |
+| Przypadki renderowania na blok | od 1 do 20 |
 | Wymiany na przypadek | 50 |
+| Efekty na przypadek | 50 |
+| `events` i `seen` na przypadek | po 500 |
 | Czas na przypadek | 10 sekund |
 | Czas na wszystkie przypadki paczki | 60 sekund |
 

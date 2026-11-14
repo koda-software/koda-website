@@ -24,15 +24,15 @@ You can also upload from a terminal or let an AI assistant do it:
 <Tab value="Command-line tool">
 
 ```bash title="Terminal"
-extension-cli push . --server https://opero.example.com/mcp
+opero-ext push . --server https://opero.example.com/mcp
 ```
 
-Add `--org <organizationId>` when you belong to more than one organization.
+Add `--org <organizationId>` when you belong to more than one organization. `opero-ext install .` goes further: it uploads, prints the plan described in the next step, asks for your consent and installs. See [Consent](/docs/en/extensions/reference/cli#consent).
 
 </Tab>
 <Tab value="AI assistant">
 
-An AI assistant connected to Opero's MCP server can upload the zip for you. Ask it to upload the package file to your organization; it runs the same checks and tests.
+An AI assistant connected to Opero's MCP server can upload the zip for you. Ask it to upload the package file to your organization; it runs the same checks and tests. It can also plan, install and upgrade (`extensions_plan`, `extensions_install`, `extensions_upgrade`): it must show you the plan first and install only once you agree.
 
 </Tab>
 </Tabs>
@@ -66,9 +66,9 @@ The language has a default, so the extension does not wait for it. A required se
 <Step>
 ### Set up the connection
 
-Go to the extension's **Connection** tab. Enter a token (httpbin accepts any text), save, and press **Verify**.
+Go to the extension's **Connection** tab. Enter a token (httpbin accepts any text), save, and press **Test connection**.
 
-Opero runs your `verify` action with the values you saved. When it passes, switch the connection on. The extension is now **Running**.
+Opero runs your `verify` action with the values you saved. When it passes, switch the connection on. The **Not running** mark goes away: the extension shows **Enabled** and runs.
 </Step>
 
 <Step>
@@ -94,7 +94,7 @@ In any template, try `{{ "hello" | x_hello_ext_shout }}`.
 <Step>
 ### Ship a new version
 
-Change something, raise `version` to `0.1.1`, validate, pack and upload. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm.
+Change something, raise `version` to `0.1.1`, validate, pack and upload. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm. From a terminal, `opero-ext upgrade . --server https://opero.example.com/mcp` does the same.
 
 Rules that use your step keep working, because a step keeps its identity across versions as long as the action's name stays the same. [Upgrading](/docs/en/extensions/after-install#upgrading) lists what can block an upgrade.
 </Step>

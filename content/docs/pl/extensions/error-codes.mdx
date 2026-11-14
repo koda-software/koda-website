@@ -1,13 +1,13 @@
 ---
 title: Kody błędów
-description: "Wszystkie kody, które Opero i extension-cli zgłaszają, gdy paczka rozszerzenia jest odrzucana, testy nie przechodzą przy przesłaniu albo plan instalacji wykrywa problem."
+description: "Wszystkie kody, które Opero i opero-ext zgłaszają, gdy paczka rozszerzenia, jej formularze, listy lub strony są odrzucane, testy albo przypadki renderowania bloków nie przechodzą przy przesłaniu, plan instalacji wykrywa problem, krok, zdarzenie, uruchomienie harmonogramu albo akcja bloku lub polecenie rekordu uruchomione przez członka kończy się błędem, połączenie członka się nie udaje, eksport coś pomija albo polecenie administratora zostaje odrzucone, wraz ze sposobem naprawy."
 ---
 
 Każdy problem ma kod, plik, linię w tym pliku i miejsce w jego wnętrzu, np. `actions/greet/rule.yaml:9 #/steps/0/config/url`. Wszystkie problemy we wszystkich plikach są zgłaszane w jednym przebiegu.
 
 ## Gdy paczka jest odrzucana
 
-Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
+Wykrywa je `opero-ext validate`, a potem ponownie Opero przy przesłaniu.
 
 ### Manifest i pliki
 
@@ -16,11 +16,19 @@ Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
 | `manifest.missing` | Brak `extension.yaml` na najwyższym poziomie zipa. | Spakuj folder, który go zawiera. |
 | `manifest.unsupported_version` | Paczka z `manifest.json` (stary format) albo inna wartość `manifestVersion`. | Przepisz ją w obecnym formacie. |
 | `manifest.invalid` | Klucz, którego nie zna `extension.yaml` ani `module.yaml`, albo błędna wartość. | Sprawdź pisownię w [dokumentacji](/docs/pl/extensions/reference/manifest). |
-| `manifest.unsupported_section` | Zarezerwowana lista, np. `schedules`. | Usuń ją. |
+| `manifest.unsupported_section` | Zarezerwowana lista `components`. | Usuń ją. |
+| `requires.module_undeclared` | Paczka ma obiekty, zapytania albo zakres `documents:generate`, ale w `requires.modules` brakuje `objects`, `queries` albo `documents`. | Dodaj moduł. |
 | `manifest.missing_file` | Deskryptor wskazuje plik, którego nie ma. | Dodaj plik albo popraw nazwę. |
 | `file.invalid_yaml` | Plik nie jest poprawnym YAML-em: wcięcia, zabłąkany `:`, pusty plik. | Popraw wskazaną linię; tekst zawierający `: ` weź w cudzysłów. |
 | `file.yaml_feature_not_allowed` | Kotwica, alias, tag, klucz scalania albo drugi dokument. | Wpisz wartości wprost. |
 | `archive.invalid_path` | Wielkie litery lub spacje w nazwie pliku używanego przez paczkę. | Używaj małych liter, cyfr, `.`, `_`, `-`. |
+| `archive.invalid` | Plik nie jest zipem, który da się odczytać. | Spakuj folder narzędziem wiersza poleceń. |
+| `archive.too_large` | Zip albo to, co z niego wypakowano, przekracza limit rozmiaru. | Zobacz [Limity](/docs/pl/extensions/reference/limits). |
+| `archive.too_many_entries` | Zip zawiera więcej plików, niż pozwala limit. | Usuń pliki, których paczka nie używa. |
+| `archive.entry_too_large` | Jeden plik przekracza limit rozmiaru pliku. | Zmniejsz go albo podziel. |
+| `archive.unsafe_path` | Ścieżka, która wychodzi poza folder, dowiązanie albo ta sama ścieżka dwa razy. | Spakuj folder narzędziem wiersza poleceń. |
+| `manifest.reserved_key` | `extension` zaczyna się od `x-`. | Pomiń ten przedrostek; Opero dodaje go samo. |
+| `requires.invalid_release` | `requires.opero` nie jest minimalnym wydaniem, takim jak `">=2026.22.0"`. | Zapisz go w tej postaci. |
 
 ### Struktura i nazwy
 
@@ -28,10 +36,14 @@ Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
 | --- | --- | --- |
 | `layout.invalid_path` | Pozycja listy, która nie ma postaci `actions/<folder>`, albo nazwa pliku spoza folderu funkcji. | Użyj pokazanej postaci; trzymaj pliki w folderze funkcji. |
 | `layout.missing_descriptor` | Wymieniony folder bez `action.yaml` lub `filter.yaml` albo `settings: settings.yaml` bez tego pliku. | Dodaj plik albo popraw pozycję. |
-| `layout.unlisted_feature` | `action.yaml` lub `filter.yaml`, którego nie wymienia żadna lista, albo `settings.yaml`, którego nie wskazuje `extension.yaml`. | Dodaj jego folder do listy lub wskaż plik albo go usuń. |
-| `name.duplicate` | Dwie akcje, filtry lub moduły o tej samej nazwie albo dwie grupy ustawień lub dwa pola ustawień o tym samym kluczu. | Zmień nazwę jednego z nich. |
-| `permissions.reason_required` | Host lub zakres bez uzasadnienia. | Wpisz `{ host, reason }`. |
-| `field.invalid` | Lista pól z nieznanym typem lub kluczem, `select` bez `options` albo `secret` lub `hint` w ustawieniu. | Zobacz [Listy pól](/docs/pl/extensions/reference/actions#field-lists). |
+| `layout.unlisted_feature` | Deskryptor, np. `action.yaml`, `filter.yaml`, `trigger.yaml` albo `schedule.yaml`, którego nie wymienia żadna lista, `settings.yaml`, którego nie wskazuje `extension.yaml`, albo `connection/member.yaml`, którego nie wskazuje `connection.yaml`. | Dodaj jego folder do listy lub wskaż plik albo go usuń. |
+| `name.duplicate` | Dwie akcje, filtry, moduły, obiekty, słowniki, zapytania, wyzwalacze, harmonogramy, bloki, linki, listy lub strony o tej samej nazwie, dwa formularze o tej samej nazwie na jednym obiekcie albo dwie grupy ustawień lub dwa pola ustawień o tym samym kluczu. | Zmień nazwę jednego z nich. |
+| `include.invalid` | Pozycja `include`, która nie wskazuje folderu modułu w paczce. | Popraw nazwę folderu albo dodaj jego `module.yaml`. |
+| `include.nested` | `module.yaml` z `include`. | Moduły dołącza tylko `extension.yaml`. |
+| `permissions.reason_required` | Host lub zakres bez uzasadnienia. | Wpisz `{ host, reason }` albo `{ scope, reason }`. |
+| `permissions.invalid_scope` | Zakres danych spoza ośmiu istniejących. | Zobacz [Uprawnienia do danych](/docs/pl/extensions/reference/data-permissions). |
+| `permissions.unused_scope` | Zakres danych, którego nie używa żadna reguła paczki. | Usuń go. |
+| `field.invalid` | Lista pól z nieznanym typem lub kluczem, `select` bez `options`, `secret` lub `hint` w ustawieniu, `nullable` poza wejściem i wyjściem akcji oraz danymi wyzwalacza albo pole `company` poza formularzem połączenia członka. | Zobacz [Listy pól](/docs/pl/extensions/reference/actions#field-lists). |
 
 ### Akcje, reguły i skrypty
 
@@ -41,15 +53,115 @@ Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
 | `action.run_invalid` | `run` wskazuje coś, co nie jest ani `.yaml`, ani `.js`, ani `.ts`. | Wskaż plik reguły albo skrypt. |
 | `action.missing_test` | Akcja bez przypadku testowego. | Napisz go. |
 | `action.cycle` | Akcje wywołują się nawzajem w cyklu. | Przerwij cykl. |
+| `action.schema_invalid` | Plik JSON Schema użyty dla wejścia lub wyjścia jest niepoprawny albo używa `x-titleKey`. | Popraw schemat albo użyj listy pól. |
+| `step.invalid` | Błędne `expose.ruleStep`, na przykład gałąź o nazwie `error` albo wpisana dwa razy. | Używaj niepowtarzalnych nazw gałęzi innych niż `error`. |
 | `rule.invalid` | Plik reguły zawiera `name` lub `trigger` albo ma nieznany klucz. | Zostaw tylko `entryStepId`, `steps`, `edges`. |
 | `rule.invalid_step_id` | Id kroku to UUID albo ma nietypowe znaki. | Użyj krótkiej lokalnej nazwy. |
+| `rule.duplicate_step_id` | Dwa kroki o tym samym id. | Zmień jedno z nich. |
+| `rule.unknown_step` | `entryStepId` albo krawędź wskazuje nieistniejący krok. | Popraw id. |
+| `rule.file_reference_misplaced` | `$file` w innym miejscu niż kod kroku **Uruchom skrypt**. | Przenieś skrypt do kroku `RUN_SCRIPT`. |
+| `rule.connection_unsupported` | Symbol zastępczy `{{ userConnection.<field> }}` w paczce bez połączenia członka. | Dodaj `connection/member.yaml` albo użyj `connection.*`. |
 | `rule.host_not_declared` | Webhook wywołuje host, którego brakuje w `permissions.network`. | Dodaj host z uzasadnieniem. |
 | `rule.host_not_literal` | Host pochodzi z szablonu albo URL nie używa HTTPS. | Wpisz host wprost. |
 | `rule.own_filter_unsupported` | Reguła paczki używa własnego filtra paczki. | Zrób konwersję w skrypcie. |
-| `step.type_not_allowed` | Typ kroku spoza [listy dozwolonych](/docs/pl/extensions/reference/rule-files#steps-a-rule-file-may-use). | Przenieś tę pracę do reguły, która używa twojego kroku. |
+| `step.type_not_allowed` | Typ kroku spoza [listy dozwolonych](/docs/pl/extensions/reference/rule-files#steps-a-rule-file-may-use), którego nie obejmuje żaden zakres danych. | Przenieś tę pracę do reguły, która używa twojego kroku. |
+| `step.scope_missing` | Krok danych, którego zakresu nie deklaruje `permissions.data`. | Zadeklaruj zakres z uzasadnieniem. |
+| `step.target_not_own` | Krok danych wskazuje moduł, obiekt lub zapytanie, które nie należą do paczki. | Użyj `x-<key>`, obiektu paczki albo zainstalowanego klucza zapytania. |
+| `step.target_not_literal` | Klucz modułu, obiektu lub zapytania w kroku danych pochodzi z szablonu albo z ustawienia. | Wpisz klucz wprost. |
+| `step.config_not_allowed` | Krok danych używa klucza, którego paczka nie może ustawić, aktualizacja nie ma id rekordu albo `templateId` dokumentu nie jest dokładnie `{{ trigger.data.<field> }}`; krok `EMIT_EVENT` ma ustawienie inne niż `event`, `items`, `key` i `dedupe`, `items`, które nie jest jednym wyrażeniem, albo `key`, które nie jest polem danych; albo krok **Wywołaj webhook** ma `auth` inne niż `connection` albo `auth: connection`, gdy któraś metoda połączenia nie ma `scheme`. | Zobacz [Uprawnienia do danych](/docs/pl/extensions/reference/data-permissions#what-each-step-may-name), [Zgłaszanie zdarzeń](/docs/pl/extensions/reference/raising-events) i [HTTP Basic z połączenia](/docs/pl/extensions/reference/connection-and-secrets#http-basic-from-the-connection). |
+| `action.verify_uses_data` | Akcja weryfikująca połączenie używa kroku danych. | Ogranicz akcję weryfikującą do wywołań i logiki. |
 | `script.invalid` | Skrypt, który nie jest modułem z jednym `export default`, coś importuje, jest asynchronicznym filtrem albo jest TypeScriptem, z którego nie da się usunąć typów. | Zobacz [Skrypty](/docs/pl/extensions/reference/scripts). |
 | `script.not_built` | Zip wskazuje skrypt `.ts` bez jego `.js`. | Spakuj narzędziem wiersza poleceń. |
+| `script.missing_file` | Skryptu wskazanego przez akcję lub krok nie ma. | Dodaj plik albo popraw nazwę. |
+| `script.invalid_path` | Wartość `$file`, która nie jest plikiem skryptu w folderze akcji. | Wskaż plik `.js` lub `.ts` w tym folderze. |
 | `filter.invalid` | Nazwa filtra z podkreśleniem albo inny problem z kluczem. | Tylko litery i cyfry. |
+| `filter.script_invalid` | `script` w `filter.yaml` nie wskazuje pliku `.js` ani `.ts`. | Wskaż moduł skryptu filtra. |
+
+### Wyzwalacze, harmonogramy i zdarzenia [#triggers-schedules-and-events]
+
+| Kod | Co jest nie tak | Naprawa |
+| --- | --- | --- |
+| `trigger.invalid` | Nieznany klucz w `trigger.yaml`, brak `label`, `description` albo `data`, filtr bez `match` albo typu innego niż text, number, boolean lub select, `retentionDays` spoza zakresu od 1 do 365, przykład niepasujący do danych albo większy niż 32 KB, albo ponad 50 wyzwalaczy. | Zobacz [Wyzwalacze](/docs/pl/extensions/reference/triggers). |
+| `trigger.match_unknown_field` | `match` filtra nie wskazuje pola danych najwyższego poziomu. | Wskaż pole z `data`. |
+| `schedule.invalid` | Nieznany klucz w `schedule.yaml`, `every` albo `forEach` spoza przyjmowanych wartości, `forEach: userConnection` bez połączenia członka albo z akcją, która nie jest akcją członka, wejście akcji, które nie przyjmuje tego, co przekazuje harmonogram, albo ponad 10 harmonogramów. | Zobacz [Harmonogramy](/docs/pl/extensions/reference/schedules). |
+| `schedule.action_unknown` | `action` nie wskazuje akcji paczki. | Popraw nazwę. |
+| `schedule.action_exposed` | Akcja harmonogramu jest udostępniona jako krok reguły, akcja bloku albo polecenie rekordu. | Usuń jej `expose` albo uruchamiaj inną akcję. |
+| `event.unknown` | Krok `EMIT_EVENT` albo `events` lub `seen` przypadku testowego wskazuje coś, co nie jest wyzwalaczem paczki. | Popraw nazwę albo dodaj wyzwalacz. |
+| `event.not_literal` | `event` kroku `EMIT_EVENT` jest szablonem. | Wpisz nazwę wyzwalacza wprost. |
+| `event.key_required` | Krok `EMIT_EVENT` z `dedupe: true` bez `key`. | Dodaj `key` wskazujące pole, które identyfikuje element. |
+| `event.emitted_from_step` | Akcja, która zgłasza zdarzenia, jest udostępniona jako krok reguły, akcja bloku albo polecenie rekordu albo jest akcją weryfikacji połączenia. | Uruchamiaj ją z harmonogramu albo z `afterConnect` lub `beforeDisconnect` połączenia członka. |
+| `test.event_untested` | Żaden przypadek testowy akcji, która zgłasza zdarzenia, nie wymienia oczekiwanych zdarzeń. | Dodaj przypadek z `events`. |
+
+### Połączenie członka [#member-connection]
+
+| Kod | Co jest nie tak | Naprawa |
+| --- | --- | --- |
+| `member.invalid` | Nieznany klucz w `member.yaml`, brak `label`, `oauth` albo `afterConnect`, adres OAuth, który nie jest w pełni wypisanym adresem `https://`, akcja `afterConnect` lub `beforeDisconnect` udostępniona jako krok reguły, pole `output`, którego akcja `afterConnect` nie zwraca, dwa pola `company` albo jedna nazwa błędu z dwoma komunikatami. | Zobacz [Połączenia członków](/docs/pl/extensions/reference/member-connections). |
+| `member.host_not_listed` | Hosta `authorize` albo `token` nie ma w `permissions.network`. | Dodaj host z uzasadnieniem. |
+| `member.client_field_unknown` | `oauth.client` nie wskazuje dwóch pól danych uwierzytelniających jednej metody połączenia. | Wskaż dwa pola tej samej metody. |
+| `member.action_unknown` | `afterConnect` albo `beforeDisconnect` nie wskazuje akcji paczki. | Popraw nazwę. |
+| `member.requires_connection` | `connection/member.yaml` w paczce, której `extension.yaml` nie ma `connection`. | Dodaj połączenie z polami klienta OAuth. |
+| `action.member_outside_member_run` | Akcja, która używa `{{ userConnection.<field> }}`, jest udostępniona jako krok reguły, akcja bloku albo polecenie rekordu, jest akcją weryfikacji albo uruchamia ją harmonogram inny niż `forEach: userConnection`. | Uruchamiaj ją tylko z `afterConnect` lub `beforeDisconnect` połączenia członka albo z harmonogramu dla członków. |
+| `file.yaml_feature_not_allowed` | Status w `failures` zapisany jako liczba. | Ujmij go w cudzysłów: `"403"`. |
+
+### Obiekty, słowniki i zapytania [#objects-dictionaries-and-queries]
+
+| Kod | Co jest nie tak | Naprawa |
+| --- | --- | --- |
+| `object.invalid` | Nieznany klucz w `object.yaml`, pole o złej strukturze, `createDefaultForm`, opcja wskazująca id albo inny moduł, albo więcej niż 50 obiektów. | Zobacz [Obiekty](/docs/pl/extensions/reference/objects). |
+| `object.unknown_reference` | `dictionary` albo `toObject` pola nie wskazuje niczego w paczce. | Popraw nazwę albo dodaj słownik lub obiekt. |
+| `dictionary.invalid` | Nieznany klucz w `dictionary.yaml`, zła nazwa, dwie pozycje o tym samym kluczu albo więcej niż 50 słowników. | Zobacz [Słowniki](/docs/pl/extensions/reference/dictionaries). |
+| `query.invalid` | Nieznany klucz w `query.yaml`, `mutationOperation` w zapytaniu FETCH, plik SQL, który nie jest plikiem `.sql` w UTF-8 do 10 000 znaków, albo więcej niż 100 zapytań. | Zobacz [Zapytania](/docs/pl/extensions/reference/queries). |
+| `query.unknown_object` | `{{object.<key>}}` w SQL nie wskazuje żadnego obiektu paczki. | Popraw klucz; komunikat podaje linię SQL. |
+
+### Bloki, linki i uprawnienia paczki [#blocks-links-and-package-permissions]
+
+| Kod | Co jest nie tak | Naprawa |
+| --- | --- | --- |
+| `block.invalid` | Nieznany klucz w `block.yaml`, plik spoza folderu bloku albo za długi, skrypt, który nie jest modułem, blok renderowany głębiej niż na trzech poziomach albo więcej niż 50 bloków. | Zobacz [Bloki](/docs/pl/extensions/reference/blocks). |
+| `block.name_too_long` | Zainstalowany klucz `x_<key>_<block>` ma więcej niż 64 znaki. | Skróć nazwę bloku. |
+| `block.script_undeclared` | Blok ma skrypt, ale `extension.yaml` nie ma `permissions.pageScript`. | Zadeklaruj je z uzasadnieniem. |
+| `block.unknown_query` | Zapytanie bloku nie wskazuje żadnego zapytania paczki. | Popraw nazwę albo dodaj zapytanie. |
+| `block.unknown_object` | Odczyt rekordów albo dane wejściowe `record` wskazują obiekt spoza paczki. | Popraw klucz. |
+| `block.unknown_action` | Przycisk `run-action` wskazuje klucz, który nie jest akcją bloku tej paczki. | Napisz `x-<key>.<action>` akcji z `expose.blockAction`. |
+| `block.reference_not_literal` | Klucz `run-action`, nazwa akcji albo klucz `{% render %}` pochodzi z Liquid albo skrypt uruchamia akcję, której klucz nie jest wypisany wprost. | Wypisz klucz wprost. |
+| `block.render_not_own` | `{% render %}` wskazuje blok, który nie należy do paczki. | Renderuj tylko bloki paczki `x_<key>_<block>`. |
+| `block.render_cycle` | Bloki paczki renderują się nawzajem w kółko. | Przerwij cykl. |
+| `block.form_unsupported` | Blok używa `open-form`, `set-field` albo `<opero-rating>`. | Zamiast tego uruchom akcję paczki. |
+| `block.rule_unsupported` | Blok używa `run-rule`. | Użyj `run-action` z akcją paczki. |
+| `block.test_missing` | Blok nie ma przypadku renderowania. | Napisz go w jego `tests.yaml`. |
+| `link.invalid` | Nieznany klucz w `link.yaml` albo więcej niż 20 linków. | Zobacz [Linki rekordów](/docs/pl/extensions/reference/record-links). |
+| `link.not_https` | Adres nie zaczyna się od `https://`. | Użyj https. |
+| `link.template_invalid` | Adresu nie da się odczytać: symbol zastępczy w hoście, niezamknięty nawias, nazwa użytkownika albo hasło. | Wypisz host wprost i zamknij każde `{…}`. |
+| `link.host_not_declared` | Hosta adresu nie ma w `permissions.links`. | Dodaj go z uzasadnieniem. |
+| `link.field_undeclared` | `{fields.<field>}` wskazuje pole, którego link nie deklaruje w `fields`. | Zadeklaruj pole z jego etykietą. |
+| `link.unknown_target` | Cel wskazuje obiekt spoza paczki. | Popraw klucz. |
+| `link.field_not_on_object` | Zadeklarowane pole nie jest polem każdego obiektu docelowego. | Usuń je albo dodaj pole. |
+| `link.mixed_targets` | Link dotyczy zarówno obiektów, jak i typu wbudowanego albo dwóch typów wbudowanych. | Wskaż swoje obiekty albo jeden typ wbudowany. |
+| `action.permission_undeclared` | Akcja bloku, polecenie rekordu albo link wskazuje uprawnienie, którego nie deklaruje `permissions.company`. | Zadeklaruj je albo popraw nazwę. |
+| `action.record_command_invalid` | Polecenie rekordu nie wskazuje żadnego celu albo wskazuje więcej niż 20. | Wskaż od 1 do 20. |
+| `action.record_command_unknown_target` | Polecenie rekordu dotyczy obiektu spoza paczki. | Popraw klucz. |
+| `action.record_command_unknown_field` | `result.message` albo `result.details` wskazuje pole, które nie jest polem wyniku akcji. | Wskaż pola wyniku. |
+| `permissions.unused_page_script` | Zadeklarowano `permissions.pageScript`, ale żaden blok nie ma skryptu. | Usuń je. |
+| `permissions.unused_company_permission` | Uprawnienie firmowe, którego nie wskazuje żadna akcja bloku, polecenie rekordu ani link. | Usuń je albo go użyj. |
+| `permissions.unused_link_host` | Host linku, którego nie otwiera żaden link, formularz, lista ani strona. | Usuń go. |
+
+### Formularze, listy i strony [#forms-lists-and-pages]
+
+| Kod | Co jest nie tak | Poprawka |
+| --- | --- | --- |
+| `form.invalid` | Nieznany klucz w `form.yaml` albo w jego `config`, zła wartość, miejsce domyślne w `default`, które nie należy do `types` formularza, plik układu, który nie jest dokumentem układu widoku, albo więcej niż 100 formularzy. | Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#formyaml). |
+| `form.unknown_object` | `object` nie wskazuje żadnego obiektu paczki. | Paczka dostarcza formularze tylko dla własnych obiektów. |
+| `list.invalid` | Nieznany klucz w `list.yaml`, zła wartość, dwie akcje o tym samym kluczu, `builtIn: dynamicObject` zamiast `object` albo więcej niż 50 list. | Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#listyaml). |
+| `list.unknown_object` | `source.object` nie wskazuje żadnego obiektu paczki. | Popraw klucz albo użyj `builtIn` dla wbudowanego źródła. |
+| `list.name_too_long` | Zainstalowany klucz `x-<key>-<list>` ma więcej niż 64 znaki. | Skróć nazwę listy. |
+| `list.action_unsupported` | Akcja listy nie jest typu `OPEN_LINK`. | Usuń akcję reguły albo skryptu. |
+| `page.invalid` | Nieznany klucz w `page.yaml`, zła wartość, miejsce wyświetlania inne niż `workspace`, plik układu, który nie jest dokumentem układu widoku, albo więcej niż 50 stron. | Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#pageyaml). |
+| `layout.ref_invalid` | Odwołanie nie ma dokładnie postaci `{ $ref: "<kind>:<name>" }` z rodzajem `block`, `list`, `form` albo `query`. | Zapisz je w tej postaci; formularz to `<object>.<form>`. |
+| `layout.ref_position` | Odwołanie stoi tam, gdzie nie jest przechowywany identyfikator jego rodzaju. | Miejsca opisuje sekcja [Odwołania](/docs/pl/extensions/reference/screens#references). |
+| `layout.ref_unknown` | Odwołanie wskazuje blok, listę, formularz albo zapytanie, którego paczka nie ma. | Popraw nazwę albo dodaj zasób. |
+| `layout.reference_unsupported` | Układ albo konfiguracja listy wskazuje coś identyfikatorem: regułę, raport, proces, kalendarz, listę SQL, pole własne albo identyfikator w miejscu, gdzie należy się odwołanie. | Użyj odwołania do własnego zasobu paczki albo pomiń klucz. |
+| `layout.host_not_declared` | Adres URL nie jest ani ścieżką zaczynającą się od `/`, ani adresem https na hoście wpisanym wprost i wymienionym w `permissions.links`. | Użyj ścieżki albo dodaj host z uzasadnieniem. |
 
 ### Ustawienia
 
@@ -61,11 +173,12 @@ Wykrywa je `extension-cli validate`, a potem ponownie Opero przy przesłaniu.
 
 | Kod | Co jest nie tak | Poprawka |
 | --- | --- | --- |
-| `connection.invalid` | Klucz, którego nie zna `connection.yaml`, albo błędna wartość. Tak odrzucany jest blok `settings`: ustawienia nie są już częścią połączenia. | Przenieś ustawienia do [settings.yaml](/docs/pl/extensions/reference/settings); sprawdź pisownię pozostałych kluczy. |
-| `connection.placeholder_position` | Sekret poza wartością nagłówka lub parametru zapytania. | Przenieś go albo ustaw `secretsInBody`. |
-| `connection.placeholder_not_bare` | Sekret otoczony filtrem lub wyrażeniem. | Wpisz go samego w nawiasach klamrowych. |
-| `connection.unknown_field` | Pole sekretne, którego nie deklaruje żadna metoda. | Dodaj je do pól metody albo popraw nazwę. |
-| `connection.undeclared` | Sekret w paczce bez połączenia. | Dodaj `connection.yaml`. |
+| `connection.invalid` | Klucz, którego nie zna `connection.yaml`, albo błędna wartość, w tym `scheme`, które wskazuje pole, jakiego metoda nie ma. Tak odrzucany jest blok `settings`: ustawienia nie są już częścią połączenia. | Przenieś ustawienia do [settings.yaml](/docs/pl/extensions/reference/settings); sprawdź pisownię pozostałych kluczy. |
+| `connection.schema_invalid` | Plik JSON Schema użyty dla danych uwierzytelniających jest niepoprawny albo używa `x-titleKey`. | Popraw schemat albo użyj listy pól. |
+| `connection.placeholder_position` | Sekret albo wartość członka poza wartością nagłówka lub parametru zapytania. | Przenieś go albo ustaw `secretsInBody`. |
+| `connection.placeholder_not_bare` | Sekret albo wartość członka otoczone filtrem lub wyrażeniem. | Wpisz go samego w nawiasach klamrowych. |
+| `connection.unknown_field` | Pole sekretne, którego nie deklaruje żadna metoda, albo wartość członka inna niż `accessToken`, `refreshToken` lub sekretne wyjście `afterConnect`. | Dodaj je do pól metody albo popraw nazwę. |
+| `connection.undeclared` | Sekret albo `auth: connection` w paczce bez połączenia. | Dodaj `connection.yaml`. |
 | `connection.hosts_required` | Połączenie bez hostów. | Uzupełnij `permissions.network`. |
 
 <Callout>
@@ -77,35 +190,163 @@ Gdy akcja wskazana w `verify` ma problem, zgłaszany jest też `connection.yaml`
 | Kod | Co jest nie tak | Poprawka |
 | --- | --- | --- |
 | `locale.missing_file` | Język z `locales` bez swojego pliku. | Dodaj `locales/<lang>.yaml`. |
+| `locale.invalid` | Plik tłumaczeń o złej strukturze, na przykład tekst w miejscu grupy tekstów. | Odwzoruj strukturę paczki. |
 | `locale.unknown_text` | Klucz tłumaczenia, który nie wskazuje niczego w paczce. | Popraw klucz. |
-| `test.invalid` | Przypadek testowy o złej strukturze, z dwoma wynikami, z wejściem niepasującym do pól wejściowych, z ustawieniami niepasującymi do `settings.yaml` (brakuje wymaganego ustawienia bez wartości domyślnej), z ustawieniami w paczce bez `settings.yaml` albo z ustawieniami w `connection.config`. | Popraw przypadek; podawaj ustawienia w `settings:`. |
+| `test.invalid` | Przypadek testowy o złej strukturze, przypadek renderowania bloku wskazujący dane wejściowe, zapytanie, odczyt rekordów albo akcję, których blok nie ma, więcej niż 20 przypadków renderowania jednego bloku, z dwoma wynikami, z wejściem niepasującym do pól wejściowych, z ustawieniami niepasującymi do `settings.yaml` (brakuje wymaganego ustawienia bez wartości domyślnej), z ustawieniami w paczce bez `settings.yaml`, z ustawieniami w `connection.config`, z `effects` w paczce bez zakresów danych, z niepustymi `events` albo `seen` w akcji, która nie zgłasza zdarzeń, z `userConnection` w akcji, która nie jest akcją członka, albo z wartością, która nie jest wartością członka, albo z `credentialRevoked` w akcji, która nie jest akcją członka. | Popraw przypadek; podawaj ustawienia w `settings:`. |
 
 ## Tylko przy przesłaniu, gdy działają testy [#only-at-upload-when-the-tests-run]
 
-Te kody wskazują przypadek (`actions/greet/tests.yaml#/1`), a przy wymianie HTTP - miejsce w nim (`…#/1/http/0`), bez numeru linii.
+Te kody wskazują przypadek (`actions/greet/tests.yaml#/1`), a przy wymianie HTTP lub efekcie - miejsce w nim (`…#/1/http/0`, `…#/1/effects/0`), bez numeru linii.
 
 | Kod | Co się stało |
 | --- | --- |
 | `test.unexpected_request` | Akcja wysłała żądanie, którego przypadek nie przewidział. |
 | `test.request_mismatch` | Metoda, URL, wymieniony nagłówek albo treść różnią się od przypadku. |
 | `test.unused_exchange` | Przypadek przewidział żądanie, którego akcja nie wysłała. |
+| `test.unexpected_effect` | Akcja uruchomiła krok danych, którego przypadek nie przewidział jako następnego: nie został żaden efekt albo następny efekt dotyczy innego kroku. |
+| `test.effect_mismatch` | Klucz wymieniony w efekcie różni się od tego, co dostał krok, albo `response` efektu nie ma kształtu zwracanego przez krok. |
+| `test.unused_effect` | Przypadek przewidział krok danych, którego akcja nie uruchomiła. |
+| `test.unexpected_event` | Akcja zgłosiła zdarzenie po tych, które wymienia przypadek. |
+| `test.event_mismatch` | Zgłoszone zdarzenie różni się od tego, które przypadek wymienia na tej pozycji: wyzwalaczem, kluczem albo danymi. |
+| `test.missing_event` | Przypadek wymienia zdarzenie, którego akcja nie zgłosiła. |
 | `test.outcome_mismatch` | Akcja zakończyła się inaczej, niż mówi przypadek. |
 | `test.output_mismatch` | Wynik różni się od `returns`. |
 | `test.output_schema` | Wynik nie pasuje do pól wyjściowych. |
+| `test.render_mismatch` | Przypadek renderowania bloku: HTML nie zawiera tekstu z `contains` albo zawiera tekst z `notContains`. Wskazuje ten tekst (`…/tests.yaml#/0/contains/1`). |
+| `test.render_failed` | Przypadek renderowania bloku: szablonu nie dało się wyrenderować, na przykład bo używa filtra spoza wbudowanych filtrów Opero. |
 | `test.failed` | Przypadek nie mógł się zakończyć, np. zabrakło czasu. |
-| `manifest.unsupported_by_server` | To Opero nie instaluje jeszcze części, której używa paczka. |
+| `manifest.unsupported_by_server` | To Opero nie instaluje jeszcze części albo nie obsługuje zakresu danych, których używa paczka. |
 
-## Tylko w planie instalacji
+## Tylko w planie instalacji [#only-in-the-install-plan]
 
 | Kod | Znaczenie |
 | --- | --- |
 | `requires.release` | To Opero jest starsze, niż wymaga paczka. |
+| `requires.release_unknown` | Ta instalacja nie zna swojego wydania, więc `requires.opero` nie zostało sprawdzone. Nie blokuje. |
 | `requires.module` | Wymagany moduł nie jest tu dostępny. |
 | `permission.missing` | Osobie instalującej brakuje uprawnienia, którego wymaga zawartość. |
+| `permission.owner_required` | Paczka deklaruje zakresy danych, a osoba instalująca nie jest właścicielem organizacji. |
 | `version.not_newer` | Aktualizacja do tej samej lub starszej wersji. |
 | `rule.save_validation` | Reguły akcji nie da się zapisać. Komunikat mówi dlaczego. |
 | `filter.save_validation` | Skryptu filtra nie da się zapisać: nie przechodzi walidacji albo jego nazwa jest zajęta. |
 | `filter.not_sync` | Filtr na coś czeka. Filtry muszą odpowiadać od razu. |
 | `step.in_use`, `filter.in_use` | Aktualizacja usuwa coś, czego używają reguły organizacji. |
+| `trigger.in_use` | Aktualizacja usuwa wyzwalacz, którego używa reguła organizacji, jako swojego wyzwalacza albo wśród swoich zdarzeń. Komunikat wymienia reguły. |
+| `trigger.data_field_removed` | Aktualizacja usuwa pola danych wyzwalacza, którego używa reguła. Reguły nie są przeszukiwane pod kątem miejsc, w których je odczytują. Nie blokuje. |
+| `member.reconsent_required` | Aktualizacja prosi członków o więcej: nowy zakres OAuth, inny host logowania lub tokenów albo nowe zapisywane wyjście. Każdy połączony członek musi połączyć się ponownie. Nie blokuje. |
+| `object.save_validation` | Obiektu lub pola nie da się zapisać, np. przez nieznany typ pola albo złe opcje. |
+| `object.adopts_existing` | Przejmowany jest moduł lub obiekt zachowany przy wcześniejszym odinstalowaniu. Nie blokuje. |
+| `dictionary.save_validation` | Słownika nie da się zapisać, np. dlatego, że zostałaby usunięta pozycja, która jest jeszcze w użyciu. |
+| `dictionary.adopts_existing` | Przejmowany jest słownik zachowany przy wcześniejszym odinstalowaniu. Nie blokuje. |
+| `dictionary.released` | Aktualizacja usuwa słownik, którego coś jeszcze używa; zostaje on jako własny słownik organizacji. Nie blokuje. |
+| `query.save_validation` | SQL zapytania nie da się zapisać albo jego `kind` nie odpowiada temu, co robi SQL. |
+| `query.adopts_existing` | Przejmowane jest zapytanie zachowane przy wcześniejszym odinstalowaniu. Nie blokuje. |
+| `query.in_use` | Aktualizacja usuwa zapytanie, którego używa aktywna lista SQL, raport albo blok. |
+| `block.adopts_existing` | Istnieje blok własny z zainstalowanym kluczem jednego z bloków paczki, który nie należy do rozszerzenia. |
+| `block.save_validation` | Bloku nie da się zapisać: na przykład parametry zapytania nie pasują albo filtr odczytu rekordów jest błędny. Komunikat mówi dlaczego. |
+| `block.breaking_change` | Blok zmienia się tak, że psuje strony, które go umieszczają, albo bloki, które go renderują. |
+| `block.removed_placed` | Aktualizacja usuwa blok umieszczony na stronach; te umieszczenia pokazują potem, że rozszerzenie go usunęło. Nie blokuje. |
+| `block_action.in_use` | Aktualizacja usuwa akcję bloku, którą wskazuje jeden z własnych bloków organizacji. |
+| `form.save_validation` | Formularz nie dałby się zapisać. Komunikat mówi dlaczego. |
+| `layout.save_validation` | Układ formularza albo strony nie dałby się zapisać, na przykład dlatego, że węzeł pola wskazuje pole, którego obiekt nie ma. Komunikat podaje miejsce. |
+| `list.save_validation` | Lista nie dałaby się zapisać dla swojego źródła, na przykład dlatego, że kolumna albo filtr wskazuje pole, którego źródło nie ma. Komunikat podaje miejsce w `config`. Lista na obiekcie, który tworzy ta sama instalacja, jest sprawdzana przy instalowaniu. |
+| `form.layout_unsupported` | Ten proces Opero nie potrafi instalować układów formularzy. |
+| `form.default_taken` | Organizacja wybrała własny domyślny formularz typu, który zajmuje formularz paczki; zostaje on bez zmian. Nie blokuje. |
+| `form.in_use` | Aktualizacja usuwa formularz, który wskazują układy, listy albo bloki organizacji; pokażą go jako niedostępny. Nie blokuje. |
+| `object.formless` | Aktualizacja zostawia obiekt bez formularza typu, który miał. Jego rekordów nie da się otworzyć ani utworzyć, dopóki administrator nie zbuduje formularza. Nie blokuje. |
+| `list.in_use` | Aktualizacja archiwizuje listę, którą osadzają układy organizacji; pokazują one, że usunęło ją rozszerzenie. Nie blokuje. |
+| `page.in_use` | Aktualizacja archiwizuje stronę, którą otwierają menu organizacji; te pozycje zostają i są ukryte, dopóki strona jest zarchiwizowana. Nie blokuje. |
+| `link.field_unknown` | Link na rekordzie wbudowanym wskazuje pole spoza zestawu tego typu (także przy przesłaniu). Zobacz [Linki rekordów](/docs/pl/extensions/reference/record-links#links-on-built-in-records). |
+| `permission.grants_removed` | Aktualizacja usuwa uprawnienie paczki, które nadają role; zostaje z nich usunięte. Nie blokuje. |
 | `settings.value_dropped` | Aktualizacja odrzuca zapisaną wartość ustawienia: nowa wersja nie ma już tego ustawienia albo wartość już do niego nie pasuje. Nie blokuje. |
 | `settings.incomplete_after_upgrade` | Nowa wersja ma wymagane ustawienie bez wartości domyślnej i bez zapisanej wartości. Po aktualizacji rozszerzenie nie działa, dopóki go nie uzupełnisz. Nie blokuje. |
+
+## W trakcie działania kroku [#while-a-step-runs]
+
+| Kod | Znaczenie |
+| --- | --- |
+| `EXTENSION_EVENT_INVALID` | Krok `EMIT_EVENT` dostał coś, co nie jest listą obiektów, albo element, który nie pasuje do danych wyzwalacza, ma ponad 32 KB albo nie ma użytecznego klucza. Krok niczego nie zgłosił. |
+| `EXTENSION_EVENT_LIMIT` | Krok `EMIT_EVENT` dostał ponad 500 elementów albo uruchomienie zgłosiłoby ponad 2000 zdarzeń. Krok niczego nie zgłosił. |
+| `EXTENSION_EVENT_NOT_ALLOWED` | Krok `EMIT_EVENT` uruchomił się poza uruchomieniem, które Opero rozpoczęło dla rozszerzenia, albo dla wyzwalacza, którego zainstalowana wersja nie deklaruje. |
+| `EXTENSION_ACTION_CREDENTIAL_REVOKED` | W uruchomieniu harmonogramu dla członków żądanie z tokenem członka dostało odpowiedź `401`. Członek jest wstrzymany, dopóki nie połączy się ponownie. |
+| `EXTENSION_SCOPE_DENIED` | Krok danych paczki po wypełnieniu szablonów sięgnąłby poza jej zakresy danych. Krok niczego nie zrobił. Kod widać w uruchomieniu własnej reguły rozszerzenia; reguła organizacji widzi `EXTENSION_ACTION_FAILED`. |
+| `EXTENSION_MANAGED_RULE_RUN` | Ktoś próbował bezpośrednio uruchomić, przetestować lub ponowić regułę rozszerzenia albo wywołać ją z innej reguły. Działa ona tylko przez swój krok. |
+| `service_connection_not_configured` | Krok `SEND_EMAIL` uruchomił się w instalacji bez usługi e-mail. |
+
+## Gdy członek uruchamia akcję bloku albo polecenie rekordu [#when-a-member-runs-a-block-action-or-a-record-command]
+
+Zobacz [Gdy uruchomienie członka zostanie odrzucone](/docs/pl/extensions/reference/member-actions#when-a-members-run-is-refused), gdzie opisano `EXTENSION_INACTIVE`, `EXTENSION_ACTION_FORBIDDEN`, `block_action_unavailable` i inne kody, którymi może się zakończyć uruchomienie członka.
+
+## Przy zapisie reguły [#when-a-rule-is-saved]
+
+| Kod | Znaczenie |
+| --- | --- |
+| `step_type_managed_only` | Reguła organizacji używa `EMIT_EVENT`, którego mogą używać tylko własne reguły rozszerzenia. |
+| `rule_type_unavailable` | Reguła dostaje wyzwalacz albo krok rozszerzenia, które nie działa. |
+
+## Gdy członek się łączy [#when-a-member-connects]
+
+Połączenie członka pokazuje te kody na jego stronie konta. Mają znaczenie, gdy czytasz API.
+
+| Kod | Znaczenie |
+| --- | --- |
+| `x-<key>.member.<name>` | Akcja `afterConnect` zakończyła się błędem ze statusem, który `failures` mapuje na `<name>`. Członek widzi komunikat błędu, jeśli go podano, a w przeciwnym razie ogólny komunikat. |
+| `integrations.user_credentials.company_unavailable` | Firma wybrana w formularzu członka nie jest jego albo już nie jest. |
+| `integrations.user_credentials.not_available` | Rozszerzenie nie działa, więc połączenie członka nie jest oferowane. |
+| `extensions.user_connection.revoked` | Usługa odrzuciła token członka; członek łączy się ponownie, żeby wznowić. |
+| `extensions.user_connection.reconsent_required` | Aktualizacja prosi o więcej, niż członek się zgodził; członek łączy się ponownie, żeby wznowić. |
+
+## Gdy eksport coś pomija [#when-an-export-leaves-something-out]
+
+`opero-ext pull`, narzędzie MCP `extensions_export` i ścieżka eksportu zgłaszają każdy zasób, którego nie udało się spakować, jednym z tych kodów i pomijają razem z nim wszystko, co go potrzebuje. Zobacz [Zacznij od swojej organizacji](/docs/pl/extensions/start-from-your-organization).
+
+| Kod | Znaczenie |
+| --- | --- |
+| `export.managed` | Zasobem zarządza zainstalowane rozszerzenie; należy on do tego rozszerzenia. |
+| `export.unsupported_kind` | Ten rodzaj zasobu nie jest eksportowany. Reguły nie są jeszcze eksportowane. |
+| `export.query_foreign_table` | Zapisane zapytanie czyta tabelę, która nie należy do eksportowanych obiektów, albo podaje nazwę tabeli w miejscu, którego eksport nie może przepisać. Zapytanie paczki czyta tylko jej własne obiekty. |
+| `export.object_foreign_reference` | Obiekt wskazuje coś, czego paczka nie może zawierać: słownik albo obiekt, który nie jest eksportowany, albo wiersz organizacji po identyfikatorze. |
+| `export.block_reference` | Blok wskazuje identyfikator albo klucz organizacji, którego eksport nie może przepisać, buduje nazwę akcji bloku albo renderowanego bloku w Liquid albo używa jednego z filtrów szablonów organizacji. |
+| `export.block_action` | Blok zapisuje przez formularz, uruchamia regułę po identyfikatorze albo uruchamia akcję innego rozszerzenia, czego blok paczki nie może. |
+| `export.rule_trigger`, `export.rule_step` | Zarezerwowane dla eksportu reguł, który jeszcze nie powstał. |
+| `export.name_collision` | To nie odmowa: nazwa zasobu była zajęta, więc jest pakowany pod inną nazwą i wymieniony wśród dodanych zasobów. |
+| `export.not_found` | Wybór nie wskazuje niczego w tej organizacji. |
+| `export.layout_reference` | Układ formularza albo strony lub konfiguracja listy wskazuje identyfikatorem coś, czego paczka nie może zawierać (raport, regułę, proces, kalendarz, pole własne, …), albo blok, listę, formularz lub zapytanie, które zostało pominięte. |
+| `export.list_action` | Lista ma akcję, która uruchamia regułę albo skrypt; lista w paczce ma tylko akcje `OPEN_LINK`. |
+| `export.list_source` | Lista odczytuje obiekt, który został pominięty. |
+| `export.form_public` | Formularz jest publiczny; paczka nie dostarcza formularzy publicznych. |
+| `export.form_object` | Obiekt formularza został pominięty. |
+| `export.page_portal` | Strona jest stroną portalu; paczka dostarcza tylko strony obszaru roboczego. |
+
+Po eksporcie `validate` zgłasza to, co musisz jeszcze napisać, zwykle `block.test_missing`, `permissions.reason_required` i opis w `extension.yaml`.
+
+## Gdy polecenie administratora jest odrzucane [#when-an-administrators-command-is-refused]
+
+Te kody zwracają ekrany, API i narzędzia MCP Opero, gdy ktoś przesyła, instaluje, aktualizuje, odinstalowuje albo eksportuje rozszerzenie albo edytuje to, czym ono zarządza. Ekrany pokazują komunikat; kody mają znaczenie, gdy wywołujesz API albo czytasz wynik `opero-ext --json`. Od nich zależy [kod wyjścia](/docs/pl/extensions/reference/cli#exit-codes) `opero-ext`.
+
+| Kod | Znaczenie |
+| --- | --- |
+| `MODULE_UNAVAILABLE` | Użyto narzędzia autorskiego, gdy moduł Tworzenie rozszerzeń jest w organizacji wyłączony albo nie obejmuje go licencja: sprawdzenia paczki z testami albo eksportu. `meta.moduleKey` to `extensions`. Narzędzia MCP nie są wtedy oferowane, a `opero-ext test` i `pull` kończą się kodem 4. Nie dotyczy to przesyłania, instalacji ani działania rozszerzeń. |
+| `EXTENSION_VERSION_EXISTS` | Ta wersja została już przesłana z inną zawartością. Podnieś `version` w `extension.yaml`. |
+| `EXTENSION_CONSENT_REQUIRED` | Instalację albo aktualizację wysłano bez zgody na plan. |
+| `EXTENSION_PLAN_STALE` | Wysłany skrót planu nie jest skrótem bieżącego planu: od pokazania planu coś się zmieniło. Zaplanuj ponownie i przejrzyj plan. |
+| `EXTENSION_REQUIREMENT_UNMET` | Plan jest zablokowany; komunikat mówi dlaczego. Blokujące problemy planu opisuje sekcja [Tylko w planie instalacji](#only-in-the-install-plan). |
+| `EXTENSION_ALREADY_INSTALLED` | Wysłano instalację rozszerzenia, które jest już zainstalowane. Zaktualizuj je zamiast tego. |
+| `EXTENSION_REVISION_CONFLICT` | Instalacja zmieniła się od odczytu. Odśwież i spróbuj ponownie. |
+| `EXTENSION_OPERATION_IN_PROGRESS` | Trwa inna operacja na tym rozszerzeniu. Poczekaj i spróbuj ponownie. |
+| `EXTENSION_DATA_LOSS_UNCONFIRMED` | Aktualizację, która usuwa dane, wysłano bez potwierdzenia utraty. Nic się nie zmieniło. |
+| `EXTENSION_CONFIRM_KEY_MISMATCH` | Odinstalowanie, które usuwa dane, wysłano bez dokładnie wpisanego klucza rozszerzenia. |
+| `EXTENSION_PERMISSION_MISSING` | Osobie odinstalowującej brakuje uprawnienia, którego wymaga wybrana opcja, albo osobie eksportującej brakuje uprawnienia do odczytu wybranego rodzaju. `meta.permissions` je wymienia. Nic się nie zmieniło. |
+| `EXTENSION_EXPORT_SELECTION_INVALID` | Eksport nie wybrał niczego albo wybrał więcej niż 200 zasobów. |
+| `EXTENSION_DELETE_DATA_BLOCKED` | Usunięcie danych zostało odrzucone, bo zachowywane zapisane zapytanie czyta tabelę, którą usunięcie by skasowało. Nic się nie zmieniło. |
+| `EXTENSION_MANAGED_ASSET` | Zmiana czegoś, czym zarządza rozszerzenie: zarządzanej reguły, filtra lub bloku, budowy jego modułu, obiektów, słowników lub zapytań albo jednego z jego formularzy, układów formularzy i stron, list lub stron. |
+| `CUSTOM_LIST_KEY_RESERVED` | Organizacja próbowała utworzyć listę własną, której klucz zaczyna się od `x-`. |
+| `CUSTOM_PAGE_SLUG_RESERVED` | Organizacja próbowała utworzyć stronę, której slug zaczyna się od `x-`, albo zmienić slug na taki. |
+| `CUSTOM_LIST_EXTENSION_REMOVED` | Organizacja próbowała przywrócić listę, którą usunęło jej rozszerzenie przez odinstalowanie albo aktualizację. Zainstalowanie wersji rozszerzenia, która ma tę listę, ją przywraca. |
+| `DYNAMIC_FORM_ACCESS_DENIED` | Członek otworzył albo utworzył rekord obiektu, który został bez formularza tego typu, na przykład po odinstalowaniu z zachowaniem danych. Administrator buduje formularz dla obiektu. |
+| `CUSTOM_BLOCK_KEY_RESERVED` | Organizacja próbowała utworzyć blok własny, którego klucz zaczyna się od `x_`. |
+| `CUSTOM_BLOCK_EXTENSION_REMOVED` | Organizacja próbowała przywrócić blok, który usunęło jego rozszerzenie, przez odinstalowanie albo aktualizację do wersji bez tego bloku. Przywraca go instalacja wersji rozszerzenia, która ma ten blok. |
+| `EXTENSION_SETTINGS_INVALID` | Zapis ustawień z polem, którego paczka nie deklaruje, albo z wartością, która nie pasuje do swojego pola. |
+| `DYNAMIC_MODULE_KEY_RESERVED`, `DICTIONARY_KEY_RESERVED` | Organizacja próbowała utworzyć moduł lub słownik o kluczu zaczynającym się od `x-`. |
+| `SAVED_QUERY_KEY_RESERVED` | Organizacja próbowała utworzyć zapisane zapytanie o kluczu zaczynającym się od `x_` albo zmienić klucz istniejącego na taki. |
+| `CUSTOM_SCRIPT_KEY_RESERVED` | Organizacja próbowała utworzyć skrypt o kluczu zaczynającym się od `x_`. |

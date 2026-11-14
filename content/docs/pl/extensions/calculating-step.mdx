@@ -14,9 +14,9 @@ Przykład dodaje krok **Calculate margin** (`x-calc-ext.margin`), który przyjmu
 Zacznij od szkieletu, dodaj akcję i usuń przykład:
 
 ```bash title="Terminal"
-extension-cli init calc-ext --name Calc
+opero-ext init calc-ext --name Calc
 cd calc-ext
-extension-cli add action margin
+opero-ext add action margin
 ```
 
 Usuń folder `actions/hello`. Paczka ma wtedy cztery pliki:
@@ -124,8 +124,8 @@ Pierwszy przypadek porównuje dokładny wynik, drugi dowodzi, że błędne wejś
 ### Zwaliduj i spakuj
 
 ```bash title="Terminal"
-extension-cli validate .
-extension-cli pack .
+opero-ext validate .
+opero-ext pack .
 ```
 
 ```txt title="Wynik"

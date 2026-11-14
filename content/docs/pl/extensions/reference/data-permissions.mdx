@@ -1,0 +1,114 @@
+---
+title: Uprawnienia do danych
+description: "Opis permissions.data w rozszerzeniach Opero: osiem zakresów danych, na co każdy pozwala regule paczki, dozwolone cele i odrzucane klucze każdego kroku, instalacja tylko przez właściciela oraz co jest sprawdzane przy przesłaniu i w trakcie działania."
+---
+
+Reguła twojej paczki może odczytywać i zapisywać dane, uruchamiać zapytania i wysyłać wiadomości tylko krokami danych, a każdy krok danych potrzebuje **zakresu danych**, który paczka deklaruje w `permissions.data`. Administrator widzi w planie instalacji każdy zakres z uzasadnieniem, zanim się na niego zgodzi.
+
+```yaml title="extension.yaml"
+permissions:
+  data:
+    - scope: records:read
+      reason: Reads the open orders.
+    - scope: records:write
+      reason: Stores the status the carrier answers.
+```
+
+## Zakresy [#the-scopes]
+
+| Zakres | Pozwala regule paczki | Krokiem |
+| --- | --- | --- |
+| `records:read` | Odczytywać rekordy własnych obiektów paczki. | `FETCH_RECORDS` |
+| `records:write` | Tworzyć i zmieniać rekordy własnych obiektów paczki. | `CREATE_RECORD`, `UPDATE_RECORD` |
+| `queries:run` | Uruchamiać własne zapytania FETCH paczki. | `RUN_QUERY` |
+| `queries:mutate` | Uruchamiać własne zapytania MUTATION paczki. | `RUN_QUERY` |
+| `contractors:write` | Zmieniać kontrahentów organizacji. | `UPDATE_CONTRACTOR` |
+| `email:send` | Wysyłać e-maile na dowolny adres przez usługę e-mail instalacji, z dowolnym plikiem organizacji dołączonym po jego id. | `SEND_EMAIL` |
+| `notifications:send` | Wysyłać powiadomienia członkom organizacji. | `SEND_NOTIFICATION` |
+| `documents:generate` | Generować dokumenty z szablonu dokumentu, który wybiera autor reguły organizacji. | `GENERATE_DOCUMENT` |
+
+Innych zakresów nie ma; każda inna wartość jest odrzucana. Jak napisać każdy krok, opisuje strona [Kroki danych](/docs/pl/extensions/reference/data-steps).
+
+W planie instalacji, w sekcji **Zakresy danych**, administrator czyta każdy zadeklarowany zakres jako stałe zdanie, a pod nim twoje uzasadnienie. Tych zdań nie piszesz; są takie same dla każdej paczki:
+
+| Zakres | Zdanie w planie instalacji |
+| --- | --- |
+| `records:read` | Odczyt rekordów własnych obiektów tego rozszerzenia. |
+| `records:write` | Tworzenie i zmiana rekordów własnych obiektów tego rozszerzenia. |
+| `queries:run` | Uruchamianie własnych zapytań odczytujących tego rozszerzenia. |
+| `queries:mutate` | Uruchamianie własnych zapytań tego rozszerzenia, które zmieniają dane. |
+| `contractors:write` | Zmiana Twoich kontrahentów. |
+| `email:send` | Wysyłanie e-maili na dowolny adres, z załączonymi plikami Twojej organizacji. |
+| `notifications:send` | Wysyłanie powiadomień członkom Twojej organizacji. |
+| `documents:generate` | Tworzenie dokumentów z szablonów, które wybierają Twoje reguły. |
+
+Lista zaczyna się od zdania „Każda reguła, która używa kroków tego rozszerzenia, może wtedy robić to w firmie, w której działa, bez uprawnień swojego autora.”.
+
+<Callout type="warn" title="Załączniki: dowolny plik organizacji">
+Krok `SEND_EMAIL` może dołączyć dowolny plik organizacji po jego id: nie tylko dokument wygenerowany w tym samym uruchomieniu i nie tylko pliki firmy, w której działa reguła, albo pliki, które może otworzyć jej autor. Odrzucane są tylko pliki, których źródło nie pozwala na użycie w regułach, na przykład niektóre załączniki e-maili. Krok, który bierze id pliku ze swojego wejścia, pozwala więc każdemu autorowi reguł w organizacji wysłać ten plik na dowolny adres. Tak działa to dziś; może to zostać zawężone, na przykład do dokumentów generowanych w tym samym uruchomieniu.
+</Callout>
+
+## Kto może ją zainstalować [#who-can-install-it]
+
+Kroki twojej paczki działają z uprawnieniami **instalacji**: niezależnie od tego, kto napisał regułę organizacji, która używa twojego kroku, krok robi to, na co pozwalają zakresy, w firmie, dla której ta reguła działa, bez uprawnień tej osoby. Zgoda jest więc całym upoważnieniem i musi pochodzić od kogoś, kto może udzielić go w całości.
+
+<Callout type="warn" title="Paczkę z zakresami danych instaluje tylko właściciel organizacji">
+Paczkę, która deklaruje jakikolwiek zakres danych, może zainstalować, zaktualizować albo naprawić tylko właściciel organizacji, członek z rolą, która daje wszystkie uprawnienia, albo administrator systemu. Dla każdej innej osoby plan instalacji jest zablokowany z kodem `permission.owner_required`.
+</Callout>
+
+Okno instalacji takiej paczki zaczyna się od uwagi „To rozszerzenie prosi o dostęp do danych. Dostęp do danych może mu przyznać tylko właściciel organizacji, więc tylko on może je zainstalować, zaktualizować lub naprawić.”, a dla każdej innej osoby jego przycisk potwierdzenia pozostaje wyłączony.
+
+## Co może wskazywać każdy krok [#what-each-step-may-name]
+
+Paczka sięga tylko do tego, co sama przynosi: do własnych obiektów w module `x-<key>` i do własnych zapytań. Każdy cel jest wpisany wprost, nigdy nie jest budowany z szablonu ani z ustawienia.
+
+| Krok | Cel | Odrzucane w regule paczki |
+| --- | --- | --- |
+| `FETCH_RECORDS` | `moduleKey: x-<key>`, `objectKey`: obiekt paczki. | |
+| `CREATE_RECORD` | `targetModuleKey: x-<key>`, `targetObjectKey`: obiekt paczki. | |
+| `UPDATE_RECORD` | To samo oraz `target`: id rekordu do zmiany. | Brak `target` albo `target: self`: krok nie ma rekordu, który go wyzwolił. |
+| `RUN_QUERY` | `queryKey`: zainstalowany klucz zapytania paczki, `x_<klucz z _>_<name>`. O zakresie decyduje `kind` zapytania: `queries:run` dla FETCH, `queries:mutate` dla MUTATION. | `queryId` |
+| `UPDATE_CONTRACTOR` | Dowolny kontrahent organizacji, po `contractorId`. | |
+| `SEND_EMAIL` | Dowolny adres. `subject` i `html` wpisane w kroku; załączniki po id pliku (`attachmentFileIds`, `fileIds`), dowolny plik organizacji. | `accountId`, `templateId`, `cc`, `bcc`, `text`, `saveAsDraft` |
+| `SEND_NOTIFICATION` | Członkowie organizacji; ogólne powiadomienie z `title` i `body`. | `typeKey` |
+| `GENERATE_DOCUMENT` | Szablon dokumentu z danych. `templateId` zapisuje się dokładnie jako `{{ trigger.data.<field> }}`, więc autor reguły organizacji wybiera szablon przez wejście twojego kroku. `templateVersionId` jest dozwolony; może wskazać tylko bieżącą opublikowaną wersję szablonu. | `entityId`, `invoiceId`; `templateId` zapisany w inny sposób |
+
+Paczka z zakresem `documents:generate` wymienia też moduł `documents` w `requires.modules`.
+
+## Uzasadnienia [#reasons]
+
+Każdy zakres ma `reason`, pokazywane pod nim w planie instalacji. Napisz jednym zdaniem, z perspektywy administratora, co rozszerzenie z nim robi. Przetłumacz je w `locales/<lang>.yaml` pod `permissions.data.<scope>.reason`:
+
+```yaml title="locales/pl.yaml"
+permissions:
+  data:
+    records:read: { reason: Odczytuje otwarte zamówienia. }
+    records:write: { reason: Zapisuje status zwrócony przez przewoźnika. }
+```
+
+Proś tylko o to, czego używasz: zadeklarowany zakres, którego nie używa żadna reguła paczki, jest odrzucany.
+
+## Kiedy jest sprawdzane [#when-it-is-checked]
+
+1. **Przy odczycie paczki**, przez `opero-ext validate` i ponownie przy przesłaniu: każdy krok każdej reguły paczki jest sprawdzany względem powyższej tabeli, z problemami opisanymi niżej.
+2. **W planie instalacji**: czy osoba instalująca jest właścicielem (`permission.owner_required`) i czy to Opero obsługuje każdy zadeklarowany zakres (w przeciwnym razie `manifest.unsupported_by_server`).
+3. **Za każdym razem, gdy krok działa**: ustawienia kroku są sprawdzane ponownie po wypełnieniu szablonów. Krok, który sięgnąłby poza zakresy, kończy się błędem `EXTENSION_SCOPE_DENIED` i niczego nie robi. Paczka, która przeszła przesłanie, tu nie dociera; to druga linia obrony.
+
+[Testy kontraktowe](/docs/pl/extensions/reference/tests#data-and-messaging-steps) wykonują to samo sprawdzenie, więc test nie przejdzie z krokiem, na który zakresy nie pozwalają.
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `permissions.invalid_scope` | Zakres spoza ośmiu istniejących. |
+| `permissions.reason_required` | Zakres bez uzasadnienia. |
+| `permissions.unused_scope` | Zadeklarowany zakres, którego nie używa żadna reguła paczki. |
+| `requires.module_undeclared` | Zakres `documents:generate` bez `documents` w `requires.modules`. |
+| `step.scope_missing` | Krok danych, którego zakresu paczka nie deklaruje. |
+| `step.target_not_own` | Krok wskazuje moduł, obiekt albo zapytanie, które nie należą do paczki. |
+| `step.target_not_literal` | Klucz modułu, obiektu albo zapytania pochodzi z szablonu, także z ustawienia. |
+| `step.config_not_allowed` | Odrzucany klucz z powyższej tabeli, aktualizacja bez id rekordu albo `templateId`, który nie jest dokładnie `{{ trigger.data.<field> }}`. |
+| `step.type_not_allowed` | Typ kroku, którego nie obejmuje żaden zakres, np. `ATTACH_FILE` albo `CALL_RULE`. |
+| `action.verify_uses_data` | Akcja weryfikująca połączenie używa kroku danych. Działa bez firmy, więc nie może. |
+| `test.invalid` | Przypadek testowy z `effects` w paczce bez zakresów danych. |
+| `permission.owner_required` | W planie instalacji: osoba instalująca nie jest właścicielem organizacji. Blokuje instalację. |

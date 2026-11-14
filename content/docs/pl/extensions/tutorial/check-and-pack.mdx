@@ -10,7 +10,7 @@ W tej części sprawdzasz gotowy folder, pakujesz go do pliku zip i, jeśli chce
 ### Zwaliduj folder
 
 ```bash title="Terminal"
-extension-cli validate .
+opero-ext validate .
 ```
 
 ```txt title="Wynik"
@@ -36,7 +36,7 @@ Jedno uruchomienie zgłasza każdy problem w każdym pliku. [Kody błędów](/do
 ### Spakuj
 
 ```bash title="Terminal"
-extension-cli pack .
+opero-ext pack .
 ```
 
 ```txt title="Wynik"
@@ -54,11 +54,13 @@ Ten sam folder zawsze daje ten sam plik zip, bajt w bajt. `--out` wybiera nazwę
 Ten krok przed przesłaniem jest opcjonalny. Zaloguj się raz, a potem uruchom wszystkie przypadki testowe w Opero bez zapisywania czegokolwiek:
 
 ```bash title="Terminal"
-extension-cli login --server https://opero.example.com/mcp
-extension-cli test . --server https://opero.example.com/mcp
+opero-ext login --server https://opero.example.com/mcp
+opero-ext test . --server https://opero.example.com/mcp
 ```
 
 Polecenie wypisuje jeden wiersz na przypadek (wynik, akcja, przypadek, nazwa) i liczbę przypadków, które przeszły. Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji.
+
+`test` wymaga w organizacji modułu **Tworzenie rozszerzeń**; bez niego polecenie kończy się kodem 4. Przesłanie i tak uruchamia te same testy.
 
 <Callout type="idea" title="Najszybsza pętla">
 Uruchamiaj `validate` po każdej zmianie, `test`, gdy pliki są poprawne, i przesyłaj paczkę, gdy testy przechodzą.

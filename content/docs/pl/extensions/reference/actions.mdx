@@ -1,6 +1,6 @@
 ---
 title: Akcje i listy pól
-description: "Opis action.yaml w rozszerzeniach Opero: nazwa, etykieta, listy pól wejścia i wyjścia, typy pól, logika run, testy, krok reguły i nazwy zainstalowanych części."
+description: "Opis action.yaml w rozszerzeniach Opero: nazwa, etykieta, listy pól wejścia i wyjścia, typy pól, logika run, testy, krok reguły, oferowanie akcji członkom z bloków i rekordów oraz nazwy zainstalowanych części."
 ---
 
 Akcja to folder z `action.yaml`, jej logiką (plikiem reguły albo skryptem) i testami. Udostępniona jako krok reguły, jest tym, z czego korzystają autorzy reguł.
@@ -39,7 +39,7 @@ expose:
     },
     description: {
       type: 'string',
-      description: 'Widoczny na liście kroków. Wymagany, gdy akcja jest udostępniona jako krok.',
+      description: 'Widoczny na liście kroków. Wymagany, gdy akcja jest udostępniona jako krok, akcja bloku albo polecenie rekordu.',
     },
     input: {
       type: 'field list | schema file',
@@ -61,20 +61,51 @@ expose:
     },
     'expose.ruleStep': {
       type: '{ category?, branches? }',
-      description: 'Publikuje akcję jako krok x-<key>.<action>. category grupuje go na liście kroków. Bez expose akcja jest instalowana, ale autorzy reguł jej nie widzą.',
+      description: 'Publikuje akcję jako krok x-<key>.<action>. category grupuje go na liście kroków. Bez expose akcja jest instalowana, ale autorzy reguł jej nie widzą. Niedozwolone dla akcji, która zgłasza zdarzenia, akcji członka ani akcji uruchamianej przez harmonogram albo przez afterConnect lub beforeDisconnect połączenia członka.',
+    },
+    'expose.blockAction': {
+      type: '{ permission }',
+      description: 'Pozwala przyciskowi w jednym z bloków paczki uruchomić akcję jako członek, który go nacisnął. Zobacz Akcje bloków i polecenia rekordów.',
+    },
+    'expose.recordCommand': {
+      type: '{ permission, targets, … }',
+      description: 'Oferuje akcję jako polecenie na rekordach, których dotyczy, uruchamiane przez członka dla tego rekordu. Zobacz Akcje bloków i polecenia rekordów.',
     },
   }}
 />
 
-Pola wejściowe najwyższego poziomu typu `text`, `number`, `integer`, `boolean` i `select` stają się też parametrami ręcznego wyzwalacza zainstalowanej reguły, więc regułę można uruchomić ręcznie z formularza. Używanych jest pierwszych 20 takich pól. Pole innego typu, pole, którego klucz zawiera wielką literę (pisz `order_id`, nie `orderId`), oraz wejście podane jako plik schematu nie dają parametru.
+Pola wejściowe najwyższego poziomu typu `text`, `number`, `integer`, `boolean` i `select` stają się też parametrami ręcznego wyzwalacza zainstalowanej reguły. Używanych jest pierwszych 20 takich pól. Pole innego typu, pole, którego klucz zawiera wielką literę (pisz `order_id`, nie `orderId`), oraz wejście podane jako plik schematu nie dają parametru.
+
+Zainstalowana reguła działa tylko przez swój krok. Ręczne uruchomienie, test czy ponowienie jej albo wywołanie jej z innej reguły krokiem **Wywołaj regułę** jest odrzucane z kodem `EXTENSION_MANAGED_RULE_RUN`. Żeby wypróbować akcję, użyj jej jako kroku w regule organizacji albo uruchom jej [testy](/docs/pl/extensions/reference/tests).
 
 <Callout type="warn" title="Dodatkowe wyjścia wyników">
 `expose.ruleStep.branches` wymienia dodatkowe wyjścia wyników. Są widoczne na kroku, ale dziś wybierane jest zawsze tylko wyjście domyślne albo wyjście błędu.
 </Callout>
 
+## Akcje, które nie są krokami [#actions-that-are-not-steps]
+
+Akcja bez `expose` też jest instalowana i działa, gdy uruchamia ją coś z paczki:
+
+| Uruchamia ją | Przykład |
+| --- | --- |
+| **Sprawdź połączenie** w połączeniu | `verify: verify` w `connection.yaml`. |
+| [Harmonogram](/docs/pl/extensions/reference/schedules) | `action: sync_orders` w `schedule.yaml`. |
+| `afterConnect` albo `beforeDisconnect` [połączenia członka](/docs/pl/extensions/reference/member-connections) | `afterConnect` albo `beforeDisconnect` w `member.yaml`. |
+
+Dwóch rodzajów akcji nigdy nie można udostępnić jako kroku reguły:
+
+- **Akcji, która zgłasza zdarzenia**, czyli takiej, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events): zdarzenia paczki zgłaszają tylko uruchomienia harmonogramu oraz `afterConnect` i `beforeDisconnect` połączenia członka (`event.emitted_from_step`). Nie może też być akcją weryfikacji.
+- **Akcji członka**, czyli takiej, której reguła używa `{{ userConnection.<field> }}`: działa tylko dla jednego członka, uruchamiana przez `afterConnect` lub `beforeDisconnect` połączenia członka albo przez harmonogram dla członków (`action.member_outside_member_run`). Nie może też być akcją weryfikacji.
+
+Akcji harmonogramu ani akcji `afterConnect` i `beforeDisconnect` też nie można udostępnić (`schedule.action_exposed`, `member.invalid`), ani jako kroku reguły, ani jako akcji bloku, ani jako polecenia rekordu. Akcja, która zgłasza zdarzenia, albo taka, która używa `{{ userConnection.<field> }}`, nie może być akcją bloku ani poleceniem rekordu.
+
+<Callout title="Dwa znaczenia słowa „członek”">
+*Akcja członka* na tej stronie to akcja, która używa własnego połączenia członka. Akcje, które członkowie uruchamiają sami z bloków i rekordów, to [akcje bloków i polecenia rekordów](/docs/pl/extensions/reference/member-actions).
+</Callout>
+
 ## Listy pól [#field-lists]
 
-Lista pól mapuje klucze pól (litery, cyfry i `_`, nie zaczynają się od cyfry) na definicje. Wejście i wyjście, dane uwierzytelniające połączenia i [ustawienia](/docs/pl/extensions/reference/settings) rozszerzenia to wszystko listy pól.
+Lista pól mapuje klucze pól (litery, cyfry i `_`, nie zaczynają się od cyfry) na definicje. Wejście i wyjście, dane uwierzytelniające połączenia, [ustawienia](/docs/pl/extensions/reference/settings) rozszerzenia, dane i filtry [wyzwalacza](/docs/pl/extensions/reference/triggers) oraz formularz [połączenia członka](/docs/pl/extensions/reference/member-connections) to wszystko listy pól.
 
 ```yaml
 input:
@@ -108,6 +139,11 @@ input:
     required: {
       type: 'boolean',
       description: 'Wymagany tekst nie może być pusty.',
+      default: 'false',
+    },
+    nullable: {
+      type: 'boolean',
+      description: 'Wartością może być też null. Tylko w wejściu i wyjściu akcji oraz w danych wyzwalacza.',
       default: 'false',
     },
     default: {
@@ -146,6 +182,7 @@ input:
 | `select` | Jedna z `options`. |
 | `list` | Lista `items`. |
 | `object` | Obiekt z `fields`. |
+| `company` | Jedna z firm członka. Tylko na najwyższym poziomie `config` [połączenia członka](/docs/pl/extensions/reference/member-connections#the-members-form), najwyżej raz. |
 
 Listy zagnieżdżają się do pięciu poziomów i mieszczą do 100 pól.
 
@@ -170,6 +207,11 @@ Plik schematu piszesz tylko po angielsku, a jego pola nie są typowane w skrypta
 | Krok reguły | `x-<key>.<action>` | `x-polar-eu.sync` |
 | Filtr szablonu | `x_<key with _>_<filter>` | `x_polar_eu_pace` |
 | Połączenie | `x-<key>` | `x-polar-eu` |
+| Wyzwalacz reguł | `x-<key>.<trigger>` | `x-polar-eu.daily_activity` |
+| Blok | `x_<key with _>_<block>` | `x_polar_eu_week_card` |
+| Akcja bloku, polecenie rekordu | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Link rekordu | `x-<key>.<link>` | `x-polar-eu.open_profile` |
+| Uprawnienie paczki | `company.x-<key>.<name>` | `company.x-polar-eu.sync` |
 | Zainstalowana reguła | `<name>: <action label>` | `Polar: Sync` |
 
 Krok zachowuje tożsamość między wersjami, dopóki nazwa akcji się nie zmienia, więc reguły, które z niego korzystają, działają dalej po aktualizacji.

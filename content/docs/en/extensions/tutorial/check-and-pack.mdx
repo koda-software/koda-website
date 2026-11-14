@@ -10,7 +10,7 @@ In this part you check the finished folder, pack it into a zip and, optionally, 
 ### Validate the folder
 
 ```bash title="Terminal"
-extension-cli validate .
+opero-ext validate .
 ```
 
 ```txt title="Output"
@@ -36,7 +36,7 @@ Every problem in every file is reported in one run. [Error codes](/docs/en/exten
 ### Pack it
 
 ```bash title="Terminal"
-extension-cli pack .
+opero-ext pack .
 ```
 
 ```txt title="Output"
@@ -54,11 +54,13 @@ The same folder always produces the same zip, byte for byte. `--out` chooses the
 This step is optional before uploading. Sign in once, then run every test case on Opero without storing anything:
 
 ```bash title="Terminal"
-extension-cli login --server https://opero.example.com/mcp
-extension-cli test . --server https://opero.example.com/mcp
+opero-ext login --server https://opero.example.com/mcp
+opero-ext test . --server https://opero.example.com/mcp
 ```
 
 It prints one row per case (result, action, case, name) and how many passed. Add `--org <organizationId>` when you belong to more than one organization.
+
+`test` needs the organization's **Extension authoring** module; without it the command stops with exit 4. Uploading runs the same tests in any case.
 
 <Callout type="idea" title="The quickest loop">
 Run `validate` after every edit, `test` when the files are valid, and upload when the tests pass.

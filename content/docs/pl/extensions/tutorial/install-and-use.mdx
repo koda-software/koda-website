@@ -24,15 +24,15 @@ Paczkę możesz też przesłać z terminala albo zlecić to asystentowi AI:
 <Tab value="Narzędzie wiersza poleceń">
 
 ```bash title="Terminal"
-extension-cli push . --server https://opero.example.com/mcp
+opero-ext push . --server https://opero.example.com/mcp
 ```
 
-Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji.
+Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji. `opero-ext install .` idzie dalej: przesyła paczkę, wypisuje plan opisany w następnym kroku, prosi o twoją zgodę i instaluje. Zobacz [Zgoda](/docs/pl/extensions/reference/cli#consent).
 
 </Tab>
 <Tab value="Asystent AI">
 
-Asystent AI połączony z serwerem MCP Opero może przesłać plik zip za ciebie. Poproś go o przesłanie pliku paczki do twojej organizacji; wykonuje te same sprawdzenia i testy.
+Asystent AI połączony z serwerem MCP Opero może przesłać plik zip za ciebie. Poproś go o przesłanie pliku paczki do twojej organizacji; wykonuje te same sprawdzenia i testy. Może też planować, instalować i aktualizować (`extensions_plan`, `extensions_install`, `extensions_upgrade`): najpierw musi pokazać ci plan i instaluje dopiero za twoją zgodą.
 
 </Tab>
 </Tabs>
@@ -66,9 +66,9 @@ Język ma wartość domyślną, więc rozszerzenie na niego nie czeka. Wymagane 
 <Step>
 ### Skonfiguruj połączenie
 
-Przejdź do karty **Połączenie** rozszerzenia. Wpisz token (httpbin przyjmie dowolny tekst), zapisz i naciśnij **Zweryfikuj**.
+Przejdź do karty **Połączenie** rozszerzenia. Wpisz token (httpbin przyjmie dowolny tekst), zapisz i naciśnij **Sprawdź połączenie**.
 
-Opero uruchamia twoją akcję `verify` z zapisanymi wartościami. Gdy przejdzie, włącz połączenie. Rozszerzenie ma teraz status **Działa**.
+Opero uruchamia twoją akcję `verify` z zapisanymi wartościami. Gdy przejdzie, włącz połączenie. Oznaczenie **Nie działa** znika: rozszerzenie ma status **Włączony** i działa.
 </Step>
 
 <Step>
@@ -94,7 +94,7 @@ W dowolnym szablonie wypróbuj `{{ "hello" | x_hello_ext_shout }}`.
 <Step>
 ### Wydaj nową wersję
 
-Zmień coś, podnieś `version` do `0.1.1`, zwaliduj, spakuj i prześlij. Zainstalowane rozszerzenie pokazuje nowszą wersję; naciśnij **Uaktualnij**, przejrzyj plan i potwierdź.
+Zmień coś, podnieś `version` do `0.1.1`, zwaliduj, spakuj i prześlij. Zainstalowane rozszerzenie pokazuje nowszą wersję; naciśnij **Uaktualnij**, przejrzyj plan i potwierdź. Z terminala to samo robi `opero-ext upgrade . --server https://opero.example.com/mcp`.
 
 Reguły, które używają twojego kroku, działają dalej, bo krok zachowuje tożsamość między wersjami, dopóki nazwa akcji się nie zmienia. [Uaktualnianie](/docs/pl/extensions/after-install#upgrading) wymienia, co może zablokować uaktualnienie.
 </Step>

@@ -1,13 +1,13 @@
 ---
 title: Error codes
-description: "Every code Opero and extension-cli report when an extension package is refused, when its tests fail at upload, or when the install plan finds a problem, with how to fix each."
+description: "Every code Opero and opero-ext report when an extension package, its forms, lists or pages are refused, when its tests or block render cases fail at upload, when the install plan finds a problem, when a step, an event, a schedule run or a member's block action or record command fails, when a member's connection fails, when an export leaves something out, or when an administrator's command is refused, with how to fix each."
 ---
 
 Each problem has a code, a file, the line in that file and the place inside it, for example `actions/greet/rule.yaml:9 #/steps/0/config/url`. Every problem in every file is reported in one run.
 
 ## When a package is refused
 
-These are found by `extension-cli validate` and again by Opero at upload.
+These are found by `opero-ext validate` and again by Opero at upload.
 
 ### Manifest and files
 
@@ -16,11 +16,19 @@ These are found by `extension-cli validate` and again by Opero at upload.
 | `manifest.missing` | No `extension.yaml` at the top of the zip. | Pack the folder that holds it. |
 | `manifest.unsupported_version` | A `manifest.json` package (the old format), or another `manifestVersion`. | Rewrite it in the current format. |
 | `manifest.invalid` | A key `extension.yaml` or `module.yaml` does not know, or a wrong value. | Check the spelling against the [reference](/docs/en/extensions/reference/manifest). |
-| `manifest.unsupported_section` | A reserved list such as `schedules`. | Remove it. |
+| `manifest.unsupported_section` | The reserved list `components`. | Remove it. |
+| `requires.module_undeclared` | The package has objects or queries, or the `documents:generate` scope, but `requires.modules` lacks `objects`, `queries` or `documents`. | Add the module. |
 | `manifest.missing_file` | A descriptor names a file that is not there. | Add the file or fix the name. |
 | `file.invalid_yaml` | The file is not YAML: indentation, a stray `:`, an empty file. | Fix the line given; quote a text that contains `: `. |
 | `file.yaml_feature_not_allowed` | An anchor, alias, tag, merge key or second document. | Write the values out. |
 | `archive.invalid_path` | Upper-case letters or spaces in the name of a file the package uses. | Use lower-case letters, digits, `.`, `_`, `-`. |
+| `archive.invalid` | The file is not a zip that can be read. | Pack the folder with the command-line tool. |
+| `archive.too_large` | The zip, or what it unpacks to, is over the size limit. | See [Limits](/docs/en/extensions/reference/limits). |
+| `archive.too_many_entries` | The zip holds more files than the limit. | Remove files the package does not use. |
+| `archive.entry_too_large` | One file is over the size limit for a file. | Make it smaller or split it. |
+| `archive.unsafe_path` | A path that leaves the folder, a link, or the same path twice. | Pack the folder with the command-line tool. |
+| `manifest.reserved_key` | `extension` starts with `x-`. | Leave the prefix out; Opero adds it. |
+| `requires.invalid_release` | `requires.opero` is not a minimum release such as `">=2026.22.0"`. | Write it in that form. |
 
 ### Layout and names
 
@@ -28,10 +36,14 @@ These are found by `extension-cli validate` and again by Opero at upload.
 | --- | --- | --- |
 | `layout.invalid_path` | A list entry that is not `actions/<folder>`, or a file name outside its feature's folder. | Use the form shown; keep files in the feature's folder. |
 | `layout.missing_descriptor` | A listed folder without its `action.yaml` or `filter.yaml`, or `settings: settings.yaml` without the file. | Add it or fix the entry. |
-| `layout.unlisted_feature` | An `action.yaml` or `filter.yaml` that no list names, or a `settings.yaml` that `extension.yaml` does not name. | List its folder or name the file, or delete it. |
-| `name.duplicate` | Two actions, filters or modules with the same name, or two settings groups or settings fields with the same key. | Rename one. |
-| `permissions.reason_required` | A host or scope without a reason. | Write `{ host, reason }`. |
-| `field.invalid` | A field list with an unknown type or key, a `select` without `options`, or `secret` or `hint` on a setting. | See [Field lists](/docs/en/extensions/reference/actions#field-lists). |
+| `layout.unlisted_feature` | A descriptor such as `action.yaml`, `filter.yaml`, `trigger.yaml` or `schedule.yaml` that no list names, a `settings.yaml` that `extension.yaml` does not name, or a `connection/member.yaml` that `connection.yaml` does not name. | List its folder or name the file, or delete it. |
+| `name.duplicate` | Two actions, filters, modules, objects, dictionaries, queries, triggers, schedules, blocks, links, lists or pages with the same name, two forms with the same name on one object, or two settings groups or settings fields with the same key. | Rename one. |
+| `include.invalid` | An `include` entry that names no module folder of the package. | Fix the folder name or add its `module.yaml`. |
+| `include.nested` | A `module.yaml` with `include`. | Only `extension.yaml` includes modules. |
+| `permissions.reason_required` | A host or scope without a reason. | Write `{ host, reason }` or `{ scope, reason }`. |
+| `permissions.invalid_scope` | A data scope that is not one of the eight. | See [Data permissions](/docs/en/extensions/reference/data-permissions). |
+| `permissions.unused_scope` | A data scope no packaged rule uses. | Remove it. |
+| `field.invalid` | A field list with an unknown type or key, a `select` without `options`, `secret` or `hint` on a setting, `nullable` outside an action's input or output and a trigger's data, or a `company` field outside a member connection's form. | See [Field lists](/docs/en/extensions/reference/actions#field-lists). |
 
 ### Actions, rules and scripts
 
@@ -41,15 +53,115 @@ These are found by `extension-cli validate` and again by Opero at upload.
 | `action.run_invalid` | `run` names something that is neither `.yaml`, `.js` nor `.ts`. | Name a rule file or a script. |
 | `action.missing_test` | An action without a test case. | Write one. |
 | `action.cycle` | Actions call each other in a circle. | Break the circle. |
+| `action.schema_invalid` | A JSON Schema file used for the input or output is not valid, or uses `x-titleKey`. | Fix the schema, or use a field list. |
+| `step.invalid` | A wrong `expose.ruleStep`, for example a branch named `error` or written twice. | Use unique branch names other than `error`. |
 | `rule.invalid` | A rule file says `name` or `trigger`, or has an unknown key. | Keep only `entryStepId`, `steps`, `edges`. |
 | `rule.invalid_step_id` | A step id is a UUID or has odd characters. | Use a short local name. |
+| `rule.duplicate_step_id` | Two steps with the same id. | Rename one. |
+| `rule.unknown_step` | `entryStepId` or an edge names no step. | Fix the id. |
+| `rule.file_reference_misplaced` | `$file` anywhere but the code of a **Run script** step. | Move the script to a `RUN_SCRIPT` step. |
+| `rule.connection_unsupported` | A `{{ userConnection.<field> }}` placeholder in a package without a member connection. | Add `connection/member.yaml`, or use `connection.*`. |
 | `rule.host_not_declared` | A webhook calls a host missing from `permissions.network`. | Add the host with a reason. |
 | `rule.host_not_literal` | The host comes from a template, or the URL is not HTTPS. | Write the host out. |
 | `rule.own_filter_unsupported` | A rule of the package uses the package's own filter. | Do the conversion in a script. |
-| `step.type_not_allowed` | A step type outside the [allowed list](/docs/en/extensions/reference/rule-files#steps-a-rule-file-may-use). | Move that work to the rule that uses your step. |
+| `step.type_not_allowed` | A step type outside the [allowed list](/docs/en/extensions/reference/rule-files#steps-a-rule-file-may-use) that no data scope covers. | Move that work to the rule that uses your step. |
+| `step.scope_missing` | A data step whose scope `permissions.data` does not declare. | Declare the scope with a reason. |
+| `step.target_not_own` | A data step names a module, object or query that is not the package's own. | Use `x-<key>`, an object of the package, or a query's installed key. |
+| `step.target_not_literal` | A data step's module, object or query key comes from a template or a setting. | Write the key out. |
+| `step.config_not_allowed` | A data step uses a key a package may not set, an update has no record id, or a document's `templateId` is not exactly `{{ trigger.data.<field> }}`; an `EMIT_EVENT` step has a setting other than `event`, `items`, `key` and `dedupe`, an `items` that is not one expression, or a `key` that is not a data field; or a **Call webhook** step has an `auth` other than `connection`, or `auth: connection` while a method of the connection has no `scheme`. | See [Data permissions](/docs/en/extensions/reference/data-permissions#what-each-step-may-name), [Raising events](/docs/en/extensions/reference/raising-events) and [HTTP Basic from the connection](/docs/en/extensions/reference/connection-and-secrets#http-basic-from-the-connection). |
+| `action.verify_uses_data` | The connection's verify action uses a data step. | Keep the verify action to calls and logic. |
 | `script.invalid` | A script that is not a module with one `export default`, imports something, is an async filter, or is TypeScript that cannot be stripped. | See [Scripts](/docs/en/extensions/reference/scripts). |
 | `script.not_built` | A zip names a `.ts` script without its `.js`. | Pack with the command-line tool. |
+| `script.missing_file` | A script the action or a step names is not there. | Add the file or fix the name. |
+| `script.invalid_path` | A `$file` value that is not a script file in the action's folder. | Name a `.js` or `.ts` file in that folder. |
 | `filter.invalid` | A filter name with an underscore, or another key problem. | Letters and digits only. |
+| `filter.script_invalid` | `script` in `filter.yaml` does not name a `.js` or `.ts` file. | Name the filter's script module. |
+
+### Triggers, schedules and events
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `trigger.invalid` | An unknown key in `trigger.yaml`, a missing `label`, `description` or `data`, a filter without `match` or of a type other than text, number, boolean or select, `retentionDays` outside 1 to 365, an example that does not match the data or is over 32 KB, or more than 50 triggers. | See [Triggers](/docs/en/extensions/reference/triggers). |
+| `trigger.match_unknown_field` | A filter's `match` names no top-level data field. | Name a field of `data`. |
+| `schedule.invalid` | An unknown key in `schedule.yaml`, an `every` or `forEach` that is not one of the accepted values, `forEach: userConnection` without a member connection or with an action that is not a member action, an action input that does not accept what the schedule passes, or more than 10 schedules. | See [Schedules](/docs/en/extensions/reference/schedules). |
+| `schedule.action_unknown` | `action` names no action of the package. | Fix the name. |
+| `schedule.action_exposed` | The schedule's action is exposed as a rule step, a block action or a record command. | Remove its `expose`, or run another action. |
+| `event.unknown` | An `EMIT_EVENT` step, or a test case's `events` or `seen`, names no trigger of the package. | Fix the name, or add the trigger. |
+| `event.not_literal` | An `EMIT_EVENT` step's `event` is a template. | Write the trigger's name out. |
+| `event.key_required` | An `EMIT_EVENT` step with `dedupe: true` and no `key`. | Add `key`, naming the field that identifies an item. |
+| `event.emitted_from_step` | An action that raises events is exposed as a rule step, a block action or a record command, or is the connection's verify action. | Run it from a schedule or a member connection hook instead. |
+| `test.event_untested` | No test case of an action that raises events lists the events it expects. | Add a case with `events`. |
+
+### Member connection
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `member.invalid` | An unknown key in `member.yaml`, a missing `label`, `oauth` or `afterConnect`, an OAuth address that is not an `https://` URL written out in full, a hook action exposed as a rule step, an `output` field the `afterConnect` action does not return, two `company` fields, or one failure name with two messages. | See [Member connections](/docs/en/extensions/reference/member-connections). |
+| `member.host_not_listed` | The `authorize` or `token` host is not in `permissions.network`. | Add the host with a reason. |
+| `member.client_field_unknown` | `oauth.client` does not name two credential fields of one connection method. | Name two fields of the same method. |
+| `member.action_unknown` | `afterConnect` or `beforeDisconnect` names no action of the package. | Fix the name. |
+| `member.requires_connection` | `connection/member.yaml` in a package whose `extension.yaml` has no `connection`. | Add the connection, with the OAuth client's fields. |
+| `action.member_outside_member_run` | An action that uses `{{ userConnection.<field> }}` is exposed as a rule step, a block action or a record command, is the verify action, or is run by a schedule that is not `forEach: userConnection`. | Run it only from a member connection hook or a schedule over members. |
+| `file.yaml_feature_not_allowed` | A status in `failures` written as a number. | Quote it: `"403"`. |
+
+### Objects, dictionaries and queries
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `object.invalid` | An unknown key in `object.yaml`, a field of the wrong shape, `createDefaultForm`, an option naming an id or another module, or more than 50 objects. | See [Objects](/docs/en/extensions/reference/objects). |
+| `object.unknown_reference` | A field's `dictionary` or `toObject` names nothing in the package. | Fix the name, or add the dictionary or object. |
+| `dictionary.invalid` | An unknown key in `dictionary.yaml`, a bad name, two entries with the same key, or more than 50 dictionaries. | See [Dictionaries](/docs/en/extensions/reference/dictionaries). |
+| `query.invalid` | An unknown key in `query.yaml`, `mutationOperation` on a FETCH query, an SQL file that is not a `.sql` UTF-8 file of up to 10,000 characters, or more than 100 queries. | See [Queries](/docs/en/extensions/reference/queries). |
+| `query.unknown_object` | `{{object.<key>}}` in the SQL names no object of the package. | Fix the key; the message gives the SQL line. |
+
+### Blocks, links and package permissions
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `block.invalid` | An unknown key in `block.yaml`, a file that is not in the block's folder or is too long, a script that is not a module, a block rendered more than three levels deep, or more than 50 blocks. | See [Blocks](/docs/en/extensions/reference/blocks). |
+| `block.name_too_long` | The installed key `x_<key>_<block>` is longer than 64 characters. | Shorten the block's name. |
+| `block.script_undeclared` | A block has a script, but `extension.yaml` has no `permissions.pageScript`. | Declare it with a reason. |
+| `block.unknown_query` | A block's query names no query of the package. | Fix the name, or add the query. |
+| `block.unknown_object` | A record read or a `record` input names no object of the package. | Fix the key. |
+| `block.unknown_action` | A `run-action` button names a key that is not a block action of this package. | Write `x-<key>.<action>` of an action with `expose.blockAction`. |
+| `block.reference_not_literal` | A `run-action` key, an action name or a `{% render %}` key comes from Liquid, or a script runs an action whose key is not written out. | Write the key out. |
+| `block.render_not_own` | `{% render %}` names a block that is not the package's own. | Render only `x_<key>_<block>` blocks of the package. |
+| `block.render_cycle` | Blocks of the package render each other in a circle. | Break the circle. |
+| `block.form_unsupported` | The block uses `open-form`, `set-field` or `<opero-rating>`. | Run an action of the package instead. |
+| `block.rule_unsupported` | The block uses `run-rule`. | Use `run-action` with an action of the package. |
+| `block.test_missing` | A block has no render case. | Write one in its `tests.yaml`. |
+| `link.invalid` | An unknown key in `link.yaml`, or more than 20 links. | See [Record links](/docs/en/extensions/reference/record-links). |
+| `link.not_https` | The address does not start with `https://`. | Use https. |
+| `link.template_invalid` | The address does not parse: a placeholder in the host, an unclosed brace, a user name or password. | Write the host out and close every `{…}`. |
+| `link.host_not_declared` | The address's host is not in `permissions.links`. | Add it with a reason. |
+| `link.field_undeclared` | `{fields.<field>}` names a field the link does not declare under `fields`. | Declare the field with its label. |
+| `link.unknown_target` | A target names no object of the package. | Fix the key. |
+| `link.field_not_on_object` | A declared field is not a field of every target object. | Remove it, or add the field. |
+| `link.mixed_targets` | The link targets both objects and a built-in type, or two built-in types. | Target your objects, or one built-in type. |
+| `action.permission_undeclared` | A block action, record command or link names a permission that `permissions.company` does not declare. | Declare it, or fix the name. |
+| `action.record_command_invalid` | A record command names no target, or more than 20. | Name 1 to 20. |
+| `action.record_command_unknown_target` | A record command targets an object that is not the package's. | Fix the key. |
+| `action.record_command_unknown_field` | `result.message` or `result.details` names a field that is not an output field of the action. | Name output fields. |
+| `permissions.unused_page_script` | `permissions.pageScript` is declared, but no block has a script. | Remove it. |
+| `permissions.unused_company_permission` | A company permission that no block action, record command or link names. | Remove it, or use it. |
+| `permissions.unused_link_host` | A link host that no link, form, list or page opens. | Remove it. |
+
+### Forms, lists and pages
+
+| Code | What is wrong | Fix |
+| --- | --- | --- |
+| `form.invalid` | An unknown key in `form.yaml` or in its `config`, a wrong value, a `default` slot that is not one of the form's `types`, a layout file that is not a View Layout document, or more than 100 forms. | See [Forms, lists and pages](/docs/en/extensions/reference/screens#formyaml). |
+| `form.unknown_object` | `object` names no object of the package. | A package ships forms for its own objects only. |
+| `list.invalid` | An unknown key in `list.yaml`, a wrong value, two actions with the same key, `builtIn: dynamicObject` instead of `object`, or more than 50 lists. | See [Forms, lists and pages](/docs/en/extensions/reference/screens#listyaml). |
+| `list.unknown_object` | `source.object` names no object of the package. | Fix the key, or use `builtIn` for a built-in source. |
+| `list.name_too_long` | The installed key `x-<key>-<list>` is longer than 64 characters. | Shorten the list's name. |
+| `list.action_unsupported` | A list action is not `OPEN_LINK`. | Remove the rule or script action. |
+| `page.invalid` | An unknown key in `page.yaml`, a wrong value, a surface other than `workspace`, a layout file that is not a View Layout document, or more than 50 pages. | See [Forms, lists and pages](/docs/en/extensions/reference/screens#pageyaml). |
+| `layout.ref_invalid` | A reference is not exactly `{ $ref: "<kind>:<name>" }` with the kind `block`, `list`, `form` or `query`. | Write it in that form; a form is `<object>.<form>`. |
+| `layout.ref_position` | A reference stands where no id of its kind is stored. | See [References](/docs/en/extensions/reference/screens#references) for the places. |
+| `layout.ref_unknown` | A reference names a block, list, form or query the package does not have. | Fix the name, or add the asset. |
+| `layout.reference_unsupported` | A layout or list configuration names something by id: a rule, report, workflow, calendar, SQL list, custom field, or an id where a reference belongs. | Use a reference to the package's own asset, or leave the key out. |
+| `layout.host_not_declared` | A URL is neither a path starting with `/` nor an https address on a host written out and listed in `permissions.links`. | Use a path, or add the host with a reason. |
 
 ### Settings
 
@@ -61,11 +173,12 @@ These are found by `extension-cli validate` and again by Opero at upload.
 
 | Code | What is wrong | Fix |
 | --- | --- | --- |
-| `connection.invalid` | A key `connection.yaml` does not know, or a wrong value. A `settings` block is refused this way: settings are no longer part of the connection. | Move the settings to [settings.yaml](/docs/en/extensions/reference/settings); check the other keys' spelling. |
-| `connection.placeholder_position` | A secret outside a header or query value. | Move it, or set `secretsInBody`. |
-| `connection.placeholder_not_bare` | A secret with a filter or expression around it. | Write it alone inside the braces. |
-| `connection.unknown_field` | A secret field no method declares. | Add it to the method's fields or fix the name. |
-| `connection.undeclared` | A secret in a package without a connection. | Add `connection.yaml`. |
+| `connection.invalid` | A key `connection.yaml` does not know, or a wrong value, including a `scheme` naming a field the method does not have. A `settings` block is refused this way: settings are no longer part of the connection. | Move the settings to [settings.yaml](/docs/en/extensions/reference/settings); check the other keys' spelling. |
+| `connection.schema_invalid` | A JSON Schema file used for credentials is not valid, or uses `x-titleKey`. | Fix the schema, or use a field list. |
+| `connection.placeholder_position` | A secret, or a member's value, outside a header or query value. | Move it, or set `secretsInBody`. |
+| `connection.placeholder_not_bare` | A secret, or a member's value, with a filter or expression around it. | Write it alone inside the braces. |
+| `connection.unknown_field` | A secret field no method declares, or a member value that is not `accessToken`, `refreshToken` or a secret output of `afterConnect`. | Add it to the method's fields or fix the name. |
+| `connection.undeclared` | A secret, or `auth: connection`, in a package without a connection. | Add `connection.yaml`. |
 | `connection.hosts_required` | A connection but no hosts. | Fill `permissions.network`. |
 
 <Callout>
@@ -77,35 +190,163 @@ When the action `verify` names has a problem, `connection.yaml` is also reported
 | Code | What is wrong | Fix |
 | --- | --- | --- |
 | `locale.missing_file` | A language in `locales` without its file. | Add `locales/<lang>.yaml`. |
+| `locale.invalid` | A translation file of the wrong shape, for example a text where a group of texts belongs. | Mirror the package's structure. |
 | `locale.unknown_text` | A translation key that names nothing in the package. | Fix the key. |
-| `test.invalid` | A test case of the wrong shape, two outcomes, an input that does not match the input fields, settings that do not match `settings.yaml` (a required setting without a default is missing), settings in a package without `settings.yaml`, or settings under `connection.config`. | Fix the case; give settings under `settings:`. |
+| `test.invalid` | A test case of the wrong shape, a block render case naming an input, query, record read or action the block does not have, more than 20 render cases for a block, two outcomes, an input that does not match the input fields, settings that do not match `settings.yaml` (a required setting without a default is missing), settings in a package without `settings.yaml`, settings under `connection.config`, `effects` in a package without data scopes, non-empty `events` or `seen` on an action that raises no events, `userConnection` on an action that is not a member action or with a value that is not a member value, or `credentialRevoked` on an action that is not a member action. | Fix the case; give settings under `settings:`. |
 
 ## Only at upload, when the tests run
 
-These point at the case (`actions/greet/tests.yaml#/1`) and, for an exchange, inside it (`…#/1/http/0`), without a line.
+These point at the case (`actions/greet/tests.yaml#/1`) and, for an exchange or an effect, inside it (`…#/1/http/0`, `…#/1/effects/0`), without a line.
 
 | Code | What happened |
 | --- | --- |
 | `test.unexpected_request` | The action made a request the case did not script. |
 | `test.request_mismatch` | The method, URL, a named header or the body differs from the case. |
 | `test.unused_exchange` | The case scripted a request the action never made. |
+| `test.unexpected_effect` | The action ran a data step the case did not script next: no effect was left, or the next effect is another step. |
+| `test.effect_mismatch` | A key an effect names differs from what the step was given, or the effect's `response` does not have the shape the step returns. |
+| `test.unused_effect` | The case scripted a data step the action never ran. |
+| `test.unexpected_event` | The action raised an event after those the case lists. |
+| `test.event_mismatch` | A raised event differs from the one the case lists at that position: its trigger, its key or its data. |
+| `test.missing_event` | The case lists an event the action did not raise. |
 | `test.outcome_mismatch` | The action ended differently than the case says. |
 | `test.output_mismatch` | The output differs from `returns`. |
 | `test.output_schema` | The output does not match the output fields. |
+| `test.render_mismatch` | A block render case: the HTML lacks a `contains` text, or has a `notContains` one. Points at the text (`…/tests.yaml#/0/contains/1`). |
+| `test.render_failed` | A block render case: the template did not render, for example because it uses a filter outside Opero's built-in ones. |
 | `test.failed` | The case could not finish, for example it ran out of time. |
-| `manifest.unsupported_by_server` | This Opero does not install a part the package uses yet. |
+| `manifest.unsupported_by_server` | This Opero does not install a part, or serve a data scope, the package uses yet. |
 
 ## Only in the install plan
 
 | Code | Meaning |
 | --- | --- |
 | `requires.release` | This Opero is older than the package needs. |
+| `requires.release_unknown` | This installation does not know its release, so `requires.opero` was not checked. Does not block. |
 | `requires.module` | A required module is not available here. |
 | `permission.missing` | The person installing lacks a permission the content needs. |
+| `permission.owner_required` | The package declares data scopes and the person installing is not an organization owner. |
 | `version.not_newer` | An upgrade to the same or an older version. |
 | `rule.save_validation` | An action's rule would not save. The message says why. |
 | `filter.save_validation` | A filter script would not save: it does not validate or its name is taken. |
 | `filter.not_sync` | A filter waits on something. Filters must answer at once. |
 | `step.in_use`, `filter.in_use` | An upgrade removes something the organization's rules use. |
+| `trigger.in_use` | An upgrade removes a trigger an organization rule uses, as its trigger or among its events. The message names the rules. |
+| `trigger.data_field_removed` | An upgrade removes data fields of a trigger a rule uses. Rules are not scanned for where they read them. Does not block. |
+| `member.reconsent_required` | An upgrade asks members for more: a new OAuth scope, another sign-in or token host, or a new stored output. Every connected member must connect again. Does not block. |
+| `object.save_validation` | An object or field would not save, for example an unknown field type or wrong options. |
+| `object.adopts_existing` | A module or object kept by an earlier uninstall is taken over. Does not block. |
+| `dictionary.save_validation` | A dictionary would not save, for example an entry still in use would be removed. |
+| `dictionary.adopts_existing` | A dictionary kept by an earlier uninstall is taken over. Does not block. |
+| `dictionary.released` | An upgrade drops a dictionary that something still uses; it is kept as the organization's own. Does not block. |
+| `query.save_validation` | A query's SQL would not save, or its `kind` is not what the SQL does. |
+| `query.adopts_existing` | A query kept by an earlier uninstall is taken over. Does not block. |
+| `query.in_use` | An upgrade drops a query that an active SQL list, report or block uses. |
+| `block.adopts_existing` | A Custom Block with the installed key of one of the package's blocks exists and is not the extension's. |
+| `block.save_validation` | A block would not save: for example a query's parameters do not fit, or a record read's filter is wrong. The message says why. |
+| `block.breaking_change` | A block changes in a way that breaks the pages that place it or the blocks that render it. |
+| `block.removed_placed` | An upgrade drops a block that pages place; those placements then show that the extension removed it. Does not block. |
+| `block_action.in_use` | An upgrade drops a block action that one of the organization's own blocks names. |
+| `form.save_validation` | A form would not save. The message says why. |
+| `layout.save_validation` | A form's or page's layout would not save, for example because a field node names a field the object does not have. The message gives the place. |
+| `list.save_validation` | A list would not save against its source, for example because a column or filter names a field the source does not have. The message gives the place in `config`. A list over an object the same install creates is checked when it is installed. |
+| `form.layout_unsupported` | This Opero process cannot install form layouts. |
+| `form.default_taken` | The organization chose its own default form of a type the package's form claims; it is kept. Does not block. |
+| `form.in_use` | An upgrade deletes a form that the organization's layouts, lists or blocks name; they will show it unavailable. Does not block. |
+| `object.formless` | An upgrade leaves an object without a form of a type it had. Its records cannot be opened or created until an administrator builds one. Does not block. |
+| `list.in_use` | An upgrade archives a list that the organization's layouts embed; they show that the extension removed it. Does not block. |
+| `page.in_use` | An upgrade archives a page that the organization's menus open; those items stay, hidden while the page is archived. Does not block. |
+| `link.field_unknown` | A link on a built-in record names a field outside that type's set (also at upload). See [Record links](/docs/en/extensions/reference/record-links#links-on-built-in-records). |
+| `permission.grants_removed` | An upgrade drops a package permission that roles grant; it is removed from them. Does not block. |
 | `settings.value_dropped` | An upgrade drops a stored setting value: the new version no longer has that setting, or the value no longer fits it. Does not block. |
 | `settings.incomplete_after_upgrade` | The new version has a required setting without a default or stored value. The extension does not run after the upgrade until it is filled in. Does not block. |
+
+## While a step runs
+
+| Code | Meaning |
+| --- | --- |
+| `EXTENSION_EVENT_INVALID` | An `EMIT_EVENT` step was given something that is not a list of objects, or an item that does not match the trigger's data, is over 32 KB or has no usable key. Nothing was raised by the step. |
+| `EXTENSION_EVENT_LIMIT` | An `EMIT_EVENT` step was given more than 500 items, or the run would raise more than 2,000 events. Nothing was raised by the step. |
+| `EXTENSION_EVENT_NOT_ALLOWED` | An `EMIT_EVENT` step ran outside a run Opero started for the extension, or for a trigger the installed version does not declare. |
+| `EXTENSION_ACTION_CREDENTIAL_REVOKED` | In a scheduled run over members, a request that carried the member's token was answered `401`. The member is parked until they connect again. |
+| `EXTENSION_SCOPE_DENIED` | A data step of the package would have reached outside its data scopes once its templates were filled in. The step did nothing. It shows on the run of the extension's own rule; the organization's rule sees `EXTENSION_ACTION_FAILED`. |
+| `EXTENSION_MANAGED_RULE_RUN` | Someone tried to run, test or replay an extension's rule directly, or to call it from another rule. It runs only through its step. |
+| `service_connection_not_configured` | A `SEND_EMAIL` step ran on an installation without an email service. |
+
+## When a member runs a block action or a record command
+
+See [When a member's run is refused](/docs/en/extensions/reference/member-actions#when-a-members-run-is-refused) for `EXTENSION_INACTIVE`, `EXTENSION_ACTION_FORBIDDEN`, `block_action_unavailable` and the other codes a member's run can end with.
+
+## When a rule is saved
+
+| Code | Meaning |
+| --- | --- |
+| `step_type_managed_only` | A rule of the organization uses `EMIT_EVENT`, which only an extension's own rules may use. |
+| `rule_type_unavailable` | A rule is given the trigger, or a step, of an extension that is not running. |
+
+## When a member connects
+
+A member's connection shows these on their account page. The codes matter when you read the API.
+
+| Code | Meaning |
+| --- | --- |
+| `x-<key>.member.<name>` | The `afterConnect` action failed with a status its `failures` maps to `<name>`. The member sees the failure's message when it has one, otherwise a general message. |
+| `integrations.user_credentials.company_unavailable` | The company chosen in the member's form is not one of theirs, or is no longer. |
+| `integrations.user_credentials.not_available` | The extension is not running, so the member connection is not offered. |
+| `extensions.user_connection.revoked` | The service refused the member's token; the member connects again to resume. |
+| `extensions.user_connection.reconsent_required` | An upgrade asks for more than the member agreed to; the member connects again to resume. |
+
+## When an export leaves something out
+
+`opero-ext pull`, the MCP tool `extensions_export` and the export route report each asset they could not package with one of these codes, and leave out with it everything that needs it. See [Start from your organization](/docs/en/extensions/start-from-your-organization).
+
+| Code | Meaning |
+| --- | --- |
+| `export.managed` | An installed extension manages the asset; it belongs to that extension. |
+| `export.unsupported_kind` | That kind of asset is not exported. Rules are not exported yet. |
+| `export.query_foreign_table` | A saved query reads a table that is not one of the exported objects', or names a table where the export cannot rewrite it. A package query reads only the package's own objects. |
+| `export.object_foreign_reference` | An object names something the package cannot carry: a dictionary or object that is not exported, or a row of the organization by id. |
+| `export.block_reference` | A block names an organization id or key the export cannot rewrite, builds a block action's or rendered block's name with Liquid, or pipes through one of the organization's template filters. |
+| `export.block_action` | A block writes through a form, runs a rule by id, or runs another extension's action, which a package block cannot. |
+| `export.rule_trigger`, `export.rule_step` | Reserved for rule export, which is not built yet. |
+| `export.name_collision` | Not a refusal: the asset's name was taken, so it is packaged under another name, listed among the added assets. |
+| `export.not_found` | The selection names nothing of this organization. |
+| `export.layout_reference` | A form or page layout, or a list's configuration, names by id what a package cannot carry (a report, rule, workflow, calendar, custom field, …), or a block, list, form or query that is left out. |
+| `export.list_action` | A list has an action that runs a rule or a script; a package list carries `OPEN_LINK` actions only. |
+| `export.list_source` | A list reads an object that is left out. |
+| `export.form_public` | A form is public; a package ships no public forms. |
+| `export.form_object` | A form's object is left out. |
+| `export.page_portal` | A page is a portal page; a package ships workspace pages only. |
+
+After an export, `validate` reports what you must still write, typically `block.test_missing`, `permissions.reason_required` and the description in `extension.yaml`.
+
+## When an administrator's command is refused
+
+These come back from Opero's screens, API and MCP tools when someone uploads, installs, upgrades, uninstalls or exports, or edits what an extension manages. The screens show the message; the codes matter when you call the API or read `opero-ext --json` output. The [exit code](/docs/en/extensions/reference/cli#exit-codes) of `opero-ext` follows from them.
+
+| Code | Meaning |
+| --- | --- |
+| `MODULE_UNAVAILABLE` | An authoring tool was used while the organization's Extension authoring module is off or not licensed: checking a package with its tests, or exporting. `meta.moduleKey` is `extensions`. The MCP tools are not offered then, and `opero-ext test` and `pull` exit 4. Uploading, installing and running extensions are not affected. |
+| `EXTENSION_VERSION_EXISTS` | This version was already uploaded with different content. Raise `version` in `extension.yaml`. |
+| `EXTENSION_CONSENT_REQUIRED` | An install or upgrade was sent without consent to the plan. |
+| `EXTENSION_PLAN_STALE` | The plan hash sent is not the current plan's: something changed since the plan was shown. Plan again and review it. |
+| `EXTENSION_REQUIREMENT_UNMET` | The plan is blocked; the message says why. The plan's blocking problems are listed under [Only in the install plan](#only-in-the-install-plan). |
+| `EXTENSION_ALREADY_INSTALLED` | Install was sent for an extension that is installed. Upgrade it instead. |
+| `EXTENSION_REVISION_CONFLICT` | The installation changed since it was read. Reload and try again. |
+| `EXTENSION_OPERATION_IN_PROGRESS` | Another operation on this extension is still running. Wait, then try again. |
+| `EXTENSION_DATA_LOSS_UNCONFIRMED` | An upgrade that deletes data was sent without confirming the loss. Nothing changed. |
+| `EXTENSION_CONFIRM_KEY_MISMATCH` | An uninstall that deletes the data was sent without the extension's key typed exactly. |
+| `EXTENSION_PERMISSION_MISSING` | The person uninstalling lacks a permission the chosen choice needs, or the person exporting lacks the read permission of a kind they selected. `meta.permissions` names them. Nothing changed. |
+| `EXTENSION_EXPORT_SELECTION_INVALID` | An export selected nothing, or more than 200 assets. |
+| `EXTENSION_DELETE_DATA_BLOCKED` | Deleting the data was refused while a kept saved query reads a table the deletion would drop. Nothing changed. |
+| `EXTENSION_MANAGED_ASSET` | A change to something the extension manages: a managed rule, filter or block, the shape of its module, objects, dictionaries or queries, or one of its forms, form and page layouts, lists or pages. |
+| `CUSTOM_LIST_KEY_RESERVED` | The organization tried to create a Custom List whose key starts with `x-`. |
+| `CUSTOM_PAGE_SLUG_RESERVED` | The organization tried to create a page whose slug starts with `x-`, or to change a slug to one. |
+| `CUSTOM_LIST_EXTENSION_REMOVED` | The organization tried to restore a list that its extension removed, by an uninstall or an upgrade. Installing a version of the extension that has the list revives it. |
+| `DYNAMIC_FORM_ACCESS_DENIED` | A member opened or created a record of an object left without a form of that type, for example after an uninstall kept the data. An administrator builds a form for the object. |
+| `CUSTOM_BLOCK_KEY_RESERVED` | The organization tried to create a Custom Block whose key starts with `x_`. |
+| `CUSTOM_BLOCK_EXTENSION_REMOVED` | The organization tried to restore a block that its extension removed, by an uninstall or by an upgrade to a version without the block. Installing a version of the extension that has the block restores it. |
+| `EXTENSION_SETTINGS_INVALID` | A settings save with a field the package does not declare, or a value that does not fit its field. |
+| `DYNAMIC_MODULE_KEY_RESERVED`, `DICTIONARY_KEY_RESERVED` | The organization tried to create a module or dictionary whose key starts with `x-`. |
+| `SAVED_QUERY_KEY_RESERVED` | The organization tried to create a saved query whose key starts with `x_`, or to rename one to such a key. |
+| `CUSTOM_SCRIPT_KEY_RESERVED` | The organization tried to create a script whose key starts with `x_`. |

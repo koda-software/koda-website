@@ -1,0 +1,199 @@
+---
+title: Akcje bloków i polecenia rekordów
+description: "Pozwól członkom organizacji samodzielnie uruchamiać akcje rozszerzenia Opero: expose.blockAction dla przycisków w blokach paczki, expose.recordCommand dla poleceń na rekordach, rekord, dla którego działa akcja (trigger.record), wynik, który pokazuje polecenie, kto może ich używać, testy i błędy."
+---
+
+Krok reguły jest dla osób, które budują reguły. Akcję można też zaoferować członkom organizacji, którzy uruchamiają ją sami:
+
+- **Akcję bloku** (`expose.blockAction`) uruchamia przycisk w jednym z [bloków](/docs/pl/extensions/reference/blocks#buttons-that-run-actions) paczki.
+- **Polecenie rekordu** (`expose.recordCommand`) pojawia się wśród akcji rekordu, na rekordach, których dotyczy: własnych obiektach paczki albo rekordach wbudowanych, takich jak kontrahenci.
+
+W obu przypadkach akcja działa jako członek, który ją uruchomił, dla rekordu, który ogląda. Akcja bloku działa też z bloku na stronie własnej, gdzie uruchamia się bez rekordu. Jedna akcja może być jednym i drugim, a także krokiem reguły.
+
+```yaml title="actions/track-parcel/action.yaml"
+action: track_parcel
+label: Track parcel
+description: Asks the carrier where the parcel is and returns its status.
+
+output:
+  message: { type: text, label: Message }
+  status: { type: text, label: Carrier status }
+  scannedAt: { type: text, label: Last scan }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  blockAction: { permission: track }
+  recordCommand:
+    permission: track
+    targets: [{ object: parcels }]
+    icon: truck
+    confirm: { title: Track parcel, message: Ask the carrier where this parcel is? }
+    result: { message: message, details: [status, scannedAt] }
+```
+
+Akcja oferowana członkom potrzebuje `description`, a każde udostępnienie wskazuje [uprawnienie paczki](/docs/pl/extensions/reference/package-permissions), które członkowie muszą mieć.
+
+## expose.blockAction [#exposeblockaction]
+
+<TypeTable
+  type={{
+    permission: {
+      type: 'string',
+      description: 'Nazwa z permissions.company w extension.yaml (w przeciwnym razie action.permission_undeclared).',
+      required: true,
+    },
+  }}
+/>
+
+Blok paczki uruchamia ją przyciskiem `run-action`, którego `data-action` to `x-<key>.<action>`. `data-input` przycisku to dane wejściowe akcji. Zobacz [Przyciski, które uruchamiają akcje](/docs/pl/extensions/reference/blocks#buttons-that-run-actions).
+
+## expose.recordCommand [#exposerecordcommand]
+
+<TypeTable
+  type={{
+    permission: {
+      type: 'string',
+      description: 'Nazwa z permissions.company w extension.yaml.',
+      required: true,
+    },
+    targets: {
+      type: '{ object } | { entity }[]',
+      description: 'Od 1 do 20 typów rekordów, na których pojawia się polecenie: { object: <klucz> } dla obiektu paczki albo { entity: contractor | sales_invoice | cost_invoice | budget | helpdesk_ticket }.',
+      required: true,
+    },
+    icon: {
+      type: 'string',
+      description: 'Nazwa ikony: małe litery, cyfry i myślniki.',
+    },
+    intent: {
+      type: 'primary | secondary | danger',
+      description: 'Jak wyraźnie polecenie jest pokazywane.',
+      default: 'secondary',
+    },
+    editGated: {
+      type: 'boolean',
+      description: 'Polecenie jest niedostępne, dopóki rekord jest tylko do odczytu na swoim etapie procesu.',
+      default: 'false',
+    },
+    confirm: {
+      type: '{ title, message }',
+      description: 'Pytanie, na które członek odpowiada przed uruchomieniem polecenia: tytuł do 120 znaków i komunikat do 500. Do przetłumaczenia.',
+    },
+    'result.message': {
+      type: 'string',
+      description: 'Pole wyniku, którego wartość jest pokazywana jako komunikat polecenia.',
+    },
+    'result.details': {
+      type: 'string[]',
+      description: 'Do 20 pól wyniku pokazywanych pod nim, każde z etykietą z pól wyniku.',
+    },
+  }}
+/>
+
+Formularz polecenia to pola wejściowe akcji: akcja bez danych wejściowych uruchamia się, gdy tylko członek potwierdzi. Pola wskazane w `result` muszą być polami wyniku akcji (`action.record_command_unknown_field`), a obiekt w `targets` musi być obiektem paczki (`action.record_command_unknown_target`).
+
+Polecenie jest pokazywane tylko na rekordach, których dotyczy; na rekordzie obiektu paczki tylko na tym obiekcie. Nie jest oferowane tokenom API i nie ma go w zewnętrznym API ani w MCP. Jego klucz, `x-<key>.<action>`, można ukryć na etapie procesu jak każdą akcję rekordu.
+
+## Rekord, dla którego działa akcja [#the-record-the-action-runs-for]
+
+Akcja dostaje rekord przez odwołanie, nie jego wartości:
+
+| Napisz | Aby dostać |
+| --- | --- |
+| `{{ trigger.record.id }}` | Identyfikator rekordu. |
+| `{{ trigger.record.type }}` | `custom_record` dla rekordu obiektu; `contractor`, `sales_invoice`, `cost_invoice`, `budget` albo `helpdesk_ticket` dla rekordu wbudowanego. |
+| `{{ trigger.record.moduleKey }}`, `{{ trigger.record.objectKey }}` | Dla rekordu obiektu: `x-<key>` i klucz obiektu. |
+| `{{ trigger.data.<field> }}` | Pole danych wejściowych akcji, jak w każdej akcji. |
+
+Skrypt dostaje to samo jako `record` w swoim argumencie: `{ type, id, moduleKey, objectKey }` albo `null`, gdy akcja działa bez rekordu, na przykład z bloku na stronie własnej.
+
+```yaml title="actions/track-parcel/rule.yaml"
+entryStepId: ask
+steps:
+  - id: ask
+    type: CALL_WEBHOOK
+    name: Ask the carrier
+    contextKey: asked
+    config:
+      url: "https://api.example.com/v1/parcels?reference={{ trigger.record.id }}"
+      method: GET
+  - id: answer
+    type: RUN_SCRIPT
+    name: Answer
+    contextKey: output
+    config:
+      code: { $file: answer.js }
+edges:
+  - { fromStepId: ask, toStepId: answer }
+```
+
+Aby odczytać wartości rekordu, pobierz go [krokiem danych](/docs/pl/extensions/reference/data-steps) (`FETCH_RECORDS`, z zakresem `records:read`).
+
+## Co dostaje członek [#what-the-member-gets-back]
+
+| Uruchomione z | Po powodzeniu |
+| --- | --- |
+| Bloku | Tekst `message` w wyniku jest pokazywany członkowi. Blok dostaje cały wynik w zdarzeniu `opero:action-done`, a potem się odświeża. |
+| Polecenia rekordu | Pole wyniku `result.message` jest pokazywane jako komunikat, a pod nim pola `result.details`, każde z etykietą wyniku w języku członka. |
+
+Gdy akcja się nie powiedzie, członek widzi jej komunikat, który nigdy nie cytuje odpowiedzi usługi. Uruchomienie trwające dłużej niż 15 sekund jest zgłaszane członkowi jako wciąż trwające; nie jest przerywane.
+
+## Kto może ich używać [#who-may-use-them]
+
+Każda akcja bloku, polecenie rekordu i [link rekordu](/docs/pl/extensions/reference/record-links) jest sprawdzane w tej kolejności, za każdym razem, gdy jest pokazywane, i ponownie przy użyciu:
+
+1. **Rozszerzenie działa**: jest włączone, jego ustawienia są kompletne, a połączenie włączone.
+2. **Jest udostępnione firmie członka.** Po instalacji każda akcja bloku, polecenie i link są udostępnione wszystkim firmom.
+3. **Członek należy do jego odbiorców.** Po instalacji są to wszyscy członkowie.
+4. **Członek ma jego uprawnienie paczki**, `company.x-<key>.<name>`, przez jedną ze swoich ról.
+
+Organizacja może zawęzić firmy i odbiorców każdego z nich osobno, więc akcja bloku i polecenie rekordu tej samej akcji mogą trafiać do różnych osób. Aktualizacja zachowuje te ustawienia dla tego, co zostaje.
+
+Polecenie rekordu albo link, które nie przechodzą sprawdzenia, w ogóle nie są pokazywane; z tych powodów nigdy nie są pokazywane jako nieaktywne. Blok dostaje `false` w `extension_actions` dla akcji bloku, której oglądający nie może uruchomić.
+
+## Testy [#tests]
+
+Przypadek testowy takiej akcji podaje rekord w `record`:
+
+```yaml title="actions/track-parcel/tests.yaml"
+- name: the carrier's status comes back
+  record: { type: custom_record, id: rec-1, object: parcels }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/parcels?reference=rec-1
+      response:
+        status: 200
+        body: { status: in_transit, scannedAt: "2026-11-12T08:30:00Z" }
+  returns:
+    message: "The carrier says: in_transit."
+    status: in_transit
+    scannedAt: "2026-11-12T08:30:00Z"
+```
+
+`record` przyjmuje `type` (`custom_record` albo typ wbudowany), `id`, a dla `custom_record` obiekt paczki jako `object`. Uruchomienie widzi wtedy `trigger.record` z `moduleKey: x-<key>` i tym `objectKey`.
+
+## Czego te akcje nie potrafią [#what-these-actions-cannot-do]
+
+- **Zgłaszać zdarzeń.** Akcja z `EMIT_EVENT` nie może być akcją bloku ani poleceniem rekordu (`event.emitted_from_step`).
+- **Używać połączenia członka.** Akcja, która używa `{{ userConnection.<field> }}`, też nie może nimi być (`action.member_outside_member_run`).
+- **Być uruchamiane przez harmonogram.** Akcja harmonogramu nie jest udostępniana (`schedule.action_exposed`).
+- **Działać w tle.** Polecenie działa, a członek czeka.
+
+## Gdy uruchomienie członka zostanie odrzucone [#when-a-members-run-is-refused]
+
+Ekrany pokazują je członkowi; kody mają znaczenie, gdy czytasz API.
+
+| Kod | Kiedy |
+| --- | --- |
+| `EXTENSION_INACTIVE` (409) | Akcja bloku rozszerzenia, które nie działa. |
+| `EXTENSION_ACTION_FORBIDDEN` (403) | Członek nie należy do odbiorców albo nie ma uprawnienia paczki. `meta.reason` mówi, które z nich. |
+| `block_action_unavailable` (404) | Akcji bloku nie ma na stronie członka, nie jest udostępniona jego firmie albo zainstalowana wersja już jej nie ma. Strona jest sprawdzana tak, jak renderuje się dla członka, więc przycisk, który blok przed nim pomija, na przykład bo `extension_actions` ma wartość `false`, też jest niedostępny. |
+| `ENTITY_ACTION_NOT_FOUND` (404) | Członek nie może już uruchomić polecenia rekordu, na przykład bo rozszerzenie zostało wyłączone. |
+| `ENTITY_ACTION_DISABLED` (409) | Polecenie `editGated` na rekordzie, który jest tylko do odczytu na swoim etapie. |
+| `EXTENSION_ACTION_INPUT_INVALID` (400) | Dane wejściowe nie pasują do pól wejściowych akcji. |
+| `EXTENSION_ACTION_RATE_LIMITED` (429) | Usługa odpowiedziała `429`. Niesie `retryAfterSeconds`, jeśli usługa je podała. |
+| `EXTENSION_ACTION_FAILED`, `EXTENSION_ACTION_OUTPUT_INVALID` (422) | Akcja zadziałała i się nie powiodła albo zwróciła wynik niepasujący do pól wyniku. |
+| `ENTITY_ACTION_TIMEOUT` (504) | Brak odpowiedzi w ciągu 15 sekund. Uruchomienie trwa dalej. |

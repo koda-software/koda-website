@@ -1,95 +1,361 @@
 ---
 title: Narzędzie wiersza poleceń
-description: "Opis extension-cli, narzędzia do rozszerzeń Opero: init, add, validate, pack, types, schema, login, test i push, wraz z ich opcjami i wynikiem działania."
+description: "Opis opero-ext, narzędzia do rozszerzeń Opero: instalacja i aktualizacja, logowanie i wszystkie polecenia (init, add, validate, pack, types, schema, pull, test, push, plan, install, upgrade, list, orgs, login, guide, version, update) wraz z opcjami, zgodą, wynikiem w JSON i kodami wyjścia."
 ---
 
-`extension-cli` tworzy szkielet paczki, sprawdza ją, zapisuje plik zip i komunikuje się z Opero. Większość poleceń działa offline; tylko `login`, `test` i `push` potrzebują serwera.
+`opero-ext` to narzędzie wiersza poleceń do rozszerzeń. Tworzy szkielet paczki albo eksportuje ją z twojej organizacji, sprawdza ją, zapisuje plik zip, uruchamia jej testy w Opero, przesyła ją, a także planuje, instaluje i aktualizuje. To jeden plik wykonywalny z wbudowanym Node.js; nic więcej nie jest potrzebne.
 
-<Callout title="Jak zdobyć narzędzie">
-Aby uzyskać dostęp do narzędzia wiersza poleceń, napisz na <SupportEmail />.
-</Callout>
+Narzędzie samo się dokumentuje: `opero-ext <command> --help` wypisuje opcje polecenia, to, co zmienia ono na serwerze, przykłady i kody wyjścia, a `opero-ext guide` wypisuje cały cykl pracy dla agenta AI.
 
-## Polecenia
+## Instalacja [#install]
 
-| Polecenie | Co robi | Potrzebuje serwera |
-| --- | --- | --- |
-| `init <folder>` | Zapisuje działającą paczkę z jedną akcją. | Nie |
-| `add action <name>` | Dodaje folder akcji i wpisuje go do manifestu. | Nie |
-| `add filter <name>` | Dodaje folder filtra i wpisuje go na listę. | Nie |
-| `validate <folder or zip>` | Sprawdza paczkę offline. | Nie |
-| `pack <folder>` | Sprawdza, a potem zapisuje plik zip. | Nie |
-| `types [folder]` | Zapisuje `.opero/types/index.d.ts`, z typem `Settings` z `settings.yaml`. | Nie |
-| `schema [folder]` | Zapisuje `.opero/schemas/`, schematy dla edytora, w tym schemat dla `settings.yaml`. | Nie |
-| `login --server <mcp-url>` | Loguje cię do Opero w przeglądarce. | Tak |
-| `test <folder or zip> --server <mcp-url>` | Uruchamia wszystkie przypadki testowe na serwerze i wypisuje każdy wynik. Niczego nie zapisuje. | Tak |
-| `push <folder or zip> --server <mcp-url>` | Przesyła jako paczkę prywatną. | Tak |
+<Tabs items={['Linux, macOS', 'Windows']}>
+<Tab value="Linux, macOS">
 
-Nie ma polecenia `add` dla ustawień, a `init` ich nie zapisuje: utwórz `settings.yaml` ręcznie i wskaż go w `extension.yaml` przez `settings: settings.yaml`. Zobacz [Ustawienia](/docs/pl/extensions/reference/settings). `validate` sprawdza go razem z resztą paczki, a dla poprawnego folderu odświeża typy i schematy dla edytora.
+```bash title="Terminal"
+curl -fsSL https://hub.kodasoft.pl/extension-cli/install.sh | sh
+```
 
-## Opcje
+Wybrana wersja zamiast najnowszej:
+
+```bash title="Terminal"
+curl -fsSL https://hub.kodasoft.pl/extension-cli/install.sh | sh -s -- --version 1.4.0
+```
+
+Narzędzie trafia do `~/.opero/extension-cli/<version>/`, a polecenie `~/.local/bin/opero-ext` na nie wskazuje. Jeśli `~/.local/bin` nie ma w `PATH`, instalator wypisuje linię do dodania w profilu powłoki.
+
+</Tab>
+<Tab value="Windows">
+
+W PowerShellu:
+
+```powershell title="PowerShell"
+irm https://hub.kodasoft.pl/extension-cli/install.ps1 | iex
+```
+
+Wybrana wersja zamiast najnowszej:
+
+```powershell title="PowerShell"
+$env:OPERO_EXT_INSTALL_VERSION = '1.4.0'; irm https://hub.kodasoft.pl/extension-cli/install.ps1 | iex
+```
+
+Narzędzie trafia do `%LOCALAPPDATA%\Opero\extension-cli\<version>\`, polecenie to `%LOCALAPPDATA%\Opero\bin\opero-ext.cmd`, a ten folder zostaje dodany do `PATH` użytkownika. Otwórz nowy terminal, aby go używać.
+
+</Tab>
+</Tabs>
+
+Żaden z instalatorów nie wymaga uprawnień administratora ani nie zapisuje niczego poza twoimi folderami. Oba pobierają z Kodasoft Hub wyłącznie przez HTTPS, porównują rozmiar i SHA-256 archiwum z manifestem wydania i sprawdzają, czy nowy plik wykonywalny się uruchamia, zanim się na niego przełączą. Wcześniejsze wersje pozostają zainstalowane.
+
+| Platforma | Obsługiwana |
+| --- | --- |
+| Linux | x64 i arm64, z glibc (Debian, Ubuntu, Fedora, …). Alpine i inne systemy z musl nie są obsługiwane. |
+| macOS | Apple silicon i Intel. |
+| Windows | x64. |
+
+**Podpis wydania.** Manifest każdego wydania jest podpisany przez Kodasoft. `install.sh` sprawdza podpis, gdy jest zainstalowany OpenSSL 3. macOS ma LibreSSL, który tego nie potrafi: instalator mówi wtedy o tym i opiera się na SHA-256 i HTTPS; jeśli chcesz, by podpis był sprawdzany, zainstaluj OpenSSL 3 (na przykład `brew install openssl@3`), umieść go na początku `PATH` i uruchom instalator ponownie. `install.ps1` nigdy go nie sprawdza (PowerShell tego nie potrafi) i o tym mówi. `opero-ext update` sprawdza go zawsze.
+
+**Pobranie przez przeglądarkę.** Polecenia jednolinijkowe uruchamiają narzędzie bez pytań. Jeśli zamiast tego pobierzesz archiwum przeglądarką, system może je zatrzymać przy pierwszym uruchomieniu:
+
+- macOS, „nie można otworzyć, ponieważ nie można zweryfikować dewelopera”: uruchom `xattr -d com.apple.quarantine opero-ext` albo wybierz **Otwórz mimo to** w Ustawieniach systemowych → Prywatność i ochrona.
+- Windows, „System Windows ochronił ten komputer”: wybierz **Więcej informacji** → **Uruchom mimo to**.
+
+## Aktualizacja [#update]
+
+```bash title="Terminal"
+opero-ext version
+opero-ext update
+opero-ext update --version 1.4.0
+```
+
+`version` wypisuje wersję, kompilację, platformę i wbudowany Node.js; `opero-ext --version` wypisuje samą wersję.
+
+`update` instaluje wydanie, które Kodasoft oznaczył jako najnowsze, albo z `--version` wybrane, także starsze, aby się wycofać. Odrzuca wydanie niepodpisane, podpisane kluczem, którego narzędzie nie zna, albo takie, którego archiwum nie zgadza się z manifestem, i wtedy niczego nie zmienia (kod 1). Nowa wersja dostaje własny folder, a polecenie od razu się na nią przełącza; poprzednia wersja zostaje. Gdy masz już najnowszą, polecenie o tym mówi.
+
+## Polecenia [#commands]
+
+| Polecenie | Co robi | Serwer | Moduł Tworzenie rozszerzeń |
+| --- | --- | --- | --- |
+| `init <folder>` | Zapisuje działającą paczkę z jedną akcją. | Nie | |
+| `add action <name>` | Dodaje folder akcji i wpisuje go do manifestu. | Nie | |
+| `add filter <name>` | Dodaje folder filtra i wpisuje go na listę. | Nie | |
+| `add trigger <name>` | Dodaje folder wyzwalacza i wpisuje go na listę. | Nie | |
+| `add schedule <name> --action <action>` | Dodaje folder harmonogramu, który uruchamia akcję, i wpisuje go na listę. | Nie | |
+| `add block <name>` | Dodaje folder bloku z HTML, CSS i testem renderowania i wpisuje go na listę. | Nie | |
+| `add link <name>` | Dodaje folder linku rekordu i wpisuje go na listę. | Nie | |
+| `add form <name> --object <object>` | Dodaje folder formularza z układem dla obiektu paczki i wpisuje go na listę. | Nie | |
+| `add list <name>` | Dodaje folder listy własnej i wpisuje go na listę. | Nie | |
+| `add page <name>` | Dodaje folder strony obszaru roboczego z układem i wpisuje go na listę. | Nie | |
+| `validate <folder or zip>` | Sprawdza paczkę offline. | Nie | |
+| `pack <folder>` | Sprawdza, a potem zapisuje plik zip. | Nie | |
+| `types [folder]` | Zapisuje `.opero/types/index.d.ts`, z typem `Settings` z `settings.yaml` i typem `Triggers` z danymi każdego wyzwalacza. | Nie | |
+| `schema [folder]` | Zapisuje `.opero/schemas/`, schematy dla edytora, w tym schemat dla `settings.yaml`. | Nie | |
+| `login` | Loguje cię do Opero w przeglądarce. | Tak | |
+| `orgs` | Wypisuje twoje organizacje i ich identyfikatory. | Tak | |
+| `list` | Wypisuje rozszerzenia zainstalowane w organizacji i wersje, które może zainstalować. | Tak | |
+| `pull <folder>` | Eksportuje własne słowniki, obiekty, zapisane zapytania, filtry szablonów, bloki własne, formularze, listy własne i strony obszaru roboczego organizacji jako nowy folder paczki. Zobacz [Zacznij od swojej organizacji](/docs/pl/extensions/start-from-your-organization). | Tak | Potrzebny |
+| `test <folder or zip>` | Uruchamia wszystkie przypadki testowe i przypadki renderowania bloków na serwerze i wypisuje każdy wynik. Niczego nie zapisuje. | Tak | Potrzebny |
+| `push <folder or zip>` | Przesyła jako paczkę prywatną. | Tak | |
+| `plan [folder or zip]` | Przesyła paczkę, a potem wypisuje, co zrobiłaby instalacja albo aktualizacja, oraz skrót planu. | Tak | |
+| `install [folder or zip]` | Przesyła, planuje, prosi o twoją zgodę i instaluje. | Tak | |
+| `upgrade [folder or zip]` | Przesyła, planuje, prosi o twoją zgodę i aktualizuje zainstalowane rozszerzenie. | Tak | |
+| `guide` | Wypisuje cykl pracy dla agenta AI. | Nie | |
+| `version` | Wypisuje wersję, kompilację, platformę i Node.js. | Nie | |
+| `update` | Instaluje najnowsze wydanie, ze sprawdzeniem podpisu. | Kodasoft Hub | |
+
+Tylko `pull` i `test` potrzebują w organizacji modułu **Tworzenie rozszerzeń**. Przesyłanie, planowanie, instalacja i aktualizacja go nie wymagają, podobnie jak działanie zainstalowanego rozszerzenia. Bez tego modułu `pull` i `test` kończą się kodem 4.
+
+Nie ma polecenia `add` dla obiektów, słowników i zapytań: utwórz ich foldery ręcznie i wymień je w `extension.yaml` albo wyeksportuj je poleceniem `pull`. Zobacz [Obiekty](/docs/pl/extensions/reference/objects), [Słowniki](/docs/pl/extensions/reference/dictionaries) i [Zapytania](/docs/pl/extensions/reference/queries). `validate` je sprawdza, łącznie z odwołaniami do obiektów w pliku SQL, a `pack` pakuje plik `.sql` każdego zapytania. `schema` zapisuje schematy dla edytora także dla `object.yaml`, `dictionary.yaml` i `query.yaml`.
+
+Nie ma polecenia `add` dla połączenia członka: napisz `connection/member.yaml` ręcznie i wskaż go w `connection.yaml` przez `member: member.yaml`. Zobacz [Połączenia członków](/docs/pl/extensions/reference/member-connections). `schema` zapisuje schematy dla edytora także dla `trigger.yaml`, `schedule.yaml` i `member.yaml`.
+
+Nie ma też polecenia `add` dla ustawień, a `init` ich nie zapisuje: utwórz `settings.yaml` ręcznie i wskaż go w `extension.yaml` przez `settings: settings.yaml`. Zobacz [Ustawienia](/docs/pl/extensions/reference/settings). `validate` sprawdza go razem z resztą paczki, a dla poprawnego folderu odświeża typy i schematy dla edytora.
+
+## Logowanie [#signing-in]
+
+Każde polecenie, które łączy się z Opero, przyjmuje `--server <mcp-url>`, czyli adres MCP twojego Opero, oraz `--org <organizationId>`, gdy należysz do więcej niż jednej organizacji (bez tego takie polecenie kończy się kodem 2).
+
+```bash title="Terminal"
+opero-ext login --server https://opero.example.com/mcp
+opero-ext orgs --server https://opero.example.com/mcp
+```
+
+`login` otwiera przeglądarkę z **Zaloguj się przez Opero**. Musi to dokończyć człowiek; agent AI tego nie potrafi i prosi cię o uruchomienie polecenia. Potem narzędzie działa jako ty, z twoimi uprawnieniami w każdej organizacji. Logowanie jest zapamiętywane osobno dla każdego serwera w `~/.config/opero-extension-cli/credentials.json`, czytelnym tylko dla ciebie, i odświeżane, gdy wygaśnie. Organizacja, która wymaga MFA albo SSO, odrzuca logowanie wykonane bez nich (kod 3): zaloguj się do Opero w ten sposób, a potem uruchom `login` ponownie.
+
+`orgs` wypisuje organizacje, do których należysz, wraz z identyfikatorami dla `--org`.
+
+## Opcje [#options]
 
 <Accordions type="multiple">
 <Accordion title="init">
 
 ```bash title="Terminal"
-extension-cli init hello-ext --name Hello --publisher "Your company" --typescript
+opero-ext init hello-ext --name Hello --publisher "Your company" --typescript
 ```
 
 | Opcja | Znaczenie |
 | --- | --- |
 | `--key <key>` | Klucz rozszerzenia. Domyślnie nazwa folderu. |
-| `--name <name>` | Nazwa paczki. |
+| `--name <name>` | Nazwa paczki. Domyślnie z klucza. |
 | `--publisher <name>` | Nazwa twojej firmy. |
 | `--typescript` | Zapisuje skrypty jako `.ts`, z plikiem `tsconfig.json`. |
+
+Nie nadpisuje istniejących plików. Potem uzupełnij opis, uzasadnienia uprawnień i prawdziwe testy.
 
 </Accordion>
 <Accordion title="add action, add filter">
 
 ```bash title="Terminal"
-extension-cli add action greet --rule
-extension-cli add filter shout
+opero-ext add action greet --rule
+opero-ext add filter shout
 ```
 
 | Opcja | Znaczenie |
 | --- | --- |
 | `--rule` | Zaczyna akcję od pliku reguły z krokiem skryptu zamiast od samego skryptu. Tylko akcje. |
 | `--module <folder>` | Dodaje ją do dołączonego modułu zamiast do manifestu. |
-| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. |
+| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. Domyślnie bieżący folder. |
 | `--typescript` | Zapisuje skrypt jako `.ts`. |
 
 `add` zachowuje twoje komentarze w `extension.yaml`. Gdy plik kończy się komentarzem, wstawia przed nim jedną pustą linię.
 
 </Accordion>
-<Accordion title="pack">
+<Accordion title="add trigger, add schedule">
 
 ```bash title="Terminal"
-extension-cli pack . --out dist/hello-ext.zip
+opero-ext add trigger order_changed
+opero-ext add schedule sync_orders --action sync_orders --every 1h --for-each company
 ```
+
+`add trigger` zapisuje `triggers/<name>/trigger.yaml` (nazwa z `-` zamiast `_`) z jednym polem danych, jednym filtrem i przykładem do podmiany, i wpisuje folder na listę.
+
+`add schedule` zapisuje `schedules/<name>/schedule.yaml` i wpisuje folder na listę:
 
 | Opcja | Znaczenie |
 | --- | --- |
-| `--out <file.zip>` | Nazwa pliku zip. Domyślnie `<key>-<version>.zip`. |
+| `--action <name>` | Akcja, którą uruchamia. Wymagana. Musi to być akcja paczki, która nie jest udostępniona jako krok, i akcja członka dokładnie wtedy, gdy `--for-each userConnection`. |
+| `--every <interval>` | `15m`, `30m`, `1h`, `2h`, `6h`, `12h` albo `24h`. Domyślnie `1h`. |
+| `--for-each <subject>` | `installation`, `company` albo `userConnection`. Domyślnie `company`. |
+| `--module <folder>` | Dodaje go do dołączonego modułu zamiast do manifestu. |
+| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. |
+
+Oba odmawiają nazwy, której paczka już używa, i paczki, która od początku nie jest poprawna.
+
+</Accordion>
+<Accordion title="add block, add link">
+
+```bash title="Terminal"
+opero-ext add block status_card
+opero-ext add link open_it
+```
+
+`add block` zapisuje `blocks/<name>/` (nazwę z `-` zamiast `_`) z plikami `block.yaml`, `block.html`, `block.css` i `tests.yaml` z jednym przypadkiem renderowania i wpisuje folder na listę. Skrypt dodajesz sam, razem z `permissions.pageScript`.
+
+`add link` zapisuje `links/<name>/link.yaml`, link do strony kontrahenta na `app.example.com`, który wymaga uprawnienia paczki `openLinks`, i wpisuje folder na listę. Paczka nie jest poprawna, dopóki nie zadeklarujesz hosta w `permissions.links` i uprawnienia w `permissions.company` albo nie zmienisz linku na własny; polecenie o tym przypomina.
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--module <folder>` | Dodaje go do dołączonego modułu zamiast do manifestu. |
+| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. |
+
+Oba odmawiają nazwy, która nie składa się z małych liter, cyfr i `_`.
+
+</Accordion>
+<Accordion title="add form, add list, add page">
+
+```bash title="Terminal"
+opero-ext add form quick --object orders
+opero-ext add list all-orders --object orders
+opero-ext add page order-desk
+```
+
+`add form` zapisuje `forms/<name>/` z plikiem `form.yaml`, z typami view, edit i create i zajmowaniem domyślnych miejsc obiektu, oraz `layout.yaml` z kartą zawierającą pierwsze pięć pól obiektu, i wpisuje folder na listę. Obiekt musi należeć do paczki.
+
+`add list` zapisuje `lists/<name>/list.yaml` i wpisuje folder na listę: z `--object` listę na tym obiekcie z kolumną dla każdego z jego pierwszych pięciu pól, bez tej opcji listę na wbudowanym źródle `contractors`.
+
+`add page` zapisuje `pages/<name>/` z plikiem `page.yaml`, stroną obszaru roboczego, i pustym `layout.yaml` z komentarzem pokazującym, jak osadzić listę, i wpisuje folder na listę.
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--object <name>` | `add form`: obiekt paczki, na którym jest formularz. Wymagana. `add list`: obiekt paczki, który lista wyświetla. |
+| `--module <folder>` | Dodaje go do dołączonego modułu zamiast do manifestu. |
+| `--package <folder>` | Folder paczki, gdy uruchamiasz polecenie z innego miejsca. |
+
+Nazwa formularza składa się z małych liter, cyfr i `_`; nazwa listy albo strony to słowa z małych liter połączone `-`. `schema` zapisuje schematy edytora dla `form.yaml`, `list.yaml`, `page.yaml` i ich plików układu. Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens).
+
+</Accordion>
+<Accordion title="validate, pack">
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext pack . --out hello.zip
+```
+
+`validate` czyta folder albo zip tak, jak zrobi to Opero, i wypisuje każdy problem. Dla poprawnego folderu zapisuje ponownie `.opero/` (typy skryptów i schematy dla edytora).
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--out <file.zip>` | Tylko `pack`. Nazwa pliku zip. Domyślnie `<key>-<version>.zip`. |
+| `--json` | Tylko `validate`. Zobacz [Wynik w JSON](#json-output). |
 
 Zip zawiera tylko pliki, do których prowadzi `extension.yaml`; TypeScript jest pakowany jako zbudowany `.js`. Ten sam folder zawsze daje ten sam zip, bajt w bajt.
 
 </Accordion>
-<Accordion title="login, test, push">
+<Accordion title="pull">
 
 ```bash title="Terminal"
-extension-cli login --server https://opero.example.com/mcp
-extension-cli test . --server https://opero.example.com/mcp --org <organizationId>
-extension-cli push . --server https://opero.example.com/mcp --org <organizationId>
+opero-ext pull ./orders --server https://opero.example.com/mcp --org <organizationId> \
+  --key orders --name Orders --publisher "Your company" \
+  --select object:sales.orders --select block:order_summary
 ```
 
 | Opcja | Znaczenie |
 | --- | --- |
-| `--server <mcp-url>` | Adres MCP twojego Opero. |
-| `--org <organizationId>` | Potrzebne, gdy należysz do więcej niż jednej organizacji. |
+| `--key <key>` | Klucz paczki, bez przedrostka `x-`. Wymagany. |
+| `--name <name>` | Nazwa paczki. Wymagana. |
+| `--publisher <publisher>` | Wydawca paczki. Wymagany. |
+| `--version <version>` | Wersja paczki. Domyślnie `0.1.0`. |
+| `--select <kind:ref>` | Zasób do eksportu; powtórz dla każdego. Wymagany. `dictionary:<key>`, `object:<moduleKey>.<objectKey>`, `query:<key>`, `filter:<key>`, `block:<key>`, `form:<id>`, `list:<key>` albo `page:<slug>`. |
+| `--force` | Zapisuje do folderu, który nie jest pusty, nadpisując tylko pliki zapisywane przez eksport. |
+
+Folder musi być nowy albo pusty. Polecenie wypisuje, co zapisało, co dodało, bo potrzebuje tego wybrany zasób, co pominęło i dlaczego, oraz co musisz jeszcze napisać przed przesłaniem. Eksport opisuje strona [Zacznij od swojej organizacji](/docs/pl/extensions/start-from-your-organization).
+
+</Accordion>
+<Accordion title="test, push">
+
+```bash title="Terminal"
+opero-ext test . --server https://opero.example.com/mcp --org <organizationId>
+opero-ext push . --server https://opero.example.com/mcp --org <organizationId>
+```
+
+`test` wypisuje jeden wiersz na przypadek; kolumna **Part** podaje akcję albo `block <name>` dla przypadku renderowania bloku. Wymaga modułu Tworzenie rozszerzeń.
+
+`push` sprawdza paczkę offline, a potem przesyła ją jako paczkę prywatną organizacji. Opero najpierw uruchamia te same kontrole i testy i niczego nie zapisuje, gdy się nie powiodą. Ponowne wysłanie tych samych bajtów zwraca zapisaną wersję; inne bajty dla istniejącej wersji są odrzucane (kod 6): podnieś `version` w `extension.yaml`.
+
+</Accordion>
+<Accordion title="list, plan">
+
+```bash title="Terminal"
+opero-ext list --server https://opero.example.com/mcp --org <organizationId>
+opero-ext plan . --server https://opero.example.com/mcp --org <organizationId>
+```
+
+`list` pokazuje zainstalowane rozszerzenia (klucz, wersję, status, czy działa i dlaczego nie, oraz rewizję) i każdą wersję, którą organizacja może zainstalować: jej własne paczki prywatne i udostępnione jej paczki z katalogu, każdą z identyfikatorem paczki.
+
+`plan` przesyła folder albo zip jak `push` albo bierze zapisaną wersję z `--package-id <id>` i wypisuje, co zrobiłaby instalacja albo aktualizacja do niej: uprawnienia z uzasadnieniami, to, co dodaje, wyzwalacze, harmonogramy, połączenie członka, uprawnienia paczki, bloki, akcje członków, linki, zmiany, utratę danych, problemy i skrót planu. Zablokowany plan kończy się kodem 1. Sam plan niczego nie zmienia.
+
+</Accordion>
+<Accordion title="install, upgrade">
+
+```bash title="Terminal"
+opero-ext install . --server https://opero.example.com/mcp --org <organizationId>
+opero-ext upgrade . --server https://opero.example.com/mcp --org <organizationId>
+```
+
+| Opcja | Znaczenie |
+| --- | --- |
+| `--package-id <id>` | Używa zapisanej wersji (z `list`) zamiast folderu albo pliku zip. |
+| `--plan-hash <hash>` | Zgoda na plan o tym skrócie; działa bez pytania. |
+| `--yes` | W terminalu: zgoda bez pytania y/N. |
+| `--confirm-data-loss` | `upgrade`: potwierdza utratę danych z planu. |
+
+Oba instalują dowolną wersję, którą organizacja może zainstalować: jej własne paczki prywatne i udostępnione jej paczki z katalogu. Ponowne wysłanie `install` wznawia nieudaną instalację; rozszerzenie, które jest już zainstalowane, kończy się kodem 6, więc użyj `upgrade`. Przed `upgrade` podnieś `version` w `extension.yaml`. Rewizja instalacji jest odczytywana na początku polecenia; jeśli w międzyczasie się zmieni, polecenie kończy się kodem 6. Wyłączone rozszerzenie po aktualizacji pozostaje wyłączone.
 
 </Accordion>
 </Accordions>
 
-## Jak czytać problem
+## Zgoda [#consent]
+
+Instalacja albo aktualizacja przyznaje to, co wymienia plan: uprawnienia, o które prosi paczka, z ich uzasadnieniami, to, co dodaje, jej wyzwalacze, harmonogramy, połączenie członka, uprawnienia paczki, bloki, akcje członków i linki, a przy aktualizacji także dane, które usuwa. Dlatego `install` i `upgrade` wypisują plan i działają tylko za twoją zgodą:
+
+- **W terminalu** pytają o zgodę (y/N). Plan z utratą danych prosi też o wpisanie klucza rozszerzenia. `--yes` pomija tylko pierwsze pytanie.
+- **Bez terminala albo z `--json`** działają tylko z `--plan-hash <hash>` ze świeżego planu, a przy aktualizacji, która usuwa dane, także z `--confirm-data-loss`. Bez nich wypisują plan, niczego nie zmieniają i kończą się kodem 5.
+- **Skrót jest porównywany z planem utworzonym w tej chwili.** Jeśli od czasu, gdy go widziałeś, coś się zmieniło (paczka, organizacja, zainstalowana rewizja), skrót jest inny i polecenie kończy się kodem 5: zaplanuj ponownie.
+
+Skrypt albo agent AI uruchamia więc `opero-ext plan . --json`, pokazuje ci plan i dopiero po twojej zgodzie uruchamia:
+
+```bash title="Terminal"
+opero-ext install --package-id <packageId> --plan-hash <planHash> \
+  --server https://opero.example.com/mcp --org <organizationId>
+```
+
+Zgoda zawsze należy do ciebie. Agent nie może podać `--plan-hash` planu, którego ci nie pokazał, ani `--confirm-data-loss`, którego nie dałeś.
+
+## Wynik w JSON [#json-output]
+
+`--json` działa z `orgs`, `list`, `plan`, `install`, `upgrade`, `push`, `test`, `pull`, `validate`, `version` i `update`. Polecenie o nic wtedy nie pyta i wypisuje jeden dokument JSON:
+
+```json title="Sukces"
+{ "ok": true, "command": "plan", "data": { "package": {}, "plan": {} } }
+```
+
+```json title="Błąd"
+{
+  "ok": false,
+  "command": "install",
+  "exitCode": 5,
+  "reason": "consent_required",
+  "message": "…",
+  "errors": [{ "code": "…", "message": "…" }],
+  "data": { "package": {}, "plan": {} }
+}
+```
+
+`data` przy błędzie zawiera to, czego polecenie dowiedziało się wcześniej, na przykład plan do pokazania. Uwagi i ostrzeżenia trafiają na standardowe wyjście błędów. Decyzje podejmuj na podstawie kodu wyjścia, nie tekstu.
+
+## Kody wyjścia [#exit-codes]
+
+| Kod | Znaczenie | Co zrobić |
+| --- | --- | --- |
+| `0` | Gotowe. | |
+| `1` | Paczka albo serwer odmówiły. Problemy są wypisane (z `--json` w `errors`). | Popraw to, co wskazują. |
+| `2` | Błąd użycia: zły argument albo opcja, albo brak `--org`, gdy należysz do kilku organizacji. | Przeczytaj `--help`; podaj `--org`. |
+| `3` | Brak logowania, logowanie wygasło albo organizacja je odrzuciła (wymaga MFA albo SSO). | Uruchom `opero-ext login`. |
+| `4` | Organizacja nie ma modułu Tworzenie rozszerzeń albo licencja na niego nie pozwala. Potrzebują go tylko `test` i `pull`. | Poproś administratora o jego włączenie. |
+| `5` | Brak zgody: brak terminala i `--plan-hash`, `--plan-hash`, który nie jest skrótem bieżącego planu, niepotwierdzona utrata danych albo odmowa. | Zaplanuj ponownie, przejrzyj, wyraź zgodę. |
+| `6` | Konflikt: wersja już istnieje, instalacja zmieniła się od odczytu, rozszerzenie jest już (albo jeszcze nie jest) zainstalowane albo trwa inna operacja. | Podnieś wersję, użyj `upgrade` albo `install` albo uruchom ponownie. |
+| `7` | Nie udało się połączyć z serwerem albo serwer zawiódł. | Spróbuj później. |
+
+## Jak czytać problem [#reading-a-problem]
 
 Problem jest wypisywany jako kod, potem `file:line #/place`, a potem komunikat:
 
@@ -98,11 +364,14 @@ Problem jest wypisywany jako kod, potem `file:line #/place`, a potem komunikat:
     Host "api.httpbin.org" is not listed in permissions.network.
 ```
 
-Kontrola offline obejmuje pliki i ich strukturę; tylko serwer może uruchomić testy. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają wszystkie kody.
+Kontrola offline obejmuje pliki i ich strukturę, łącznie z zakresami danych, których potrzebuje każdy krok, oraz kluczami akcji, zapytaniami, obiektami i blokami, które wskazuje blok; tylko serwer może uruchomić testy i wyrenderować bloki. Pola linku na rekordzie wbudowanym także sprawdza serwer. SQL zapytania i typy pól obiektu sprawdza plan instalacji. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają wszystkie kody.
 
-## Cykl pracy
+## Cykl pracy [#the-working-loop]
 
 <Steps>
+<Step>
+Zacznij od `init` albo od `pull` z własnej konfiguracji organizacji.
+</Step>
 <Step>
 Uruchamiaj `validate` po każdej zmianie. Działa offline i szybko, a do tego utrzymuje typy w `.opero/` w zgodzie z twoimi deskryptorami.
 </Step>
@@ -110,6 +379,6 @@ Uruchamiaj `validate` po każdej zmianie. Działa offline i szybko, a do tego ut
 Uruchom `test`, gdy pliki są poprawne.
 </Step>
 <Step>
-Uruchom `push` albo prześlij zip z `pack`, gdy testy przechodzą.
+Uruchom `plan`, aby zobaczyć, co zrobi paczka, a potem `install` albo, po podniesieniu wersji, `upgrade`. Możesz też uruchomić `push` albo przesłać zip z `pack` i zainstalować paczkę w Opero.
 </Step>
 </Steps>

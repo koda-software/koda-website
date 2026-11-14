@@ -1,0 +1,406 @@
+---
+title: "Przepis: blok, przycisk i link"
+description: "Zbuduj rozszerzenie Opero, którego członkowie używają na stronach rekordów: obiekt przesyłki, blok z kartą ze skryptem i plakietką, akcję, którą członkowie uruchamiają przyciskiem i jako polecenie rekordu, link do strony śledzenia u przewoźnika oraz uprawnienia paczki, które decydują, kto może ich używać."
+---
+
+Ten przepis buduje paczkę dla **przesyłek**, której członkowie używają na stronie samej przesyłki. Przynosi:
+
+- obiekt **Parcel**;
+- blok **Karta przesyłki** (Parcel card), który pokazuje przesyłkę z **Plakietką statusu** (Status badge), innym blokiem paczki, i przyciskiem **Track now**;
+- akcję **Śledź przesyłkę** (Track parcel, `x-parcels.track_parcel`), która pyta przewoźnika, gdzie jest przesyłka, uruchamianą tym przyciskiem i oferowaną jako polecenie na każdej przesyłce;
+- link **Otwórz stronę śledzenia** (Open tracking page) do strony przesyłki u przewoźnika;
+- dwa uprawnienia paczki, **Śledzenie przesyłek** i **Otwieranie stron śledzenia**, które organizacja nadaje w swoich rolach.
+
+<Files>
+  <Folder name="parcels" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="objects" defaultOpen>
+      <Folder name="parcels" defaultOpen>
+        <File name="object.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="track-parcel" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="answer.js" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="blocks" defaultOpen>
+      <Folder name="parcel-card" defaultOpen>
+        <File name="block.yaml" />
+        <File name="block.html" />
+        <File name="block.css" />
+        <File name="block.js" />
+        <File name="tests.yaml" />
+      </Folder>
+      <Folder name="status-badge" defaultOpen>
+        <File name="block.yaml" />
+        <File name="block.html" />
+        <File name="block.css" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="links" defaultOpen>
+      <Folder name="open-tracking" defaultOpen>
+        <File name="link.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+Przewoźnik w tym przepisie zna każdą przesyłkę po identyfikatorze jej rekordu w Opero, który dostał przy jej rejestracji.
+
+<Steps>
+<Step>
+### Napisz manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: parcels
+version: 0.1.0
+name: Parcels
+description: Keeps parcels, shows them on record pages and asks the carrier where they are.
+publisher: Your company
+requires:
+  modules: [rules, objects]
+permissions:
+  network:
+    - host: api.example.com
+      reason: Asks the carrier where a parcel is.
+  links:
+    - host: track.example.com
+      reason: Opens a parcel's tracking page at the carrier.
+  pageScript:
+    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
+  company:
+    track:
+      label: Track parcels
+      description: Ask the carrier where a parcel is, from its page or its card.
+      reason: Each question counts against the organization's carrier quota.
+    openTracking:
+      label: Open tracking pages
+      description: Open a parcel's tracking page at the carrier.
+      reason: The link sends the parcel number to the carrier's site.
+
+objects:
+  - objects/parcels
+actions:
+  - actions/track-parcel
+blocks:
+  - blocks/parcel-card
+  - blocks/status-badge
+links:
+  - links/open-tracking
+
+locales: [pl]
+```
+
+Obok siebie stoją trzy rodzaje uprawnień: `network` to host, który wywołują reguły paczki, `links` host, który otwierają przeglądarki członków, a `company` [uprawnienia paczki](/docs/pl/extensions/reference/package-permissions), których potrzebują członkowie. `pageScript` jest tu, bo karta ma skrypt.
+</Step>
+
+<Step>
+### Dodaj obiekt
+
+```yaml title="objects/parcels/object.yaml"
+object: parcels
+name: Parcel
+namePlural: Parcels
+icon: package
+fields:
+  - { key: number, name: Number, type: TEXT }
+  - { key: status, name: Status, type: TEXT }
+```
+</Step>
+
+<Step>
+### Opisz akcję
+
+```yaml title="actions/track-parcel/action.yaml"
+action: track_parcel
+label: Track parcel
+description: Asks the carrier where the parcel is and returns its status.
+
+output:
+  message: { type: text, label: Message }
+  status: { type: text, label: Carrier status }
+  scannedAt: { type: text, label: Last scan }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  blockAction: { permission: track }
+  recordCommand:
+    permission: track
+    targets: [{ object: parcels }]
+    icon: truck
+    confirm: { title: Track parcel, message: Ask the carrier where this parcel is? }
+    result: { message: message, details: [status, scannedAt] }
+```
+
+Akcja nie ma danych wejściowych, więc polecenie uruchamia się, gdy tylko członek potwierdzi. Jej wynik pokazuje `message`, a potem status u przewoźnika i ostatni skan, każde z etykietą z pól wyniku. Zobacz [Akcje bloków i polecenia rekordów](/docs/pl/extensions/reference/member-actions).
+</Step>
+
+<Step>
+### Napisz regułę
+
+```yaml title="actions/track-parcel/rule.yaml"
+entryStepId: ask
+steps:
+  - id: ask
+    type: CALL_WEBHOOK
+    name: Ask the carrier
+    contextKey: asked
+    config:
+      url: "https://api.example.com/v1/parcels?reference={{ trigger.record.id }}"
+      method: GET
+  - id: answer
+    type: RUN_SCRIPT
+    name: Answer
+    contextKey: output
+    config:
+      code: { $file: answer.js }
+edges:
+  - { fromStepId: ask, toStepId: answer }
+```
+
+```js title="actions/track-parcel/answer.js"
+/** @type {import('../../.opero/types').StepScript<'track_parcel'>} */
+export default function answer({ context }) {
+  const { status, scannedAt } = context.asked.body;
+  return {
+    message: `The carrier says: ${status}.`,
+    status: String(status),
+    scannedAt: String(scannedAt),
+  };
+}
+```
+
+`trigger.record.id` to rekord, dla którego członek uruchamia akcję, niezależnie od tego, czy nacisnął przycisk na karcie, czy polecenie.
+</Step>
+
+<Step>
+### Przetestuj akcję
+
+```yaml title="actions/track-parcel/tests.yaml"
+- name: the carrier's status comes back
+  record: { type: custom_record, id: rec-1, object: parcels }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/parcels?reference=rec-1
+      response:
+        status: 200
+        body: { status: in_transit, scannedAt: "2026-11-12T08:30:00Z" }
+  returns:
+    message: "The carrier says: in_transit."
+    status: in_transit
+    scannedAt: "2026-11-12T08:30:00Z"
+- name: a parcel the carrier does not know fails
+  record: { type: custom_record, id: rec-2, object: parcels }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/parcels?reference=rec-2
+      response: { status: 404, body: { error: not_found } }
+  fails: { status: 404 }
+```
+
+`record` to rekord, dla którego działa przypadek.
+</Step>
+
+<Step>
+### Dodaj plakietkę
+
+`opero-ext add block status_badge` zapisuje folder; zastąp jego pliki:
+
+```yaml title="blocks/status-badge/block.yaml"
+block: status_badge
+label: Status badge
+description: A parcel status as a coloured badge.
+html: block.html
+css: block.css
+inputs:
+  status: { type: text, label: Status, default: new }
+tests: tests.yaml
+```
+
+```html title="blocks/status-badge/block.html"
+<span class="badge badge--{{ inputs.status }}">{{ inputs.status }}</span>
+```
+
+```css title="blocks/status-badge/block.css"
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--muted); }
+.badge--delivered { background: var(--primary); color: var(--primary-foreground); }
+```
+
+```yaml title="blocks/status-badge/tests.yaml"
+- name: shows the status it is given
+  inputs: { status: delivered }
+  contains: ['class="badge badge--delivered"', ">delivered<"]
+- name: shows new when no status is given
+  contains: [">new<"]
+```
+</Step>
+
+<Step>
+### Dodaj kartę
+
+```yaml title="blocks/parcel-card/block.yaml"
+block: parcel_card
+label: Parcel card
+description: The parcel's number and status, with a button that asks the carrier where it is.
+html: block.html
+css: block.css
+script: block.js
+tests: tests.yaml
+```
+
+```html title="blocks/parcel-card/block.html"
+<section class="parcel">
+  <h3 class="parcel__number">Parcel {{ record.number }}</h3>
+  {% render 'x_parcels_status_badge', status: record.status %}
+  {% if extension_actions['x-parcels.track_parcel'] %}
+    <button type="button" data-opero-action="run-action"
+            data-action="x-parcels.track_parcel">Track now</button>
+  {% endif %}
+  <p class="parcel__answer" data-answer></p>
+</section>
+```
+
+```css title="blocks/parcel-card/block.css"
+.parcel { display: grid; gap: 8px; padding: 16px; border-radius: 8px; background: var(--muted); }
+.parcel__number { margin: 0; }
+.parcel__answer:empty { display: none; }
+```
+
+```js title="blocks/parcel-card/block.js"
+/** @type {import('../../.opero/types').Block} */
+export default function parcelCard(ctx) {
+  const answer = ctx.dom.querySelector('[data-answer]');
+  const last = ctx.state.get('answer');
+  if (answer && typeof last === 'string') answer.textContent = last;
+  ctx.dom.root.addEventListener('opero:action-done', (event) => {
+    const message = event.detail?.output?.message;
+    if (typeof message !== 'string' || !answer) return;
+    ctx.state.set('answer', message);
+    answer.textContent = message;
+  });
+}
+```
+
+```yaml title="blocks/parcel-card/tests.yaml"
+- name: shows the button to a member who may track
+  record: { type: custom_record, id: rec-1, object: parcels }
+  extensionActions: { x-parcels.track_parcel: true }
+  contains: ['data-action="x-parcels.track_parcel"', "Track now"]
+- name: hides the button from everyone else
+  record: { type: custom_record, id: rec-1, object: parcels }
+  extensionActions: { x-parcels.track_parcel: false }
+  notContains: ["Track now"]
+```
+
+Umieszczona na stronie przesyłki karta odczytuje przesyłkę jako `record` i renderuje plakietkę jej zainstalowanym kluczem, `x_parcels_status_badge`. Przycisk pojawia się tylko członkom, którzy mogą uruchomić akcję. Gdy akcja się zakończy, skrypt wpisuje jej komunikat pod przyciskiem i zachowuje go między odświeżeniami bloku. Zobacz [Bloki](/docs/pl/extensions/reference/blocks).
+</Step>
+
+<Step>
+### Dodaj link
+
+`opero-ext add link open_tracking` zapisuje folder; skieruj go do przewoźnika:
+
+```yaml title="links/open-tracking/link.yaml"
+link: open_tracking
+label: Open tracking page
+description: Opens the parcel's page at the carrier.
+permission: openTracking
+targets: [{ object: parcels }]
+fields:
+  number: { label: Parcel number }
+url: "https://track.example.com/parcels/{fields.number}?ref={record.id}"
+```
+
+Link pojawia się na przesyłce tylko członkowi, którego formularz pokazuje pole **Number**, i tylko wtedy, gdy przesyłka ma numer. Zobacz [Linki rekordów](/docs/pl/extensions/reference/record-links).
+</Step>
+
+<Step>
+### Przetłumacz
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Przesyłki
+  description: Przechowuje przesyłki, pokazuje je na stronach rekordów i pyta przewoźnika, gdzie są.
+permissions:
+  network:
+    api.example.com: { reason: "Pyta przewoźnika, gdzie jest przesyłka." }
+  links:
+    track.example.com: { reason: Otwiera stronę śledzenia przesyłki u przewoźnika. }
+  pageScript: { reason: "Karta przesyłki pokazuje ostatnią odpowiedź przewoźnika, dopóki strona jest otwarta." }
+  company:
+    track:
+      label: Śledzenie przesyłek
+      description: Pytanie przewoźnika, gdzie jest przesyłka, z jej strony albo z jej karty.
+      reason: Każde pytanie wlicza się do limitu zapytań organizacji u przewoźnika.
+    openTracking:
+      label: Otwieranie stron śledzenia
+      description: Otwieranie strony śledzenia przesyłki u przewoźnika.
+      reason: Link wysyła numer przesyłki do serwisu przewoźnika.
+actions:
+  track_parcel:
+    label: Śledź przesyłkę
+    description: Pyta przewoźnika, gdzie jest przesyłka, i zwraca jej status.
+    confirm: { title: Śledź przesyłkę, message: "Zapytać przewoźnika, gdzie jest ta przesyłka?" }
+    output:
+      message: { label: Komunikat }
+      status: { label: Status u przewoźnika }
+      scannedAt: { label: Ostatni skan }
+blocks:
+  parcel_card:
+    label: Karta przesyłki
+    description: Numer i status przesyłki oraz przycisk, który pyta przewoźnika, gdzie ona jest.
+  status_badge:
+    label: Plakietka statusu
+    description: Status przesyłki jako kolorowa plakietka.
+links:
+  open_tracking:
+    label: Otwórz stronę śledzenia
+    description: Otwiera stronę przesyłki u przewoźnika.
+    fields:
+      number: { label: Numer przesyłki }
+```
+
+Tekst z przecinkiem wewnątrz `{ }` jest w cudzysłowie. HTML bloków nie jest tłumaczony.
+</Step>
+
+<Step>
+### Zwaliduj, przetestuj i spakuj
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Output"
+parcels 0.1.0 is valid.
+```
+
+`validate` sprawdza pliki offline; `test` uruchamia na serwerze dwa przypadki akcji i cztery przypadki renderowania.
+</Step>
+</Steps>
+
+## Po instalacji [#after-install]
+
+Administrator instaluje paczkę tak jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use), z uprawnieniami do tworzenia bloków własnych i zmiany własnego HTML. Przed potwierdzeniem plan instalacji pokazuje dwa bloki ze skryptem karty, akcję uruchamianą przez członków z uprawnieniem, którego wymaga, link z jego hostem `track.example.com` i polem **Numer przesyłki** oraz dwa uprawnienia paczki z uzasadnieniami.
+
+Następnie:
+
+- organizacja nadaje **Śledzenie przesyłek** i **Otwieranie stron śledzenia** rolom, które powinny je mieć; do tego czasu polecenie, przycisk i link widzą tylko członkowie, których rola nadaje wszystkie uprawnienia;
+- umieszcza **Kartę przesyłki** (`x_parcels_parcel_card`) na stronie rekordu przesyłek, tak jak umieszcza własne bloki;
+- członek ze **Śledzeniem przesyłek** naciska **Track now** na karcie albo uruchamia **Śledź przesyłkę** z akcji przesyłki i widzi odpowiedź przewoźnika; członek z **Otwieraniem stron śledzenia** otwiera przesyłkę u przewoźnika.
+
+Po instalacji każde z nich jest udostępnione wszystkim firmom i wszystkim członkom; organizacja może zawęzić każde do części firm albo do odbiorców. Gdy rozszerzenie jest wyłączone, karta pokazuje komunikat zamiast przesyłki, a polecenie i link znikają. Gdy zostanie odinstalowane, karta zostaje zarchiwizowana tam, gdzie była umieszczona, i pokazuje, że rozszerzenie zostało usunięte; ponowna instalacja ją przywraca.

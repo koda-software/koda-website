@@ -1,0 +1,318 @@
+---
+title: Połączenia członków
+description: "Opis connection/member.yaml w rozszerzeniach Opero: OAuth dla każdego członka, klient z pól połączenia, formularz członka i firma, akcje afterConnect i beforeDisconnect, wartości userConnection, odrzucone tokeny, ponowna zgoda oraz co widzą członkowie i administrator."
+---
+
+Połączenie członka pozwala każdemu członkowi organizacji połączyć własne konto w usłudze zewnętrznej przez OAuth. Akcje paczki wywołują wtedy usługę z tokenem tego członka, wyłącznie dla niego. Typowe użycie to [harmonogram](/docs/pl/extensions/reference/schedules), który co godzinę odczytuje nowe dane każdego połączonego członka i [zgłasza dla nich zdarzenia](/docs/pl/extensions/reference/raising-events).
+
+Należy do [połączenia](/docs/pl/extensions/reference/connection-and-secrets) paczki: administrator organizacji wpisuje tam klienta OAuth, a `connection.yaml` wskazuje połączenie członka.
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: client
+    kind: custom
+    label: Sandbox API client
+    fields:
+      clientId: { type: text, label: Client ID, required: true, secret: false }
+      clientSecret: { type: text, label: Client secret, required: true }
+    scheme: { kind: basic, username: clientId, password: clientSecret }
+verify: verify_client
+member: member.yaml # [!code highlight]
+```
+
+```yaml title="connection/member.yaml"
+label: Sandbox account
+description: Sends your sandbox activities to your company's rules.
+oauth:
+  authorize: https://auth.example.com/oauth2/authorize
+  token: https://api.example.com/oauth2/token
+  scopes: [activities.read]
+  clientAuth: basic
+  pkce: false
+  client: { id: clientId, secret: clientSecret }
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+data:
+  - Activities
+afterConnect:
+  action: register_member
+  output:
+    sandboxUserId: meta
+    signingKey: secret
+  failures:
+    "403":
+      name: consents_missing
+      message: Accept every data consent in the sandbox, then connect again.
+    "409": already_registered
+beforeDisconnect:
+  action: deregister_member
+```
+
+`extension.yaml` musi mieć `connection: connection`, a `member: member.yaml` to jedyna wartość, jaką przyjmuje `connection.yaml`. Paczka ma najwyżej jedno połączenie członka.
+
+## member.yaml [#memberyaml]
+
+<TypeTable
+  type={{
+    label: {
+      type: 'string',
+      description: 'Nazwa połączenia widoczna dla członków, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 2000 znaków. Do przetłumaczenia. Dziś nie jest pokazywany na żadnym ekranie.',
+    },
+    'oauth.authorize': {
+      type: 'string',
+      description: 'Adres, na który trafia przeglądarka członka, żeby się zalogować i wyrazić zgodę. Adres https:// wpisany w całości.',
+      required: true,
+    },
+    'oauth.token': {
+      type: 'string',
+      description: 'Adres, pod którym Opero wymienia logowanie członka na token. Adres https:// wpisany w całości.',
+      required: true,
+    },
+    'oauth.scopes': {
+      type: 'string[]',
+      description: 'Zakresy OAuth, o które proszeni są członkowie, do 50.',
+      default: '[]',
+    },
+    'oauth.clientAuth': {
+      type: '"basic" | "post"',
+      description: 'Jak klient przedstawia się pod adresem tokenu: HTTP Basic albo w treści żądania.',
+      default: 'basic',
+    },
+    'oauth.pkce': {
+      type: 'boolean',
+      description: 'Użyj PKCE.',
+      default: 'false',
+    },
+    'oauth.client': {
+      type: '{ id, secret }',
+      description: 'Dwa pola danych uwierzytelniających jednej metody połączenia: identyfikator i sekret klienta OAuth.',
+      required: true,
+    },
+    config: {
+      type: 'field list',
+      description: 'Formularz, który wypełnia każdy członek. Najwyżej jedno pole typu company.',
+    },
+    data: {
+      type: 'string[]',
+      description: 'Co przekazuje połączenie, do 20 krótkich tekstów po najwyżej 200 znaków. Widoczne dla członków i w planie instalacji. Do przetłumaczenia.',
+    },
+    afterConnect: {
+      type: '{ action, output?, failures? }',
+      description: 'Akcja uruchamiana, gdy członek się połączy.',
+      required: true,
+    },
+    beforeDisconnect: {
+      type: '{ action }',
+      description: 'Akcja uruchamiana przed usunięciem połączenia członka.',
+    },
+  }}
+/>
+
+## OAuth [#oauth]
+
+Członkowie łączą się przepływem OAuth z kodem autoryzacji; inne sposoby logowania członków nie są obsługiwane.
+
+- **Oba adresy są wpisane wprost.** Bez szablonu, portu ani nazwy użytkownika, a oba hosty są wymienione w `permissions.network` (w przeciwnym razie `member.host_not_listed`), więc administrator widzi je przed instalacją.
+- **Klient należy do organizacji.** `client` wskazuje dwa pola danych uwierzytelniających jednej metody połączenia. Administrator wpisuje je na ekranie połączenia i są przechowywane w postaci zaszyfrowanej jak każde dane uwierzytelniające. `member.client_field_unknown` oznacza, że te dwa pola nie należą do jednej metody.
+- **Zarejestruj Opero u dostawcy.** Klient OAuth musi przyjmować adres zwrotny Opero dla połączeń członków jako adres przekierowania. Ten adres jest ustawiany osobno w każdej instalacji Opero; zapytaj o niego jej administratora.
+- **Co jest przechowywane.** Dla każdego członka Opero zachowuje w postaci zaszyfrowanej token dostępu, token odświeżania i czas wygaśnięcia, gdy dostawca je przyśle. Nic nie może ich odczytać.
+- **Bez odświeżania tokenów.** Opero nie odnawia tokenu dostępu. Gdy dostawca przestanie go przyjmować, członek musi połączyć się ponownie; zobacz [Odrzucony token](#a-refused-token).
+
+## Formularz członka [#the-members-form]
+
+`config` to [lista pól](/docs/pl/extensions/reference/actions#field-lists): formularz, który każdy członek wypełnia dla swojego połączenia. Jego wartości trafiają do akcji jako `config`. Nie zawiera sekretów.
+
+Jedno pole może być typu `company`, na najwyższym poziomie listy:
+
+```yaml
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+```
+
+Członek wybiera jedną ze swoich firm w organizacji. Firma, do której nie należy, jest odrzucana. Wybrana firma jest firmą uruchomień tego członka: działają w niej uruchomienia harmonogramu i akcje połączenia, kroki danych i do niej trafiają zgłoszone przez nie zdarzenia. Typ `company` jest przyjmowany tylko tutaj; gdzie indziej to `field.invalid`, a drugie pole firmy to `member.invalid`.
+
+## Łączenie: afterConnect [#connecting-afterconnect]
+
+Gdy członek wyrazi zgodę u dostawcy, a Opero ma jego token, Opero uruchamia akcję `afterConnect`. Użyj jej, żeby zarejestrować członka w usłudze i zachować to, czego potrzebują późniejsze uruchomienia, na przykład identyfikator tego członka w usłudze.
+
+```yaml title="actions/register-member/rule.yaml"
+entryStepId: register
+steps:
+  - id: register
+    type: CALL_WEBHOOK
+    name: Register
+    contextKey: registered
+    config:
+      method: POST
+      url: https://api.example.com/v1/users
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+      body: { memberId: "{{ trigger.data.credentialId }}" }
+  - id: keep
+    type: SAVE_TO_CONTEXT
+    name: Keep the ids
+    contextKey: output
+    config:
+      value:
+        sandboxUserId: "{{ registered.body.id }}"
+        signingKey: "{{ registered.body.signingKey }}"
+edges:
+  - { fromStepId: register, toStepId: keep }
+```
+
+**Jej wejście** to:
+
+| Pole | Wartość |
+| --- | --- |
+| `credentialId` | Identyfikator połączenia członka. |
+| `token.scopes`, `token.expiresAt` | Co przyznał dostawca i do kiedy, gdy to podaje. |
+| `token.extra` | Inne proste wartości z odpowiedzi dostawcy z tokenem, na przykład identyfikator użytkownika u dostawcy. Wartości, których nazwa zawiera `token`, `secret`, `password` albo `key`, są pomijane. |
+| `config` | Formularz członka. |
+
+Token dostępu nigdy nie jest częścią wejścia: reguła wysyła go przez `{{ userConnection.accessToken }}`.
+
+**Jej wyjście** jest zapisywane przy połączeniu, pole po polu, zgodnie z `output`:
+
+| `output` | Przechowywane | Używane jako |
+| --- | --- | --- |
+| `<field>: secret` | W postaci zaszyfrowanej, nigdy nie pokazywane ani odczytywane. | `{{ userConnection.<field> }}` w późniejszych akcjach członka, tak jak token. |
+| `<field>: meta` | Jako jawna informacja o połączeniu. | `subject.meta` w każdym uruchomieniu harmonogramu, `meta` w `beforeDisconnect`; widoczne dla członka. |
+
+Każde pole wymienione w `output` musi być polem wyjściowym akcji (w przeciwnym razie `member.invalid`). Pola wyjściowe, których `output` nie wymienia, nie są zapisywane.
+
+**Niepowodzenia.** Gdy akcja kończy się błędem, połączenie się nie udaje i nic nie jest zapisywane. `failures` przypisuje status HTTP nieudanego żądania (zapisany w cudzysłowie: `"403"`) do nazwy:
+
+- `"409": already_registered` daje niepowodzeniu kod `x-<key>.member.already_registered`. Członek widzi ogólny komunikat, że połączenie się nie udało.
+- `"403": { name: consents_missing, message: … }` daje mu kod `x-<key>.member.consents_missing` i pokazuje członkowi to zdanie, przetłumaczone przez `locales/<lang>.yaml`. Jedna nazwa ma jeden komunikat.
+- Status, którego `failures` nie wymienia, kończy się ogólnym błędem połączenia Opero. Odpowiedź dostawcy nigdy nie jest pokazywana.
+
+Można wymienić tylko statusy `4xx` i `5xx`. Żeby zamiast tego potraktować status jako sukces, na przykład `409` dla członka, który jest już zarejestrowany, podłącz port błędu kroku webhooka (krawędź z `branchKey: error`), sprawdź tam `{{ error.httpStatus }}` i zakończ akcję z tej gałęzi.
+
+## Rozłączanie: beforeDisconnect [#disconnecting-beforedisconnect]
+
+`beforeDisconnect` wskazuje akcję uruchamianą przed usunięciem połączenia członka: gdy członek się rozłącza, gdy opuszcza organizację oraz dla każdego członka przy odinstalowaniu rozszerzenia. Użyj jej, żeby wyrejestrować członka w usłudze.
+
+- Jej wejście to `{ meta, config }`: jawne wartości zapisane przez `afterConnect` i formularz członka. `{{ userConnection.<field> }}` nadal daje token i sekretne wartości członka.
+- Działa w miarę możliwości: gdy się nie powiedzie, połączenie i tak jest usuwane.
+- Podczas odinstalowania połączenie organizacji jest już wyłączone, więc akcja powinna używać tylko wartości członka, a nie `{{ connection.<field> }}`.
+
+## Wartości członka w regułach [#the-members-values-in-rules]
+
+Plik reguły zapisuje sekrety członka jako `{{ userConnection.<field> }}`:
+
+| Pole | Wartość |
+| --- | --- |
+| `accessToken` | Token dostępu członka. |
+| `refreshToken` | Token odświeżania, gdy dostawca go przysłał. |
+| Wyjście `secret` akcji `afterConnect` | Ta zapisana wartość. |
+
+Obowiązują je wszystkie zasady [sekretów połączenia](/docs/pl/extensions/reference/connection-and-secrets#secrets): same w nawiasach klamrowych, tylko w wartości nagłówka albo wartości parametru zapytania w URL kroku **Wywołaj webhook** (także w ścieżce i treści przy `secretsInBody: true`), a prawdziwa wartość jest wstawiana dopiero przy wysyłaniu żądania. Wszystko inne to `connection.placeholder_position`, `connection.placeholder_not_bare` albo `connection.unknown_field`. W paczce bez połączenia członka `userConnection` to `rule.connection_unsupported`.
+
+Akcja, której reguła używa `{{ userConnection.<field> }}`, to **akcja członka**. Działa tylko dla jednego członka, z jego wartościami i niczyimi innymi:
+
+- z akcji `afterConnect` albo `beforeDisconnect`;
+- z harmonogramu `forEach: userConnection`.
+
+Akcja członka nigdy nie jest udostępniana jako krok reguły i nigdy nie jest akcją weryfikacji połączenia (`action.member_outside_member_run`), a harmonogram dla członków uruchamia tylko akcję członka.
+
+## Odrzucony token [#a-refused-token]
+
+Gdy w uruchomieniu harmonogramu żądanie, które niosło token członka, dostaje odpowiedź `401`, uruchomienie kończy się jako **odwołane dane uwierzytelniające**, z kodem `EXTENSION_ACTION_CREDENTIAL_REVOKED`:
+
+- dla tego członka nic więcej się nie uruchamia;
+- połączenie członka zostaje oznaczone, a członek jest proszony o ponowne połączenie: „Twoje konto przestało przyjmować żądania Opero. Połącz je ponownie, aby wznowić synchronizację.”;
+- gdy połączy się ponownie, uruchamia się przy najbliższym sprawdzeniu, w ciągu minuty.
+
+`401` na żądanie, które niosło tylko połączenie organizacji, to zwykły błąd, nie ten przypadek: uwagi wymaga połączenie administratora. `401` podczas łączenia członka to niepowodzenie połączenia (`failures`), bo nic jeszcze nie jest zapisane.
+
+## Zmiany, które ponownie pytają członków [#changes-that-ask-members-again]
+
+Aktualizacja, która prosi członków o więcej, dodaje do planu ostrzeżenie `member.reconsent_required`:
+
+- dochodzi zakres OAuth;
+- zmienia się host `authorize` albo `token`;
+- `afterConnect` zapisuje nowe wyjście.
+
+Usunięty zakres, zmieniona ścieżka albo zmienione `clientAuth` go nie dodają. Po zastosowaniu aktualizacji każdy połączony członek jest proszony o ponowne połączenie („To rozszerzenie zmieniło to, czego potrzebuje od Twojego konta. Połącz je ponownie, aby wznowić synchronizację.”) i nic się dla niego nie uruchamia, dopóki tego nie zrobi. Potem uruchamia się w najbliższym terminie swojego harmonogramu, w ciągu jednego odstępu.
+
+## Co widzą członkowie [#what-members-see]
+
+Członkowie łączą się na stronie własnego konta: **Połączone aplikacje** w ustawieniach konta otwiera **Połączone aplikacje i usługi**. Tam każda organizacja, do której należą i która ma zainstalowane i działające rozszerzenie, pokazuje `label` połączenia członka i jego teksty `data`. Członek:
+
+- naciska **Połącz**, co przenosi go do dostawcy i z powrotem;
+- wypełnia formularz z `config`, w tym firmę, do której trafiają jego dane;
+- otwiera połączenie, żeby zobaczyć **Data połączenia**, **Ostatnio zsynchronizowano** i **Co trafia do Opero**;
+- gdy połączenie przestało działać, znajduje je w sekcji **Wymagają uwagi** z przyczyną i naciska **Połącz konto ponownie**;
+- naciska **Odłącz** w otwartym połączeniu.
+
+Członek widzi tylko własne połączenie. Instalacja rozszerzenia nikogo nie łączy: każdy członek decyduje sam.
+
+## Co widzi administrator [#what-the-administrator-sees]
+
+- **Przed instalacją** plan pokazuje połączenie członka w sekcji **Konta członków: `<label>`**: jego etykietę, hosty, na których członkowie się logują, zakresy, o które są proszeni, dane, które przekazuje, oraz nazwy wartości przechowywanych w postaci zaszyfrowanej i jako informacje jawne. Mówi też, że dane każdego połączonego członka trafiają do reguł organizacji i są widoczne w historii uruchomień reguł.
+- **Po instalacji** karta **Połączeni członkowie** rozszerzenia ich wymienia: imię i nazwisko, wybraną firmę, kiedy się połączyli, ostatnią udaną synchronizację (**Ostatnia udana synchronizacja**), stan (**Aktywny**, **Ostatnia synchronizacja nie powiodła się** albo **Czeka na ponowne połączenie przez członka**) i ostatni błąd. Zobacz [Po instalacji](/docs/pl/extensions/after-install#schedules-and-connected-members).
+
+Rozszerzenie z połączeniem członka może zainstalować każdy administrator, który może instalować rozszerzenia.
+
+## Wyłączenie i odinstalowanie [#disable-and-uninstall]
+
+- **Wyłączone albo niedziałające:** połączenia członków są zachowywane, ale połączenie członka znika z ich strony konta, nic nie jest wysyłane z ich tokenami, a ich harmonogramy czekają. Wszystko wraca, gdy rozszerzenie znów działa.
+- **Odinstalowane:** `beforeDisconnect` uruchamia się dla każdego członka, a potem połączenia wszystkich członków są usuwane.
+
+## Testy [#tests]
+
+Przypadek testowy akcji członka podaje wartości członka w `userConnection`, a akcja członka, której żądanie zostało odrzucone, kończy się `credentialRevoked: true`:
+
+```yaml title="actions/deregister-member/tests.yaml"
+- name: a member is deregistered
+  input: { meta: { sandboxUserId: "1234" }, config: { companyId: co_1 } }
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: DELETE
+        url: https://api.example.com/v1/users/1234
+        headers: { authorization: Bearer test-token }
+      response: { status: 204 }
+  succeeds: true
+```
+
+Zobacz [Testy](/docs/pl/extensions/reference/tests#member-actions).
+
+## Tłumaczenia [#translations]
+
+```yaml title="locales/pl.yaml"
+member:
+  label: Konto sandboksa
+  data:
+    "0": Aktywności
+  failures:
+    consents_missing: Zaakceptuj wszystkie zgody na dane w sandboksie i połącz się ponownie.
+  config:
+    companyId:
+      label: Firma otrzymująca Twoje dane
+```
+
+| Klucz | Tłumaczy |
+| --- | --- |
+| `member.label`, `member.description` | Nazwę i opis połączenia. |
+| `member.data."<i>"` | Tekst danych na tej pozycji, liczonej od 0, w cudzysłowie. |
+| `member.failures.<name>` | Komunikat niepowodzenia. |
+| `member.config.<field>.label`, `help` | Pole formularza członka. |
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `member.invalid` | Nieznany klucz, brak `label`, `oauth` albo `afterConnect`, adres niewpisany w całości, akcja połączenia udostępniona jako krok reguły, pole `output`, którego akcja nie zwraca, dwa pola firmy albo jedna nazwa niepowodzenia z dwoma komunikatami. |
+| `member.host_not_listed` | Host `authorize` albo `token` nie jest w `permissions.network`. |
+| `member.client_field_unknown` | `oauth.client` nie wskazuje dwóch pól danych uwierzytelniających jednej metody połączenia. |
+| `member.action_unknown` | Akcja połączenia wskazuje akcję, której nie ma w paczce. |
+| `member.requires_connection` | `connection/member.yaml` w paczce, której `extension.yaml` nie ma `connection`. |
+| `layout.unlisted_feature` | `connection/member.yaml`, którego nie wskazuje `connection.yaml`. |
+| `action.member_outside_member_run` | Akcja członka udostępniona jako krok, użyta jako akcja weryfikacji albo uruchamiana przez harmonogram, który nie jest dla członków. |
+| `rule.connection_unsupported` | `{{ userConnection.<field> }}` w paczce bez połączenia członka. |
+| `file.yaml_feature_not_allowed` | Status w `failures` zapisany bez cudzysłowu. |

@@ -1,21 +1,45 @@
 ---
 title: Before you start
-description: "What you need to build and install an Opero extension: administrator permissions, the Rules module, the extension-cli command-line tool, an editor and a test credential."
+description: "What you need to build and install an Opero extension: administrator permissions, the Rules module, the Extension authoring module for the authoring tools, the opero-ext command-line tool, an editor and a test credential."
 ---
 
 You need an administrator account in an organization with the Rules module, the command-line tool, and the API documentation of the service you want to call.
 
 | You need | Why |
 | --- | --- |
-| An administrator account | Uploading and installing need the `org.extensions.*` permissions, plus the permissions to create rules and custom scripts, because the package creates both on your behalf. The built-in administrator role has them all. |
-| The Rules module switched on | Extensions install rules. |
-| The command-line tool | `extension-cli` scaffolds a folder, checks it and writes the zip. See [Command-line tool](/docs/en/extensions/reference/cli). |
+| An administrator account | Uploading and installing need the `org.extensions.*` permissions, plus the permissions to create what the package brings: rules and custom scripts, for a package with data, custom modules, dictionaries and saved queries, and for one with screens, custom modules (forms), Custom Lists and pages. The built-in administrator role has them all. A package that declares [data scopes](/docs/en/extensions/reference/data-permissions) can only be installed by an organization owner. |
+| The Rules module switched on | Extensions install rules. A package with objects also needs the Objects module, one with queries the Queries module, and one that generates documents the Documents module. |
+| The Extension authoring module | Only for the authoring tools: running a package's tests on Opero (`opero-ext test`) and exporting the organization's configuration as a package (`opero-ext pull`). Uploading, installing, upgrading and running extensions do not need it. |
+| The command-line tool | `opero-ext` scaffolds or exports a folder, checks it, writes the zip, tests it on Opero and installs it. See [Command-line tool](/docs/en/extensions/reference/cli). |
 | An editor with YAML support | Optional. The folder `init` writes tells VS Code (with the YAML extension) which schema each file follows, so keys complete and mistakes are underlined as you type. |
 | The service's API documentation | You need the exact URLs, how it authenticates, and what it answers. |
 | A test credential for that service | For the final live check. The contract tests do not need it. |
 
-<Callout title="Getting the command-line tool">
-These pages call the tool as `extension-cli`. To get access to it, write to <SupportEmail />.
+## Install the command-line tool
+
+`opero-ext` is one executable with Node.js inside. It needs no administrator rights.
+
+<Tabs items={['Linux, macOS', 'Windows']}>
+<Tab value="Linux, macOS">
+
+```bash title="Terminal"
+curl -fsSL https://hub.kodasoft.pl/extension-cli/install.sh | sh
+```
+
+</Tab>
+<Tab value="Windows">
+
+```powershell title="PowerShell"
+irm https://hub.kodasoft.pl/extension-cli/install.ps1 | iex
+```
+
+</Tab>
+</Tabs>
+
+Check it with `opero-ext version`, and keep it current with `opero-ext update`, which checks the release's signature. [Command-line tool](/docs/en/extensions/reference/cli#install) lists the platforms, what the installers check and what to do when a browser download is blocked.
+
+<Callout title="Licence">
+The **Extension authoring** module is a separate licensed module and is off by default. Without it, an organization can still upload, install, upgrade and run extensions; only `opero-ext test` and `opero-ext pull` stop with exit 4, the matching API routes answer `403 MODULE_UNAVAILABLE`, and the matching MCP tools are not offered. An administrator switches it on in the organization's modules when the licence includes it.
 </Callout>
 
 ## Know the rule builder first
@@ -31,7 +55,9 @@ An extension is not always the lightest answer.
 | Convert or format a single value in templates | A [template filter](/docs/en/extensions/reference/filters) in an extension, or a custom script if only your organization needs it. |
 | Run a bit of logic in one rule only | A **Run script** step written directly in that rule. No extension needed. |
 | Give many rules, or many organizations, one clean step that calls a service | An extension with a [connection](/docs/en/extensions/reference/connection-and-secrets) and actions. |
-| React to something that happens in the outside service | Not possible in a package yet: packages have no triggers, incoming webhooks or schedules. |
+| React to something that happens in the outside service | An extension with a [trigger](/docs/en/extensions/reference/triggers) and a [schedule](/docs/en/extensions/reference/schedules) that reads the service and raises an event for what changed. The service cannot call the package: incoming webhooks are not supported yet. |
+| Work with each member's own account at a service | An extension with a [member connection](/docs/en/extensions/reference/member-connections). |
+| Bring dictionaries, objects, queries, filters or blocks you already built in one organization to others | An extension [exported from that organization](/docs/en/extensions/start-from-your-organization). |
 
 ## Next step
 

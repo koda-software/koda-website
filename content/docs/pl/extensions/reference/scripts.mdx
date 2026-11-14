@@ -1,6 +1,6 @@
 ---
 title: Skrypty
-description: "Skrypty rozszerzeń Opero w JavaScripcie lub TypeScripcie: budowa modułu, argument skryptu akcji, funkcje filtrów, generowane typy, piaskownica i błędy."
+description: "Skrypty rozszerzeń Opero w JavaScripcie lub TypeScripcie: budowa modułu, argument skryptu akcji, funkcje filtrów, skrypty bloków, generowane typy, piaskownica i błędy."
 ---
 
 Każdy skrypt to moduł z dokładnie jedną funkcją `export default`, bez `import` i bez innych eksportów. Każdy działa osobno w piaskownicy, bez dostępu do sieci i bazy danych.
@@ -43,13 +43,14 @@ export default run;
 
 Napisz `export default function name(…)` albo stałą, a po niej `export default name;`, tak jak robi to szkielet.
 
-## Trzy rodzaje skryptów
+## Rodzaje skryptów [#kinds-of-script]
 
 | Skrypt | Otrzymuje | Zwraca |
 | --- | --- | --- |
-| `run: run.js` w `action.yaml` | Jeden argument: `{ input, settings, company, user, context }` | Wynik akcji. Może być `async`. |
+| `run: run.js` w `action.yaml` | Jeden argument: `{ input, settings, company, user, record, context }` | Wynik akcji. Może być `async`. |
 | `code: { $file: step.js }` w pliku reguły | Ten sam argument | Wynik kroku, pod jego `contextKey`. |
 | `script` filtra | `(value, args, context)` | Przefiltrowaną wartość, od razu: nie `async`. |
+| `script` bloku | `ctx`, kontekst bloku, w przeglądarce oglądającego. Zobacz [Bloki](/docs/pl/extensions/reference/blocks#the-script). | Nic albo funkcję, która sprząta przed kolejnym uruchomieniem bloku. |
 
 ## Argument
 
@@ -71,12 +72,20 @@ Napisz `export default function name(…)` albo stałą, a po niej `export defau
       type: '{ id, email, firstName, lastName }',
       description: 'Użytkownik, w imieniu którego działa uruchomienie.',
     },
+    record: {
+      type: '{ type, id, moduleKey?, objectKey? } | null',
+      description: 'Rekord, dla którego działa akcja bloku albo polecenie rekordu, przez odwołanie. W pozostałych przypadkach null. Zobacz Akcje bloków i polecenia rekordów.',
+    },
     context: {
       type: 'object',
       description: 'Cały kontekst reguły, tak jak widzi go krok Uruchom skrypt.',
     },
   }}
 />
+
+<Callout title="Brak pomocników danych w paczce">
+Skrypt paczki nie może odczytywać ani zapisywać rekordów, uruchamiać zapytań ani wysyłać powiadomień: nie dostaje pomocników danych. To, czego potrzebuje, pobierz najpierw [krokiem danych](/docs/pl/extensions/reference/data-steps) i odczytaj z `context`; jego wynik zapisz kolejnym krokiem.
+</Callout>
 
 ## Błędy
 
@@ -105,6 +114,7 @@ Gdy skrypt rzuci błąd w trakcie działania, krok zgłasza obecnie „Script ex
 | `Filter` | Skryptu filtra. |
 | `Settings` | Ustawień rozszerzenia z `settings.yaml`. Pole z wartością domyślną nie jest opcjonalne. |
 | `ScriptArgument<'name'>` | Argumentu skryptów akcji. |
+| `Block` | Skryptu [bloku](/docs/pl/extensions/reference/blocks#the-script), funkcji od `ctx`. |
 
 W JavaScripcie użyj typu przez linię JSDoc, którą zapisuje szkielet, i sprawdź skrypty poleceniem:
 

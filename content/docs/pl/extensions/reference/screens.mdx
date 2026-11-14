@@ -1,0 +1,412 @@
+---
+title: Formularze, listy i strony
+description: "Opis form.yaml, list.yaml i page.yaml w rozszerzeniach Opero: formularze na własnych obiektach paczki z układami i domyślnymi miejscami, listy własne na obiektach paczki albo na wbudowanym źródle z akcjami otwierającymi link, strony własne obszaru roboczego, odwołania { $ref } między nimi, adresy URL, tłumaczenia oraz to, co z ekranami robią instalacja, aktualizacja i odinstalowanie."
+---
+
+Paczka może przynieść ekrany, na których pracują członkowie: **formularze** na własnych obiektach, **listy własne** (Custom Lists), które wyświetlają rekordy, i **strony obszaru roboczego**, które łączą listy, formularze, bloki i liczniki. Są instalowane jako formularze dynamiczne, listy własne i strony własne (Custom Pages) organizacji, tylko do odczytu i zarządzane przez rozszerzenie. Paczka niczego nie umieszcza w menu: administrator dodaje jej strony do menu ręcznie.
+
+<Files>
+  <Folder name="forms" defaultOpen>
+    <Folder name="order" defaultOpen>
+      <File name="form.yaml" />
+      <File name="layout.yaml" />
+    </Folder>
+  </Folder>
+  <Folder name="lists" defaultOpen>
+    <Folder name="open-orders" defaultOpen>
+      <File name="list.yaml" />
+    </Folder>
+  </Folder>
+  <Folder name="pages" defaultOpen>
+    <Folder name="orders" defaultOpen>
+      <File name="page.yaml" />
+      <File name="layout.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: shop
+version: 1.0.0
+name: Shop
+description: Keeps orders with their lines, and the screens to work with them.
+publisher: Kodasoft
+requires:
+  opero: ">=2026.1.0"
+  modules: [objects, queries]
+permissions:
+  links:
+    - host: shop.example.test
+      reason: Opens an order in the shop.
+objects:
+  - objects/orders
+  - objects/order-lines
+queries:
+  - queries/open-count
+blocks:
+  - blocks/order-summary
+forms:
+  - forms/order
+  - forms/line
+lists:
+  - lists/open-orders
+  - lists/order-lines
+  - lists/suppliers
+pages:
+  - pages/orders
+locales: [pl]
+```
+
+Wpisz foldery na listach `forms`, `lists` i `pages` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add form <name> --object <object>`, `add list <name> [--object <object>]` i `add page <name>` zapisują folder startowy i dopisują go do listy; zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli#options).
+
+## form.yaml [#formyaml]
+
+Formularz to formularz dynamiczny na jednym z własnych [obiektów](/docs/pl/extensions/reference/objects) paczki: ekran, który otwiera, edytuje albo tworzy jego rekordy.
+
+```yaml title="forms/order/form.yaml"
+form: order                      # referenced as orders.order
+object: orders
+name: Order
+types: [view, edit, create]
+default: [view, edit, create]    # claims the object's slots when they are empty
+config:
+  title: New order
+  successMessage: Saved
+layout: layout.yaml
+```
+
+<TypeTable
+  type={{
+    form: {
+      type: 'string',
+      description: 'Nazwa: mała litera, potem małe litery, cyfry i _, do 63 znaków. Unikalna na swoim obiekcie. Inne ekrany wskazują formularz jako <object>.<form>, na przykład orders.order.',
+      required: true,
+    },
+    object: {
+      type: 'string',
+      description: 'Obiekt paczki, wskazany kluczem (w przeciwnym razie form.unknown_object). Paczka dostarcza formularze tylko dla własnych obiektów.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Nazwa formularza, do 200 znaków. Tylko po angielsku.',
+      required: true,
+    },
+    types: {
+      type: 'string[]',
+      description: 'Do czego służy formularz: view, edit, create, co najmniej jedno.',
+      required: true,
+    },
+    default: {
+      type: 'string[]',
+      description: 'Domyślne miejsca obiektu, które formularz zajmuje, każde spośród jego types (w przeciwnym razie form.invalid). Zobacz Formularze domyślne.',
+    },
+    isActive: {
+      type: 'boolean',
+      description: 'Czy formularz jest w użyciu.',
+    },
+    'config.title': {
+      type: 'string',
+      description: 'Tytuł formularza, do 200 znaków.',
+    },
+    'config.description': {
+      type: 'string',
+      description: 'Do 2000 znaków.',
+    },
+    'config.successMessage': {
+      type: 'string',
+      description: 'Pokazywany po zapisie, do 2000 znaków.',
+    },
+    'config.resetAfterSubmit': {
+      type: 'boolean',
+      description: 'Czyści formularz po zapisie.',
+    },
+    'config.redirectUrl': {
+      type: 'string',
+      description: 'Dokąd przejść po zapisie: ścieżka albo adres https na hoście z permissions.links. Zobacz Adresy URL.',
+    },
+    layout: {
+      type: 'string',
+      description: 'Dokument układu widoku formularza, plik .yaml w folderze formularza.',
+      required: true,
+    },
+  }}
+/>
+
+`config` przyjmuje tylko te klucze. Formularz paczki nigdy nie jest publiczny.
+
+Układ to dokument układu widoku (View Layout), taki, jaki zapisuje edytor formularzy. Węzły pól podają klucze pól obiektu; bloki, listy, formularze i zapytania paczki wskazuje się [odwołaniami](#references):
+
+```yaml title="forms/order/layout.yaml"
+schemaVersion: 2
+regions:
+  main:
+    - id: details
+      kind: card
+      children:
+        - { id: f_title, kind: field, field: { source: dynamic, key: title } }
+        - { id: f_status, kind: field, field: { source: dynamic, key: status } }
+    - id: summary
+      kind: component
+      component: custom_block
+      config:
+        customBlockId: { $ref: "block:order_summary" }
+        inputs: { title: "Order {{ record.title }}" }
+    - id: lines
+      kind: component
+      component: layout.customList
+      config:
+        customListId: { $ref: "list:order-lines" }
+        params: { order: "{{ record.id }}" }
+```
+
+### Formularze domyślne [#default-forms]
+
+Każdy obiekt ma domyślny formularz do oglądania, edycji i tworzenia rekordów. Formularz z `default` zajmuje każde wskazane miejsce, które jest puste albo zajęte przez formularz tego rozszerzenia. Miejsce, w którym organizacja ustawiła własny formularz, zostaje bez zmian, a plan instalacji to mówi (`form.default_taken`, nie blokuje). Aktualizacja i ponowna instalacja robią to samo: nigdy nie przejmują domyślnego formularza wybranego przez organizację.
+
+## list.yaml [#listyaml]
+
+Lista to lista własna na jednym z obiektów paczki albo na wbudowanym źródle list. Członkowie widzą ją tam, gdzie osadza ją strona albo formularz.
+
+```yaml title="lists/open-orders/list.yaml"
+list: open-orders                # installed as x-shop-open-orders
+name: Open orders
+description: Orders that are not closed yet.
+source: { object: orders }
+config:
+  columns: [{ field: title }, { field: status }]
+  baseFilter:
+    op: AND
+    items: [{ field: status, operator: neq, value: closed }]
+  modes: [table]
+  views: [{ id: default, name: Default, default: true, config: { schemaVersion: 2 } }]
+  builtInActions: [create, open]
+  create: { formId: { $ref: "form:orders.order" } }
+actions:
+  - key: open_in_shop
+    type: OPEN_LINK
+    label: Open in shop
+    config: { url: "https://shop.example.test/orders/{{ row.external_id }}" }
+```
+
+<TypeTable
+  type={{
+    list: {
+      type: 'string',
+      description: 'Nazwa: słowa z małych liter i cyfr połączone pojedynczym -, do 41 znaków. Unikalna w paczce. Lista jest instalowana jako x-<key>-<list>, który może mieć najwyżej 64 znaki (list.name_too_long).',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Nazwa listy, do 120 znaków. Tylko po angielsku.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 1000 znaków. Tylko po angielsku.',
+    },
+    source: {
+      type: '{ object } | { builtIn }',
+      description: '{ object: <key> } dla obiektu paczki (w przeciwnym razie list.unknown_object) albo { builtIn: <source> } dla wbudowanego źródła list, na przykład contractors.',
+      required: true,
+    },
+    config: {
+      type: 'object',
+      description: 'Konfiguracja listy własnej, taka, jaką zapisuje edytor list: kolumny, filtry, tryby, widoki, wbudowane akcje, parametry. Jej create.formId wskazuje formularz paczki odwołaniem.',
+      required: true,
+    },
+    actions: {
+      type: 'object[]',
+      description: 'Do 50 akcji wiersza, tylko OPEN_LINK. Zobacz Akcje.',
+    },
+  }}
+/>
+
+Lista na wbudowanym źródle wyświetla rekordy tego źródła, na przykład kontrahentów:
+
+```yaml title="lists/suppliers/list.yaml"
+list: suppliers
+name: Suppliers
+source: { builtIn: contractors }
+config:
+  columns: [{ field: fullName }]
+  modes: [table]
+  views: [{ id: default, name: Default, default: true, config: { schemaVersion: 2 } }]
+```
+
+Czytnik sprawdza budowę i odwołania. To, czy konfiguracja pasuje do źródła (kolumny, filtry i formularz tworzenia), Opero sprawdza tak, jak zrobiłby to zapis samej listy: w planie instalacji (`list.save_validation`), a dla listy na obiekcie, który tworzy ta sama instalacja, przy instalowaniu listy.
+
+### Akcje [#actions]
+
+Lista z paczki ma tylko akcje `OPEN_LINK`, które otwierają adres dla wiersza. Akcja reguły albo skryptu jest odrzucana z kodem `list.action_unsupported`: ich identyfikatory nie mogą podróżować z paczką.
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `key` | Mała litera, potem małe litery, cyfry i `_`, do 80 znaków. Unikalny w liście. |
+| `label` | Do 160 znaków. |
+| `type` | `OPEN_LINK`. |
+| `isActive` | Opcjonalne. |
+| `config.url` | Ścieżka albo adres https na hoście z `permissions.links`, z Liquid nad `row`. Zobacz [Adresy URL](#urls). |
+| `config.openIn` | `same_tab` albo `new_tab`. Gdy pominięte, `new_tab`. |
+| `config.isDefault` | Opcjonalne. Pokazuje akcję jako skrót wiersza obok menu jego akcji. |
+
+## page.yaml [#pageyaml]
+
+Strona to strona własna obszaru roboczego: osobny ekran, który członkowie otwierają z menu.
+
+```yaml title="pages/orders/page.yaml"
+page: orders                     # installed with the slug x-shop-orders
+title: Orders
+description: Open orders and how many there are.
+surface: workspace
+layout: layout.yaml
+```
+
+<TypeTable
+  type={{
+    page: {
+      type: 'string',
+      description: 'Nazwa: słowa z małych liter i cyfr połączone pojedynczym -, do 41 znaków. Unikalna w paczce. Slug strony to x-<key>-<page>.',
+      required: true,
+    },
+    title: {
+      type: 'string',
+      description: 'Do 200 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 2000 znaków. Do przetłumaczenia.',
+    },
+    surface: {
+      type: '"workspace"',
+      description: 'Gdzie strona jest pokazywana. Gdy pominięte, workspace, jedyna możliwość.',
+    },
+    layout: {
+      type: 'string',
+      description: 'Dokument układu widoku strony, plik .yaml w folderze strony.',
+      required: true,
+    },
+  }}
+/>
+
+```yaml title="pages/orders/layout.yaml"
+schemaVersion: 2
+regions:
+  main:
+    - id: open
+      kind: component
+      component: page.counter
+      config:
+        savedQueryId: { $ref: "query:open_count" }
+        valueTemplate: "{{ value }}"
+    - id: list
+      kind: component
+      component: layout.customList
+      config:
+        customListId: { $ref: "list:open-orders" }
+    - id: summary
+      kind: component
+      component: custom_block
+      config:
+        customBlockId: { $ref: "block:order_summary" }
+        inputs: { title: Today }
+    - id: new_order
+      kind: component
+      component: page.form
+      config:
+        formId: { $ref: "form:orders.order" }
+        capability: CREATE
+    - id: shop
+      kind: component
+      component: layout.button
+      config:
+        label: Open the shop
+        action: open_url
+        url: "https://shop.example.test/admin"
+```
+
+## Odwołania [#references]
+
+Ekran nigdy nie wskazuje niczego identyfikatorem, bo identyfikatory są w każdej organizacji inne. Własne bloki, listy, formularze i zapytania paczki wskazuje odwołaniem, które Opero zastępuje identyfikatorem po instalacji:
+
+```yaml
+customListId: { $ref: "list:open-orders" }
+```
+
+| Rodzaj | Wskazuje | Przykład |
+| --- | --- | --- |
+| `block` | [Blok](/docs/pl/extensions/reference/blocks) po nazwie z `block`. | `{ $ref: "block:order_summary" }` |
+| `list` | Listę po nazwie z `list`. | `{ $ref: "list:open-orders" }` |
+| `form` | Formularz jako `<object>.<form>`. | `{ $ref: "form:orders.order" }` |
+| `query` | [Zapytanie](/docs/pl/extensions/reference/queries) po nazwie z `query`. | `{ $ref: "query:open_count" }` |
+
+Odwołanie może stać tylko tam, gdzie Opero przechowuje identyfikator jego rodzaju:
+
+| Gdzie | Rodzaj |
+| --- | --- |
+| `config.customBlockId` komponentu `custom_block` | `block` |
+| `config.customListId` komponentu `layout.customList` | `list` |
+| `config.formId` komponentu `page.form` | `form` |
+| `config.savedQueryId` komponentu `counter` albo `page.counter` | `query` |
+| `owned.rowForms.<operation>` węzła `field` albo `relationTable` | `form` |
+| `config.create.formId` listy | `form` |
+
+- Odwołanie w każdym innym miejscu albo niewłaściwego rodzaju dla swojego miejsca jest odrzucane z kodem `layout.ref_position`.
+- Odwołanie, które nie ma dokładnie postaci `{ $ref: "<kind>:<name>" }`, to `layout.ref_invalid`.
+- Nazwa, której paczka nie ma, to `layout.ref_unknown`.
+- Każdy inny klucz z identyfikatorem (reguły, raportu, procesu, kalendarza, listy SQL, pola własnego: każdy klucz kończący się na `Id` albo `Ids`) oraz identyfikator wpisany tam, gdzie należy się odwołanie, są odrzucane z kodem `layout.reference_unsupported`. Pomiń taki klucz albo zostaw go pustym.
+
+Klucze pól i relacji wpisuje się bez zmian: są takie same w każdej organizacji, która instaluje paczkę.
+
+## Adresy URL [#urls]
+
+`url` w układzie, `config.url` akcji listy i `config.redirectUrl` formularza muszą być albo ścieżką Opero zaczynającą się od `/`, albo adresem https, którego host jest wpisany wprost i wymieniony w [`permissions.links`](/docs/pl/extensions/reference/manifest#link-hosts-page-scripts-and-company-permissions). Liquid może uzupełnić ścieżkę, nigdy host. Wszystko inne jest odrzucane z kodem `layout.host_not_declared`. Host, który otwierają ekrany, liczy się jako używany, więc nie potrzebuje linku rekordu.
+
+## Tłumaczenia [#translations]
+
+| Klucz | Tłumaczy |
+| --- | --- |
+| `pages.<page>.title`, `description` | Tytuł i opis strony. Są instalowane razem ze stroną. |
+| `forms.<object>.<form>.config.title`, `successMessage` | Tytuł i komunikat po zapisie formularza. `validate` je sprawdza, ale formularz jest instalowany z tekstami angielskimi. |
+
+```yaml title="locales/pl.yaml"
+pages:
+  orders:
+    title: Zamówienia
+    description: Otwarte zamówienia i ich liczba.
+forms:
+  orders:
+    order:
+      config:
+        title: Nowe zamówienie
+        successMessage: Zapisano
+```
+
+Nazwy formularzy, nazwy i opisy list, etykiety kolumn i etykiety akcji są tylko po angielsku.
+
+## Po instalacji [#after-install]
+
+- **Tylko do odczytu.** Formularze, ich układy, listy i strony są zarządzane przez rozszerzenie. Zmiana albo usunięcie formularza, zapis, publikacja albo przywrócenie układu formularza lub strony z paczki, zapis, archiwizacja albo przywrócenie listy oraz zmiana, publikacja albo archiwizacja strony są odrzucane z kodem `EXTENSION_MANAGED_ASSET`. Zmieniają się tylko przy aktualizacji rozszerzenia.
+- **Nadal należy do organizacji.** To, kto może używać każdego formularza (jego dostęp i dostęp z portalu), domyślne formularze obiektu, to, które firmy i którzy członkowie widzą stronę, oraz menu. Aktualizacja nigdy tego nie zmienia.
+- **Kto je widzi.** Nowa strona jest udostępniona każdej firmie i każdemu członkowi zaraz po instalacji. Formularzy można używać wszędzie tam, gdzie udostępniony jest moduł rozszerzenia `x-<key>`, czyli w każdej firmie, dopóki administrator tego nie zawęzi. Listy nie mają własnego udostępnienia: członkowie widzą listę tam, gdzie osadza ją strona albo formularz. Plan instalacji mówi, co zobaczą członkowie, i że strony trzeba dodać do menu ręcznie.
+- **Zastrzeżone nazwy.** Organizacja nie może utworzyć listy własnej z kluczem zaczynającym się od `x-` ani utworzyć strony ze slugiem zaczynającym się od `x-` lub zmienić slugu na taki (`CUSTOM_LIST_KEY_RESERVED`, `CUSTOM_PAGE_SLUG_RESERVED`).
+- **Sprawdzane przed instalacją.** Plan instalacji sprawdza każdy formularz, układ i listę tak, jak zrobiłby to ich własny zapis, i blokuje przy problemie (`form.save_validation`, `layout.save_validation`, `list.save_validation`).
+- **Uprawnienia.** Instalacja formularzy wymaga `org.customModules.create` i `org.customModules.update`, list `org.customLists.create` i `org.customLists.update`, a stron `org.pages.create` i `org.pages.update`. Ich usunięcie wymaga `org.customModules.delete`, `org.customLists.update` i `org.pages.delete`.
+- **Wyłączone.** Wyłączenie rozszerzenia nie zmienia niczego, co się wyświetla: formularze, listy i strony działają dalej. Akcje rozszerzenia umieszczone w nich przestają działać, dopóki rozszerzenie znów nie działa.
+- **Aktualizacja.** Zmieniony układ formularza albo strony jest publikowany jako nowa wersja, a zmieniona lista jest zapisywana w miejsce starej. Wersja, która pomija formularz, usuwa go: jego domyślne miejsca przechodzą na inny formularz rozszerzenia tego samego typu albo zostają puste. Pominięcie formularza, który wskazują układy, listy albo bloki organizacji, daje ostrzeżenie (`form.in_use`), a pominięcie ostatniego formularza danego typu na obiekcie - ostrzeżenie `object.formless`. Pominięta lista albo strona jest archiwizowana; plan ostrzega, gdy listę osadzają układy organizacji (`list.in_use`) albo stronę otwierają jej menu (`page.in_use`). Żadne z nich nie blokuje.
+
+## Odinstalowanie [#uninstall]
+
+Odinstalowanie usuwa ekrany niezależnie od wyboru dotyczącego danych:
+
+- **Formularze są usuwane** razem z układami i dostępem. Nic nie jest generowane w ich miejsce. Domyślne miejsca, które zajmowały, są najpierw zwalniane; miejsc zajętych przez własne formularze organizacji to nie dotyczy.
+- **Listy i strony są archiwizowane** jako usunięte przez rozszerzenie. Osadzona taka lista pokazuje, że usunęło ją rozszerzenie. Pozycja menu, która otwiera taką stronę, zostaje i jest ukryta. Organizacja nie może przywrócić listy (`CUSTOM_LIST_EXTENSION_REMOVED`) ani strony.
+- Przy **Usuń dane** listy na obiektach paczki są usuwane razem z obiektami; lista na wbudowanym źródle jest archiwizowana.
+
+<Callout type="warn" title="Obiekty bez formularza">
+Gdy dane zostają, obiekt może zostać bez formularza do oglądania, edycji albo tworzenia rekordów. Dopóki administrator go nie zbuduje, rekordów nie da się otworzyć (`DYNAMIC_FORM_ACCESS_DENIED`) ani utworzyć. Przed potwierdzeniem odinstalowanie wymienia każdy taki obiekt z liczbą rekordów i tym, co zrobić: otwórz obiekt w Obiektach, utwórz formularz (zaczyna się ze wszystkimi polami), ustaw go jako domyślny i ustaw jego dostęp.
+</Callout>
+
+**Ponowna instalacja** przywraca te same listy i strony pod tymi samymi identyfikatorami, z udostępnieniem firmom i odbiorcami, jakie zostawiła organizacja, a ich pozycje menu znów są widoczne. Formularze są tworzone od nowa i zajmują domyślne miejsca, które nadal są puste.

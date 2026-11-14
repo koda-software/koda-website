@@ -1,0 +1,131 @@
+---
+title: Słowniki
+description: "Opis dictionary.yaml w rozszerzeniach Opero: pozycje słownika, jego zainstalowany klucz, użycie w polu wyboru, tłumaczenie etykiet pozycji, aktualizacje i odinstalowanie."
+---
+
+Słownik to stała lista wartości, na przykład statusów albo priorytetów, które oferują pola wyboru. Paczka może przynieść własne słowniki i używać ich w polach swoich [obiektów](/docs/pl/extensions/reference/objects).
+
+```yaml title="dictionaries/status/dictionary.yaml"
+dictionary: status
+name: Order status
+description: Where an order is.
+entries:
+  - { key: open, label: Open }
+  - { key: noted, label: Noted, color: "#2563EB" }
+  - { key: closed, label: Closed, isActive: false }
+```
+
+Każdy słownik ma własny folder w `dictionaries/`, wymieniony w `extension.yaml`:
+
+```yaml title="extension.yaml"
+dictionaries:
+  - dictionaries/status
+```
+
+## dictionary.yaml
+
+<TypeTable
+  type={{
+    dictionary: {
+      type: 'string',
+      description: 'Nazwa: małe litery i cyfry w słowach połączonych pojedynczymi myślnikami, do 40 znaków. Unikalna w paczce.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Widoczna wszędzie, gdzie wybiera się słownik, do 255 znaków. Tylko po angielsku.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 500 znaków. Tylko po angielsku.',
+    },
+    entries: {
+      type: 'entry[]',
+      description: 'Do 1000 pozycji.',
+      required: true,
+    },
+  }}
+/>
+
+Każda pozycja:
+
+<TypeTable
+  type={{
+    key: {
+      type: 'string',
+      description: 'Zapisywana wartość, do 100 znaków. Unikalna w słowniku. Aktualizacja dopasowuje pozycje po niej.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'To, co widzą użytkownicy, do 500 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    color: {
+      type: 'string',
+      description: 'Kolor zapisany jako #RRGGBB.',
+    },
+    icon: {
+      type: 'string',
+      description: 'Nazwa ikony.',
+    },
+    isActive: {
+      type: 'boolean',
+      description: 'false czyni pozycję nieaktywną: nie można jej wybrać przy zapisie rekordu.',
+    },
+  }}
+/>
+
+## Zainstalowany słownik [#the-installed-dictionary]
+
+Słownik jest instalowany jako słownik organizacji z kluczem `x-<key>-<name>`: `status` rozszerzenia `shop-ext` to `x-shop-ext-status`. Organizacja nie może utworzyć słownika, którego klucz zaczyna się od `x-`.
+
+Pole paczki wskazuje słownik jego nazwą, nie zainstalowanym kluczem:
+
+```yaml title="objects/orders/object.yaml (fragment)"
+  - key: status
+    name: Status
+    type: SELECT
+    options: { dictionary: status }
+```
+
+Pole wyboru zapisuje `key` pozycji, więc [zapytanie](/docs/pl/extensions/reference/queries) porównuje z nim: `WHERE f_status = 'open'`.
+
+## Tłumaczenie etykiet pozycji [#translating-entry-labels]
+
+Etykiety pozycji to jedyne teksty słownika, które można przetłumaczyć. Trafiają do `locales/<lang>.yaml` pod `dictionaries.<name>.entries.<key>.label`:
+
+```yaml title="locales/pl.yaml"
+dictionaries:
+  status:
+    entries:
+      open: { label: Otwarte }
+      noted: { label: Z notatką }
+      closed: { label: Zamknięte }
+```
+
+`name` i `description` słownika są tylko po angielsku.
+
+## Gdzie widzi je administrator [#where-the-administrator-sees-them]
+
+Plan instalacji wymienia każdy słownik w sekcji **Co się zmieni**. Karta **Zainstalowane dane** rozszerzenia wymienia je tylko do odczytu w sekcji **Zainstalowane słowniki**, z nazwą, zainstalowanym kluczem i liczbą pozycji. Są pominięte na liście zarządzania **Słowniki** i pozostają dostępne wszędzie, gdzie wybiera się słownik, na przykład dla pola wyboru we własnych obiektach organizacji.
+
+Pozycje należą do rozszerzenia: nie da się ich dodać, zmienić, przestawić ani usunąć, chyba że przez aktualizację. Słownik otwarty z odnośnika, na przykład z sekcji **Zarządzane przez to rozszerzenie** na karcie **Szczegóły** rozszerzenia, zaczyna się od „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” i odnośnika **Otwórz rozszerzenie** i nie pozwala na edycję ani usunięcie.
+
+## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
+
+- **Pozycje są dopasowywane po kluczu.** Pozycja, której klucz się nie zmienia, zachowuje tożsamość, a rekordy zachowują swoje wartości. Pozycja pominięta w nowej wersji jest usuwana.
+- **Słownik, który nowa wersja usuwa,** jest kasowany. Jeśli coś w organizacji wciąż go używa, zostaje zamiast tego jako własny słownik organizacji, a plan to zaznacza (`dictionary.released`).
+- **Odinstalowanie** domyślnie zachowuje słowniki jako własne słowniki organizacji. Gdy administrator wybierze usunięcie danych, są one kasowane na stałe, z wyjątkiem tych, których używa coś innego.
+
+## Problemy [#problems]
+
+| Kod | Co jest nie tak |
+| --- | --- |
+| `dictionary.invalid` | Nieznany klucz, nazwa o złej postaci, pozycja bez `key` albo `label`, dwie pozycje o tym samym kluczu, kolor niezapisany jako `#RRGGBB`, więcej niż 1000 pozycji albo więcej niż 50 słowników. |
+| `name.duplicate` | Dwa słowniki o tej samej nazwie. |
+| `object.unknown_reference` | Pole wskazuje słownik, którego paczka nie ma. |
+| `dictionary.save_validation` | W planie instalacji: słownika nie da się zapisać, np. dlatego, że zostałaby usunięta pozycja, której wciąż używają pola organizacji. Blokuje instalację. |
+| `dictionary.adopts_existing` | W planie instalacji: przejmowany jest słownik zachowany przy wcześniejszym odinstalowaniu. Ostrzeżenie. |
+| `dictionary.released` | W planie aktualizacji: usuwany słownik zostaje zachowany, bo coś go jeszcze używa. Ostrzeżenie. |

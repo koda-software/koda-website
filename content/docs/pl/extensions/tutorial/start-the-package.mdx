@@ -1,6 +1,6 @@
 ---
 title: "Część 1: Utwórz paczkę"
-description: "Utwórz szkielet rozszerzenia Opero poleceniem extension-cli init, poznaj manifest, pierwszą akcję, jej skrypt i test, a potem zwaliduj gotową paczkę."
+description: "Utwórz szkielet rozszerzenia Opero poleceniem opero-ext init, poznaj manifest, pierwszą akcję, jej skrypt i test, a potem zwaliduj gotową paczkę."
 ---
 
 W tym samouczku budujesz rozszerzenie `hello-ext` dla [httpbin.org](https://httpbin.org), publicznej usługi, która odsyła otrzymane żądania. Na końcu będzie miało połączenie z tokenem, sprawdzenie, czy token działa, krok `greet`, który wywołuje usługę, krok `hello`, który tylko liczy, i filtr `shout`.
@@ -21,7 +21,7 @@ Każdy pokazany plik jest kompletny, w takiej postaci, w jakiej trafia do gotowe
 Niech narzędzie wiersza poleceń zapisze działającą paczkę:
 
 ```bash title="Terminal"
-extension-cli init hello-ext --name Hello
+opero-ext init hello-ext --name Hello
 ```
 
 ```txt title="Wynik"
@@ -174,7 +174,7 @@ Test podaje wejście i dokładne oczekiwane wyjście:
 ### Zwaliduj
 
 ```bash title="Terminal"
-extension-cli validate hello-ext
+opero-ext validate hello-ext
 ```
 
 ```txt title="Wynik"

@@ -49,7 +49,7 @@ filters:
 <Step>
 ### Zwaliduj
 
-`extension-cli validate .` zgłasza język bez pliku (`locale.missing_file`) i klucz, który nie wskazuje niczego w paczce (`locale.unknown_text`), więc literówka się nie ukryje.
+`opero-ext validate .` zgłasza język bez pliku (`locale.missing_file`) i klucz, który nie wskazuje niczego w paczce (`locale.unknown_text`), więc literówka się nie ukryje.
 </Step>
 </Steps>
 
@@ -65,9 +65,24 @@ filters:
 | `actions.<action>.label`, `description` | Akcję i jej krok. |
 | `actions.<action>.input.<field>.label` | Etykietę pola i `help`; także `output`, zagnieżdżone pola w `fields`, elementy listy w `items`. |
 | `filters.<filter>.description` | Opis filtra. |
+| `dictionaries.<dictionary>.entries.<key>.label` | Etykietę pozycji słownika. |
+| `triggers.<trigger>.label`, `description` | Nazwę i opis wyzwalacza; jego pola danych w `data.<field>` i filtry w `config.<field>`, każde z `label` i `help`. |
+| `schedules.<schedule>.label`, `description` | Nazwę i opis harmonogramu. |
+| `member.label`, `member.description` | Nazwę i opis połączenia członka. |
+| `member.data."<i>"` | Jeden z tekstów `data` połączenia członka, według pozycji od 0, w cudzysłowie. |
+| `member.failures.<name>` | Komunikat błędu łączenia. |
+| `member.config.<field>.label` | Pole formularza członka i jego `help`. |
+| `actions.<action>.confirm.title`, `message` | Potwierdzenie polecenia rekordu. |
+| `blocks.<block>.label`, `description` | Nazwę i opis bloku. Jego HTML nie jest tłumaczony. |
+| `links.<link>.label`, `description` | Etykietę i opis linku rekordu; jego pola w `fields.<field>.label`. |
+| `permissions.links.<host>.reason`, `permissions.pageScript.reason` | Uzasadnienie hosta linku i skryptów stron. |
+| `permissions.company.<name>.label`, `description`, `reason` | Teksty uprawnienia paczki. |
+| `pages.<page>.title`, `description` | Tytuł i opis strony. |
+| `forms.<object>.<form>.config.title`, `successMessage` | Tytuł i komunikat po zapisie formularza. Są sprawdzane, ale formularz jest instalowany z tekstami angielskimi. |
 
 ## Zasady
 
 - Każde tłumaczenie to tekst do 2000 znaków.
 - Paczka może mieć do 40 języków.
 - Teksty pliku schematu są tylko po angielsku.
+- Nazwy obiektów i ich pól, słowników i zapytań są tylko po angielsku, podobnie jak nazwy formularzy, nazwy i opisy list, etykiety kolumn i etykiety akcji list: Opero nie przechowuje dla nich tłumaczeń, więc tłumaczenie, które którąś z nich wskazuje, jest odrzucane z kodem `locale.unknown_text`. Ze słownika tłumaczy się tylko etykiety pozycji.

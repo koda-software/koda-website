@@ -1,6 +1,6 @@
 ---
 title: extension.yaml
-description: "Opis extension.yaml, manifestu rozszerzenia Opero: klucz, wersja, wydawca, wymagania, uprawnienia sieciowe z uzasadnieniem, połączenie, ustawienia, listy funkcji i języki."
+description: "Opis extension.yaml, manifestu rozszerzenia Opero: klucz, wersja, wydawca, wymagania, uprawnienia sieciowe, do danych, linków, skryptów stron i firmowe z uzasadnieniem, połączenie, ustawienia, listy funkcji, w tym wyzwalacze, harmonogramy, bloki, linki, formularze, listy i strony, oraz języki."
 ---
 
 `extension.yaml` to manifest: tożsamość paczki, jej wymagania, to, do czego ma dostęp, oraz lista wszystkich funkcji, które instaluje.
@@ -73,15 +73,27 @@ locales: [pl]
     },
     'requires.modules': {
       type: 'string[]',
-      description: 'Klucze modułów, które muszą być dostępne, np. rules.',
+      description: 'Klucze modułów, które muszą być dostępne, np. rules. Paczka z obiektami wymienia objects, z zapytaniami queries, a z zakresem documents:generate documents.',
     },
     'permissions.network': {
       type: '{ host, reason }[]',
-      description: 'Do 50 dokładnych nazw hostów, z którymi łączy się paczka, każda z uzasadnieniem. Bez symboli wieloznacznych i ścieżek. Wymagane, gdy paczka ma połączenie.',
+      description: 'Do 50 dokładnych nazw hostów, z którymi łączy się paczka, każda z uzasadnieniem. Bez symboli wieloznacznych i ścieżek. Wymagane, gdy paczka ma połączenie. Tutaj są też hosty logowania i tokenu połączenia członka.',
     },
     'permissions.data': {
       type: '{ scope, reason }[]',
-      description: 'Pokazywane instalującemu. Na razie nic nie korzysta z zakresów danych; pomiń to pole.',
+      description: 'Zakresy danych, których używają reguły paczki, każdy z uzasadnieniem. Zobacz Uprawnienia do danych.',
+    },
+    'permissions.links': {
+      type: '{ host, reason }[]',
+      description: 'Do 20 dokładnych nazw hostów, które linki rekordów i ekrany paczki otwierają w przeglądarkach członków, każda z uzasadnieniem. Zobacz Linki rekordów oraz Formularze, listy i strony.',
+    },
+    'permissions.pageScript': {
+      type: '{ reason }',
+      description: 'Obecne, gdy blok paczki ma skrypt, z uzasadnieniem. Zobacz Bloki.',
+    },
+    'permissions.company': {
+      type: 'map',
+      description: 'Do 30 uprawnień firmowych, których członkowie potrzebują, żeby używać akcji bloków, poleceń rekordów i linków paczki, każde z etykietą, opisem i uzasadnieniem. Zobacz Uprawnienia paczki.',
     },
     connection: {
       type: '"connection"',
@@ -98,6 +110,46 @@ locales: [pl]
     filters: {
       type: 'string[]',
       description: 'Foldery filtrów, zapisane jako filters/<folder>.',
+    },
+    objects: {
+      type: 'string[]',
+      description: 'Foldery obiektów, zapisane jako objects/<folder>. Zobacz Obiekty.',
+    },
+    dictionaries: {
+      type: 'string[]',
+      description: 'Foldery słowników, zapisane jako dictionaries/<folder>. Zobacz Słowniki.',
+    },
+    queries: {
+      type: 'string[]',
+      description: 'Foldery zapytań, zapisane jako queries/<folder>. Zobacz Zapytania.',
+    },
+    triggers: {
+      type: 'string[]',
+      description: 'Foldery wyzwalaczy, zapisane jako triggers/<folder>, do 50. Zobacz Wyzwalacze.',
+    },
+    schedules: {
+      type: 'string[]',
+      description: 'Foldery harmonogramów, zapisane jako schedules/<folder>, do 10. Zobacz Harmonogramy.',
+    },
+    blocks: {
+      type: 'string[]',
+      description: 'Foldery bloków, zapisane jako blocks/<folder>, do 50. Zobacz Bloki.',
+    },
+    links: {
+      type: 'string[]',
+      description: 'Foldery linków rekordów, zapisane jako links/<folder>, do 20. Zobacz Linki rekordów.',
+    },
+    forms: {
+      type: 'string[]',
+      description: 'Foldery formularzy, zapisane jako forms/<folder>, do 100. Zobacz Formularze, listy i strony.',
+    },
+    lists: {
+      type: 'string[]',
+      description: 'Foldery list własnych, zapisane jako lists/<folder>, do 50. Zobacz Formularze, listy i strony.',
+    },
+    pages: {
+      type: 'string[]',
+      description: 'Foldery stron, zapisane jako pages/<folder>, do 50. Zobacz Formularze, listy i strony.',
     },
     include: {
       type: 'string[]',
@@ -126,8 +178,51 @@ permissions:
 - Wywołanie hosta spoza listy jest odrzucane, zarówno przy sprawdzaniu paczki, jak i w trakcie działania.
 - Host bez uzasadnienia jest odrzucany z kodem `permissions.reason_required`.
 - Paczka z połączeniem wymienia co najmniej jeden host.
+- Paczka z [połączeniem członka](/docs/pl/extensions/reference/member-connections) wymienia host, na którym członkowie się logują, i host, na którym Opero wymienia ich logowanie na token (w przeciwnym razie `member.host_not_listed`).
 - Gdy aktualizacja prosi o nowe hosty, plan oznacza je jako nowe w tej wersji.
+
+## Uprawnienia do danych [#data-permissions]
+
+Paczka, której reguły odczytują lub zapisują dane, uruchamiają zapytania albo wysyłają wiadomości, wymienia [zakresy danych](/docs/pl/extensions/reference/data-permissions), których używa, każdy z uzasadnieniem:
+
+```yaml title="extension.yaml"
+permissions:
+  data:
+    - scope: records:read
+      reason: Reads the open orders.
+    - scope: records:write
+      reason: Stores the status the carrier answers.
+```
+
+- Zakres spoza ośmiu istniejących jest odrzucany z kodem `permissions.invalid_scope`, zakres bez uzasadnienia z kodem `permissions.reason_required`, a zakres, którego nie używa żadna reguła, z kodem `permissions.unused_scope`.
+- Paczkę z zakresami danych może zainstalować tylko właściciel organizacji. Wyzwalacze, harmonogramy i połączenie członka nie dodają tej zasady.
+
+## Hosty linków, skrypty stron i uprawnienia firmowe [#link-hosts-page-scripts-and-company-permissions]
+
+Trzy kolejne uprawnienia dotyczą tego, czego używają członkowie, a nie tego, co robią reguły paczki:
+
+```yaml title="extension.yaml"
+permissions:
+  links:
+    - host: track.example.com
+      reason: Opens a parcel's tracking page at the carrier.
+  pageScript:
+    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
+  company:
+    track:
+      label: Track parcels
+      description: Ask the carrier where a parcel is, from its page or its card.
+      reason: Each question counts against the organization's carrier quota.
+```
+
+| Klucz | Deklaruje | Odrzucane, gdy nieużywane |
+| --- | --- | --- |
+| `links` | Hosty, które [linki rekordów](/docs/pl/extensions/reference/record-links) paczki i adresy URL jej [formularzy, list i stron](/docs/pl/extensions/reference/screens#urls) otwierają w przeglądarkach członków. Samo Opero nigdy ich nie wywołuje. | `permissions.unused_link_host` |
+| `pageScript` | Że [blok](/docs/pl/extensions/reference/blocks#the-script) paczki uruchamia skrypt w przeglądarkach oglądających. | `permissions.unused_page_script` |
+| `company` | [Uprawnienia paczki](/docs/pl/extensions/reference/package-permissions), których potrzebują członkowie, według nazwy. | `permissions.unused_company_permission` |
+
+Każde ma uzasadnienie, które pokazuje plan instalacji. Wersję, która dodaje host linku, uprawnienie firmowe albo skrypt strony, trzeba zaakceptować ponownie.
 
 ## Zarezerwowane listy
 
-Nazwy list `objects`, `dictionaries`, `queries`, `blocks`, `components`, `triggers` i `schedules` są zarezerwowane dla przyszłych wersji i dziś odrzucane z kodem `manifest.unsupported_section`.
+Nazwa listy `components` jest zarezerwowana dla przyszłej wersji i dziś odrzucana z kodem `manifest.unsupported_section`.

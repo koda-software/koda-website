@@ -1,0 +1,65 @@
+---
+title: Uprawnienia paczki
+description: "Opis permissions.company w rozszerzeniach Opero: uprawnienia firmowe, które paczka deklaruje dla swoich akcji bloków, poleceń rekordów i linków, nadawane w rolach jako company.x-<key>.<name>, i to, co robią z nimi instalacja, wyłączenie, aktualizacja i odinstalowanie."
+---
+
+Paczka decyduje, kto w organizacji może używać jej akcji bloków, poleceń rekordów i linków rekordów, prosząc o własne **uprawnienia firmowe**. Każde staje się zwykłym uprawnieniem firmowym, `company.x-<key>.<name>`, które organizacja nadaje w swoich [rolach](/docs/pl/opero/11-konto-i-dostep/role-i-uprawnienia) jak każde inne.
+
+```yaml title="extension.yaml"
+permissions:
+  company:
+    track:
+      label: Track parcels
+      description: Ask the carrier where a parcel is, from its page or its card.
+      reason: Each question counts against the organization's carrier quota.
+    openTracking:
+      label: Open tracking pages
+      description: Open a parcel's tracking page at the carrier.
+      reason: The link sends the parcel number to the carrier's site.
+```
+
+## permissions.company [#permissionscompany]
+
+Mapa od nazwy uprawnienia do jego tekstów. Do 30 uprawnień.
+
+<TypeTable
+  type={{
+    '<name>': {
+      type: 'string',
+      description: 'Mała litera, a po niej litery i cyfry, do 41 znaków: track, openTracking. Bez _ i -. Klucz uprawnienia to company.x-<key>.<name>.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Nazwa uprawnienia w edytorze ról, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Co pozwala robić członkowi, który je ma, do 2000 znaków. Do przetłumaczenia.',
+    },
+    reason: {
+      type: 'string',
+      description: 'Dlaczego paczka o nie prosi, pokazywane w planie instalacji. Wymagane (permissions.reason_required). Do przetłumaczenia.',
+      required: true,
+    },
+  }}
+/>
+
+Każde uprawnienie jest wskazane przez co najmniej jedno `expose.blockAction`, `expose.recordCommand` albo `permission` linku; uprawnienie, którego nic nie wskazuje, jest odrzucane z kodem `permissions.unused_company_permission`. Niezadeklarowana nazwa jest odrzucana tam, gdzie jej użyto, z kodem `action.permission_undeclared`.
+
+## W organizacji [#in-the-organization]
+
+- **Role.** Dopóki rozszerzenie działa, edytor ról wymienia jego uprawnienia w grupie nazwanej jak paczka, po grupach samego Opero, z twoją etykietą i opisem w języku członka.
+- **Nadaje je organizacja.** Instalacja nie dodaje uprawnienia paczki do żadnej roli; organizacja decyduje, kto dostaje każde z nich. Od początku mają je tylko role, które nadają wszystkie uprawnienia.
+- **Nie dla tokenów API.** Tokeny API nigdy nie dostają uprawnień paczek, a akcje bloków, polecenia rekordów i linki nie są im oferowane.
+- **Jedno z czterech sprawdzeń.** Uprawnienie to ostatnie ze sprawdzeń, które przechodzi członek, żeby użyć akcji bloku, polecenia rekordu albo linku: zobacz [Kto może ich używać](/docs/pl/extensions/reference/member-actions#who-may-use-them).
+
+## Instalacja, wyłączenie, aktualizacja, odinstalowanie [#install-disable-upgrade-uninstall]
+
+| Kiedy | Co dzieje się z uprawnieniami |
+| --- | --- |
+| Instalacja | Plan wymienia każde uprawnienie z etykietą, opisem i uzasadnieniem. Wersję, która dodaje uprawnienie, trzeba zaakceptować ponownie. |
+| Wyłączenie | Role zachowują nadane uprawnienia; grupa znika z edytora ról, dopóki rozszerzenie znów nie zacznie działać. |
+| Aktualizacja | Uprawnienie, którego nowa wersja już nie deklaruje, jest usuwane ze wszystkich ról. Gdy nadaje je jakaś rola, plan ostrzega (`permission.grants_removed`), podając liczbę ról. |
+| Odinstalowanie | Wszystkie nadania uprawnień rozszerzenia są usuwane. Odinstalowanie wymienia, ile ról nadaje każde z nich. |

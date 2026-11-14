@@ -74,7 +74,7 @@ Wartości należą do rozszerzenia zainstalowanego w organizacji: jedna wartoś�
 
 ## Co widzi administrator [#what-the-administrator-sees]
 
-Strona rozszerzenia ma kartę **Ustawienia** między kartami **Szczegóły** i **Połączenie**, widoczną, gdy paczka ma ustawienia. Ma jedną sekcję na każdą grupę, z jej etykietą i opisem, a w niej każde pole z etykietą, pomocą, wartością domyślną i oznaczeniem pola wymaganego, w języku oglądającego.
+Strona rozszerzenia ma kartę **Ustawienia** zaraz po karcie **Szczegóły**, widoczną, gdy paczka ma ustawienia. Ma jedną sekcję na każdą grupę, z jej etykietą i opisem, a w niej każde pole z etykietą, pomocą, wartością domyślną i oznaczeniem pola wymaganego, w języku oglądającego.
 
 Odczyt ustawień wymaga `org.extensions.read`, a zapis `org.extensions.update`; bez tego uprawnienia formularz jest tylko do odczytu. Jest też tylko do odczytu, gdy dla rozszerzenia trwa instalacja, aktualizacja albo inne polecenie.
 
@@ -84,7 +84,7 @@ Formularz można zapisać z pustym polem wymaganym. Wartość każdego wypełnio
 
 Pole z `required: true` musi mieć wartość, zapisaną albo domyślną. Dopóki jej nie ma:
 
-- rozszerzenie ma status **Nie działa: niekompletne ustawienia**, a karta **Ustawienia** wymienia brakujące ustawienia;
+- rozszerzenie ma status **Nie działa: niekompletne ustawienia**, a karta **Ustawienia** pokazuje **Niekompletne ustawienia** z etykietami brakujących ustawień;
 - jego kroków brakuje w edytorze reguł, a zapisana reguła, która do nich dotrze, kończy się błędem na tym kroku z kodem `extension_inactive`.
 
 Rozszerzenie znów działa, gdy tylko administrator uzupełni brakujące ustawienia i zapisze. Ten warunek nie zależy od połączenia: rozszerzenie z połączeniem musi mieć zarówno kompletne ustawienia, jak i włączone połączenie.

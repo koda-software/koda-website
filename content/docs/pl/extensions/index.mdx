@@ -1,11 +1,11 @@
 ---
 title: Rozszerzenia
-description: "Buduj własne integracje Opero jako paczki rozszerzeń: połączenie z usługą zewnętrzną, gotowe kroki reguł i filtry szablonów, instalowane bez wdrażania kodu."
+description: "Buduj własne integracje Opero jako paczki rozszerzeń: połączenie z usługą zewnętrzną, gotowe kroki reguł i filtry szablonów, wyzwalacze zasilane harmonogramami, połączenia własnych kont członków, własne obiekty, słowniki i zapytania paczki z ich formularzami, listami i stronami oraz bloki, polecenia rekordów i linki, których członkowie używają na stronach, instalowane bez wdrażania kodu."
 ---
 
 Rozszerzenie uczy Opero rozmawiać z usługą zewnętrzną. Piszesz je jako folder małych plików YAML i skryptów. Narzędzie wiersza poleceń sprawdza folder i pakuje go do pliku zip, a ty przesyłasz ten plik do Opero.
 
-Twoja organizacja dostaje wtedy ekran połączenia, nowe kroki reguł i nowe filtry szablonów. Żaden kod nie jest wdrażany, a serwer nie jest restartowany.
+Twoja organizacja dostaje wtedy ekran połączenia, nowe kroki reguł i nowe filtry szablonów, a jeśli paczka je zawiera, także nowe wyzwalacze reguł zasilane harmonogramami, możliwość połączenia przez każdego członka własnego konta, własne obiekty, słowniki i zapisane zapytania paczki z formularzami, listami i stronami do pracy z nimi oraz bloki na strony, polecenia na rekordach i linki do usługi, których używają jej członkowie. Żaden kod nie jest wdrażany, a serwer nie jest restartowany.
 
 <Files>
   <Folder name="hello-ext" defaultOpen>
@@ -60,6 +60,36 @@ Opero już pozwala administratorowi budować [reguły](/docs/pl/opero/07-automat
   <Card title="Filtry szablonów" href="/docs/pl/extensions/reference/filters">
     Małe funkcje JavaScript, których użyjesz w dowolnym szablonie jako `{{ value | x_<key>_<name> }}`, do formatowania lub przeliczania wartości.
   </Card>
+  <Card title="Obiekty, słowniki i zapytania" href="/docs/pl/extensions/reference/objects">
+    Własne tabele rekordów, listy wartości i zapisane zapytania SQL paczki, instalowane w module `x-<key>`. Organizacja używa ich jak własnych; ich budowa należy do rozszerzenia.
+  </Card>
+  <Card title="Uprawnienia do danych" href="/docs/pl/extensions/reference/data-permissions">
+    Co reguły paczki mogą robić z danymi: odczytywać i zapisywać jej własne rekordy, uruchamiać jej własne zapytania, aktualizować kontrahentów, wysyłać e-maile i powiadomienia, generować dokumenty. Administrator zgadza się na każde z nich.
+  </Card>
+  <Card title="Wyzwalacze" href="/docs/pl/extensions/reference/triggers">
+    Wyzwalacze reguł typu `x-<key>.<name>`: własne reguły organizacji zaczynają się, gdy paczka zgłosi ich zdarzenia, na przykład gdy w usłudze zmieni się zamówienie.
+  </Card>
+  <Card title="Harmonogramy" href="/docs/pl/extensions/reference/schedules">
+    Akcja uruchamiana samodzielnie, od co 15 minut do raz dziennie, raz dla instalacji, dla każdej firmy albo dla każdego połączonego członka, zwykle po to, żeby zgłaszać zdarzenia.
+  </Card>
+  <Card title="Połączenia członków" href="/docs/pl/extensions/reference/member-connections">
+    Każdy członek łączy własne konto w usłudze przez OAuth, a uruchomienia paczki dla tego członka używają tylko jego tokenu.
+  </Card>
+  <Card title="Bloki" href="/docs/pl/extensions/reference/blocks">
+    Fragmenty stron napisane w HTML i Liquid, z CSS i opcjonalnym skryptem, które pokazują dane paczki i oferują przyciski uruchamiające jej akcje. Organizacja umieszcza je tak jak własne bloki.
+  </Card>
+  <Card title="Formularze, listy i strony" href="/docs/pl/extensions/reference/screens">
+    Formularze na obiektach paczki, listy własne ich rekordów i strony obszaru roboczego, które łączą listy, formularze, bloki i liczniki. Administrator dodaje strony do menu.
+  </Card>
+  <Card title="Akcje bloków i polecenia rekordów" href="/docs/pl/extensions/reference/member-actions">
+    Akcje, które członkowie uruchamiają sami, przyciskiem w bloku albo z akcji rekordu, jako oni sami i dla tego rekordu.
+  </Card>
+  <Card title="Linki rekordów" href="/docs/pl/extensions/reference/record-links">
+    Akcja rekordu, która otwiera stronę usługi dla tego rekordu pod adresem zbudowanym z identyfikatora i pól rekordu.
+  </Card>
+  <Card title="Uprawnienia paczki" href="/docs/pl/extensions/reference/package-permissions">
+    Uprawnienia firmowe deklarowane przez paczkę i nadawane w rolach, które decydują, kto może używać jej akcji bloków, poleceń i linków.
+  </Card>
 </Cards>
 
 ## Co możesz z nim zrobić
@@ -70,15 +100,34 @@ Opero już pozwala administratorowi budować [reguły](/docs/pl/opero/07-automat
 - Dać autorom reguł jeden czytelny krok z formularzem wygenerowanym z pól wejściowych akcji, zamiast ręcznie pisanego wywołania webhooka.
 - Trzymać dane uwierzytelniające osobno dla każdej organizacji albo każdej firmy.
 - Pozwolić administratorowi wybrać na stronie rozszerzenia ustawienia, na przykład region albo język, bez zmieniania paczki.
+- Dostarczyć własne obiekty, z polami, które korzystają z własnych słowników i wskazują na siebie nawzajem, oraz zapisane zapytania na nich.
+- W kroku pobierać, tworzyć i aktualizować rekordy swoich obiektów, uruchamiać swoje zapytania i aktualizować kontrahentów na podstawie odpowiedzi usługi.
+- Wysłać e-mail z załączonym wygenerowanym dokumentem i powiadomić członków organizacji.
+- Odczytywać usługę według harmonogramu i zgłaszać zdarzenie dla każdego nowego lub zmienionego elementu, żeby uruchamiały się na nim reguły organizacji.
+- Pozwolić każdemu członkowi połączyć własne konto w usłudze i odczytywać dane każdego członka jego własnym tokenem.
+- Wysyłać dane uwierzytelniające połączenia jako HTTP Basic.
+- Pokazywać dane paczki w blokach na stronach rekordów i stronach własnych, z przyciskami, które uruchamiają jej akcje.
+- Dostarczyć ekrany do pracy z własnymi obiektami: formularze, listy własne i strony obszaru roboczego.
+- Oferować akcję jako polecenie na rekordach jej obiektów, kontrahentach, fakturach, budżetach albo zgłoszeniach helpdesku, uruchamiane przez członka dla tego rekordu.
+- Połączyć rekord z jego stroną w usłudze.
+- Decydować własnymi uprawnieniami firmowymi, kto może używać każdego z nich.
 - Dostarczyć etykiety w kilku językach.
 
 ## Czego jeszcze nie potrafi
 
 <Callout type="warn" title="Ograniczenia obecnego formatu paczki">
-- **Czytać ani zapisywać rekordów Opero bezpośrednio.** Akcja tylko liczy i wywołuje usługę zewnętrzną. Pracę na rekordach wykonuje z wynikiem reguła, która używa twojego kroku.
-- **Uruchamiać się sama.** Paczka nie ma jeszcze wyzwalaczy, przychodzących webhooków ani harmonogramów. Krok uruchamia się, gdy dojdzie do niego reguła organizacji.
-- **Dodawać ekranów, bloków ani przycisków w rekordach.**
-- **Przechowywać danych uwierzytelniających osobno dla każdego użytkownika.** Połączenie należy do organizacji albo do firmy.
+- **Sięgać do własnych obiektów organizacji.** Paczka odczytuje i zapisuje tylko obiekty, które sama przynosi, oraz kontrahentów. Każdą inną pracę na rekordach wykonuje z wynikiem reguła, która używa twojego kroku.
+- **Umieszczać czegokolwiek w menu.** Administrator dodaje strony paczki do menu ręcznie.
+- **Dostarczać formularzy dla obiektów, które nie są jej własne,** formularzy publicznych, stron portalu ani akcji list, które uruchamiają regułę albo skrypt.
+- **Wysyłać ze skrzynki pocztowej ani używać własnych szablonów e-maili i dokumentów.** E-maile idą przez usługę e-mail instalacji, a dokumenty korzystają z szablonu, który wybiera organizacja.
+- **Odbierać webhooków.** Usługa nie może wywołać paczki; zamiast tego paczka odczytuje usługę według [harmonogramu](/docs/pl/extensions/reference/schedules). Przychodzące webhooki są zaplanowane na późniejszą wersję.
+- **Zgłaszać zdarzeń z kroku.** Zdarzenia paczki zgłaszają tylko uruchomienia harmonogramów i akcje połączeń członków, nigdy krok uruchamiany przez regułę organizacji.
+- **Uruchamiać się według wyrażenia cron albo w odstępie wybranym przez administratora.** Harmonogram działa w jednym z siedmiu stałych odstępów, które ustala paczka.
+- **Odnawiać tokenu członka.** Gdy usługa przestanie go przyjmować, członek łączy się ponownie.
+- **Przynosić obrazów, czcionek ani innych plików** dla swoich bloków.
+- **Używać w blokach akcji formularzy.** Blok nie może otworzyć formularza ani zapisać pola (`open-form`, `set-field`, `<opero-rating>`) ani uruchomić reguły po identyfikatorze; jego przyciski uruchamiają akcje paczki.
+- **Zgłaszać zdarzeń ani używać połączenia członka z akcji bloku czy polecenia rekordu** ani uruchamiać polecenia w tle.
+- **Oferować swoich akcji bloków, poleceń i linków tokenom API** ani w zewnętrznym API i MCP.
 - **Wywoływać hosta, którego nie zadeklarowano,** ani niczego, co nie jest HTTPS.
 </Callout>
 
@@ -107,17 +156,17 @@ Opero ponownie sprawdza paczkę i uruchamia twoje testy.
 <Step>
 ### Zainstaluj
 
-Administrator przegląda plan instalacji i go akceptuje.
+Administrator przegląda [plan instalacji](/docs/pl/extensions/after-install#the-install-plan) i go akceptuje. Paczkę, która prosi o zakresy danych, instaluje tylko właściciel organizacji.
 </Step>
 <Step>
 ### Połącz
 
-Administrator uzupełnia ustawienia, wpisuje dane uwierzytelniające, uruchamia **Zweryfikuj** i włącza połączenie.
+Administrator uzupełnia ustawienia, wpisuje dane uwierzytelniające, klika **Sprawdź połączenie** i włącza połączenie.
 </Step>
 <Step>
 ### Używaj
 
-Kroki i filtry pojawiają się w edytorze reguł i w szablonach.
+Kroki i filtry pojawiają się w edytorze reguł i w szablonach, a wyzwalacze w edytorze reguł. Harmonogramy zaczynają działać, a członkowie mogą łączyć własne konta. Organizacja umieszcza bloki na swoich stronach i nadaje uprawnienia paczki w swoich rolach; członkowie używają wtedy bloków, poleceń i linków.
 </Step>
 </Steps>
 
@@ -139,14 +188,24 @@ Co się dzieje za każdym razem, gdy reguła uruchamia twój krok:
 | Paczka | Jedna przesłana wersja rozszerzenia: plik zip z twoim folderem. Wersja nigdy się nie zmienia po przesłaniu. |
 | Klucz | Identyfikator rozszerzenia, na przykład `hello-ext`. Od niego pochodzą nazwy wszystkiego, co rozszerzenie dodaje. |
 | Manifest | `extension.yaml`, plik na górze folderu, który wymienia całą zawartość paczki. |
-| Deskryptor | Plik YAML opisujący jedną część: `action.yaml`, `filter.yaml`, `connection.yaml`, `settings.yaml`. Jego nazwa jest stała. |
+| Deskryptor | Plik YAML opisujący jedną część: `action.yaml`, `filter.yaml`, `connection.yaml`, `member.yaml`, `settings.yaml`, `object.yaml`, `dictionary.yaml`, `query.yaml`, `trigger.yaml`, `schedule.yaml`, `block.yaml`, `link.yaml`, `form.yaml`, `list.yaml`, `page.yaml`. Jego nazwa jest stała. |
 | Akcja | Folder z `action.yaml`, logiką (plikiem reguły albo skryptem) i testami. |
 | Plik reguły | Logika akcji zapisana jako reguła: kroki i krawędzie, które zapisuje edytor reguł. |
 | Krok | Akcja widoczna w edytorze reguł. |
 | Połączenie | Zapisane dane uwierzytelniające usługi zewnętrznej. |
+| Połączenie członka | Własne konto członka w usłudze zewnętrznej, połączone przez niego samego przez OAuth. |
+| Wyzwalacz | Wyzwalacz reguł zadeklarowany przez paczkę, `x-<key>.<name>`. Paczka zgłasza jego zdarzenia, a reguły organizacji na nich się zaczynają. |
+| Zdarzenie | Jedno wystąpienie wyzwalacza wraz z danymi, zgłoszone krokiem `EMIT_EVENT` paczki. |
+| Harmonogram | Akcja, którą paczka uruchamia samodzielnie w stałym odstępie, dla instalacji, każdej firmy albo każdego połączonego członka. |
 | Ustawienia | Wartości, które nie są sekretne, wybierane przez administratora dla zainstalowanego rozszerzenia i odczytywane przez jego akcje. |
-| Przypadek testowy | Jeden wpis w `tests.yaml` akcji: wejście, wymiany HTTP wykonywane przez akcję i oczekiwany wynik. Działa bez dostępu do sieci. |
-| Zarządzane | Zainstalowane przez rozszerzenie. Zarządzane reguły i skrypty są tylko do odczytu i ukryte na zwykłych listach; zmieniają się tylko przy uaktualnieniu rozszerzenia. |
+| Przypadek testowy | Jeden wpis w `tests.yaml` akcji: wejście, wymiany HTTP i kroki danych wykonywane przez akcję, zdarzenia, które zgłasza, oraz oczekiwany wynik. Działa bez dostępu do sieci i do jakichkolwiek danych. |
+| Zakres danych | Jeden wpis w `permissions.data`: coś, co reguły paczki mogą robić z danymi, na przykład `records:write`. |
+| Zarządzane | Zainstalowane przez rozszerzenie. Zarządzane reguły i skrypty są tylko do odczytu i ukryte na zwykłych listach. W zarządzanych obiektach, słownikach i zapytaniach tylko do odczytu jest ich budowa, a ich rekordy należą do organizacji; widać je na karcie **Zainstalowane dane** rozszerzenia zamiast na ekranach zarządzania. Zarządzane formularze, listy i strony są tylko do odczytu, a to, kto je widzi, nadal wybiera organizacja. Zmieniają się tylko przy uaktualnieniu rozszerzenia. |
+| Blok | Fragment strony, który przynosi paczka: HTML z Liquid, CSS i opcjonalny skrypt. Instalowany jako zarządzany blok własny `x_<key>_<name>`. |
+| Akcja bloku | Akcja, którą uruchamia przycisk w jednym z bloków paczki, jako członek, który go nacisnął. |
+| Polecenie rekordu | Akcja oferowana wśród akcji rekordu, uruchamiana przez członka dla tego rekordu. |
+| Link rekordu | Akcja rekordu, która otwiera w przeglądarce członka stronę usługi dla tego rekordu. |
+| Uprawnienie paczki | Uprawnienie firmowe deklarowane przez paczkę, `company.x-<key>.<name>`, którego członkowie potrzebują, żeby używać jej akcji bloków, poleceń i linków. |
 | Paczka prywatna | Paczka, którą organizacja przesłała dla siebie. Drugi rodzaj to paczka z katalogu, przesłana przez administratora instalacji i udostępniana organizacjom. |
 
 ## Co dalej
@@ -160,6 +219,15 @@ Co się dzieje za każdym razem, gdy reguła uruchamia twój krok:
   </Card>
   <Card title="Przepis: krok, który liczy" href="/docs/pl/extensions/calculating-step">
     Paczka z czterech plików, bez połączenia.
+  </Card>
+  <Card title="Przepis: paczka z własnymi danymi" href="/docs/pl/extensions/own-data">
+    Obiekt, słownik, zapytanie i krok, który odczytuje i zapisuje jego rekordy.
+  </Card>
+  <Card title="Przepis: zdarzenia z usługi" href="/docs/pl/extensions/scheduled-events">
+    Wyzwalacz, cogodzinny harmonogram, który zgłasza zdarzenie dla każdego nowego lub zmienionego zamówienia, i reguła, która nasłuchuje; potem to samo dla każdego członka.
+  </Card>
+  <Card title="Przepis: blok, przycisk i link" href="/docs/pl/extensions/blocks-and-actions">
+    Blok na stronie rekordu z przyciskiem, który uruchamia akcję, ta sama akcja jako polecenie rekordu i link do usługi.
   </Card>
   <Card title="Dokumentacja techniczna" href="/docs/pl/extensions/reference/manifest">
     Każdy plik, klucz, limit i polecenie.

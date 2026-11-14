@@ -1,0 +1,335 @@
+---
+title: Kroki danych
+description: "Kroki danych i wiadomości w plikach reguł rozszerzeń Opero: pobieranie, tworzenie i aktualizacja rekordów paczki, uruchamianie jej zapytań, aktualizacja kontrahentów, e-mail z załącznikiem, powiadomienia członków i generowanie dokumentów, każdy z testem."
+---
+
+Kroki danych to kroki reguł, które dotykają danych Opero albo coś wysyłają: rekordy, zapytania, kontrahenci, e-maile, powiadomienia i dokumenty. Plik reguły twojej paczki może ich używać, gdy paczka deklaruje [zakres danych](/docs/pl/extensions/reference/data-permissions), którego każdy z nich potrzebuje. Ta strona pokazuje każdy krok tak, jak zapisuje się go w pliku reguły, razem z efektem, który planuje dla niego [przypadek testowy](/docs/pl/extensions/reference/tests#data-and-messaging-steps).
+
+<Callout title="Zanim go napiszesz">
+- Krok działa w firmie, dla której działa reguła organizacji używająca twojego kroku. Uruchomienie bez firmy kończy się błędem na tym kroku.
+- Każdy klucz modułu, obiektu i zapytania jest wpisany wprost. Szablon w jego miejscu jest odrzucany.
+- Każdy krok publikuje swój wynik pod swoim `contextKey`, jak każdy krok. Krok bez wyniku niczego nie publikuje.
+</Callout>
+
+## Rekordy [#records]
+
+Obiekty paczki należą do modułu `x-<key>`. Reguła wskazuje obiekt kluczem `object` z jego `object.yaml`. Przykładowa paczka poniżej ma klucz `shop-ext`, więc jej moduł to `x-shop-ext`.
+
+### Pobranie rekordów [#fetch-records]
+
+`FETCH_RECORDS` odczytuje rekordy jednego obiektu. Zakres `records:read`.
+
+```yaml title="actions/note-order/rule.yaml (fragment)"
+  - id: fetch
+    type: FETCH_RECORDS
+    name: First open order
+    contextKey: orders
+    config:
+      moduleKey: x-shop-ext
+      objectKey: orders
+      filters:
+        - { field: status, operator: eq, value: open }
+      sortBy: ordered_on
+      sortDirection: asc
+      limit: 1
+```
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `moduleKey` | Zawsze `x-<key>`. |
+| `objectKey` | Obiekt paczki. |
+| `filters` | Opcjonalny. Lista `{ field, operator, value }`, z których wszystkie muszą być spełnione. `operator` to jeden z: `eq`, `neq`, `contains`, `startsWith`, `endsWith`, `in`, `notIn`, `gt`, `gte`, `lt`, `lte`, `between`, `isNull`, `isNotNull`, `isEmpty`, `isNotEmpty`, `hasAny`, `hasAll`, `hasNone`, `near`. |
+| `sortBy`, `sortDirection` | Opcjonalne. Klucz pola oraz `asc` (domyślnie) albo `desc`. |
+| `limit` | Wymagany. Od 1 do 100. |
+
+Wynik to `{ rows, rowCount, truncated }`. Każdy wiersz ma `id` rekordu i jego pola według kluczy, więc następny krok odczytuje `{{ orders.rows[0].id }}` i `{{ orders.rows[0].number }}`. `truncated` ma wartość true, gdy pasujących rekordów było więcej niż `limit`.
+
+### Utworzenie rekordu [#create-a-record]
+
+`CREATE_RECORD` dodaje jeden rekord. Zakres `records:write`.
+
+```yaml
+  - id: note
+    type: CREATE_RECORD
+    name: Add the note
+    contextKey: note
+    config:
+      targetModuleKey: x-shop-ext
+      targetObjectKey: order-notes
+      fieldMapping:
+        text: "{{ trigger.data.text }}"
+        order: "{{ orders.rows[0].id }}"
+```
+
+`fieldMapping` przypisuje wartości kluczom pól; pole referencji przyjmuje id rekordu, na który wskazuje. Wynik to `{ id }`, id nowego rekordu.
+
+### Aktualizacja rekordu [#update-a-record]
+
+`UPDATE_RECORD` zmienia jeden rekord, wskazany po id. Zakres `records:write`.
+
+```yaml
+  - id: mark
+    type: UPDATE_RECORD
+    name: Mark the order
+    contextKey: output
+    config:
+      target: "{{ orders.rows[0].id }}"
+      targetModuleKey: x-shop-ext
+      targetObjectKey: orders
+      fieldUpdates:
+        status: noted
+        last_note: "{{ note.id }}"
+```
+
+`target` jest wymagany: krok nie ma rekordu, który go wyzwolił, więc `target: self` jest odrzucane. `fieldUpdates` przypisuje kluczom pól nowe wartości. Krok nie ma wyniku.
+
+### Ich test [#their-test]
+
+Trzy powyższe kroki, zaplanowane po kolei:
+
+```yaml title="actions/note-order/tests.yaml"
+- name: the note is added and the order marked
+  input: { text: Call back on Monday }
+  effects:
+    - request: { step: FETCH_RECORDS, objectKey: orders }
+      response:
+        rows: [{ id: 7d1c2a34-0000-4000-8000-000000000001, number: A-1, status: open }]
+        rowCount: 1
+        truncated: false
+    - request:
+        step: CREATE_RECORD
+        targetObjectKey: order-notes
+        fieldMapping: { text: Call back on Monday, order: 7d1c2a34-0000-4000-8000-000000000001 }
+      response: { id: 9b0e1f22-0000-4000-8000-000000000002 }
+    - request:
+        step: UPDATE_RECORD
+        targetObjectKey: orders
+        fieldUpdates: { status: noted, last_note: 9b0e1f22-0000-4000-8000-000000000002 }
+  succeeds: true
+```
+
+## Uruchomienie zapytania [#run-a-query]
+
+`RUN_QUERY` uruchamia jedno z [zapytań](/docs/pl/extensions/reference/queries) paczki po jego zainstalowanym kluczu, `x_<klucz z _>_<name>`. Zapytanie FETCH potrzebuje zakresu `queries:run`, zapytanie MUTATION zakresu `queries:mutate`.
+
+```yaml title="actions/count-open/rule.yaml"
+entryStepId: close
+steps:
+  - id: close
+    type: RUN_QUERY
+    name: Close old orders
+    contextKey: closed
+    config:
+      queryKey: x_shop_ext_close_old_orders
+      params: { before: "{{ trigger.data.before }}" }
+  - id: count
+    type: RUN_QUERY
+    name: Count open orders
+    contextKey: output
+    config:
+      queryKey: x_shop_ext_open_orders
+edges:
+  - { fromStepId: close, toStepId: count }
+```
+
+`params` podaje parametry zapytania po nazwie; w ich wartościach można używać szablonów. `queryId` jest odrzucane.
+
+Wynik zapytania FETCH to lista jego wierszy, tutaj `[{ open: 3 }]`. Wynik zapytania MUTATION to `{ operation, rowCount, rows }`.
+
+```yaml title="actions/count-open/tests.yaml"
+- name: the old orders are closed and the open ones counted
+  input: { before: "2025-11-01" }
+  effects:
+    - request:
+        step: RUN_QUERY
+        queryKey: x_shop_ext_close_old_orders
+        params: { before: "2025-11-01" }
+      response: { operation: UPDATE, rowCount: 2, rows: [] }
+    - request: { step: RUN_QUERY, queryKey: x_shop_ext_open_orders }
+      response: [{ open: 3 }]
+  succeeds: true
+```
+
+## Aktualizacja kontrahenta [#update-a-contractor]
+
+`UPDATE_CONTRACTOR` zmienia jednego z kontrahentów organizacji. Zakres `contractors:write`. W połączeniu z wywołaniem usługi utrzymuje dane kontrahenta w zgodzie z tą usługą:
+
+```yaml title="actions/refresh-contractor/rule.yaml"
+entryStepId: lookup
+steps:
+  - id: lookup
+    type: CALL_WEBHOOK
+    name: Ask the shop
+    contextKey: customer
+    config:
+      url: "https://api.example.com/v1/customers?email={{ trigger.data.email }}"
+      method: GET
+  - id: store
+    type: UPDATE_CONTRACTOR
+    name: Store the phone
+    contextKey: output
+    config:
+      contractorId: "{{ trigger.data.contractorId }}"
+      fields: { phone: "{{ customer.body.phone }}" }
+edges:
+  - { fromStepId: lookup, toStepId: store }
+```
+
+`contractorId` wskazuje kontrahenta, zwykle z wejścia kroku. `fields` zawiera pola kontrahenta do zmiany, np. `email`, `phone` albo `website`. Krok nie ma wyniku, więc jego efekt nie ma `response`:
+
+```yaml title="actions/refresh-contractor/tests.yaml"
+- name: the phone the shop has is stored
+  input: { contractorId: c-1, email: ada@example.com }
+  http:
+    - request: { method: GET, url: "https://api.example.com/v1/customers?email=ada@example.com" }
+      response: { status: 200, body: { phone: "+48 600 100 200" } }
+  effects:
+    - request:
+        step: UPDATE_CONTRACTOR
+        contractorId: c-1
+        fields: { phone: "+48 600 100 200" }
+  succeeds: true
+```
+
+## Dokumenty, e-maile i powiadomienia [#documents-email-and-notifications]
+
+Ta akcja generuje potwierdzenie zamówienia, wysyła je klientowi e-mailem jako załącznik i informuje współpracownika. Potrzebuje zakresów `documents:generate`, `email:send` i `notifications:send` oraz modułu `documents` w `requires.modules`.
+
+```yaml title="actions/confirm-order/action.yaml"
+action: confirm_order
+label: Confirm order
+description: Renders the confirmation, emails it to the customer and notifies a colleague.
+input:
+  templateId:
+    type: text
+    label: Document template
+    help: A data document template of your organization.
+    required: true
+  number: { type: text, label: Order number, required: true }
+  email: { type: text, label: Customer email, required: true }
+  colleagueId: { type: text, label: Colleague to notify, required: true }
+run: rule.yaml
+tests: tests.yaml
+expose:
+  ruleStep: { category: messaging }
+```
+
+```yaml title="actions/confirm-order/rule.yaml"
+entryStepId: render
+steps:
+  - id: render
+    type: GENERATE_DOCUMENT
+    name: Render the confirmation
+    contextKey: document
+    config:
+      templateId: "{{ trigger.data.templateId }}"
+      data:
+        title: "Order {{ trigger.data.number }}"
+  - id: mail
+    type: SEND_EMAIL
+    name: Email the customer
+    contextKey: mail
+    config:
+      to: "{{ trigger.data.email }}"
+      subject: "Order {{ trigger.data.number }} is confirmed"
+      html: "<p>Your order {{ trigger.data.number }} is confirmed.</p>"
+      attachmentFileIds: ["{{ document.fileId }}"]
+  - id: notify
+    type: SEND_NOTIFICATION
+    name: Tell a colleague
+    contextKey: output
+    config:
+      recipients:
+        userIds: ["{{ trigger.data.colleagueId }}"]
+      title: "Order {{ trigger.data.number }} confirmed"
+      body: "The confirmation went to {{ trigger.data.email }}."
+  - id: unavailable
+    type: SAVE_TO_CONTEXT
+    name: Keep the reason
+    contextKey: failure
+    config:
+      value:
+        code: "{{ error.code }}"
+        message: "{{ error.message }}"
+edges:
+  - { fromStepId: render, toStepId: mail }
+  - { fromStepId: mail, toStepId: notify }
+  - { fromStepId: render, toStepId: unavailable, branchKey: error }
+  - { fromStepId: mail, toStepId: unavailable, branchKey: error }
+```
+
+### Wygenerowanie dokumentu [#generate-a-document]
+
+`GENERATE_DOCUMENT` generuje dokument z szablonu dokumentu z danych organizacji. Zakres `documents:generate`.
+
+- `templateId` zapisuje się dokładnie jako `{{ trigger.data.<field> }}`: szablonu nigdy nie wybiera twoja paczka, tylko autor reguły organizacji, w wejściu twojego kroku. Każda inna postać jest odrzucana.
+- `data` to dane, które generuje szablon. Dozwolone są też `templateVersionId` i `metadata`.
+- `entityId` i `invoiceId` są odrzucane: paczka generuje tylko szablony z danych, nigdy rekord.
+- Wynik zawiera `fileId`, `documentGenerationJobId`, `templateId`, `templateVersionId`, `mimeType` i `originalName`. Przekaż dalej `fileId`, żeby dołączyć plik.
+- Gdy generowanie dokumentów jest wyłączone w organizacji, krok kończy się błędem z komunikatem "GENERATE_DOCUMENT requires document generation to be enabled".
+
+### Wysłanie e-maila [#send-an-email]
+
+`SEND_EMAIL` wysyła przez usługę e-mail instalacji. Zakres `email:send`.
+
+- `to`, `subject` i `html` wpisuje się w kroku. Dozwolone są też `bodyFormat`, `locale` i `data`.
+- Pliki dołącza się po id przez `attachmentFileIds` (albo `fileIds`), na przykład dokument wygenerowany przez wcześniejszy krok. W ten sposób można dołączyć dowolny plik organizacji, nie tylko wygenerowany w tym samym uruchomieniu; zobacz [Załączniki](/docs/pl/extensions/reference/data-permissions#the-scopes). Może to zostać zawężone.
+- `accountId` (skrzynka pocztowa), `templateId` (szablon e-maila) oraz dostępne tylko dla skrzynek `cc`, `bcc`, `text` i `saveAsDraft` są odrzucane.
+- Bez usługi e-mail w instalacji krok kończy się błędem z kodem `service_connection_not_configured`.
+- Krok nie ma wyniku.
+
+### Wysłanie powiadomienia [#send-a-notification]
+
+`SEND_NOTIFICATION` wysyła ogólne powiadomienie, z `title` i `body`, do członków organizacji. Zakres `notifications:send`.
+
+- `recipients.userIds` wymienia użytkowników. Powiadomienie dostają tylko aktywni członkowie organizacji.
+- Dozwolone są też `linkUrl`, `payload`, `entityRef`, `dedupeKey` i `collapseWindowMinutes`; `typeKey` jest odrzucane.
+- Wynik to `{ notificationId, recipientCount, collapsed, suppressed }`.
+
+### Ich test [#their-test-1]
+
+```yaml title="actions/confirm-order/tests.yaml"
+- name: the confirmation is rendered, emailed with its file and announced
+  input:
+    templateId: tpl-1
+    number: A-1
+    email: customer@example.com
+    colleagueId: user-2
+  effects:
+    - request:
+        step: GENERATE_DOCUMENT
+        templateId: tpl-1
+        data: { title: Order A-1 }
+      response:
+        fileId: file-1
+        documentGenerationJobId: job-1
+        templateId: tpl-1
+        templateVersionId: version-1
+        mimeType: application/pdf
+        originalName: document-job-1.pdf
+    - request:
+        step: SEND_EMAIL
+        to: customer@example.com
+        subject: Order A-1 is confirmed
+        attachmentFileIds: [file-1]
+    - request:
+        step: SEND_NOTIFICATION
+        recipients: { userIds: [user-2] }
+        title: Order A-1 confirmed
+      response:
+        notificationId: notification-1
+        recipientCount: 1
+        collapsed: false
+        suppressed: false
+  succeeds: true
+```
+
+## Gdy krok danych się nie powiedzie [#when-a-data-step-fails]
+
+Krok danych zakończony błędem powoduje błąd twojej akcji jak każdy krok, chyba że przechwyci go krawędź `error`, jak w przykładzie powyżej: krok tej krawędzi odczytuje `{{ error.code }}` i `{{ error.message }}`. Reguła organizacji, która używa twojego kroku, widzi wtedy `EXTENSION_ACTION_FAILED`, gdy akcja się nie powiedzie.
+
+Krok, który w trakcie działania sięgnąłby poza zadeklarowane zakresy, kończy się błędem `EXTENSION_SCOPE_DENIED` i niczego nie robi. Zobacz [Uprawnienia do danych](/docs/pl/extensions/reference/data-permissions#when-it-is-checked).
+
+## Skrypty nie dostają danych [#scripts-get-no-data]
+
+Krok **Uruchom skrypt** ani skrypt uruchamiany przez akcję nie może odczytywać ani zapisywać danych i nie może wysyłać powiadomień: w paczce skrypty nie dostają pomocników danych. Najpierw pobierz dane krokiem i przekaż je skryptowi przez kontekst, a potem zapisz wynik skryptu kolejnym krokiem.

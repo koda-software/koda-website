@@ -1,0 +1,119 @@
+---
+title: Linki rekordów
+description: "Opis link.yaml w rozszerzeniach Opero: akcja rekordu, która otwiera adres https zbudowany z identyfikatora i pól rekordu, permissions.links, linki na własnych obiektach paczki oraz na kontrahentach, fakturach, budżetach i zgłoszeniach helpdesku ze stałymi zestawami pól, i to, co pokazuje plan instalacji."
+---
+
+Link rekordu otwiera stronę usługi zewnętrznej dla rekordu, który ogląda członek, na przykład stronę śledzenia przesyłki u przewoźnika. Pojawia się wśród akcji rekordu. Nie uruchamia niczego na serwerze Opero: przeglądarka członka otwiera adres https zbudowany z identyfikatora rekordu i pól, które link deklaruje.
+
+```yaml title="links/open-tracking/link.yaml"
+link: open_tracking
+label: Open tracking page
+description: Opens the parcel's page at the carrier.
+permission: openTracking
+targets: [{ object: parcels }]
+fields:
+  number: { label: Parcel number }
+url: "https://track.example.com/parcels/{fields.number}?ref={record.id}"
+```
+
+Wymień folder w liście `links` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add link <name>` zapisuje link, który potem kierujesz na własny host i uprawnienie.
+
+## link.yaml [#linkyaml]
+
+<TypeTable
+  type={{
+    link: {
+      type: 'string',
+      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce. Akcja rekordu to x-<key>.<link>.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'Etykieta akcji na rekordzie, do 120 znaków. Do przetłumaczenia.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 2000 znaków. Do przetłumaczenia.',
+    },
+    permission: {
+      type: 'string',
+      description: 'Nazwa z permissions.company w extension.yaml, którą członkowie muszą mieć (w przeciwnym razie action.permission_undeclared).',
+      required: true,
+    },
+    targets: {
+      type: '{ object } | { entity }[]',
+      description: 'Od 1 do 20 obiektów paczki, { object: <klucz> }, albo dokładnie jeden typ wbudowany, { entity: <typ> }. Nigdy jedno i drugie (link.mixed_targets).',
+      required: true,
+    },
+    fields: {
+      type: 'map',
+      description: 'Do 50 pól, których może używać adres, każde z etykietą pokazywaną przy zgodzie: { <pole>: { label } }. Do przetłumaczenia.',
+    },
+    url: {
+      type: 'string',
+      description: 'Adres: https, z hostem wypisanym wprost. Zobacz Adres.',
+      required: true,
+    },
+  }}
+/>
+
+## Adres [#the-address]
+
+- Zaczyna się od `https://` (`link.not_https`), a jego host jest wypisany wprost: bez symbolu zastępczego w hoście, bez nazwy użytkownika i hasła (`link.template_invalid`).
+- Host jest wymieniony w `permissions.links` w `extension.yaml`, z uzasadnieniem (`link.host_not_declared`). Host linku nie jest hostem, który wywołuje paczka, więc nie trafia do `permissions.network`.
+- `{record.id}` to identyfikator rekordu, a `{fields.<field>}` wartość pola, które link deklaruje w `fields` (`link.field_undeclared`). Mogą stać w ścieżce albo w zapytaniu, nie w hoście.
+- Każda wartość jest kodowana tam, gdzie stoi: jako jeden segment ścieżki albo jako wartość w zapytaniu. `A/1 B` w ścieżce staje się `A%2F1%20B`.
+
+```yaml title="extension.yaml"
+permissions:
+  links:
+    - host: track.example.com
+      reason: Opens a parcel's tracking page at the carrier.
+```
+
+Paczka wymienia do 20 hostów linków; host, którego nie otwiera żaden link, jest odrzucany z kodem `permissions.unused_link_host`.
+
+## Linki na obiektach paczki [#links-on-the-packages-objects]
+
+Przy celach `{ object: <klucz> }` każde zadeklarowane pole musi być polem każdego obiektu docelowego (`link.field_not_on_object`). Link pojawia się na rekordzie tych obiektów, gdy:
+
+- członek przechodzi [sprawdzenie](/docs/pl/extensions/reference/member-actions#who-may-use-them), które przechodzi każda akcja bloku, polecenie i link: rozszerzenie działa, link jest udostępniony firmie, członek należy do jego odbiorców i ma jego uprawnienie paczki;
+- każde pole, które link deklaruje, jest na formularzu pokazywanym członkowi;
+- członek może odczytać rekord, a każde zadeklarowane pole ma wartość: tekst, liczbę albo tak/nie. Puste pole albo lista ukrywa link.
+
+W przeciwnym razie linku nie ma; członek nigdy nie dostaje adresu z brakującą wartością.
+
+## Linki na rekordach wbudowanych [#links-on-built-in-records]
+
+Link może zamiast tego dotyczyć jednego typu wbudowanego i wtedy bierze pola ze stałego zestawu tego typu:
+
+```yaml title="links/open-registry/link.yaml"
+link: open_registry
+label: Open in the registry
+permission: checkCompanies
+targets: [{ entity: contractor }]
+fields:
+  vatId: { label: VAT ID }
+url: "https://registry.example.com/companies/{fields.vatId}"
+```
+
+| Typ | Pola |
+| --- | --- |
+| `contractor` | `name`, `shortName`, `vatId`, `regon`, `krs`, `country`, `externalId.<system>` (identyfikator kontrahenta w tym systemie zewnętrznym) |
+| `sales_invoice` | `number`, `issueDate`, `saleDate`, `ksefNumber`, `currencyCode`, `grossAmount`, `buyerVatId` |
+| `cost_invoice` | `supplierInvoiceNumber`, `issueDate`, `ksefNumber`, `currencyCode`, `grossAmount`, `supplierVatId` |
+| `budget` | `number`, `name`, `periodStart`, `periodEnd`, `currencyCode` |
+| `helpdesk_ticket` | `reference`, `number`, `typeKey` |
+
+Daty są zapisywane jako `YYYY-MM-DD`, a kwoty jako zwykłe liczby dziesiętne, na przykład `1230.5`. Do tych zestawów mogą później dojść pola; żadne nie zostanie usunięte. Dane osobowe, takie jak PESEL, adresy e-mail i numery telefonów, są celowo pominięte.
+
+`opero-ext validate` sprawdza tylko postać nazwy pola; Opero odrzuca pole spoza zestawu typu przy przesłaniu z kodem `link.field_unknown`, a `externalId` wymaga swojego `.<system>`.
+
+Na rekordzie wbudowanym link pojawia się, gdy członek przechodzi to samo sprawdzenie, może odczytać ten rekord (ma uprawnienie do jego odczytu, a dla zgłoszenia dostęp do jego działu) i każde pole ma wartość. Pola nie muszą być na stronie. Przy zgodzie plan instalacji pokazuje dla tych pól etykiety samego Opero, w języku administratora; etykiety, które piszesz, są nadal wymagane.
+
+## Co pokazuje plan instalacji [#what-the-install-plan-shows]
+
+Plan wymienia każdy link z jego etykietą, hostem, adresem w postaci, w jakiej go napisałeś, i polami z ich etykietami, żeby administrator widział, jakie wartości przeglądarki członków wysyłają na jaki host. Wersję, która dodaje host linku albo zmienia adres lub pola linku, trzeba zaakceptować ponownie. Link bez pól wysyła tylko identyfikator rekordu.
+
+Każdy link jest sprawdzany, udostępniany i ma odbiorców osobno, niezależnie od akcji bloków i poleceń rekordów paczki. Link nazwany tak jak polecenie rekordu paczki jest pomijany: nazwa zostaje przy poleceniu.

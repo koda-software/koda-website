@@ -1,6 +1,6 @@
 ---
 title: Scripts
-description: "Write Opero extension scripts in JavaScript or TypeScript: the module shape, the argument a run script receives, filter functions, generated types, the sandbox and errors."
+description: "Write Opero extension scripts in JavaScript or TypeScript: the module shape, the argument a run script receives, filter functions, block scripts, generated types, the sandbox and errors."
 ---
 
 Every script is a module with exactly one `export default` function, no `import` and no other export. Each runs on its own in a sandbox, without network or database access.
@@ -43,13 +43,14 @@ export default run;
 
 Write `export default function name(…)`, or a constant followed by `export default name;` as the scaffold does.
 
-## Three kinds of script
+## Kinds of script
 
 | Script | Receives | Returns |
 | --- | --- | --- |
-| `run: run.js` in `action.yaml` | One argument: `{ input, settings, company, user, context }` | The action's output. May be `async`. |
+| `run: run.js` in `action.yaml` | One argument: `{ input, settings, company, user, record, context }` | The action's output. May be `async`. |
 | `code: { $file: step.js }` in a rule file | The same argument | The step's result, under its `contextKey`. |
 | A filter's `script` | `(value, args, context)` | The filtered value, at once: not `async`. |
+| A block's `script` | `ctx`, the block's context, in the viewer's browser. See [Blocks](/docs/en/extensions/reference/blocks#the-script). | Nothing, or a function that cleans up before the block's next run. |
 
 ## The argument
 
@@ -71,12 +72,20 @@ Write `export default function name(…)`, or a constant followed by `export def
       type: '{ id, email, firstName, lastName }',
       description: 'The user the run acts for.',
     },
+    record: {
+      type: '{ type, id, moduleKey?, objectKey? } | null',
+      description: 'The record a block action or a record command runs for, by reference. null otherwise. See Block actions and record commands.',
+    },
     context: {
       type: 'object',
       description: 'The whole rule context, as a Run script step sees it.',
     },
   }}
 />
+
+<Callout title="No data helpers in a package">
+A script of a package cannot read or write records, run queries or send notifications: it gets no data helpers. Fetch what it needs with a [data step](/docs/en/extensions/reference/data-steps) first and read it from `context`; write its result with another step.
+</Callout>
 
 ## Errors
 
@@ -105,6 +114,7 @@ When a script throws while it runs, the step currently reports "Script execution
 | `Filter` | A filter script. |
 | `Settings` | The extension's settings, from `settings.yaml`. A field with a default is not optional. |
 | `ScriptArgument<'name'>` | The argument of an action's scripts. |
+| `Block` | A [block](/docs/en/extensions/reference/blocks#the-script)'s script, a function of `ctx`. |
 
 In JavaScript, apply one with the JSDoc line the scaffold writes, and check the scripts with:
 

@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "fetchedAt": "2026-10-02T00:24:28.244Z",
   "sourceRevision": "fed9eaca844d44382bc0602ad73c5ef1c8683d28",
-  "contentHash": "6894ac437b37d38020ac85cf763ec988284ecc171d127fb994cefa3a9e2f066c",
+  "contentHash": "1974b22a06a35f5051ee514fd2b2d814f7bfd339e434efb85aaebe954c4d3c98",
   "counts": {
     "en": {
-      "pages": 221,
+      "pages": 239,
       "operoPages": 64,
       "apiOperations": 114
     },
     "pl": {
-      "pages": 221,
+      "pages": 239,
       "operoPages": 64,
       "apiOperations": 114
     }
@@ -153,20 +153,38 @@
     "/docs/en/extensions",
     "/docs/en/extensions/after-install",
     "/docs/en/extensions/before-you-start",
+    "/docs/en/extensions/blocks-and-actions",
     "/docs/en/extensions/calculating-step",
     "/docs/en/extensions/error-codes",
+    "/docs/en/extensions/own-data",
     "/docs/en/extensions/reference/actions",
+    "/docs/en/extensions/reference/blocks",
     "/docs/en/extensions/reference/cli",
     "/docs/en/extensions/reference/connection-and-secrets",
+    "/docs/en/extensions/reference/data-permissions",
+    "/docs/en/extensions/reference/data-steps",
+    "/docs/en/extensions/reference/dictionaries",
     "/docs/en/extensions/reference/filters",
     "/docs/en/extensions/reference/limits",
     "/docs/en/extensions/reference/manifest",
+    "/docs/en/extensions/reference/member-actions",
+    "/docs/en/extensions/reference/member-connections",
+    "/docs/en/extensions/reference/objects",
     "/docs/en/extensions/reference/package-folder",
+    "/docs/en/extensions/reference/package-permissions",
+    "/docs/en/extensions/reference/queries",
+    "/docs/en/extensions/reference/raising-events",
+    "/docs/en/extensions/reference/record-links",
     "/docs/en/extensions/reference/rule-files",
+    "/docs/en/extensions/reference/schedules",
+    "/docs/en/extensions/reference/screens",
     "/docs/en/extensions/reference/scripts",
     "/docs/en/extensions/reference/settings",
     "/docs/en/extensions/reference/tests",
     "/docs/en/extensions/reference/translations",
+    "/docs/en/extensions/reference/triggers",
+    "/docs/en/extensions/scheduled-events",
+    "/docs/en/extensions/start-from-your-organization",
     "/docs/en/extensions/tutorial/call-a-service",
     "/docs/en/extensions/tutorial/check-and-pack",
     "/docs/en/extensions/tutorial/install-and-use",
@@ -374,20 +392,38 @@
     "/docs/pl/extensions",
     "/docs/pl/extensions/after-install",
     "/docs/pl/extensions/before-you-start",
+    "/docs/pl/extensions/blocks-and-actions",
     "/docs/pl/extensions/calculating-step",
     "/docs/pl/extensions/error-codes",
+    "/docs/pl/extensions/own-data",
     "/docs/pl/extensions/reference/actions",
+    "/docs/pl/extensions/reference/blocks",
     "/docs/pl/extensions/reference/cli",
     "/docs/pl/extensions/reference/connection-and-secrets",
+    "/docs/pl/extensions/reference/data-permissions",
+    "/docs/pl/extensions/reference/data-steps",
+    "/docs/pl/extensions/reference/dictionaries",
     "/docs/pl/extensions/reference/filters",
     "/docs/pl/extensions/reference/limits",
     "/docs/pl/extensions/reference/manifest",
+    "/docs/pl/extensions/reference/member-actions",
+    "/docs/pl/extensions/reference/member-connections",
+    "/docs/pl/extensions/reference/objects",
     "/docs/pl/extensions/reference/package-folder",
+    "/docs/pl/extensions/reference/package-permissions",
+    "/docs/pl/extensions/reference/queries",
+    "/docs/pl/extensions/reference/raising-events",
+    "/docs/pl/extensions/reference/record-links",
     "/docs/pl/extensions/reference/rule-files",
+    "/docs/pl/extensions/reference/schedules",
+    "/docs/pl/extensions/reference/screens",
     "/docs/pl/extensions/reference/scripts",
     "/docs/pl/extensions/reference/settings",
     "/docs/pl/extensions/reference/tests",
     "/docs/pl/extensions/reference/translations",
+    "/docs/pl/extensions/reference/triggers",
+    "/docs/pl/extensions/scheduled-events",
+    "/docs/pl/extensions/start-from-your-organization",
     "/docs/pl/extensions/tutorial/call-a-service",
     "/docs/pl/extensions/tutorial/check-and-pack",
     "/docs/pl/extensions/tutorial/install-and-use",
@@ -1053,39 +1089,63 @@
       "owner": "generated"
     },
     "content/docs/en/extensions/after-install.mdx": {
-      "sha256": "04cac39fc6597c3dac12889af61ae373e674a5a5abb32c61c8596a40c8798b81",
+      "sha256": "393b0376deb8653d3b6e6df4cd11b0a65060f90415096a53fcd25f0356499822",
       "owner": "manual"
     },
     "content/docs/en/extensions/before-you-start.mdx": {
-      "sha256": "2c111fbf37aaac1db2cb7b7d05965021688890d05af057c763ff32b373cede5b",
+      "sha256": "4a2dc2a7266af269e99e60d4c328183fc7e22328218aa0d8ca45ec49629ec519",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/blocks-and-actions.mdx": {
+      "sha256": "4569254751d3ff7c9adebc87ab22ce7e32ecd93f0ae19fd446c198138d1d745d",
       "owner": "manual"
     },
     "content/docs/en/extensions/calculating-step.mdx": {
-      "sha256": "3990a40bcc06c5d808117c83a24f2159ff840cdbc386c8c1a65f891f8e4fd6f1",
+      "sha256": "5d53040fadfc40d6abec36588a0f7bdfdaabcd7a1cf6a5e1af49b0499ba8274a",
       "owner": "manual"
     },
     "content/docs/en/extensions/error-codes.mdx": {
-      "sha256": "91700b6b37632e8c3ac4e62805c40efd354da4457ced006aa7e820619a777839",
+      "sha256": "f9dd6f8fe30f40cb2b9227f57829cfac4b47733785426fd051c8c05f815188a6",
       "owner": "manual"
     },
     "content/docs/en/extensions/index.mdx": {
-      "sha256": "5790ed8abdb48f09fba3672cdaa7f476ab00356dc33ac156284ed8706664568c",
+      "sha256": "ec1459a25d95566887b930fe9ac86d25cb6cc8b341feb4e03df22285225f9664",
       "owner": "manual"
     },
     "content/docs/en/extensions/meta.json": {
-      "sha256": "658d534025e9d65262ee22717970acb7c3e3e13aea0eb928464691adeae7f5e2",
+      "sha256": "4425d2935932c54a65577673404587a12ce19c3fa51a7162324d3709010b0f59",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/own-data.mdx": {
+      "sha256": "3390b055fb39556c1fccd76c71252d92e3bab4041e77a5453323d7c15d36d947",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/actions.mdx": {
-      "sha256": "ecdb690271b0e3a477dd8d109f93c567f7268392fdfc5f387407ae212ab81b01",
+      "sha256": "ab6a0cae19a6b0c038535cd85e5db2505880ab27e6a85bf569795d44afb761b8",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/blocks.mdx": {
+      "sha256": "eede734b8f97d8166e4814f8962230c36a24780f4c84f86099c842ddad0edcdc",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/cli.mdx": {
-      "sha256": "54e4a832f1a790b508c9ab77c6a471005ff34f027074c424c9381cb03b219a3f",
+      "sha256": "593b8036c63bacc4cdcd1b305852e6553d0db2b2830345716bf5a898d937e4de",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/connection-and-secrets.mdx": {
-      "sha256": "5d7c47924724454100ff29286db4eb2bc7c4aa3b29b6d64b36ebfa6966b77301",
+      "sha256": "7eb08ed23eaa194395083575701507d4abd362c96e7a804f2721cbf9ee20d392",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/data-permissions.mdx": {
+      "sha256": "fb2329b4e451b91ab2dd68d8a6e7b6d63438a2ebc692e15fbcafa73c150152c5",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/data-steps.mdx": {
+      "sha256": "d2bdd83bc08de982a4e86a773a3c9474dbf61c52f14a329d56b166d553301e5a",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/dictionaries.mdx": {
+      "sha256": "67ae757174c3d93c203dbda3dadbafdeccc0ccdf5ddda24db4cf3809853a8454",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/filters.mdx": {
@@ -1093,51 +1153,99 @@
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/limits.mdx": {
-      "sha256": "57ff0abcec13b653bedf6e735cbacc7f7bcd6fb053ac7aeb692d0a3f364c5b8c",
+      "sha256": "f4081fb8abe3e825f0625e2fe34d8f5175a38c9c31f919f3107e5fa88bbb53c7",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/manifest.mdx": {
-      "sha256": "0ac392b309f979c7085acc1744ed90e7ba9bed7bdb57bde602467be9c98a4cc8",
+      "sha256": "d6278d8b55773b4e3cee7bbaa866440702a8304bb868365dbe8d67652560a75e",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/member-actions.mdx": {
+      "sha256": "e11333f60488bda2eaecfd841aeb41232e3bf6c3531d5727c5b308aff817876b",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/member-connections.mdx": {
+      "sha256": "f0f5efcd4b2677538e050e28cde7b173d07799f2173b0f457eb3699af9fe2b20",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/meta.json": {
-      "sha256": "24e80d938eeb8e0520b88933ff37995ed34b2b507a80b489dfc47a50dde32a0e",
+      "sha256": "d5863f2aa4963662de61d7971bbd4c8d3b1f26c9f35f802baefec9bdb6a4ebe5",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/objects.mdx": {
+      "sha256": "30f450926164edcb1319728a78230178915669edcc938c55fbd5953424299a9d",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/package-folder.mdx": {
-      "sha256": "69414bc06c486372345ecdca8ae397f7cd57ddad607cb69ff3264b792d2cf1f1",
+      "sha256": "9a79d27306eea4a77dd59c225d5657b03982fc4d73464dccb91a04d87e3525ba",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/package-permissions.mdx": {
+      "sha256": "60bf18bf59a5f49ab37fc03adf70a071d17e8e998cf342e9e553c466a24cb5d7",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/queries.mdx": {
+      "sha256": "e23fea5986025f11cfdd851cc9cddc6d335d9f5e29ac912ac9b811f42ac31be8",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/raising-events.mdx": {
+      "sha256": "bee5349388258e53a947864323dbcd91160a95ab46c4473c8cff9d9076023d00",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/record-links.mdx": {
+      "sha256": "601f6775c97bdf18978c79d90135ff3847ac3ea8b8c3c7c2a5c0b1480892805a",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/rule-files.mdx": {
-      "sha256": "72b07cbe8203b33cb9a340ed07d2c580a138923e0ad7846483e645d49c961cc5",
+      "sha256": "5977ada67614a7b83eb78752aeb25d837dabcd041f668277d8b72c8a874d009c",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/schedules.mdx": {
+      "sha256": "88e75dff42efd61763ffd34de0bc9c39a2afb8d49e3c7e250891125680ef1f88",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/screens.mdx": {
+      "sha256": "b933f41d3b917a3bfc309efaeca6461a1604a475179a63f8092491772bd40e43",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/scripts.mdx": {
-      "sha256": "ad94392d71479906a4d0269273838cfc12dc02043a3224a202a59130f7250ebf",
+      "sha256": "e66e96dd40a85fc888f4271fbad6c87b28136ef2da8952b7282eba395d9374ff",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/settings.mdx": {
-      "sha256": "54d5778dcdd0972d58eff972fbd57f9d9964e15f6fc4edf781a1a486ebadb6be",
+      "sha256": "b34f95ea2f141ffec419ad9445c24b98679cef1c9bc3353a27b6c17453dbd918",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/tests.mdx": {
-      "sha256": "47043b13e385dd82a8fe05f065ca02fa38d38950beafea74f68ac430349b0f3e",
+      "sha256": "6ccc81e44d6b95582774d83082c26d25f986df8a10eab08216750829c9c85486",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/translations.mdx": {
-      "sha256": "fe41813de0cd52e4876d70a7432ee016a70a2f5b5ff95db5a6f0c4525442e87c",
+      "sha256": "28838b8b7e66cede4d942febd1afec0a6abbe5f8cd74818d6ecf9eec83634172",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/reference/triggers.mdx": {
+      "sha256": "b1f4006ef96b9a526f3b74ad1dabdaba476f7c7c76ecde30df13a3a0757f59c7",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/scheduled-events.mdx": {
+      "sha256": "0b325745e3a0cc954ef9e46ea2a51bf9ef0ba3a1de3b02133d515b4cb6fe7135",
+      "owner": "manual"
+    },
+    "content/docs/en/extensions/start-from-your-organization.mdx": {
+      "sha256": "c5788a1d2fe4ca81691cd9258bddd830adb1d1c3439d751192b7c9b0b732de95",
       "owner": "manual"
     },
     "content/docs/en/extensions/tutorial/call-a-service.mdx": {
-      "sha256": "49701e51748d5fa4d2a7d7813d16f25fcaf39cb354e84ff42ce65a785f02fdb1",
+      "sha256": "b93c12ab500777f2c1d7dea6d556bad84852d085eb0bfce00ab4b1f5cb447023",
       "owner": "manual"
     },
     "content/docs/en/extensions/tutorial/check-and-pack.mdx": {
-      "sha256": "f4bea9ea6ecf96bc780851201102a882e79e2113431072061da4d70fc055a2b5",
+      "sha256": "addbaeeb4c665a4cddcc4b467b299204c0cf8482a5b3073bda329ad433b30b9f",
       "owner": "manual"
     },
     "content/docs/en/extensions/tutorial/install-and-use.mdx": {
-      "sha256": "d73f1a29d860962de727fce82af75acf767b47727ba53b325c0f86af6472a7a2",
+      "sha256": "6738ad21fcc2349b54eb81ead88efa7d53c1e599a35cb94ea7d6cfa2723d1e8b",
       "owner": "manual"
     },
     "content/docs/en/extensions/tutorial/meta.json": {
@@ -1145,7 +1253,7 @@
       "owner": "manual"
     },
     "content/docs/en/extensions/tutorial/start-the-package.mdx": {
-      "sha256": "9cb35cc1ed7e6af07572a6aac1ffdcfbe60a7f9993016ac81586f5a1b83bba12",
+      "sha256": "7dd166eb359b19ad5ca978adc51ca9d671f4104ea50df6b8510ab96f511857d3",
       "owner": "manual"
     },
     "content/docs/en/getting-started.mdx": {
@@ -2061,39 +2169,63 @@
       "owner": "generated"
     },
     "content/docs/pl/extensions/after-install.mdx": {
-      "sha256": "59d6e5cb3b663fb617f3dd90cd4ae0b56e9893155efae7a937979e9aaf9faa34",
+      "sha256": "ee97e2a8b87d8e8f9fcd98ec63c35d578fb21411fb98057afde0b8cf0cdd0af4",
       "owner": "manual"
     },
     "content/docs/pl/extensions/before-you-start.mdx": {
-      "sha256": "3f84e5b1af5c563d13896c7d82ca88cfe07f604d239c6ebeb67ba79d8683370a",
+      "sha256": "9123c47a9d8e8de49ba424c0e9e0b9388e9c7fe7e40e7c6fd7c335520390aaa3",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/blocks-and-actions.mdx": {
+      "sha256": "7f496ddf04059299e08b7867e6467982834da6c8168588f7343dc6238ba48236",
       "owner": "manual"
     },
     "content/docs/pl/extensions/calculating-step.mdx": {
-      "sha256": "8734052e7b043399e2bc4f77c3163117382e5c676cfe70f115fa63df670af22c",
+      "sha256": "038d774a672ea43f24c1820ed7b896abcda6858340d794544493d12a369b6e74",
       "owner": "manual"
     },
     "content/docs/pl/extensions/error-codes.mdx": {
-      "sha256": "a97724c97d4b99623b19af44699a1623efd99cdcc6baa149fad99267b386dc1d",
+      "sha256": "ff2bb31913843330cc8bab52f862f7778fd066a9124b6d371361d7def6c1a7bb",
       "owner": "manual"
     },
     "content/docs/pl/extensions/index.mdx": {
-      "sha256": "d3dc7fcd2bb9fa29977fbf4f92e09454a141530eb399a42e3dda29f347966f88",
+      "sha256": "5bbd965d08f2a2ef721ee3ddfe4f587ca752787f404f1ce6312f78c133374d79",
       "owner": "manual"
     },
     "content/docs/pl/extensions/meta.json": {
-      "sha256": "5593291f9265a9423ce07cd34fec887bf71b8c6648f8b901e58fd9b65e3c5ca4",
+      "sha256": "09b9451d41271a70b71df33ff97c69fe3a515c0d50704a40a99b2956aed3106a",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/own-data.mdx": {
+      "sha256": "1498807c7713151dda5fbc4c244790999fb6266ce611732e7eed24e0cf642a45",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/actions.mdx": {
-      "sha256": "2a2f191638d118cacd6cd70c4685fe9fdc138cc260f6ed5d5361228aaace5569",
+      "sha256": "a4b136d443f528088795a709bd1e37bc92105f955871c4ec5de40863f5459e43",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/blocks.mdx": {
+      "sha256": "db8ca4dd869207ac13756f26c71f3a7a527b187720ce3df88a72abb26828b344",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/cli.mdx": {
-      "sha256": "a7b77b005a77030cab43ba3ce5e66632a116aee49bbc72ef6abb42111d551ea5",
+      "sha256": "14d287664beb2472a85cfdd44ab1bcd14791bb13ba8b22dfcc4c2acfb6b0d4a0",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/connection-and-secrets.mdx": {
-      "sha256": "104a84896c3d8e46f7793840d37783a1577f41024849a12dd88a95d6e435e37c",
+      "sha256": "7c855c330752e771c94e8b1cb81668ed79d7e8d1c42ccbc764db78e2713d55e6",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/data-permissions.mdx": {
+      "sha256": "c6dc1eddbae245d3a05d047fb6571e35e163fdc6e156101368de994b60fdbca4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/data-steps.mdx": {
+      "sha256": "fc9037d9c40ffb0c52e2dcfcaa9d337e8c5773bb930e7cb9d111dde10bcc43b4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/dictionaries.mdx": {
+      "sha256": "207f9b9841887b04bd9c12a43d1eb78eb635dac852acb1b1fc7aaa144ce73600",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/filters.mdx": {
@@ -2101,51 +2233,99 @@
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/limits.mdx": {
-      "sha256": "15b41d2d0b15aa71ac8a6780d5c1253250655d38074c5f3a5663b8c047d02166",
+      "sha256": "effaf6ddb18a2b5d7f6e15b601ead969c97b2b11af4153af3dc10b1fc5678117",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/manifest.mdx": {
-      "sha256": "6f9517bff1846fc88567b4b32689d05ef0ad8c5ce4e7014879c284665147d7a5",
+      "sha256": "01009417b22b3937ee4988b7d70f2c4d3601ecbf51027d31ae8e5fb76c58ea20",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/member-actions.mdx": {
+      "sha256": "18926cf3410a970d3450b51987c86508bde6e4527bda8ed831af342117cd8b7c",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/member-connections.mdx": {
+      "sha256": "a64ced7a21e349d351738e14cc268aee21022d9ae5b4c716b390990e32944bc3",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/meta.json": {
-      "sha256": "16bea6007f1c7c8082bd2aa4659c3f62ac5e75f136356fbae8a5be7655eff19f",
+      "sha256": "14302794b053be0c6b912e55ec02071bda8835dfd846e9858f22c53510e664fc",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/objects.mdx": {
+      "sha256": "c9f716060abbb9e9d982cef9b63fc304b07e94b1ca510f2a289c21ecc82ed216",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/package-folder.mdx": {
-      "sha256": "9aa78e5563987e1cbc7b0284705e5252b1a745b77c2782f284bd4a479bf5cf1a",
+      "sha256": "dcbb5fc7ab108832c3d996766165940b81e710de9e4660b43c2f53fe9b37d12e",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/package-permissions.mdx": {
+      "sha256": "5077d8a00e5be88d0f959be319f38294f24ced5a5915b17caa24393a706c2f58",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/queries.mdx": {
+      "sha256": "45b026df04d728023d62ff24261ced666e98b73b731981e9266f2737406184bd",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/raising-events.mdx": {
+      "sha256": "eb994b62e51a9b8f7d3b14e8cb8ce78364c171c47e206b9afd23825e29ce3bb7",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/record-links.mdx": {
+      "sha256": "0493c994b0f39565e7eb82e43f55ff97e0d8e65c4b4eb257ce53cf9a40b05fdc",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/rule-files.mdx": {
-      "sha256": "c671cc2aa3fd880fe3627c3402bdefec512415b9160512d00e872642190c1e33",
+      "sha256": "737aeacb36f82f66575812567de95e24dfdf6b57ab871b01745eaca7e2df69c4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/schedules.mdx": {
+      "sha256": "a0fc806ff6d9a34a68ab871bfe8b42522dc97a79a7e2629d380a46be238e0933",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/screens.mdx": {
+      "sha256": "a1b471a7cc557e63db7d4839be4b5641b43e3d68786324f75aae12d5434f17c5",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/scripts.mdx": {
-      "sha256": "957ec1ebfc45651ee081a5a7c1927253f84c26bed798fb5eb0eb8d7d474d072b",
+      "sha256": "bf1306c5ee6f16e0b85b0b7b0544fc977cc1c227477c4d6c4cfd1da1e885f6ff",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/settings.mdx": {
-      "sha256": "150803c1d1e924ee6d06632801f4dfd4f17dc22d9d45610c55869e7d2a93f240",
+      "sha256": "20a760492f5ccd71de834f33617d03303e034c97bc530c991ed759b58fb9c367",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/tests.mdx": {
-      "sha256": "45b28a6badaacf3be4eca2a860513d221be8c859654b379e3d892eacf77c52d0",
+      "sha256": "6a0e02b0ac927579893ebdf1a7ad9cb6d0ddbaa7bb6b077bef288efa3081e486",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/translations.mdx": {
-      "sha256": "094bb85111a195e489775c6ea24242d196edf3a38fd412fcfe17c4f0b7bcaeed",
+      "sha256": "3d83f0a7d35fa7e3847535ef4dd347de074edea0b9d4c811b7e8338e803dbc31",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/reference/triggers.mdx": {
+      "sha256": "e6e27f32ec2ac381d70fa9d879f348d2f59ea2c0e343a1939ac3362c1dc3a3e4",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/scheduled-events.mdx": {
+      "sha256": "56b691ff6197483af156aa6513af4d7811decac2a3851c7e8f9fdd6d22809107",
+      "owner": "manual"
+    },
+    "content/docs/pl/extensions/start-from-your-organization.mdx": {
+      "sha256": "3f760d2dd4d952ae7bb16aed1dff42412bf3efd0924c3714e5b64318cc0928ff",
       "owner": "manual"
     },
     "content/docs/pl/extensions/tutorial/call-a-service.mdx": {
-      "sha256": "18cc0aa0caf301bb97038c815265b75794414feeb7337e7132211348e833ff76",
+      "sha256": "0507a821dc6f30f385a5fa2ce53447cdc38bd54a98e703c1acb2faebcefeede4",
       "owner": "manual"
     },
     "content/docs/pl/extensions/tutorial/check-and-pack.mdx": {
-      "sha256": "63931f3039ff6d3a0c6e27a8720fcfa80447834fb094718b257f0d0e0fab6f57",
+      "sha256": "1f385dc2bf26cc4b3c2e90b0aef8dfd19d211723c36d48b549e3b75a7d88ea35",
       "owner": "manual"
     },
     "content/docs/pl/extensions/tutorial/install-and-use.mdx": {
-      "sha256": "6a4b69b78d4ccc181ea715e4e2ae5b66c278b3b7937da84d18fd9471eb5c0db4",
+      "sha256": "5eda3beae55379da7f7ed3e7365b78283eb4321d38363a98b120555cec8d6143",
       "owner": "manual"
     },
     "content/docs/pl/extensions/tutorial/meta.json": {
@@ -2153,7 +2333,7 @@
       "owner": "manual"
     },
     "content/docs/pl/extensions/tutorial/start-the-package.mdx": {
-      "sha256": "7f58daba60bc67ae992bd720ec95b221a67cfc4f0e9486b3845898369d64ccff",
+      "sha256": "7fb04e69e40aa8ddd530444cf4316763322416b94a8e9a5d64584838e3644efb",
       "owner": "manual"
     },
     "content/docs/pl/getting-started.mdx": {

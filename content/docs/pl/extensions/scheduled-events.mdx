@@ -1,0 +1,466 @@
+---
+title: "Przepis: zdarzenia z usługi"
+description: "Zbuduj rozszerzenie Opero, które co godzinę odczytuje usługę dla każdej firmy i zgłasza zdarzenie wyzwalacza dla każdego nowego lub zmienionego elementu, przetestowane z events i seen, a potem uruchom na nim regułę organizacji; i to samo dla każdego połączonego członka."
+---
+
+Ten przepis buduje paczkę, która obserwuje **zamówienia** w usłudze zewnętrznej. Zawiera:
+
+- wyzwalacz **Order changed** (`x-order-events.order_changed`), na którym organizacja buduje własne reguły;
+- harmonogram, który uruchamia się co godzinę dla każdej firmy;
+- akcję, którą wykonuje ten harmonogram: odczytuje otwarte zamówienia firmy i zgłasza jedno zdarzenie dla każdego zamówienia, które jest nowe albo zmieniło się od ostatniego uruchomienia.
+
+<Files>
+  <Folder name="order-events" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="triggers" defaultOpen>
+      <Folder name="order-changed" defaultOpen>
+        <File name="trigger.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="sync-orders" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="schedules" defaultOpen>
+      <Folder name="sync-orders" defaultOpen>
+        <File name="schedule.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+Usługa z tego przepisu, `api.example.com`, nie wymaga klucza, więc paczka nie ma połączenia. Dla prawdziwej usługi dodaj je jak w [samouczku](/docs/pl/extensions/tutorial/call-a-service).
+
+<Steps>
+<Step>
+### Napisz manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: order-events
+version: 1.0.0
+name: Order events
+description: Raises an event for every new or changed open order, checked every hour for each company.
+publisher: Your company
+requires:
+  opero: ">=2026.1.0"
+  modules: [rules]
+permissions:
+  network:
+    - host: api.example.com
+      reason: Reads each company's open orders.
+
+actions:
+  - actions/sync-orders
+triggers:
+  - triggers/order-changed
+schedules:
+  - schedules/sync-orders
+
+locales: [pl]
+```
+
+Jeśli zaczynasz od `opero-ext init order-events`, polecenie `opero-ext add trigger order_changed` tworzy folder wyzwalacza i wpis na liście. Harmonogram dodaj, gdy akcja już istnieje (krok 5).
+</Step>
+
+<Step>
+### Zadeklaruj wyzwalacz
+
+```yaml title="triggers/order-changed/trigger.yaml"
+trigger: order_changed
+label: Order changed
+description: An open order is new, or one of its values changed.
+data:
+  number: { type: text, label: Order number, required: true }
+  status: { type: select, label: Status, options: [open, packed, shipped], required: true }
+  total: { type: number, label: Total, nullable: true }
+  updatedAt: { type: datetime, label: Updated at }
+config:
+  status: { type: select, label: Only this status, options: [open, packed, shipped], match: status }
+dedupe: { retentionDays: 30 }
+example: { number: A-1, status: open, total: 120.5, updatedAt: "2026-11-01T10:00:00Z" }
+```
+
+- `data` to to, co niesie każde zdarzenie i co reguły organizacji odczytują jako `{{ trigger.data.<field> }}`. Każde zdarzenie jest z nim porównywane. `total` może mieć wartość `null`.
+- `config` daje autorom reguł jeden filtr: reguła z ustawionym **Only this status** zaczyna się tylko dla zamówień w tym statusie.
+- `dedupe.retentionDays: 30`: zamówienie, które nie było zgłaszane przez 30 dni, zostaje zapomniane.
+- `example` jest podsuwany jako dane przykładowe przy testowaniu reguły na wyzwalaczu.
+
+Zobacz [Wyzwalacze](/docs/pl/extensions/reference/triggers).
+</Step>
+
+<Step>
+### Opisz akcję
+
+```yaml title="actions/sync-orders/action.yaml"
+action: sync_orders
+label: Sync orders
+description: Reads the company's open orders and raises an event for each new or changed one.
+
+input:
+  subject:
+    type: object
+    label: Subject
+    required: true
+    fields:
+      kind: { type: text, required: true }
+      companyId: { type: text, nullable: true }
+  lastSucceededAt: { type: datetime, nullable: true }
+  firstRun: { type: boolean, required: true }
+output:
+  emitted: { type: integer, label: Raised }
+  unchanged: { type: integer, label: Unchanged }
+
+run: rule.yaml
+tests: tests.yaml
+```
+
+Wejście to to, co harmonogram przekazuje przy każdym uruchomieniu: podmiot (tutaj firmę), kiedy ostatnie uruchomienie się powiodło i czy to pierwsze uruchomienie. Nie ma `expose`: akcja, która zgłasza zdarzenia, nigdy nie jest krokiem reguły. Zobacz [Wejście każdego uruchomienia](/docs/pl/extensions/reference/schedules#the-input-each-run-receives).
+</Step>
+
+<Step>
+### Napisz regułę
+
+Odczytaj, potem zgłoś:
+
+```yaml title="actions/sync-orders/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: Open orders
+    contextKey: orders
+    config:
+      method: GET
+      url: "https://api.example.com/v1/orders?company={{ trigger.data.subject.companyId }}&status=open"
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise order events
+    contextKey: output
+    config:
+      event: order_changed
+      items: "{{ orders.body.items }}"
+      key: number
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+- `items` to lista, którą zwróciła usługa; każde zamówienie staje się jednym zdarzeniem i musi pasować do `data` wyzwalacza.
+- `key: number` z `dedupe: true`: zamówienie jest zgłaszane tylko wtedy, gdy jest nowe albo gdy cokolwiek się w nim zmieniło od ostatniego zgłoszenia dla tej firmy.
+- Wynik kroku, `{ emitted, unchanged }`, jest publikowany pod `output` jako wynik akcji.
+
+Zdarzenie należy do firmy uruchomienia. Zobacz [Zgłaszanie zdarzeń](/docs/pl/extensions/reference/raising-events).
+</Step>
+
+<Step>
+### Dodaj harmonogram
+
+```bash title="Terminal"
+opero-ext add schedule sync_orders --action sync_orders --every 1h --for-each company
+```
+
+```yaml title="schedules/sync-orders/schedule.yaml"
+schedule: sync_orders
+label: Sync open orders
+description: Reads each company's open orders every hour.
+every: 1h
+forEach: company
+action: sync_orders
+```
+
+Co godzinę każda aktywna firma organizacji dostaje jedno uruchomienie `sync_orders`. Zobacz [Harmonogramy](/docs/pl/extensions/reference/schedules).
+</Step>
+
+<Step>
+### Przetestuj
+
+Trzy przypadki: nowe zamówienie zgłasza zdarzenie, to samo zamówienie bez zmian niczego nie zgłasza, a zamówienie z nowym statusem jest zgłaszane ponownie.
+
+```yaml title="actions/sync-orders/tests.yaml"
+- name: a new order raises an event
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: null, firstRun: true }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events:
+    - event: order_changed
+      key: A-1
+      data: { number: A-1, status: open, total: 120.5 }
+  returns: { emitted: 1, unchanged: 0 }
+
+- name: an order seen before, unchanged, raises nothing
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: open, total: 120.5 }] }
+  events: []
+  returns: { emitted: 0, unchanged: 1 }
+
+- name: an order whose status changed raises it again
+  input: { subject: { kind: company, companyId: co_1 }, lastSucceededAt: "2026-11-02T10:00:00Z", firstRun: false }
+  seen:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: open, total: 120.5 } }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/orders?company=co_1&status=open
+      response:
+        status: 200
+        body: { items: [{ number: A-1, status: packed, total: 120.5 }] }
+  events:
+    - { event: order_changed, key: A-1, data: { number: A-1, status: packed, total: 120.5 } }
+  returns: { emitted: 1, unchanged: 0 }
+```
+
+- `events` wymienia zdarzenia, które uruchomienie musi zgłosić, w kolejności. `events: []` mówi, że nie zgłasza żadnego.
+- `seen` to to, co Opero już pamięta, gdy przypadek się zaczyna: tutaj zamówienie `A-1` w postaci, w jakiej zostało ostatnio zgłoszone. Drugi przypadek dostaje to samo zamówienie i niczego nie zgłasza; trzeci dostaje je z innym statusem i je zgłasza.
+- Podczas testów żadne zdarzenie nie trafia do kolejki i żadna reguła się nie uruchamia.
+
+Zobacz [Testy](/docs/pl/extensions/reference/tests#events).
+</Step>
+
+<Step>
+### Przetłumacz
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Zdarzenia zamówień
+  description: Zgłasza zdarzenie dla każdego nowego lub zmienionego otwartego zamówienia, sprawdzanego co godzinę w każdej firmie.
+permissions:
+  network:
+    api.example.com: { reason: Odczytuje otwarte zamówienia każdej firmy. }
+actions:
+  sync_orders:
+    label: Synchronizacja zamówień
+    description: Odczytuje otwarte zamówienia firmy i zgłasza zdarzenie dla każdego nowego lub zmienionego.
+triggers:
+  order_changed:
+    label: Zmiana zamówienia
+    description: Otwarte zamówienie jest nowe albo zmieniła się jedna z jego wartości.
+    data:
+      number: { label: Numer zamówienia }
+      status: { label: Status }
+      total: { label: Kwota }
+      updatedAt: { label: Zaktualizowano }
+    config:
+      status: { label: Tylko ten status }
+schedules:
+  sync_orders:
+    label: Synchronizacja otwartych zamówień
+    description: Co godzinę odczytuje otwarte zamówienia każdej firmy.
+```
+</Step>
+
+<Step>
+### Zwaliduj, przetestuj i spakuj
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Output"
+order-events 1.0.0 is valid.
+```
+</Step>
+</Steps>
+
+## Po instalacji [#after-install]
+
+Administrator instaluje paczkę jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use). Przed potwierdzeniem plan instalacji pokazuje wyzwalacz z polami danych oraz harmonogram z informacją, jak często i dla czego się uruchamia. Paczka nie ma zakresów danych, więc może ją zainstalować każdy administrator, który może instalować rozszerzenia.
+
+W ciągu pierwszej godziny każda firma dostaje pierwsze uruchomienie, a potem jedno na godzinę. Karta **Harmonogramy** rozszerzenia pokazuje, jak radzi sobie harmonogram: zobacz [Harmonogramy i połączeni członkowie](/docs/pl/extensions/after-install#schedules-and-connected-members).
+
+### Reguła, która nasłuchuje [#a-rule-that-listens]
+
+W edytorze reguł organizacja wybiera wyzwalacz **Zmiana zamówienia** w sekcji **Integracje**, w grupie rozszerzenia (`order-events`), opcjonalnie ustawia **Tylko ten status** i dodaje swoje kroki. Po zapisaniu wyzwalacz reguły wygląda tak:
+
+```json title="Wyzwalacz jednej z reguł organizacji"
+{
+  "trigger": {
+    "type": "x-order-events.order_changed",
+    "config": { "status": "packed" }
+  }
+}
+```
+
+Reguła zaczyna się wtedy dla każdego spakowanego zamówienia, które cogodzinne uruchomienie uzna za nowe albo zmienione, w firmie tego zamówienia, i odczytuje je jako `{{ trigger.data.number }}`, `{{ trigger.data.total }}` i tak dalej. Gdy reguła nie ma wcześniejszych uruchomień, przy testowaniu dostaje jako dane przykładowe `example` wyzwalacza.
+
+To samo zamówienie może czasem dotrzeć dwa razy. Zbuduj regułę tak, żeby drugie uruchomienie niczego nie zmieniało: znajdź rekord po `{{ trigger.data.number }}` i zaktualizuj go albo utwórz, gdy go brakuje.
+
+## To samo dla każdego członka [#the-same-for-each-member]
+
+Gdy dane należą do ludzi, a nie do firm, na przykład aktywności każdego członka w usłudze sportowej albo podróżnej, każdy członek łączy własne konto, a harmonogram uruchamia się raz na członka, z jego tokenem. Zmiany względem paczki powyżej:
+
+<Steps>
+<Step>
+### Dodaj połączenie i połączenie członka
+
+Połączenie organizacji przechowuje klienta OAuth; `member.yaml` opisuje, jak łączą się członkowie. Wszystkie klucze opisuje strona [Połączenia członków](/docs/pl/extensions/reference/member-connections).
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: client
+    kind: custom
+    label: Sandbox API client
+    fields:
+      clientId: { type: text, label: Client ID, required: true, secret: false }
+      clientSecret: { type: text, label: Client secret, required: true }
+    scheme: { kind: basic, username: clientId, password: clientSecret }
+verify: verify_client
+member: member.yaml
+```
+
+```yaml title="connection/member.yaml"
+label: Sandbox account
+description: Sends your sandbox activities to your company's rules.
+oauth:
+  authorize: https://auth.example.com/oauth2/authorize
+  token: https://api.example.com/oauth2/token
+  scopes: [activities.read]
+  client: { id: clientId, secret: clientSecret }
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+data:
+  - Activities
+afterConnect:
+  action: register_member
+  output:
+    sandboxUserId: meta
+```
+
+`extension.yaml` dostaje `connection: connection` i wymienia oba hosty, `auth.example.com` i `api.example.com`, w `permissions.network`. Akcja `register_member`, która rejestruje członka w usłudze i zwraca `sandboxUserId`, jest pokazana w sekcji [Łączenie: afterConnect](/docs/pl/extensions/reference/member-connections#connecting-afterconnect); `verify_client` sprawdza klienta przez `auth: connection` (zobacz [HTTP Basic z połączenia](/docs/pl/extensions/reference/connection-and-secrets#http-basic-from-the-connection)).
+</Step>
+
+<Step>
+### Zadeklaruj wyzwalacz, który wskazuje członka
+
+```yaml title="triggers/activity/trigger.yaml"
+trigger: activity
+label: Activity synced
+description: A member's activity is new or changed in the sandbox.
+data:
+  userId: { type: text, label: Member, required: true }
+  id: { type: text, label: Activity, required: true }
+  kind: { type: text, label: Kind, required: true }
+  distanceMeters: { type: number, label: Distance in meters, nullable: true }
+config:
+  member: { type: text, label: Only this member, match: userId }
+```
+
+Dane niosą członka (`userId`), a filtr **Only this member** pozwala regule śledzić jedną osobę.
+</Step>
+
+<Step>
+### Uruchamiaj harmonogram dla każdego członka
+
+```yaml title="schedules/sync-members/schedule.yaml"
+schedule: sync_members
+label: Sync connected members
+description: Reads each connected member's new activities every hour.
+every: 1h
+forEach: userConnection
+action: sync_member
+```
+
+Akcja jest akcją członka: jej reguła wysyła `{{ userConnection.accessToken }}`, a `subject` uruchomienia niesie `meta` członka.
+
+```yaml title="actions/sync-member/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: New activities
+    contextKey: activities
+    config:
+      method: GET
+      url: "https://api.example.com/v1/activities?user={{ trigger.data.subject.meta.sandboxUserId }}"
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise activity events
+    config:
+      event: activity
+      items: "{{ activities.body.items }}"
+      key: id
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+Jej wejście przyjmuje podmiot członka; najprościej użyć pliku schematu, który zostawia `subject` otwarte:
+
+```yaml title="actions/sync-member/input.yaml"
+type: object
+properties:
+  subject: { type: object }
+  lastSucceededAt: { type: [string, "null"] }
+  firstRun: { type: boolean }
+required: [subject, firstRun]
+```
+</Step>
+
+<Step>
+### Testuj z wartościami członka
+
+```yaml title="actions/sync-member/tests.yaml"
+- name: a new activity raises an event
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: null
+    firstRun: true
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer test-token }
+      response:
+        status: 200
+        body: { items: [{ userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }] }
+  events:
+    - event: activity
+      key: a-1
+      data: { userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }
+  succeeds: true
+
+- name: a revoked token
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: "2026-11-02T10:00:00Z"
+    firstRun: false
+  userConnection: { accessToken: revoked-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer revoked-token }
+      response: { status: 401 }
+  credentialRevoked: true
+```
+
+`userConnection` podaje token członka dla przypadku. Drugi przypadek pokazuje, co się dzieje, gdy usługa go odrzuca: w prawdziwym uruchomieniu dla tego członka nic więcej się nie uruchamia, dopóki nie połączy się ponownie.
+</Step>
+</Steps>
+
+Zdarzenia każdego członka trafiają do firmy, którą wybrał w formularzu, a deduplikacja pamięta aktywności każdego członka osobno.
+
+Po instalacji administrator konfiguruje i włącza połączenie z klientem OAuth; potem każdy członek łączy własne konto na stronie **Połączone aplikacje i usługi** w ustawieniach swojego konta. Karta **Połączeni członkowie** rozszerzenia wymienia ich i to, jak idą ich uruchomienia.

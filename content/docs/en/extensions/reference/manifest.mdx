@@ -1,6 +1,6 @@
 ---
 title: extension.yaml
-description: "Reference for extension.yaml, the Opero extension manifest: key, version, publisher, requirements, network permissions with reasons, connection, settings, feature lists and locales."
+description: "Reference for extension.yaml, the Opero extension manifest: key, version, publisher, requirements, network, data, link, page script and company permissions with reasons, connection, settings, feature lists including triggers, schedules, blocks, links, forms, lists and pages, and locales."
 ---
 
 `extension.yaml` is the manifest: the package's identity, what it requires, what it may access, and the list of every feature it installs.
@@ -73,15 +73,27 @@ locales: [pl]
     },
     'requires.modules': {
       type: 'string[]',
-      description: 'Module keys that must be available, for example rules.',
+      description: 'Module keys that must be available, for example rules. A package with objects lists objects, one with queries lists queries, one with the documents:generate scope lists documents.',
     },
     'permissions.network': {
       type: '{ host, reason }[]',
-      description: 'Up to 50 exact host names the package calls, each with why. No wildcards, no paths. Required when the package has a connection.',
+      description: 'Up to 50 exact host names the package calls, each with why. No wildcards, no paths. Required when the package has a connection. A member connection\'s sign-in and token hosts are listed here too.',
     },
     'permissions.data': {
       type: '{ scope, reason }[]',
-      description: 'Shown to the installer. Nothing uses data scopes yet; leave it out.',
+      description: 'The data scopes the package\'s rules use, each with why. See Data permissions.',
+    },
+    'permissions.links': {
+      type: '{ host, reason }[]',
+      description: 'Up to 20 exact host names the package\'s record links and screens open in members\' browsers, each with why. See Record links and Forms, lists and pages.',
+    },
+    'permissions.pageScript': {
+      type: '{ reason }',
+      description: 'Present when a block of the package has a script, with why. See Blocks.',
+    },
+    'permissions.company': {
+      type: 'map',
+      description: 'Up to 30 company permissions members need to use the package\'s block actions, record commands and links, each with label, description and reason. See Package permissions.',
     },
     connection: {
       type: '"connection"',
@@ -98,6 +110,46 @@ locales: [pl]
     filters: {
       type: 'string[]',
       description: 'Filter folders, written filters/<folder>.',
+    },
+    objects: {
+      type: 'string[]',
+      description: 'Object folders, written objects/<folder>. See Objects.',
+    },
+    dictionaries: {
+      type: 'string[]',
+      description: 'Dictionary folders, written dictionaries/<folder>. See Dictionaries.',
+    },
+    queries: {
+      type: 'string[]',
+      description: 'Query folders, written queries/<folder>. See Queries.',
+    },
+    triggers: {
+      type: 'string[]',
+      description: 'Trigger folders, written triggers/<folder>, up to 50. See Triggers.',
+    },
+    schedules: {
+      type: 'string[]',
+      description: 'Schedule folders, written schedules/<folder>, up to 10. See Schedules.',
+    },
+    blocks: {
+      type: 'string[]',
+      description: 'Block folders, written blocks/<folder>, up to 50. See Blocks.',
+    },
+    links: {
+      type: 'string[]',
+      description: 'Record link folders, written links/<folder>, up to 20. See Record links.',
+    },
+    forms: {
+      type: 'string[]',
+      description: 'Form folders, written forms/<folder>, up to 100. See Forms, lists and pages.',
+    },
+    lists: {
+      type: 'string[]',
+      description: 'Custom List folders, written lists/<folder>, up to 50. See Forms, lists and pages.',
+    },
+    pages: {
+      type: 'string[]',
+      description: 'Page folders, written pages/<folder>, up to 50. See Forms, lists and pages.',
     },
     include: {
       type: 'string[]',
@@ -126,8 +178,51 @@ permissions:
 - A call to a host that is not listed is refused, both when the package is checked and when it runs.
 - A host without a reason is refused with `permissions.reason_required`.
 - A package with a connection lists at least one host.
+- A package with a [member connection](/docs/en/extensions/reference/member-connections) lists the host members sign in at and the host Opero exchanges their sign-in at (`member.host_not_listed` otherwise).
 - When an upgrade asks for new hosts, the plan marks them as new in that version.
+
+## Data permissions
+
+A package whose rules read or write data, run queries or send messages lists the [data scopes](/docs/en/extensions/reference/data-permissions) it uses, each with a reason:
+
+```yaml title="extension.yaml"
+permissions:
+  data:
+    - scope: records:read
+      reason: Reads the open orders.
+    - scope: records:write
+      reason: Stores the status the carrier answers.
+```
+
+- A scope that is not one of the eight is refused with `permissions.invalid_scope`, one without a reason with `permissions.reason_required`, and one no rule uses with `permissions.unused_scope`.
+- A package with data scopes can only be installed by an organization owner. Triggers, schedules and a member connection do not add this rule.
+
+## Link hosts, page scripts and company permissions
+
+Three more permissions concern what members use, not what the package's rules do:
+
+```yaml title="extension.yaml"
+permissions:
+  links:
+    - host: track.example.com
+      reason: Opens a parcel's tracking page at the carrier.
+  pageScript:
+    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
+  company:
+    track:
+      label: Track parcels
+      description: Ask the carrier where a parcel is, from its page or its card.
+      reason: Each question counts against the organization's carrier quota.
+```
+
+| Key | Declares | Refused when unused |
+| --- | --- | --- |
+| `links` | The hosts the package's [record links](/docs/en/extensions/reference/record-links), and the URLs of its [forms, lists and pages](/docs/en/extensions/reference/screens#urls), open in members' browsers. Opero itself never calls them. | `permissions.unused_link_host` |
+| `pageScript` | That a [block](/docs/en/extensions/reference/blocks#the-script) of the package runs a script in viewers' browsers. | `permissions.unused_page_script` |
+| `company` | The [package permissions](/docs/en/extensions/reference/package-permissions) members need, by name. | `permissions.unused_company_permission` |
+
+Each carries a reason that the install plan shows. A version that adds a link host, a company permission or the page script has to be agreed to again.
 
 ## Reserved lists
 
-The list names `objects`, `dictionaries`, `queries`, `blocks`, `components`, `triggers` and `schedules` are reserved for later versions and refused today with `manifest.unsupported_section`.
+The list name `components` is reserved for a later version and refused today with `manifest.unsupported_section`.

@@ -1,0 +1,202 @@
+---
+title: Triggers
+description: "Reference for trigger.yaml in Opero extensions: the data each event carries, filters with match, dedupe retention, the example, the trigger x-<key>.<name> in the rule builder, and what happens on upgrade, disable and uninstall."
+---
+
+A trigger lets the organization's own rules start when something happens at the outside service. The package declares the trigger and raises its events; the organization builds rules on it, as on any other [rule trigger](/docs/en/opero/07-automatyzacja/wyzwalacze).
+
+```yaml title="triggers/order-changed/trigger.yaml"
+trigger: order_changed
+label: Order changed
+description: An open order is new, or one of its values changed.
+data:
+  number: { type: text, label: Order number, required: true }
+  status: { type: select, label: Status, options: [open, packed, shipped], required: true }
+  total: { type: number, label: Total, nullable: true }
+  updatedAt: { type: datetime, label: Updated at }
+config:
+  status: { type: select, label: Only this status, options: [open, packed, shipped], match: status }
+dedupe: { retentionDays: 30 }
+example: { number: A-1, status: open, total: 120.5, updatedAt: "2026-11-01T10:00:00Z" }
+```
+
+Each trigger is a folder `triggers/<folder>` with a `trigger.yaml`, listed in `extension.yaml` (or a module's `module.yaml`):
+
+```yaml title="extension.yaml"
+triggers:
+  - triggers/order-changed
+```
+
+`opero-ext add trigger <name>` writes the folder and the list entry for you; see [Command-line tool](/docs/en/extensions/reference/cli).
+
+<Callout title="A trigger alone raises nothing">
+Only the package raises a trigger's events, with the [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events) step, from a [schedule](/docs/en/extensions/reference/schedules) run or a [member connection](/docs/en/extensions/reference/member-connections) hook. A rule of the organization cannot raise them.
+</Callout>
+
+## trigger.yaml
+
+<TypeTable
+  type={{
+    trigger: {
+      type: 'string',
+      description: 'The name: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the package. The trigger type is x-<key>.<trigger>.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'The trigger\'s name in the rule builder, up to 120 characters. Translatable.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'When the trigger fires, up to 2,000 characters. Shown in the rule builder and the install plan. Translatable.',
+      required: true,
+    },
+    data: {
+      type: 'field list | schema file',
+      description: 'What each event carries: what rules read as trigger.data. A field list, or a JSON Schema file in the folder.',
+      required: true,
+    },
+    config: {
+      type: 'field list',
+      description: 'Filters a rule may set. Each field names the data field it compares with match.',
+    },
+    'dedupe.retentionDays': {
+      type: 'integer',
+      description: 'How many days an item is remembered for dedupe, 1 to 365.',
+      default: '90',
+    },
+    example: {
+      type: 'object',
+      description: 'One event\'s data, offered as sample data when a rule is tested. Must match data; up to 32 KB.',
+    },
+  }}
+/>
+
+A key the file does not know is refused with `trigger.invalid`.
+
+## The data
+
+`data` is the contract between the package and the rules built on the trigger: a rule started by an event reads `{{ trigger.data.<field> }}`, and the data of every event is kept in the rule's run history.
+
+- `data` is a [field list](/docs/en/extensions/reference/actions#field-lists), or a JSON Schema file in the trigger's folder. With a field list, a field the list does not name is refused.
+- A data field may say `nullable: true`: its value may then be `null` as well. `total` above is a number or `null`. Only action inputs and outputs and trigger data accept `nullable`.
+- Every event is checked against `data` before it is raised. An event that does not fit fails the step that raises it, and nothing is raised (see [Raising events](/docs/en/extensions/reference/raising-events#limits-and-failures)).
+- One event's data is at most 32 KB of JSON.
+
+The command-line tool generates a `Triggers` type from the data of each trigger in `.opero/types/index.d.ts`, so a script that builds the items has their shape:
+
+```ts title=".opero/types/index.d.ts (part)"
+export interface Triggers {
+  order_changed: {
+    /** Order number */
+    number: string;
+    /** Status */
+    status: "open" | "packed" | "shipped";
+    /** Total */
+    total?: number | null;
+    /** Updated at */
+    updatedAt?: string;
+  };
+}
+```
+
+## Filters
+
+`config` lists the filters a rule author may set on the trigger. Each field has a `type` of `text`, `number`, `boolean` or `select`, and `match`: the top-level data field it is compared with.
+
+```yaml title="triggers/activity/trigger.yaml (part)"
+config:
+  member: { type: text, label: Only this member, match: userId }
+```
+
+- A rule starts only for events whose data field equals the value set. When the data field is a list, the list must contain the value.
+- A filter left empty does not filter. With no filters set, the rule starts on every event.
+- Values are compared exactly, without conversion: `10` does not match `"10"`.
+- `match` naming no top-level data field is refused with `trigger.match_unknown_field`; a filter without `match`, or of another type, with `trigger.invalid`.
+
+A trigger without `config` has no filters.
+
+## Dedupe retention
+
+When an [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events#dedupe) step runs with `dedupe: true`, Opero remembers each item it raised, by its key, so that an unchanged item is not raised again. `dedupe.retentionDays` says how long:
+
+- An item is forgotten when it has not been raised for that many days. If the service still returns it after that, it is raised once more, as if it were new.
+- Choose a retention longer than the time the service keeps returning an unchanged item, or ask the service only for recent items.
+- Without `dedupe` in `trigger.yaml`, items are remembered for 90 days.
+- The memory is per installation, per trigger and per run subject (the installation, a company or a member): the same order seen in two companies is remembered twice. Uninstalling forgets everything; an upgrade keeps it.
+
+## The example
+
+`example` is one event's data. When a rule on the trigger is tested and it has no past run to replay, Opero offers the example as sample data. It must match `data` (`trigger.invalid` otherwise). Without an example, Opero builds one from the data fields: their defaults, the first option of a select, a date for a date field, the label of a text field, `0`, `false` and empty lists.
+
+## In the rule builder
+
+Once the extension is installed and running, the trigger appears in the organization's rule builder as the trigger type `x-<key>.<trigger>`, with the trigger's label and description in the viewer's language. In the trigger picker it is listed under **Integrations**, in a group named after the extension's key (`order-events` for `x-order-events`). Its filters are a form generated from `config`.
+
+```json title="The trigger of one of the organization's rules"
+{
+  "trigger": {
+    "type": "x-order-events.order_changed",
+    "config": { "status": "packed" }
+  }
+}
+```
+
+That rule starts for every `order_changed` event whose `status` is `packed`, and reads the order as `{{ trigger.data.number }}`, `{{ trigger.data.total }}` and so on.
+
+- **Company.** An event raised by a run for a company starts that company's rules. An event raised by a run with no company (a schedule `forEach: installation`) starts only rules that are not limited to particular companies.
+- **Actor.** The event comes from the extension, not from a member: the rule runs as the extension.
+- **At least once.** The same event can arrive twice, for example after a restart. Write rules that receive it so that a second run changes nothing: find the record by a key such as the order number and update it, or create it when it is missing.
+
+## When the extension is not running
+
+While the extension is [not running](/docs/en/extensions/after-install#states) (disabled, settings incomplete, connection off, a module unavailable):
+
+- its triggers are missing from the rule builder, and a rule cannot be given one of them;
+- a rule that already has the trigger keeps it and can still be saved, but no event starts it, not even an event raised before the extension stopped. The rule builder shows its trigger as **Trigger unavailable**.
+
+It all resumes when the extension runs again.
+
+## Upgrades and uninstalling
+
+| The new version | What happens | In the plan |
+| --- | --- | --- |
+| Removes a trigger an organization rule uses | The upgrade is blocked until no rule uses it. | `trigger.in_use` (blocking) |
+| Removes top-level data fields of a trigger a rule uses | The upgrade goes ahead. Rules are not scanned for where they read the fields, so check them. | `trigger.data_field_removed` (warning) |
+| Adds a trigger, or changes labels, filters or the example | Nothing to confirm beyond the plan. | Nothing |
+
+A trigger keeps its identity as long as its `trigger` name stays the same; rename folders freely.
+
+Uninstalling stops and quarantines the organization's active rules whose trigger belongs to the extension, as for rules that use its steps. Installing it again, getting it running and saving such a rule releases it.
+
+## Translations
+
+```yaml title="locales/pl.yaml"
+triggers:
+  order_changed:
+    label: Zmiana zamówienia
+    description: Otwarte zamówienie jest nowe albo zmieniła się jedna z jego wartości.
+    data:
+      number: { label: Numer zamówienia }
+      total: { label: Kwota }
+    config:
+      status: { label: Tylko ten status }
+```
+
+| Key | Translates |
+| --- | --- |
+| `triggers.<trigger>.label`, `description` | The trigger's name and description. |
+| `triggers.<trigger>.data.<field>.label`, `help` | A data field. |
+| `triggers.<trigger>.config.<field>.label`, `help` | A filter. |
+
+## Problems
+
+| Code | What is wrong |
+| --- | --- |
+| `trigger.invalid` | An unknown key, a missing `label`, `description` or `data`, a filter without `match` or of a type other than text, number, boolean or select, `retentionDays` outside 1 to 365, an example that does not match the data or is over 32 KB, or more than 50 triggers. |
+| `trigger.match_unknown_field` | A filter's `match` names no top-level data field. |
+| `field.invalid` | A data or filter field of the wrong shape, including `nullable` on a filter. |
+| `name.duplicate` | Two triggers with the same name. |
+
+Every code is listed under [Error codes](/docs/en/extensions/error-codes).

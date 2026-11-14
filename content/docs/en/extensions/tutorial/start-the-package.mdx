@@ -1,6 +1,6 @@
 ---
 title: "Part 1: Start the package"
-description: "Scaffold an Opero extension with extension-cli init, read the manifest, the first action, its script and its test, then validate the package."
+description: "Scaffold an Opero extension with opero-ext init, read the manifest, the first action, its script and its test, then validate the package."
 ---
 
 In this tutorial you build an extension called `hello-ext` against [httpbin.org](https://httpbin.org), a public service that echoes requests back. It ends with a token connection, a check that the token works, a step called `greet` that calls the service, a step called `hello` that only computes, and a filter called `shout`.
@@ -21,7 +21,7 @@ Every file shown is the complete file as the finished package holds it.
 Let the command-line tool write a working package:
 
 ```bash title="Terminal"
-extension-cli init hello-ext --name Hello
+opero-ext init hello-ext --name Hello
 ```
 
 ```txt title="Output"
@@ -174,7 +174,7 @@ The test gives an input and the exact output expected:
 ### Validate
 
 ```bash title="Terminal"
-extension-cli validate hello-ext
+opero-ext validate hello-ext
 ```
 
 ```txt title="Output"

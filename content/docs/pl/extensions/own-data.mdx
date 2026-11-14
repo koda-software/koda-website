@@ -1,0 +1,301 @@
+---
+title: "Przepis: paczka z własnymi danymi"
+description: "Zbuduj rozszerzenie Opero, które przynosi obiekt z polem opartym na słowniku i zapisane zapytanie oraz krok, który pobiera własne rekordy, wywołuje usługę i zapisuje odpowiedź, przetestowany efektami."
+---
+
+Ten przepis buduje paczkę, która przechowuje **zamówienia**. Przynosi:
+
+- słownik **Priority** i obiekt **Order**, którego pole priorytetu z niego korzysta;
+- zapisane zapytanie **Orders by day** na zamówieniach, dla list i raportów organizacji;
+- krok **Sync order** (`x-orders-ext.sync_order`), który pobiera pierwsze otwarte zamówienie, wysyła je do API przewoźnika i zapisuje status zwrócony przez przewoźnika.
+
+<Files>
+  <Folder name="orders-ext" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="dictionaries" defaultOpen>
+      <Folder name="priority" defaultOpen>
+        <File name="dictionary.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="objects" defaultOpen>
+      <Folder name="orders" defaultOpen>
+        <File name="object.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="queries" defaultOpen>
+      <Folder name="orders-by-day" defaultOpen>
+        <File name="query.yaml" />
+        <File name="query.sql" />
+      </Folder>
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="sync-order" defaultOpen>
+        <File name="action.yaml" />
+        <File name="rule.yaml" />
+        <File name="tests.yaml" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+Nie ma polecenia `add` dla obiektów, słowników i zapytań: ich foldery i pliki utwórz ręcznie. Zacznij od `opero-ext init orders-ext` albo od pustego folderu.
+
+<Steps>
+<Step>
+### Napisz manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: orders-ext
+version: 0.1.0
+name: Orders
+description: Keeps orders and sends the open ones to the carrier.
+publisher: Your company
+requires:
+  modules: [rules, objects, queries]
+permissions:
+  network:
+    - host: api.example.com
+      reason: Sends each order to the carrier.
+  data:
+    - scope: records:read
+      reason: Reads the open orders.
+    - scope: records:write
+      reason: Stores the status the carrier answers.
+
+dictionaries:
+  - dictionaries/priority
+objects:
+  - objects/orders
+queries:
+  - queries/orders-by-day
+actions:
+  - actions/sync-order
+
+locales: [pl]
+```
+
+- `objects` i `queries` w `requires.modules` są potrzebne, bo paczka ma obiekty i zapytania.
+- Dwa [zakresy danych](/docs/pl/extensions/reference/data-permissions) to te, których potrzebuje krok: odczytuje zamówienia i zmienia jedno z nich. Zapytania nie uruchamia żadna reguła paczki, więc nie ma zadeklarowanego zakresu zapytań; zakres, którego nic nie używa, jest odrzucany.
+- Ze względu na zakresy danych tę paczkę może zainstalować tylko właściciel organizacji.
+</Step>
+
+<Step>
+### Dodaj słownik
+
+```yaml title="dictionaries/priority/dictionary.yaml"
+dictionary: priority
+name: Priority
+entries:
+  - { key: low, label: Low }
+  - { key: high, label: High, color: "#DC2626" }
+```
+
+Jest instalowany jako `x-orders-ext-priority`. Zobacz [Słowniki](/docs/pl/extensions/reference/dictionaries).
+</Step>
+
+<Step>
+### Dodaj obiekt
+
+```yaml title="objects/orders/object.yaml"
+object: orders
+name: Order
+namePlural: Orders
+icon: package
+fields:
+  - { key: number, name: Number, type: TEXT }
+  - { key: status, name: Status, type: TEXT }
+  - { key: ordered_on, name: Ordered on, type: DATE }
+  - key: priority
+    name: Priority
+    type: SELECT
+    options: { dictionary: priority }
+```
+
+Obiekt jest instalowany w module `x-orders-ext`, bez formularza. `options: { dictionary: priority }` wskazuje własny słownik paczki jego nazwą. Zobacz [Obiekty](/docs/pl/extensions/reference/objects).
+</Step>
+
+<Step>
+### Dodaj zapytanie
+
+```yaml title="queries/orders-by-day/query.yaml"
+query: orders_by_day
+name: Orders by day
+kind: FETCH
+sql: query.sql
+```
+
+```sql title="queries/orders-by-day/query.sql"
+SELECT f_ordered_on AS day, count(*) AS orders
+FROM {{object.orders}}
+GROUP BY f_ordered_on
+```
+
+`{{object.orders}}` oznacza tabelę obiektu `orders`, a `f_ordered_on` to jego pole `ordered_on`. Zapytanie jest instalowane jako `x_orders_ext_orders_by_day`. Zobacz [Zapytania](/docs/pl/extensions/reference/queries).
+</Step>
+
+<Step>
+### Opisz akcję
+
+```yaml title="actions/sync-order/action.yaml"
+action: sync_order
+label: Sync order
+description: Sends the first open order to the carrier and stores the status it answers.
+
+input:
+  status: { type: text, label: Status, required: true }
+
+run: rule.yaml
+tests: tests.yaml
+
+expose:
+  ruleStep: { category: data }
+```
+</Step>
+
+<Step>
+### Napisz regułę
+
+Pobierz, wywołaj, zaktualizuj:
+
+```yaml title="actions/sync-order/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: FETCH_RECORDS
+    name: Open orders
+    contextKey: orders
+    config:
+      moduleKey: x-orders-ext
+      objectKey: orders
+      filters:
+        - { field: status, operator: eq, value: open }
+      limit: 1
+  - id: send
+    type: CALL_WEBHOOK
+    name: Send to the carrier
+    contextKey: sent
+    config:
+      url: https://api.example.com/v1/orders
+      method: POST
+      body:
+        number: "{{ orders.rows[0].number }}"
+        status: "{{ trigger.data.status }}"
+  - id: mark
+    type: UPDATE_RECORD
+    name: Mark the order
+    contextKey: output
+    config:
+      target: "{{ orders.rows[0].id }}"
+      targetModuleKey: x-orders-ext
+      targetObjectKey: orders
+      fieldUpdates: { status: "{{ sent.body.status }}" }
+edges:
+  - { fromStepId: fetch, toStepId: send }
+  - { fromStepId: send, toStepId: mark }
+```
+
+- Moduł i obiekt są wpisane wprost: `x-orders-ext` i `orders`. Szablon w tym miejscu jest odrzucany.
+- `UPDATE_RECORD` wskazuje rekord jego id, wziętym z pobranego wiersza.
+- Host jest w `permissions.network`, jak przy każdym kroku **Wywołaj webhook**.
+
+Zobacz [Kroki danych](/docs/pl/extensions/reference/data-steps).
+</Step>
+
+<Step>
+### Przetestuj
+
+Przypadek planuje wymianę HTTP w `http`, a dwa kroki danych w `effects`. Obie listy są niezależne, każda we własnej kolejności.
+
+```yaml title="actions/sync-order/tests.yaml"
+- name: the open order gets the status the carrier answers
+  input: { status: synced }
+  http:
+    - request:
+        method: POST
+        url: https://api.example.com/v1/orders
+        body: { number: A-1, status: synced }
+      response: { status: 200, body: { status: synced } }
+  effects:
+    - request: { step: FETCH_RECORDS, objectKey: orders }
+      response:
+        rows: [{ id: 7d1c2a34-0000-4000-8000-000000000001, number: A-1, status: open }]
+        rowCount: 1
+        truncated: false
+    - request:
+        step: UPDATE_RECORD
+        targetObjectKey: orders
+        fieldUpdates: { status: synced }
+  succeeds: true
+```
+
+Efekt pobrania daje krokowi wiersz, który by odczytał. Efekt aktualizacji sprawdza obiekt i nowy status i nie ma `response`, bo `UPDATE_RECORD` niczego nie zwraca. W trakcie testu żaden rekord nie jest odczytywany ani zapisywany. Zobacz [Testy](/docs/pl/extensions/reference/tests#data-and-messaging-steps).
+</Step>
+
+<Step>
+### Przetłumacz
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Zamówienia
+  description: Przechowuje zamówienia i wysyła otwarte do przewoźnika.
+permissions:
+  network:
+    api.example.com: { reason: Wysyła każde zamówienie do przewoźnika. }
+  data:
+    records:read: { reason: Odczytuje otwarte zamówienia. }
+    records:write: { reason: Zapisuje status zwrócony przez przewoźnika. }
+actions:
+  sync_order:
+    label: Synchronizuj zamówienie
+    description: Wysyła pierwsze otwarte zamówienie do przewoźnika i zapisuje zwrócony status.
+    input: { status: { label: Status } }
+dictionaries:
+  priority:
+    entries:
+      low: { label: Niski }
+      high: { label: Wysoki }
+```
+
+Etykiety pozycji słownika można tłumaczyć; nazwy obiektu, jego pól, słownika i zapytania są tylko po angielsku.
+</Step>
+
+<Step>
+### Zwaliduj, przetestuj i spakuj
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Wynik"
+orders-ext 0.1.0 is valid.
+```
+
+`validate` sprawdza pliki offline; `test` uruchamia przypadek testowy na serwerze.
+</Step>
+</Steps>
+
+## Po instalacji [#after-install]
+
+Właściciel organizacji instaluje paczkę tak jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use). Okno instalacji zaczyna się od uwagi, że rozszerzenie, które prosi o dostęp do danych, może zainstalować tylko właściciel. W sekcji **Co się zmieni** wymienia słownik, moduł, obiekt i zapytanie, które pokazuje **Odczytuje dane**, a pod **Pokaż SQL zapytania** SQL w postaci, w jakiej je napisałeś. W sekcji **Zakresy danych** pokazuje „Odczyt rekordów własnych obiektów tego rozszerzenia.” i „Tworzenie i zmiana rekordów własnych obiektów tego rozszerzenia.”, każde z twoim uzasadnieniem. Nie ma połączenia do skonfigurowania. Zobacz [Plan instalacji](/docs/pl/extensions/after-install#the-install-plan).
+
+Potem:
+
+- strona rozszerzenia ma kartę **Zainstalowane dane**, która wymienia obiekt z polami i liczbą rekordów, słownik z jego pozycjami i zapytanie z zainstalowanym SQL. Ekrany **Moduły własne**, **Słowniki** i **Zapytania SQL** ich nie pokazują;
+- organizacja dodaje zamówienia przez dowolny formularz albo listę, które zbuduje na obiekcie, i używa **Orders by day** w swoich listach SQL i raportach;
+- jej reguły dostają krok **Sync order**. W regule jest zapisywany tak:
+
+```json title="Krok w jednej z reguł organizacji"
+{
+  "type": "x-orders-ext.sync_order",
+  "contextKey": "synced",
+  "config": { "status": "sent" }
+}
+```
+
+Niezależnie od tego, kto napisze tę regułę, krok odczytuje i zapisuje tylko rekordy `orders`, w firmie, dla której reguła działa.

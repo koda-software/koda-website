@@ -1,0 +1,119 @@
+---
+title: Record links
+description: "Reference for link.yaml in Opero extensions: a record action that opens an https address built from the record's id and fields, permissions.links, links on the package's own objects and on contractors, invoices, budgets and helpdesk tickets with their fixed field sets, and what the install plan shows."
+---
+
+A record link opens a page of the outside service for the record a member is looking at, for example the parcel's tracking page at the carrier. It appears among the record's actions. It runs nothing on Opero's server: the member's browser opens an https address built from the record's id and the fields the link declares.
+
+```yaml title="links/open-tracking/link.yaml"
+link: open_tracking
+label: Open tracking page
+description: Opens the parcel's page at the carrier.
+permission: openTracking
+targets: [{ object: parcels }]
+fields:
+  number: { label: Parcel number }
+url: "https://track.example.com/parcels/{fields.number}?ref={record.id}"
+```
+
+List the folder under `links` in `extension.yaml`, or in an included module's `module.yaml`. `opero-ext add link <name>` writes one that you then point at your own host and permission.
+
+## link.yaml
+
+<TypeTable
+  type={{
+    link: {
+      type: 'string',
+      description: 'The name: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the package. The record action is x-<key>.<link>.',
+      required: true,
+    },
+    label: {
+      type: 'string',
+      description: 'The action\'s label on the record, up to 120 characters. Translatable.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Up to 2,000 characters. Translatable.',
+    },
+    permission: {
+      type: 'string',
+      description: 'A name in permissions.company of extension.yaml that members must hold (action.permission_undeclared otherwise).',
+      required: true,
+    },
+    targets: {
+      type: '{ object } | { entity }[]',
+      description: '1 to 20 objects of the package, { object: <key> }, or exactly one built-in type, { entity: <type> }. Never both (link.mixed_targets).',
+      required: true,
+    },
+    fields: {
+      type: 'map',
+      description: 'Up to 50 fields the address may use, each with the label shown for consent: { <field>: { label } }. Translatable.',
+    },
+    url: {
+      type: 'string',
+      description: 'The address: https, with its host written out. See The address.',
+      required: true,
+    },
+  }}
+/>
+
+## The address
+
+- It starts with `https://` (`link.not_https`), and its host is written out: no placeholder in the host, no user name or password (`link.template_invalid`).
+- The host is listed in `permissions.links` of `extension.yaml`, with a reason (`link.host_not_declared`). A link host is not a host the package calls, so it does not go in `permissions.network`.
+- `{record.id}` is the record's id, and `{fields.<field>}` the value of a field the link declares under `fields` (`link.field_undeclared`). They may stand in the path or in the query, not in the host.
+- Each value is encoded where it stands: as one path segment, or as a query value. `A/1 B` in the path becomes `A%2F1%20B`.
+
+```yaml title="extension.yaml"
+permissions:
+  links:
+    - host: track.example.com
+      reason: Opens a parcel's tracking page at the carrier.
+```
+
+A package lists up to 20 link hosts; a host no link opens is refused with `permissions.unused_link_host`.
+
+## Links on the package's objects
+
+With `{ object: <key> }` targets, each declared field must be a field of every target object (`link.field_not_on_object`). The link appears on a record of those objects when:
+
+- the member passes the [check](/docs/en/extensions/reference/member-actions#who-may-use-them) every block action, command and link passes: the extension runs, the link is exposed to the company, the member is in its audience and holds its package permission;
+- every field the link declares is on the form the member is shown;
+- the member can read the record, and every declared field has a value: a text, a number or a yes/no. An empty field or a list hides the link.
+
+Otherwise the link is absent; a member never gets an address with a value missing.
+
+## Links on built-in records
+
+A link may instead target one built-in type, and then takes its fields from that type's fixed set:
+
+```yaml title="links/open-registry/link.yaml"
+link: open_registry
+label: Open in the registry
+permission: checkCompanies
+targets: [{ entity: contractor }]
+fields:
+  vatId: { label: VAT ID }
+url: "https://registry.example.com/companies/{fields.vatId}"
+```
+
+| Type | Fields |
+| --- | --- |
+| `contractor` | `name`, `shortName`, `vatId`, `regon`, `krs`, `country`, `externalId.<system>` (the contractor's id in that outside system) |
+| `sales_invoice` | `number`, `issueDate`, `saleDate`, `ksefNumber`, `currencyCode`, `grossAmount`, `buyerVatId` |
+| `cost_invoice` | `supplierInvoiceNumber`, `issueDate`, `ksefNumber`, `currencyCode`, `grossAmount`, `supplierVatId` |
+| `budget` | `number`, `name`, `periodStart`, `periodEnd`, `currencyCode` |
+| `helpdesk_ticket` | `reference`, `number`, `typeKey` |
+
+Dates are written `YYYY-MM-DD` and amounts as plain decimals, such as `1230.5`. Fields may be added to these sets later; none will be removed. Personal data such as PESEL, email addresses and phone numbers is left out on purpose.
+
+`opero-ext validate` checks only the form of a field's name; Opero refuses a field outside the type's set at upload with `link.field_unknown`, and `externalId` needs its `.<system>`.
+
+On a built-in record the link appears when the member passes the same check, may read that record (its read permission; for a ticket, access to its desk) and every field has a value. The fields need not be on the page. For consent, the install plan shows Opero's own labels for these fields, in the administrator's language; the labels you write are still required.
+
+## What the install plan shows
+
+The plan lists each link with its label, its host, its address as you wrote it and its fields with their labels, so the administrator sees which values members' browsers send to which host. A version that adds a link host or changes a link's address or fields has to be agreed to again. A link with no fields sends only the record's id.
+
+Each link is checked, exposed and given an audience on its own, separately from the package's block actions and record commands. A link named like a record command of the package is left out: the command keeps the name.

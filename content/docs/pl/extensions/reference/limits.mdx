@@ -1,6 +1,6 @@
 ---
 title: Limity
-description: "Limity rozmiaru i liczby dla paczek rozszerzeń Opero: rozmiar zipa, pliki, akcje, filtry, przypadki testowe, wymiany HTTP, hosty, języki, listy pól i ustawienia."
+description: "Limity rozmiaru i liczby dla paczek rozszerzeń Opero: rozmiar zipa, pliki, akcje, filtry, obiekty, słowniki, zapytania, wyzwalacze, harmonogramy, bloki, linki, formularze, listy, strony, uprawnienia paczki, zdarzenia, przypadki testowe, wymiany HTTP i efekty, hosty, zakresy danych, języki, listy pól, ustawienia i połączenie członka."
 ---
 
 Paczka, która przekracza którykolwiek z tych limitów, jest odrzucana przy przesłaniu.
@@ -9,23 +9,51 @@ Paczka, która przekracza którykolwiek z tych limitów, jest odrzucana przy prz
 | --- | --- |
 | Rozmiar zipa | 10 MB |
 | Pliki w paczce | 500, każdy do 2 MB, 30 MB po rozpakowaniu |
-| Pozycje na każdej liście | 200 akcji, 200 filtrów, 50 pozycji include |
-| Przypadki testowe | od 1 do 50 na akcję, 200 na paczkę |
+| Pozycje na każdej liście | 200 akcji, 200 filtrów, 50 obiektów, 50 słowników, 100 zapytań, 50 wyzwalaczy, 10 harmonogramów, 50 bloków, 20 linków, 100 formularzy, 50 list, 50 stron, 50 pozycji include |
+| Akcje list | 50 na listę, tylko `OPEN_LINK` |
+| Bloki | po 256 000 znaków HTML, 64 000 znaków CSS i 64 000 znaków skryptu; 20 danych wejściowych, 5 zapytań do 500 wierszy, 5 odczytów rekordów do 50 wierszy i 50 pól; renderowanie najwyżej na 3 poziomach |
+| Przypadki renderowania bloków | od 1 do 20 na blok |
+| Linki | po 1 do 20 celów i 50 pól; 20 hostów linków, wspólnych z adresami URL formularzy, list i stron |
+| Polecenia rekordów | od 1 do 20 celów, 20 szczegółów wyniku |
+| Uprawnienia paczki | 30 |
+| Obiekty | po 200 pól |
+| Słowniki | po 1000 pozycji |
+| Zapytania | po 10 000 znaków SQL i 50 parametrów |
+| Przypadki testowe | od 1 do 50 na akcję, 200 na paczkę razem z przypadkami renderowania bloków |
 | Wymiany HTTP | 50 na przypadek |
+| Efekty | 50 na przypadek |
+| Oczekiwane zdarzenia (`events`) i zapamiętane elementy (`seen`) | po 500 na przypadek |
 | Czas testów | 10 sekund na przypadek, 60 sekund na paczkę |
 | Hosty | 50 |
+| Zakresy danych | każdy z 8 najwyżej raz |
 | Języki | 40 |
 | Listy pól | 100 pól, 5 poziomów, 200 opcji |
 | Metody połączenia | 10 |
 | Ustawienia | od 1 do 20 grup, łącznie 100 pól |
+| Połączenie członka | 1 na paczkę; 50 zakresów OAuth, 20 tekstów data, 50 zapisywanych wyjść, 50 błędów łączenia |
+| Zdarzenia | 500 elementów na krok `EMIT_EVENT`, 2000 na uruchomienie, każdy do 32 KB (także `example` wyzwalacza) |
+| Przechowywanie deduplikacji | od 1 do 365 dni, domyślnie 90 |
+| Odstępy harmonogramów | 15m, 30m, 1h, 2h, 6h, 12h, 24h |
 
 ## Długości tekstów
 
 | Tekst | Maksymalnie |
 | --- | --- |
 | Klucz rozszerzenia | od 2 do 31 znaków |
-| Nazwy akcji i filtrów | 41 znaków |
-| `name` i `publisher` paczki, `label` akcji | 120 znaków |
+| Nazwy akcji, filtrów, zapytań, wyzwalaczy, harmonogramów, bloków, linków, list, stron i uprawnień paczki | 41 znaków |
+| Nazwy formularzy | 63 znaki |
+| Zainstalowany klucz listy `x-<key>-<list>` | 64 znaki |
+| Klucze obiektów i pól | 50 znaków |
+| Nazwy słowników | 40 znaków |
+| `name` i `publisher` paczki, `label` akcji, wyzwalacza, harmonogramu, bloku, linku, uprawnienia paczki i połączenia członka | 120 znaków |
+| `description` bloku i listy | 1000 znaków |
+| `name` listy | 120 znaków |
+| `label` akcji listy | 160 znaków |
+| `name` formularza, `config.title` formularza, `title` strony | 200 znaków |
+| Zainstalowany klucz bloku `x_<key>_<block>` | 64 znaki |
 | `label` pola, `label` grupy ustawień | 200 znaków |
 | `help` pola, `description` grupy ustawień | 1000 znaków |
-| `description` paczki, każde tłumaczenie | 2000 znaków |
+| Klucz elementu zdarzenia | 200 znaków |
+| Tekst `data` połączenia członka | 200 znaków |
+| `message` błędu łączenia | 500 znaków |
+| `description` paczki, wyzwalacza, harmonogramu, połączenia członka i strony, `config.description` i `successMessage` formularza, każde tłumaczenie | 2000 znaków |

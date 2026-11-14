@@ -13,9 +13,9 @@ Z wnętrza folderu paczki:
 
 ```bash title="Terminal"
 cd hello-ext
-extension-cli add action verify --rule
-extension-cli add action greet --rule
-extension-cli add filter shout
+opero-ext add action verify --rule
+opero-ext add action greet --rule
+opero-ext add filter shout
 ```
 
 ```txt title="Wynik pierwszego polecenia"
@@ -48,7 +48,7 @@ verify: verify
 ```
 
 - `methods` to sposoby logowania; tutaj jeden, token API. `fields` to lista pól z sekretnymi wartościami, które wpisuje administrator. Każde pole metody jest sekretem. `hint: true` pozwala Opero pokazać ostatnie cztery znaki zapisanego tokenu, żeby administrator wiedział, który jest zapisany; bez tego wartość widać tylko jako `***`.
-- `verify` wskazuje akcję, którą Opero uruchamia, gdy administrator naciśnie **Zweryfikuj**. Napiszesz ją za chwilę.
+- `verify` wskazuje akcję, którą Opero uruchamia, gdy administrator naciśnie **Sprawdź połączenie**. Napiszesz ją za chwilę.
 
 Następnie zadeklaruj w `extension.yaml` host, który wywołuje paczka, powód i połączenie:
 
