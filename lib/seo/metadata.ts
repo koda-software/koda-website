@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/config";
 import { getFeatureAlternatePaths, localizeFeaturePath, type FeatureKey } from "@/lib/i18n/features";
 import { getAlternatePaths, localizePath, type PageKey } from "@/lib/i18n/routes";
+import { getToolAlternatePaths, localizeToolPath, type ToolKey } from "@/lib/i18n/tools";
 import { absoluteUrl, siteConfig } from "./site";
 
 const ogLocale: Record<Locale, string> = {
@@ -41,6 +42,17 @@ export function createFeaturePageMetadata({ locale, feature, title, description 
     locale,
     path: localizeFeaturePath(locale, feature),
     alternates: getFeatureAlternatePaths(feature),
+    title,
+    description,
+  });
+}
+
+/** Same envelope again, for the free tools nested under /tools and /narzedzia. */
+export function createToolPageMetadata({ locale, tool, title, description }: { locale: Locale; tool: ToolKey; title: string; description: string }): Metadata {
+  return buildMetadata({
+    locale,
+    path: localizeToolPath(locale, tool),
+    alternates: getToolAlternatePaths(tool),
     title,
     description,
   });

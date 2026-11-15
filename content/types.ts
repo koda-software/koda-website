@@ -1241,3 +1241,200 @@ export type PrivacyContent = {
   updatedAt: string;
   sections: LegalSection[];
 };
+
+/* ---------- Free tools (/pl/narzedzia, /en/tools) ---------- */
+
+export type ToolsIndexContent = {
+  seo: SeoContent;
+  /** The section's name in breadcrumbs and the footer. */
+  navLabel: string;
+  /** The breadcrumb's accessible name. */
+  breadcrumbLabel: string;
+  hero: { title: string; description: string };
+};
+
+/** The server-rendered parts every tool page shares; the widget's own labels live with the tool. */
+export type ToolPageContent = {
+  seo: SeoContent;
+  /** The tool's name in breadcrumbs, the index and the "other tools" links. */
+  navLabel: string;
+  navDescription: string;
+  hero: { title: string; description: string };
+  explainer: {
+    title: string;
+    paragraphs: string[];
+    table?: { caption: string; columns: string[]; rows: string[][] };
+  };
+  faq: { title: string; items: Array<{ question: string; answer: string }> };
+  /** Official sources and the date the rules on the page were last checked. */
+  sources?: {
+    title: string;
+    updatedLabel: string;
+    /** ISO date, rendered in the page's locale. */
+    updatedAt: string;
+    note: string;
+    items: Array<{ label: string; href?: string }>;
+  };
+  opero: { title: string; body: string; primaryCta: string; secondaryCta: string };
+  otherToolsTitle: string;
+};
+
+/** The amount-in-words page: the shared parts plus a server-rendered table of common amounts. */
+export type AmountInWordsPageContent = ToolPageContent & {
+  examples: { title: string; intro: string; columns: string[]; amounts: string[] };
+};
+
+/** Exactly the copy the amount-in-words widget needs, and nothing more. */
+export type AmountInWordsLabels = {
+  amountLabel: string;
+  placeholder: string;
+  currencyLegend: string;
+  examplesLabel: string;
+  examples: string[];
+  defaultAmount: string;
+  /** One heading per result shown; the English page shows Polish and English. */
+  resultHeadings: { pl: string; en?: string };
+  copy: string;
+  copied: string;
+  privacyNote: string;
+  emptyHint: string;
+  errors: { decimals: string; invalid: string; tooLarge: string; negative: string };
+  optionsLegend: string;
+  sayOneLabel: string;
+  capitalizeLabel: string;
+};
+
+/** Exactly the copy the White List widget needs. */
+export type WhiteListLabels = {
+  nipLabel: string;
+  nipPlaceholder: string;
+  accountLabel: string;
+  accountHint: string;
+  accountPlaceholder: string;
+  dateLabel: string;
+  dateHint: string;
+  submit: string;
+  checking: string;
+  privacyNote: string;
+  errors: {
+    nip: string;
+    account: string;
+    date: string;
+    network: string;
+    limit: string;
+    /** "{message}" is replaced with the API's own message. */
+    api: string;
+  };
+  result: {
+    title: string;
+    notFound: string;
+    notFoundHint: string;
+    /** Display names for the API's statusVat values; unknown values are shown as they come. */
+    statuses: Record<string, string>;
+    statusLabel: string;
+    nipLabel: string;
+    regonLabel: string;
+    krsLabel: string;
+    residenceLabel: string;
+    workingLabel: string;
+    registeredLabel: string;
+    removedLabel: string;
+    restoredLabel: string;
+    deniedLabel: string;
+    representativesLabel: string;
+    partnersLabel: string;
+    accountsLabel: string;
+    noAccounts: string;
+    virtualAccounts: string;
+    accountYes: string;
+    accountNo: string;
+    stateOnLabel: string;
+    requestIdLabel: string;
+    checkedAtLabel: string;
+    copyId: string;
+    copied: string;
+    print: string;
+    printTitle: string;
+    printSource: string;
+    officialSearch: string;
+  };
+};
+
+/** Exactly the copy the KSeF viewer needs. */
+export type KsefViewerLabels = {
+  dropTitle: string;
+  dropHint: string;
+  pasteSummary: string;
+  pasteLabel: string;
+  pasteSubmit: string;
+  privacyNote: string;
+  /** "{file}" is replaced with the file name. */
+  errors: { xml: string; notInvoice: string; tooLarge: string; read: string };
+  listTitle: string;
+  listColumns: { seller: string; number: string; date: string; total: string };
+  open: string;
+  remove: string;
+  print: string;
+  kinds: Record<string, string>;
+  invoice: {
+    issueDate: string;
+    issuePlace: string;
+    saleDate: string;
+    salePeriod: string;
+    seller: string;
+    buyer: string;
+    others: string;
+    taxId: string;
+    email: string;
+    phone: string;
+    customerNumber: string;
+    role: string;
+    roles: Record<string, string>;
+    lines: {
+      title: string;
+      no: string;
+      name: string;
+      quantity: string;
+      unitNet: string;
+      unitGross: string;
+      discount: string;
+      net: string;
+      gross: string;
+      vatRate: string;
+      before: string;
+    };
+    rates: Record<string, string>;
+    vatSummary: { title: string; rate: string; net: string; vat: string; vatPln: string };
+    vatKeys: Record<string, string>;
+    total: string;
+    exchangeRate: string;
+    annotationsTitle: string;
+    annotations: Record<string, string>;
+    exemptionBasis: string;
+    correctionTitle: string;
+    correctionReason: string;
+    correctionType: string;
+    correctionTypes: Record<string, string>;
+    correctedInvoice: string;
+    paymentTitle: string;
+    paid: string;
+    paidOn: string;
+    due: string;
+    method: string;
+    methods: Record<string, string>;
+    accounts: string;
+    notesTitle: string;
+    footerTitle: string;
+    krs: string;
+    regon: string;
+    bdo: string;
+    ksefNumber: string;
+    technical: string;
+    schema: string;
+    createdAt: string;
+    system: string;
+  };
+  warningsTitle: string;
+  warnings: Record<"totals" | "lines" | "seller" | "number", string>;
+  warningsNote: string;
+};

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+  <Naglowek><KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza><WariantFormularza>3</WariantFormularza></Naglowek>
+  <Podmiot1><DaneIdentyfikacyjne><Nazwa>Bez NIP</Nazwa></DaneIdentyfikacyjne></Podmiot1>
+  <Fa>
+    <KodWaluty>PLN</KodWaluty>
+    <P_1>2026-06-01</P_1>
+    <P_2>X/1</P_2>
+    <P_13_1>100.00</P_13_1>
+    <P_14_1>23.00</P_14_1>
+    <P_15>150.00</P_15>
+    <RodzajFaktury>VAT</RodzajFaktury>
+    <FaWiersz><NrWierszaFa>1</NrWierszaFa><P_7>Coś</P_7><P_11>90.00</P_11><P_12>23</P_12></FaWiersz>
+  </Fa>
+</Faktura>

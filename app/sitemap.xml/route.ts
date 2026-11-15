@@ -1,6 +1,7 @@
 import { locales } from "@/lib/i18n/config";
 import { featureKeys, getFeatureAlternatePaths, localizeFeaturePath } from "@/lib/i18n/features";
 import { getAlternatePaths, localizePath, pageKeys } from "@/lib/i18n/routes";
+import { getToolAlternatePaths, localizeToolPath, toolKeys } from "@/lib/i18n/tools";
 import { absoluteUrl } from "@/lib/seo/site";
 
 /**
@@ -38,7 +39,14 @@ function buildEntries(): Entry[] {
     return entriesFor(paths, alternates, "0.6", "monthly");
   });
 
-  return [...pages, ...features];
+  const tools = toolKeys.flatMap((tool) => {
+    const alternates = getToolAlternatePaths(tool);
+    const paths = Object.fromEntries(locales.map((locale) => [locale, localizeToolPath(locale, tool)]));
+
+    return entriesFor(paths, alternates, "0.6", "monthly");
+  });
+
+  return [...pages, ...features, ...tools];
 }
 
 function renderEntry({ path, alternates, priority, changefreq }: Entry) {

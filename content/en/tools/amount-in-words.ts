@@ -1,0 +1,86 @@
+import type { AmountInWordsLabels, AmountInWordsPageContent } from "@/content/types";
+
+export const amountInWordsPage: AmountInWordsPageContent = {
+  seo: {
+    title: "Amount in words in Polish - converter",
+    description:
+      "Write any amount out in Polish and English words, with the correct Polish forms and grosze. For Polish invoices, contracts and transfers. Free, no sign-up.",
+  },
+  navLabel: "Amount in words",
+  navDescription: "Write an amount out in Polish and English words, ready for an invoice or transfer.",
+  hero: {
+    title: "Amount in words",
+    description: "Type an amount and get it written out in Polish and English, ready to paste into an invoice, contract or transfer.",
+  },
+  explainer: {
+    title: "How Polish writes amounts in words",
+    paragraphs: [
+      "In Polish, the word after a number changes form, and the last two digits decide which form it takes, not the whole number. So it is “22 złote”, but “25 złotych” and “12 złotych”.",
+      "The same rule applies to thousands, millions and grosze: “jeden grosz”, “dwa grosze”, “pięć groszy”. Złote and grosze are joined with “i” (and).",
+    ],
+    table: {
+      caption: "Which form when",
+      columns: ["Last digits", "Form", "Example"],
+      rows: [
+        ["exactly 1", "złoty, tysiąc", "jeden złoty"],
+        ["2, 3, 4 (not 12-14)", "złote, tysiące", "trzydzieści cztery złote"],
+        ["everything else, including 12-14 and 21", "złotych, tysięcy", "dwadzieścia jeden tysięcy złotych"],
+      ],
+    },
+  },
+  faq: {
+    title: "Common questions",
+    items: [
+      {
+        question: "Does a Polish invoice need the amount in words?",
+        answer:
+          "No. The Polish VAT Act does not require it. Many companies still add it out of habit, and contracts, promissory notes and some transfer forms ask for it.",
+      },
+      {
+        question: "“Tysiąc” or “jeden tysiąc”?",
+        answer:
+          "Both are used. “Tysiąc” is shorter and grammatically correct. “Jeden tysiąc” makes it harder to add words in front of the amount, so some banks and finance teams prefer it.",
+      },
+      {
+        question: "Is the amount I type sent anywhere?",
+        answer: "No. The conversion happens in your browser, and nothing is sent or stored.",
+      },
+    ],
+  },
+  opero: {
+    title: "In Opero, the amount in words fills itself in",
+    body: "Opero's document templates add the amount in words to invoices, payment demands and contracts, from data that is already in the system.",
+    primaryCta: "Book a demo",
+    secondaryCta: "Documents in Opero",
+  },
+  examples: {
+    title: "Common amounts in Polish words",
+    intro: "The amounts people look up most often, written the way they go on a Polish invoice or transfer.",
+    columns: ["Amount", "In Polish", "In English"],
+    amounts: ["100", "200", "500", "1000", "1500", "2000", "2500", "3000", "5000", "10000", "15000", "100000"],
+  },
+  otherToolsTitle: "More tools",
+};
+
+export const amountInWordsLabels: AmountInWordsLabels = {
+  amountLabel: "Amount",
+  placeholder: "e.g. 1,234.56",
+  currencyLegend: "Currency",
+  examplesLabel: "Examples:",
+  examples: ["1,234.56", "21,000", "112.14", "0.99"],
+  defaultAmount: "1,234.56",
+  resultHeadings: { pl: "In Polish", en: "In English" },
+  copy: "Copy",
+  copied: "Copied",
+  privacyNote: "The amount stays in your browser. Nothing is sent.",
+  emptyHint: "Type an amount above. The result appears straight away.",
+  errors: {
+    decimals: "Use at most two digits after the decimal point.",
+    invalid: "Type just the amount, for example 1,234.56.",
+    tooLarge: "The largest supported amount is 999,999,999,999.99.",
+    negative: "The amount cannot be negative.",
+  },
+  optionsLegend: "Writing options",
+  sayOneLabel: "“jeden tysiąc” instead of “tysiąc” (Polish)",
+  capitalizeLabel: "Capital first letter",
+};

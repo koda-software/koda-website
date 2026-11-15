@@ -2,6 +2,7 @@ import { locales } from "@/lib/i18n/config";
 import { featureKeys, localizeFeaturePath } from "@/lib/i18n/features";
 import { localizePath } from "@/lib/i18n/routes";
 import { featurePages } from "@/content/en/features";
+import { toolLinks } from "@/content/en/tools";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
 
 /**
@@ -19,6 +20,10 @@ export const dynamic = "force-static";
 export function GET() {
   const featureLines = featureKeys
     .map((key) => `- [${featurePages[key].navLabel}](${absoluteUrl(localizeFeaturePath("en", key))}): ${featurePages[key].intro.paragraph}`)
+    .join("\n");
+
+  const toolLines = toolLinks
+    .map((tool) => `- [${tool.label}](${absoluteUrl(tool.href)}): ${tool.description}`)
     .join("\n");
 
   const body = `# ${siteConfig.name}
@@ -50,6 +55,12 @@ vendor's template. Changing the configuration does not require a developer.
 ## Capabilities
 
 ${featureLines}
+
+## Free tools
+
+Free browser tools for business and accounting work in Poland, by ${siteConfig.name}. Nothing typed or uploaded into them reaches KodaSoft's servers; the White List check sends the NIP straight from the browser to the Ministry of Finance API.
+
+${toolLines}
 
 ## Notes
 

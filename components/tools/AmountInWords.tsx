@@ -1,0 +1,195 @@
+"use client";
+
+import { useEffect, useId, useRef, useState } from "react";
+import type { AmountInWordsLabels } from "@/content/types";
+import {
+  currencyCodes,
+  parseAmount,
+  toEnglishWords,
+  toPolishWords,
+  type CurrencyCode,
+  type WordOptions,
+} from "@/lib/tools/amount-in-words";
+
+type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
+
+/** Counts use of the tool and nothing else: never the amount or the result. */
+function trackToolEvent(name: string) {
+  const gtag = (window as unknown as { gtag?: Gtag }).gtag;
+  gtag?.("event", name, { tool: "amount_in_words" });
+}
+
+const pillBase =
+  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border px-4 font-display text-[0.95rem] font-medium transition-colors duration-200";
+const pillOn = "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-mist)]";
+const pillOff = "border-[var(--color-border-light)] bg-[var(--color-paper)] text-[var(--color-ink)] hover:border-[rgba(11,17,22,0.32)]";
+
+export function AmountInWords({ labels }: { labels: AmountInWordsLabels }) {
+  const amountId = useId();
+  const [amount, setAmount] = useState(labels.defaultAmount);
+  const [currency, setCurrency] = useState<CurrencyCode>("PLN");
+  const [options, setOptions] = useState<WordOptions>({ sayOne: false, capitalize: false });
+  const [copied, setCopied] = useState<string | null>(null);
+  const copiedTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
+
+  const parsed = parseAmount(amount);
+  const results =
+    parsed.kind === "ok"
+      ? [
+          { key: "pl", heading: labels.resultHeadings.pl, text: toPolishWords(parsed, currency, options) },
+          ...(labels.resultHeadings.en
+            ? [{ key: "en", heading: labels.resultHeadings.en, text: toEnglishWords(parsed, currency, options) }]
+            : []),
+        ]
+      : [];
+
+  const update = (patch: Partial<WordOptions>) => {
+    setOptions((current) => ({ ...current, ...patch }));
+    setCopied(null);
+  };
+
+  const copy = async (key: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(key);
+      window.clearTimeout(copiedTimer.current);
+      copiedTimer.current = window.setTimeout(() => setCopied(null), 1800);
+      trackToolEvent("tool_copy");
+    } catch {
+      /* Clipboard refused (permissions, insecure context): select the result so Ctrl+C copies it. */
+      const node = document.getElementById(`${amountId}-${key}`);
+      const selection = window.getSelection();
+      if (node && selection) {
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  };
+
+  return (
+    <div className="grid gap-5">
+      <div className="flex flex-wrap items-end gap-4">
+        <div className="grid min-w-0 flex-[1_1_26rem] gap-2">
+          <label className="text-[0.95rem] font-semibold text-[var(--color-ink)]" htmlFor={amountId}>
+            {labels.amountLabel}
+          </label>
+          <input
+            autoComplete="off"
+            className="h-[84px] w-full rounded-[14px] border border-[rgba(11,17,22,0.16)] bg-[var(--color-paper)] px-6 font-display text-[2.6rem] font-medium tracking-[-0.02em] text-[var(--color-ink)] placeholder:text-[#8a9096] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--color-blue)] max-[720px]:text-[2rem]"
+            id={amountId}
+            inputMode="decimal"
+            maxLength={64}
+            onChange={(event) => {
+              setAmount(event.target.value);
+              setCopied(null);
+            }}
+            placeholder={labels.placeholder}
+            spellCheck={false}
+            type="text"
+            value={amount}
+          />
+        </div>
+        <fieldset className="m-0 min-w-0 border-0 p-0">
+          <legend className="mb-2 p-0 text-[0.95rem] font-semibold text-[var(--color-ink)]">{labels.currencyLegend}</legend>
+          <div className="flex flex-wrap gap-1.5">
+            {currencyCodes.map((code) => (
+              <button
+                aria-pressed={code === currency}
+                className={`${pillBase} h-[52px] min-w-16 ${code === currency ? pillOn : pillOff}`}
+                key={code}
+                onClick={() => {
+                  setCurrency(code);
+                  setCopied(null);
+                }}
+                type="button"
+              >
+                {code}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 text-[0.92rem] text-[var(--color-muted)]">
+        <span>{labels.examplesLabel}</span>
+        {labels.examples.map((example) => (
+          <button
+            className="min-h-9 cursor-pointer rounded-full border border-[rgba(11,17,22,0.14)] bg-transparent px-3 text-[var(--color-ink)] transition-colors hover:border-[rgba(11,17,22,0.32)]"
+            key={example}
+            onClick={() => {
+              setAmount(example);
+              setCopied(null);
+            }}
+            type="button"
+          >
+            {example}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className="mt-5 grid gap-7 border-t border-[var(--color-border-light)] pt-7">
+        {parsed.kind === "ok" ? (
+          <>
+            {results.map((result) => (
+              <div className="grid gap-4" key={result.key}>
+                {results.length > 1 ? (
+                  <p className="m-0 text-[0.95rem] font-semibold text-[var(--color-ink)]">{result.heading}</p>
+                ) : null}
+                <p
+                  className="m-0 font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-medium leading-[1.3] tracking-[-0.02em] text-[var(--color-ink)] [overflow-wrap:anywhere]"
+                  id={`${amountId}-${result.key}`}
+                  lang={result.key}
+                >
+                  {result.text}
+                </p>
+                <div>
+                  <button className="action action-ink cursor-pointer border-0" onClick={() => copy(result.key, result.text)} type="button">
+                    <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
+                      <rect height="12" rx="2" width="12" x="9" y="9" />
+                      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+                    </svg>
+                    <span>{copied === result.key ? labels.copied : labels.copy}</span>
+                    {results.length > 1 ? <span className="sr-only">{result.heading}</span> : null}
+                  </button>
+                </div>
+              </div>
+            ))}
+            <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+          </>
+        ) : parsed.kind === "error" ? (
+          <p className="m-0 text-[1.05rem] text-[#a3360f]" role="alert">
+            {labels.errors[parsed.reason]}
+          </p>
+        ) : (
+          <p className="m-0 text-[1.05rem] text-[var(--color-muted)]">{labels.emptyHint}</p>
+        )}
+      </div>
+
+      <fieldset className="m-0 mt-2 flex flex-wrap items-center gap-x-8 gap-y-3 border-0 p-0">
+        <legend className="sr-only">{labels.optionsLegend}</legend>
+        <label className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-[0.95rem] text-[var(--color-ink)]">
+          <input
+            checked={options.sayOne}
+            className="h-5 w-5 accent-[var(--color-ink)]"
+            onChange={(event) => update({ sayOne: event.target.checked })}
+            type="checkbox"
+          />
+          <span>{labels.sayOneLabel}</span>
+        </label>
+        <label className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-[0.95rem] text-[var(--color-ink)]">
+          <input
+            checked={options.capitalize}
+            className="h-5 w-5 accent-[var(--color-ink)]"
+            onChange={(event) => update({ capitalize: event.target.checked })}
+            type="checkbox"
+          />
+          <span>{labels.capitalizeLabel}</span>
+        </label>
+      </fieldset>
+    </div>
+  );
+}

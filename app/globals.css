@@ -816,3 +816,27 @@ html {
     animation: none;
   }
 }
+
+/* Tools print only their printable result (a White List confirmation, a KSeF invoice):
+   everything else on the page is hidden while printing. Pages without a print area print as usual. */
+@media print {
+  body:has(.print-area) * {
+    visibility: hidden;
+  }
+
+  body:has(.print-area) .print-area,
+  body:has(.print-area) .print-area * {
+    visibility: visible;
+  }
+
+  body:has(.print-area) .print-area {
+    position: absolute;
+    inset: 0 0 auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body:has(.print-area) {
+    background: #fff;
+  }
+}

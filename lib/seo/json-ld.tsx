@@ -191,3 +191,28 @@ export function OperoServiceJsonLd({
     />
   );
 }
+
+/**
+ * A free tool. Unlike Opero it has a real price - zero - so it is described as the
+ * application it is; Google may still show no rich result without ratings, which is fine.
+ */
+export function ToolJsonLd({ name, description, path, locale }: { name: string; description: string; path: string; locale: Locale }) {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name,
+        description,
+        url: absoluteUrl(path),
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript",
+        inLanguage: locale,
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "PLN" },
+        provider: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
+      }}
+    />
+  );
+}
