@@ -1,22 +1,13 @@
 ---
 title: Translations
-description: "Translate an Opero extension: English in the descriptors, one locales file per language, the translatable keys, limits, and how missing texts fall back to English."
+description: Translate the texts of an extension package into other languages with one locales file per language. A text you leave out shows in English.
 ---
 
-English is written in the descriptors. Each other language is one file, `locales/<lang>.yaml`, nested the way the package is. A text you leave out shows in English.
-
-<Steps>
-<Step>
-### List the language
+English is written in the descriptors. Each other language is one file, `locales/<lang>.yaml`, whose keys mirror the package. Members and administrators see the texts in their own language, and a text you leave out shows in English.
 
 ```yaml title="extension.yaml"
-locales: [pl, de]
+locales: [pl]
 ```
-
-Do not list `en`: English is in the descriptors.
-</Step>
-<Step>
-### Add one file per language
 
 ```yaml title="locales/pl.yaml"
 extension:
@@ -45,25 +36,30 @@ actions:
 filters:
   shout: { description: Zamienia tekst na wielkie litery i dodaje wykrzyknik. }
 ```
-</Step>
-<Step>
-### Validate
 
-`opero-ext validate .` reports a language without its file (`locale.missing_file`) and a key that names nothing in the package (`locale.unknown_text`), so a typo cannot hide.
-</Step>
-</Steps>
+## The file
+
+`locales` in `extension.yaml` lists the languages, and each one needs its file.
+
+- A language is two lower-case letters, optionally with a region: `pl`, `de`, `pt-BR`. Do not list `en`.
+- Keys nest the way the package does. A dotted key is the same as nested keys, so `httpbin.org: { reason: … }` names the host `httpbin.org`.
+- Each translation is a text of 1 to 2,000 characters. A package has up to 40 languages.
+- Every key must name a text of the package. A key that names nothing is refused, so a typo cannot hide.
 
 ## Translatable keys
 
 | Key | Translates |
 | --- | --- |
 | `extension.name`, `extension.description` | The package's name and description. |
-| `permissions.network.<host>.reason` | A host's reason. Also `permissions.data.<scope>.reason`. |
-| `connection.methods.<method>.label` | A method's label; its fields under `fields.<field>.label` and `help`. |
+| `permissions.network.<host>.reason` | A host's reason. Also `permissions.data.<scope>.reason` and `permissions.links.<host>.reason`. |
+| `permissions.pageScript.reason` | The reason for page scripts. |
+| `permissions.company.<name>.label`, `description`, `reason` | A package permission's texts. |
+| `connection.methods.<method>.label` | A connection method's label; its fields under `fields.<field>.label` and `help`. |
 | `settings.groups.<group>.label`, `description` | A settings group's title and description. |
-| `settings.fields.<field>.label` | A setting's label and `help`, by the field's key, without its group; nested fields under `fields`, list items under `items`. |
+| `settings.fields.<field>.label`, `help` | A setting, by the field's key without its group. |
 | `actions.<action>.label`, `description` | An action, and its step. |
-| `actions.<action>.input.<field>.label` | A field's label and `help`; also `output`, nested fields under `fields`, list items under `items`. |
+| `actions.<action>.input.<field>.label`, `help` | An input field; `output.<field>` the same for an output field. |
+| `actions.<action>.confirm.title`, `message` | A record command's confirmation. |
 | `filters.<filter>.description` | A filter's description. |
 | `dictionaries.<dictionary>.entries.<key>.label` | A dictionary entry's label. |
 | `triggers.<trigger>.label`, `description` | A trigger's name and description; its data fields under `data.<field>` and its filters under `config.<field>`, each with `label` and `help`. |
@@ -71,18 +67,46 @@ filters:
 | `member.label`, `member.description` | The member connection's name and description. |
 | `member.data."<i>"` | One of the member connection's `data` texts, by its position from 0, in quotes. |
 | `member.failures.<name>` | The message of a connect failure. |
-| `member.config.<field>.label` | A field of the member's form, and its `help`. |
-| `actions.<action>.confirm.title`, `message` | A record command's confirmation. |
+| `member.config.<field>.label`, `help` | A field of the member's form. |
 | `blocks.<block>.label`, `description` | A block's name and description. Its HTML is not translated. |
 | `links.<link>.label`, `description` | A record link's label and description; its fields under `fields.<field>.label`. |
-| `permissions.links.<host>.reason`, `permissions.pageScript.reason` | The reason for a link host and for page scripts. |
-| `permissions.company.<name>.label`, `description`, `reason` | A package permission's texts. |
 | `pages.<page>.title`, `description` | A page's title and description. |
 | `forms.<object>.<form>.config.title`, `successMessage` | A form's title and success message. Checked, but the form is installed with its English texts. |
+| `listing.screenshots.<name>.caption` | A screenshot's caption, by its file name without the extension. The long description has its own file per language: see [The listing](/docs/en/extensions/reference/listing#translations). |
 
-## Rules
+### Nested fields and select options
 
-- Each translation is a text of up to 2,000 characters.
-- A package can have up to 40 languages.
-- A schema file's texts are English only.
-- The names of objects and their fields, of dictionaries and of queries are English only, and so are form names, list names and descriptions, column labels and list action labels: Opero stores no translation for them, so a translation that names one is refused with `locale.unknown_text`. Of a dictionary, only the entry labels are translated.
+The field keys above work at every level of a field list:
+
+| Key | Translates |
+| --- | --- |
+| `….<field>.fields.<inner>.label` | A field inside an `object` field. |
+| `….<field>.items.fields.<inner>.label` | A field inside the items of a `list` field. |
+| `….<field>.options.<value>` | The label of a `select` option written as `{ value, label }`. |
+
+```yaml title="locales/pl.yaml"
+settings:
+  fields:
+    region:
+      label: Region
+      options: { eu: Europa, us: Stany Zjednoczone }
+```
+
+## What stays in English
+
+Opero stores no translation for these, so a key that names one is refused with `locale.unknown_text`:
+
+- the names of objects and their fields, of dictionaries and of queries;
+- form and list names, list descriptions, column labels and list action labels;
+- the texts of a JSON Schema file used in place of a field list.
+
+Of a dictionary, only the entry labels are translated.
+
+## Problems
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `locale.missing_file` | A language in `locales` without its `locales/<lang>.yaml`. | Add the file, or remove the language. |
+| `locale.invalid` | A text where a group of texts belongs, or an empty text or one over 2,000 characters. | Mirror the package's structure. |
+| `locale.unknown_text` | A key that names no text of the package, or names one that is not translated. | Fix the key, or remove it. |
+| `manifest.invalid` | `en`, a language written twice, or one of the wrong form in `locales`. | List each translation language once. |

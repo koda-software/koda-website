@@ -1,9 +1,9 @@
 ---
 title: Testy
-description: "Testy kontraktowe akcji rozszerzeń Opero: dane wejściowe, ustawienia, wartości połączenia, zaplanowane wymiany HTTP, zaplanowane kroki danych i wiadomości (effects), oczekiwane zdarzenia, wartości członka, rekord, dla którego działa akcja bloku albo polecenie rekordu, oczekiwane wyniki oraz przypadki renderowania bloków, uruchamiane offline przy przesłaniu."
+description: Napisz przypadki testowe, których potrzebuje każda akcja. Opisują wywołania i kroki danych akcji, a Opero uruchamia je offline przy każdym przesłaniu.
 ---
 
-Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejściowe, wymienia wymiany HTTP i kroki danych, których akcja ma dokonać, oraz zdarzenia, które ma zgłosić, i mówi, jak się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu paczki, niczego nie wysyłając przez sieć, nie odczytując ani nie zapisując żadnych danych i nie uruchamiając żadnej reguły.
+Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje wejście, opisuje wywołania HTTP i kroki danych, które akcja ma wykonać, i mówi, jak się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu, a na żądanie przez `opero-ext test`, niczego nie wysyłając przez sieć, nie odczytując ani nie zapisując żadnych danych i nie uruchamiając żadnej reguły. [Część 3 samouczka](/docs/pl/extensions/tutorial/check-and-pack) je uruchamia.
 
 ```yaml title="actions/greet/tests.yaml"
 - name: the greeting is sent
@@ -26,67 +26,82 @@ Każda akcja ma co najmniej jeden przypadek testowy. Przypadek podaje dane wejś
     body: { json: { greeting: "Hello, Ada!" } }
 ```
 
-## Przypadek testowy
+## Przypadek testowy [#a-test-case]
+
+Plik testów to lista przypadków. Każdy przypadek ma nazwę, to, z czym działa akcja, i dokładnie jeden [wynik](#how-a-case-ends).
 
 <TypeTable
   type={{
     name: {
       type: 'string',
-      description: 'Widoczna w wynikach.',
+      description: 'Widoczna w wynikach, do 200 znaków.',
       required: true,
     },
     input: {
       type: 'object',
-      description: 'Wejście akcji. Musi pasować do pól wejściowych. Pomiń je, jeśli akcja nie ma wejścia.',
+      description: 'Wejście akcji. Musi pasować do pól wejściowych. Pomiń, gdy akcja nie ma wejścia.',
     },
     settings: {
       type: 'object',
-      description: 'Ustawienia rozszerzenia w tym przypadku. Dla pominiętych pól obowiązują wartości domyślne. Tylko w paczce z settings.yaml.',
+      description: 'Ustawienia rozszerzenia dla tego przypadku. Tylko w paczce z settings.yaml. Zobacz Ustawienia w przypadku.',
     },
     connection: {
       type: 'object',
-      description: 'Pola danych uwierzytelniających, dla paczki z połączeniem. Ustawień tu się nie podaje.',
+      description: 'Pola danych uwierzytelniających, dla paczki z połączeniem.',
     },
     companyId: {
-      type: 'string',
-      description: 'Dla paczek z danymi uwierzytelniającymi firmy.',
+      type: 'string | null',
+      description: 'Firma, dla której działa przypadek, dla paczek z danymi uwierzytelniającymi firm.',
     },
     http: {
       type: 'exchange[]',
-      description: 'Wymiany HTTP po kolei, do 50. Każde żądanie ma method, url i opcjonalnie headers oraz body; każda odpowiedź ma status i opcjonalnie headers oraz body.',
+      description: 'Wywołania HTTP akcji, po kolei, do 50. Zobacz Wymiany HTTP.',
     },
     effects: {
       type: 'effect[]',
-      description: 'Kroki danych i wiadomości po kolei, do 50. Tylko w paczce z zakresami danych. Zobacz niżej.',
+      description: 'Kroki danych i wiadomości akcji, po kolei, do 50. Tylko w paczce z zakresami danych.',
     },
     events: {
       type: '{ event, key?, data? }[]',
-      description: 'Zdarzenia, które akcja musi zgłosić, po kolei, do 500. Tylko dla akcji, która zgłasza zdarzenia. Zobacz Zdarzenia.',
+      description: 'Zdarzenia, które akcja musi zgłosić, po kolei, do 500. Tylko dla akcji, która zgłasza zdarzenia.',
     },
     seen: {
       type: '{ event, key, data }[]',
-      description: 'To, co Opero już pamięta na potrzeby deduplikacji, gdy przypadek się zaczyna, do 500. Tylko dla akcji, która zgłasza zdarzenia.',
+      description: 'Co Opero pamięta już do deduplikacji, gdy przypadek się zaczyna, do 500.',
     },
     userConnection: {
       type: 'object',
-      description: 'Wartości członka: accessToken, refreshToken albo sekretne wyjście afterConnect, jako teksty. Tylko dla akcji członka.',
+      description: 'Wartości członka, jako teksty. Tylko dla akcji członka.',
     },
     record: {
       type: '{ type, id, object? }',
-      description: 'Rekord, dla którego działa akcja, odczytywany jako trigger.record. type to custom_record, contractor, sales_invoice, cost_invoice, budget albo helpdesk_ticket; object wskazuje obiekt paczki. Zobacz Akcje bloków i polecenia rekordów.',
+      description: 'Rekord, dla którego działa akcja bloku albo polecenie rekordu, odczytywany jako trigger.record. type to custom_record, contractor, sales_invoice, cost_invoice, budget albo helpdesk_ticket; object wskazuje obiekt paczki.',
     },
   }}
 />
 
-Porównywane są tylko nagłówki żądania, które wymienisz; ich nazwy pisz małymi literami.
+## Wymiany HTTP [#http-exchanges]
+
+Każdy wpis `http` to `request`, które akcja musi wysłać jako następne, i `response`, które dostaje w odpowiedzi.
+
+| Klucz | Znaczenie |
+| --- | --- |
+| `request.method` | `GET`, `POST`, `PUT`, `PATCH` albo `DELETE`. Wymagane. |
+| `request.url` | Cały adres `https://`, z parametrami zapytania. Wymagane. |
+| `request.headers` | Nagłówki, które muszą zostać wysłane z tymi wartościami. Nazwy pasują bez względu na wielkość liter; pominięte nagłówki nie są porównywane. |
+| `request.body` | Treść, porównywana dokładnie, gdy jest podana. Treść JSON jest porównywana jako JSON. |
+| `response.status` | Status, który dostaje akcja, od `100` do `599`. Wymagane. |
+| `response.headers`, `response.body` | Co jeszcze dostaje akcja. |
+
+Wartości, które Opero wstawia za sekrety, są w żądaniu przed porównaniem, więc przypadek sprawdza `Bearer test-token` z `token`, który podaje w `connection`.
 
 ## Ustawienia w przypadku [#settings-in-a-case]
 
-Ustawienia przypadku, po uzupełnieniu wartościami domyślnymi, muszą pasować do `settings.yaml`. Wymagane ustawienie bez wartości domyślnej trzeba więc podać w każdym przypadku, także w przypadkach akcji, które go nie odczytują. Przypadek, który podaje ustawienia w paczce bez `settings.yaml` albo podaje je w `connection.config`, jest odrzucany z kodem `test.invalid`. Zobacz [Ustawienia w testach](/docs/pl/extensions/reference/settings#settings-in-tests).
+Ustawienia przypadku, z zastosowanymi wartościami domyślnymi, muszą pasować do `settings.yaml`. Wymagane ustawienie bez wartości domyślnej trzeba więc podać w każdym przypadku, także w przypadkach akcji, które go nie czytają. Zobacz [Ustawienia w testach](/docs/pl/extensions/reference/settings#settings-in-tests).
 
 ## Kroki danych i wiadomości [#data-and-messaging-steps]
 
-Gdy reguła akcji używa [kroków danych](/docs/pl/extensions/reference/data-steps), przypadek planuje je w `effects`, tak jak `http` planuje wywołania. Żaden rekord nie jest odczytywany ani zapisywany i nic nie jest wysyłane: każdy krok bierze swój efekt i zwraca jego `response`.
+Gdy reguła akcji używa [kroków danych](/docs/pl/extensions/reference/data-steps), przypadek opisuje je w `effects`, tak jak `http` opisuje wywołania. Żaden rekord nie jest odczytywany ani zapisywany i nic nie jest wysyłane: każdy krok jest porównywany ze swoim efektem i zwraca jego `response`.
 
 ```yaml title="actions/sync-order/tests.yaml"
 - name: the open order gets the status the carrier answers
@@ -113,17 +128,14 @@ Gdy reguła akcji używa [kroków danych](/docs/pl/extensions/reference/data-ste
 | Klucz | Znaczenie |
 | --- | --- |
 | `request.step` | Typ kroku: `FETCH_RECORDS`, `CREATE_RECORD`, `UPDATE_RECORD`, `RUN_QUERY`, `UPDATE_CONTRACTOR`, `SEND_EMAIL`, `SEND_NOTIFICATION` albo `GENERATE_DOCUMENT`. Wymagany. |
-| Inne klucze `request` | Klucze ustawień kroku, porównywane z tym, co krok dostał po wypełnieniu szablonów. Klucze, które pominiesz, nie są porównywane. |
-| `response` | To, co krok zwraca. Musi mieć kształt, jaki zwraca prawdziwy krok. Pomiń go dla kroku, który nic nie zwraca: `UPDATE_RECORD`, `UPDATE_CONTRACTOR` i `SEND_EMAIL`. |
+| Inne klucze `request` | Klucze ustawień kroku, porównywane z tym, co krok dostał po wypełnieniu szablonów. Pominięte klucze nie są porównywane. |
+| `response` | Co zwraca krok, w kształcie, który zwraca prawdziwy krok. Pomiń dla `UPDATE_RECORD`, `UPDATE_CONTRACTOR` i `SEND_EMAIL`, które niczego nie zwracają. |
 
-- `effects` i `http` to dwie osobne listy, każda w kolejności, w jakiej akcja ich używa.
-- Efekt `RUN_QUERY` wskazuje zapytanie zainstalowanym kluczem, tak jak reguła: `queryKey: x_orders_ext_orders_by_day`.
-- Przypadek z `effects` w paczce bez [zakresów danych](/docs/pl/extensions/reference/data-permissions) jest odrzucany z kodem `test.invalid`.
-- Krok jest sprawdzany względem zadeklarowanych zakresów, zanim weźmie swój efekt, więc test nie przejdzie z krokiem, na który zakresy nie pozwalają.
+`effects` i `http` to dwie osobne listy, każda w kolejności, w jakiej używa ich akcja. Efekt `RUN_QUERY` wskazuje zapytanie po jego zainstalowanym kluczu, tak jak reguła: `queryKey: x_orders_ext_orders_by_day`. Każdy krok jest sprawdzany z zakresami danych paczki, zanim dostanie swój efekt, więc test nie przejdzie z krokiem, na który zakresy nie pozwalają.
 
 ## Zdarzenia [#events]
 
-Dla akcji, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events), przypadek wymienia w `events` zdarzenia, które uruchomienie musi zgłosić, a w `seen` może podać, co Opero już pamięta, gdy przypadek się zaczyna, żeby przetestować deduplikację.
+Dla akcji, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/raising-events), `events` wymienia zdarzenia, które uruchomienie musi zgłosić, a `seen` mówi, co Opero już pamięta, gdy przypadek się zaczyna, żeby przetestować deduplikację.
 
 ```yaml title="actions/sync-orders/tests.yaml"
 - name: an order seen before, unchanged, raises nothing
@@ -146,16 +158,13 @@ Dla akcji, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/r
 | `events[].event` | Nazwa wyzwalacza. Wymagana. |
 | `events[].key` | Klucz elementu. Porównywany, gdy jest podany. |
 | `events[].data` | Dane zdarzenia. Porównywane dokładnie, gdy są podane. |
-| `seen[]` | `event`, `key` i `data` elementu w postaci, w jakiej został ostatnio zgłoszony. Element z tym samym kluczem i tymi samymi danymi jest niezmieniony. |
+| `seen[]` | `event`, `key` i `data` elementu w takiej postaci, w jakiej był ostatnio zgłoszony. Element z tym samym kluczem i tymi samymi danymi jest niezmieniony. |
 
-- `events` jest porównywane po kolei. `events: []` mówi, że uruchomienie niczego nie zgłasza; przypadek bez `events` w ogóle nie sprawdza zdarzeń.
-- Każde zgłoszone zdarzenie jest sprawdzane względem danych wyzwalacza, jak w prawdziwym uruchomieniu, więc przypadek nie przejdzie ze zdarzeniem, które wyzwalacz by odrzucił.
-- Nic nie trafia do kolejki i żadna reguła się nie uruchamia: zdarzenia są tylko zapisywane.
-- Akcja, która zgłasza zdarzenia, potrzebuje co najmniej jednego przypadku z niepustym `events` (`test.event_untested`). Niepuste `events` albo `seen` w akcji, która nie zgłasza zdarzeń, jest odrzucane z kodem `test.invalid`, a nazwa zdarzenia, która nie jest wyzwalaczem paczki, z kodem `event.unknown`.
+`events` jest porównywane po kolei. `events: []` mówi, że uruchomienie niczego nie zgłasza; przypadek bez `events` w ogóle nie sprawdza zdarzeń. Każde zgłoszone zdarzenie jest sprawdzane z danymi wyzwalacza, tak jak w prawdziwym uruchomieniu. Nic nie trafia do kolejki i żadna reguła się nie zaczyna. Akcja, która zgłasza zdarzenia, potrzebuje co najmniej jednego przypadku z niepustym `events`.
 
 ## Akcje członka [#member-actions]
 
-[Akcja członka](/docs/pl/extensions/reference/member-connections#the-members-values-in-rules) używa `{{ userConnection.<field> }}`. Jej przypadek podaje te wartości w `userConnection`, a w `input` to, co przekazuje akcja połączenia albo harmonogram:
+[Akcja członka](/docs/pl/extensions/reference/member-connections#the-members-values-in-rules) używa `{{ userConnection.<field> }}`. Jej przypadek podaje te wartości w `userConnection` oraz `input`, które przekazuje zaczep albo harmonogram.
 
 ```yaml title="actions/sync-member/tests.yaml"
 - name: a revoked token
@@ -173,14 +182,13 @@ Dla akcji, której reguła używa [`EMIT_EVENT`](/docs/pl/extensions/reference/r
   credentialRevoked: true
 ```
 
-- `userConnection` jest przyjmowane tylko w akcji członka i tylko z `accessToken`, `refreshToken` i sekretnymi wyjściami `afterConnect` (w przeciwnym razie `test.invalid`).
-- `credentialRevoked: true` to wynik akcji członka, której żądanie z tokenem członka dostało odpowiedź `401`. W prawdziwym uruchomieniu ten członek jest wtedy [wstrzymywany](/docs/pl/extensions/reference/member-connections#a-refused-token). `401` na żądanie bez tokenu członka to zwykły błąd: oczekuj `fails: { status: 401 }`.
+`userConnection` przyjmuje `accessToken`, `refreshToken` i wyjścia `secret` z `afterConnect`. `credentialRevoked: true` to wynik, gdy żądanie z tokenem członka dostało odpowiedź `401`; w prawdziwym uruchomieniu dla tego członka nic więcej się wtedy nie uruchamia, dopóki [nie połączy się ponownie](/docs/pl/extensions/reference/member-connections#a-refused-token). Odpowiedź `401` na żądanie bez tokenu członka to zwykły błąd: oczekuj `fails: { status: 401 }`.
 
 ## Przypadki renderowania bloków [#block-render-cases]
 
-Każdy [blok](/docs/pl/extensions/reference/blocks#render-tests) ma własny `tests.yaml` z przypadkami renderowania: dane wejściowe, wiersze zapytań i rekordów, z którymi ma zostać wyrenderowany, oraz teksty, które HTML musi albo nie może zawierać. Opero renderuje je przy przesłaniu, po przypadkach akcji, w tych samych limitach.
+Każdy [blok](/docs/pl/extensions/reference/blocks#render-tests) ma własny `tests.yaml` z przypadkami renderowania: danymi wejściowymi i wierszami do renderowania oraz tekstami, które HTML musi zawierać albo których nie może zawierać. Opero renderuje je przy przesłaniu, po przypadkach akcji, w tych samych limitach.
 
-## Jak kończy się przypadek
+## Jak kończy się przypadek [#how-a-case-ends]
 
 Każdy przypadek ma dokładnie jeden wynik:
 
@@ -248,38 +256,24 @@ Skrypt, który niczego nie wywołuje, nie potrzebuje listy `http`:
 </Tab>
 </Tabs>
 
-## Kiedy przypadek nie przechodzi
+## Kiedy przypadek nie przechodzi [#when-a-case-fails]
 
-Przypadek jest oznaczany plikiem i pozycją, np. `actions/greet/tests.yaml#/0`. Nie przechodzi, gdy akcja:
+Nieudany przypadek jest wskazywany przez plik i pozycję, np. `actions/greet/tests.yaml#/0`, a przy wymianie albo efekcie przez miejsce wewnątrz niego, np. `…#/0/http/1`. Każdy nieudany przypadek paczki jest zgłaszany w jednym przebiegu. Kody wymienia sekcja [Problemy](#problems).
 
-- wysyła żądanie, którego przypadek się nie spodziewał;
-- wysyła żądanie, które różni się metodą, URL-em, wymienionym nagłówkiem albo treścią;
-- zostawia niewykorzystaną zaplanowaną wymianę;
-- uruchamia krok danych, którego przypadek nie zaplanował jako następnego, albo krok, którego ustawienia różnią się od klucza wymienionego w efekcie;
-- dostaje `response`, który nie ma kształtu zwracanego przez krok;
-- zostawia niewykorzystany zaplanowany efekt;
-- zgłasza zdarzenie, którego przypadek nie wymienia jako następnego, zgłasza zdarzenie o innym wyzwalaczu, kluczu albo danych albo nie zgłasza zdarzenia, które przypadek wymienia;
-- kończy się innym wynikiem;
-- zwraca wynik, który nie pasuje do `returns` albo do pól wyjściowych.
-
-Kody znajdziesz w [Kodach błędów](/docs/pl/extensions/error-codes#only-at-upload-when-the-tests-run).
-
-## Limity
+## Limity [#limits]
 
 | Co | Limit |
 | --- | --- |
-| Przypadki na akcję | od 1 do 50 |
-| Przypadki na paczkę | 200, przypadki akcji i przypadki renderowania bloków razem |
-| Przypadki renderowania na blok | od 1 do 20 |
-| Wymiany na przypadek | 50 |
-| Efekty na przypadek | 50 |
-| `events` i `seen` na przypadek | po 500 |
+| Przypadki na akcję | Od 1 do 50 |
+| Przypadki na paczkę | 200, przypadki akcji i renderowania bloków razem |
+| Wymiany i efekty na przypadek | Po 50 |
+| `events` i `seen` na przypadek | Po 500 |
 | Czas na przypadek | 10 sekund |
 | Czas na wszystkie przypadki paczki | 60 sekund |
 
-## Kilka plików testów
+## Kilka plików testów [#several-test-files]
 
-`tests` w `action.yaml` może wskazywać folder zamiast pliku. Wtedy każdy plik `.yaml` w tym folderze jest plikiem testów:
+`tests` w `action.yaml` może wskazywać folder zamiast pliku. Każdy plik `.yaml` bezpośrednio w tym folderze jest wtedy plikiem testów:
 
 <Files>
   <Folder name="actions" defaultOpen>
@@ -297,3 +291,34 @@ Kody znajdziesz w [Kodach błędów](/docs/pl/extensions/error-codes#only-at-upl
 ```yaml title="actions/greet/action.yaml"
 tests: tests/
 ```
+
+## Problemy [#problems]
+
+Przy odczycie paczki, przez `opero-ext validate` i przy przesłaniu:
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `test.invalid` | Przypadek w złym kształcie, bez wyniku albo z dwoma, wejście niepasujące do pól wejściowych, ustawienia niepasujące do `settings.yaml`, podane bez niego albo w `connection.config`, `effects` bez zakresów danych, `events` lub `seen` przy akcji, która niczego nie zgłasza, `userConnection` albo `credentialRevoked` przy akcji, która nie jest akcją członka, albo ponad 50 przypadków. | Popraw przypadek tak, jak mówi komunikat. |
+| `action.missing_test` | Akcja bez przypadku. | Napisz przypadek. |
+| `event.unknown` | `events` albo `seen` wskazuje wyzwalacz, którego paczka nie ma. | Popraw nazwę. |
+| `test.event_untested` | Żaden przypadek akcji, która zgłasza zdarzenia, nie wymienia oczekiwanych zdarzeń. | Dodaj przypadek z niepustym `events`. |
+
+Przy uruchamianiu przypadków, przy przesłaniu i w `opero-ext test`:
+
+| Kod | Co się stało |
+| --- | --- |
+| `test.unexpected_request` | Akcja wysłała żądanie, którego przypadek nie opisuje. |
+| `test.request_mismatch` | Metoda, URL, wymieniony nagłówek albo treść różnią się od przypadku. |
+| `test.unused_exchange` | Przypadek opisuje żądanie, którego akcja nie wysłała. |
+| `test.unexpected_effect` | Akcja wykonała krok danych, którego przypadek nie opisuje jako następnego. |
+| `test.effect_mismatch` | Klucz podany w efekcie różni się od tego, co dostał krok, albo `response` efektu nie ma kształtu, który zwraca krok. |
+| `test.unused_effect` | Przypadek opisuje krok danych, którego akcja nie wykonała. |
+| `test.unexpected_event` | Akcja zgłosiła zdarzenie po tych, które wymienia przypadek. |
+| `test.event_mismatch` | Zgłoszone zdarzenie różni się od wymienionego na tej pozycji: wyzwalaczem, kluczem albo danymi. |
+| `test.missing_event` | Przypadek wymienia zdarzenie, którego akcja nie zgłosiła. |
+| `test.outcome_mismatch` | Akcja zakończyła się inaczej, niż mówi przypadek, albo z innym statusem. |
+| `test.output_mismatch` | Wynik różni się od `returns`. |
+| `test.output_schema` | Wynik nie pasuje do pól wyjściowych. |
+| `test.failed` | Przypadek nie mógł się zakończyć, np. zabrakło czasu, albo paczka ma ponad 200 przypadków. |
+
+Kody przypadków renderowania bloków opisuje strona [Bloki](/docs/pl/extensions/reference/blocks#render-tests).

@@ -1,112 +1,150 @@
 ---
 title: "Część 4: Zainstaluj i używaj"
-description: "Prześlij rozszerzenie Hello do Opero, przejrzyj plan instalacji, sprawdź ustawienia, skonfiguruj i zweryfikuj połączenie, użyj kroku i filtra w regule, a potem wydaj nową wersję."
+description: "Prześlij i zainstaluj rozszerzenie Hello, połącz je z httpbin.org, użyj kroku Pozdrów w regule, uruchom regułę i wydaj nową wersję."
 ---
 
-W tej części przesyłasz paczkę, instalujesz ją, sprawdzasz jej ustawienia, konfigurujesz połączenie, używasz jej kroku w regule i wydajesz drugą wersję.
+W tej części instalujesz w organizacji plik zip z części 3 i używasz jego kroku. Na końcu twoja reguła wywołuje httpbin.org przez Hello, a Hello działa w drugiej wersji.
 
 <Steps>
 <Step>
-### Prześlij
+### Prześlij plik zip [#upload-the-zip]
 
-W Opero otwórz **Zarządzaj → Rozszerzenia**, wybierz **Prześlij pakiet** i wskaż plik zip. Opero powtarza sprawdzenia wykonywane bez sieci, a potem uruchamia twoje przypadki testowe.
+W administracji organizacji otwórz **Integracje** → **Rozszerzenia**, kliknij **Prześlij pakiet** i wybierz `hello-ext-0.1.0.zip`. Zanim cokolwiek zapisze, Opero sprawdza paczkę i uruchamia jej pięć testów.
 
-Jeśli coś się nie powiedzie, nic nie zostaje zapisane, a ty widzisz listę problemów z plikami i wierszami. Jeśli wszystko przejdzie, paczka pojawia się w sekcji **Dostępne do instalacji** jako paczka prywatna twojej organizacji.
+![Okno przesyłania po sprawdzeniu: paczka gotowa do przesłania, wszystkie testy kontraktowe zaliczone](/docs/_assets/extensions/install/upload-checked.webp)
 
-Paczkę możesz też przesłać z terminala albo zlecić to asystentowi AI:
+Kliknij **Prześlij i przejrzyj**. Jeśli sprawdzenie znajdzie problemy, popraw je, spakuj paczkę ponownie i wybierz nowy plik zip.
+</Step>
 
-<Tabs items={['Ekran Opero', 'Narzędzie wiersza poleceń', 'Asystent AI']}>
-<Tab value="Ekran Opero">
+<Step>
+### Zainstaluj ją [#install-it]
 
-**Zarządzaj → Rozszerzenia → Prześlij pakiet**, potem wskaż plik zip. Limit to 10 MB.
+Przegląd pokazuje, co dodaje Hello i że wywołuje `httpbin.org`, wraz z twoim powodem. Każdą jego część wyjaśnia sekcja [Przegląd instalacji](/docs/pl/extensions/install#the-install-review).
 
-</Tab>
+![Przegląd instalacji: co dodaje, do czego ma dostęp i co zrobić po instalacji](/docs/_assets/extensions/install/review-dialog.webp)
+
+Kliknij **Zainstaluj**. Hello ma teraz status **Nieaktywne**, bo instalacja nigdy nie konfiguruje połączenia.
+</Step>
+
+<Step>
+### Sprawdź ustawienie [#check-the-setting]
+
+Otwórz kartę **Konfiguracja**. Sekcja **Ogólne** z `settings.yaml` pokazuje pole **Język** z wartością domyślną `en`. Etykiety są po polsku, bo pochodzą z `locales/pl.yaml`; zrzuty ekranu pokazują interfejs po angielsku.
+
+![Ustawienia Hello: język, w którym wysyłane są powitania](/docs/_assets/extensions/tutorial/hello-settings.webp)
+
+Wybierz `pl` i kliknij **Zapisz zmiany**, jeśli powitania mają iść z `lang=pl`.
+</Step>
+
+<Step>
+### Skonfiguruj połączenie [#set-up-the-connection]
+
+W sekcji **Połączenie** wpisz dowolny tekst w polu **Token API** (httpbin.org przyjmuje każdy token) i kliknij **Utwórz**. Kliknij **Sprawdź połączenie**, które uruchamia twoją akcję `verify`, a potem **Aktywuj**.
+
+![Połączenie Hello po udanym sprawdzeniu, gotowe do aktywacji](/docs/_assets/extensions/tutorial/hello-connection.webp)
+
+Hello ma teraz status **Działa**. Resztę tej karty opisuje strona [Działanie zainstalowanego rozszerzenia](/docs/pl/extensions/after-install#configuration).
+</Step>
+
+<Step>
+### Dodaj krok do reguły [#add-the-step-to-a-rule]
+
+Otwórz **Konfiguracja** → **Reguły**, kliknij **Utwórz**, nazwij regułę i kliknij **Utwórz**. W sekcji **Przebieg** kliknij **Dodaj krok**: **Pozdrów** jest w grupie **Hello** pod nagłówkiem **Integracje**.
+
+![Lista kroków z krokiem Greet w grupie rozszerzenia Hello](/docs/_assets/extensions/tutorial/step-picker.webp)
+
+Krok **Powitanie** zadeklarował `category: data`, więc jest w kategorii **Dane**. Wyszukiwanie słowa „hello” znajduje oba.
+</Step>
+
+<Step>
+### Wypełnij krok [#fill-in-the-step]
+
+Formularz powstaje z wejścia akcji. W polu **Imię** wpisz `{{ trigger.user.firstName }}`, kliknij **Gotowe**, a potem **Zapisz zmiany**.
+
+![Formularz kroku Greet utworzony z wejścia akcji](/docs/_assets/extensions/tutorial/greet-step.webp)
+
+Krok zapisuje swój wynik jako `greet`, więc kolejne kroki odczytują `{{ greet.status }}` i `{{ greet.body.json.greeting }}`.
+</Step>
+
+<Step>
+### Uruchom regułę [#run-the-rule]
+
+Kliknij **Uruchom**, otwórz menu obok przycisku **Test** i wybierz **Wykonaj regułę**. **Wynik wykonania** pokazuje **Sukces**, a stan kroku Pozdrów zawiera odpowiedź httpbin.org.
+
+**Test** pokazuje, co zrobiłaby reguła, bez wywoływania usługi. Jeśli akcja się nie powiedzie, krok kończy się błędem; zobacz [Gdy krok się nie powiedzie](/docs/pl/extensions/reference/actions#when-a-step-fails).
+</Step>
+
+<Step>
+### Opisz je dla katalogu [#describe-it-for-the-catalog]
+
+Karta **Przegląd** rozszerzenia nadal pokazuje tekst zastępczy zapisany przez `init`. Zastąp `listing/description.md`; to plik Markdown, a to, co może zawierać, opisuje [wizytówka](/docs/pl/extensions/reference/listing).
+
+```md title="listing/description.md"
+# Hello
+
+Hello is the extension the Opero tutorial builds. It adds two rule steps and a
+template filter:
+
+- **Greet** sends a greeting for a name to httpbin.org and returns its answer.
+- **Hello** builds a greeting without calling anything.
+- `x_hello_ext_shout` upper-cases a text in any template.
+
+Connect it with any token: httpbin.org accepts every one.
+```
+</Step>
+
+<Step>
+### Wydaj nową wersję [#ship-a-new-version]
+
+Podnieś `version` w `extension.yaml` do `0.1.1` i opisz zmianę na początku listy zmian:
+
+```md title="listing/changelog.md"
+## 0.1.1
+
+- A real description for the catalog.
+
+## 0.1.0
+
+- First version.
+```
+
+Uruchom `opero-ext validate .` i `opero-ext pack .`:
+
+```txt title="Wynik"
+hello-ext 0.1.1 is valid.
+Wrote …/hello-ext-0.1.1.zip (5731 bytes; listing images 1325 bytes)
+```
+
+Prześlij nowy plik zip i kliknij **Prześlij i przejrzyj**. Przegląd nazywa się teraz **Aktualizuj Hello** i zawiera sekcję **Nowe w tej wersji** z twojej listy zmian; kliknij **Uaktualnij**. Połączenie i reguła działają dalej, bo krok zachowuje swoją nazwę.
+</Step>
+</Steps>
+
+## Inne sposoby przesyłania [#other-ways-to-upload]
+
+<Tabs items={['Narzędzie wiersza poleceń', 'Asystent AI']}>
 <Tab value="Narzędzie wiersza poleceń">
 
 ```bash title="Terminal"
 opero-ext push . --server https://opero.example.com/mcp
 ```
 
-Dodaj `--org <organizationId>`, jeśli należysz do więcej niż jednej organizacji. `opero-ext install .` idzie dalej: przesyła paczkę, wypisuje plan opisany w następnym kroku, prosi o twoją zgodę i instaluje. Zobacz [Zgoda](/docs/pl/extensions/reference/cli#consent).
+`opero-ext install .` przesyła paczkę, wypisuje przegląd, prosi o twoją zgodę i instaluje; `opero-ext upgrade .` robi to samo dla nowej wersji. Zobacz [Zgoda](/docs/pl/extensions/reference/cli#consent).
 
 </Tab>
 <Tab value="Asystent AI">
 
-Asystent AI połączony z serwerem MCP Opero może przesłać plik zip za ciebie. Poproś go o przesłanie pliku paczki do twojej organizacji; wykonuje te same sprawdzenia i testy. Może też planować, instalować i aktualizować (`extensions_plan`, `extensions_install`, `extensions_upgrade`): najpierw musi pokazać ci plan i instaluje dopiero za twoją zgodą.
+Asystent AI połączony z serwerem MCP Opero może przesłać plik zip, przejrzeć go, zainstalować i zaktualizować. Najpierw musi pokazać ci przegląd i instaluje dopiero za twoją zgodą.
 
 </Tab>
 </Tabs>
-</Step>
 
-<Step>
-### Zainstaluj
-
-Naciśnij **Zainstaluj**. Zanim Opero cokolwiek zmieni, pokazuje plan:
-
-- co zostanie utworzone: trzy reguły (`Hello: Hello`, `Hello: Verify`, `Hello: Greet`) i jeden filtr szablonu;
-- hosty, które paczka może wywoływać, każdy z podanym przez ciebie powodem (`httpbin.org`);
-- uprawnienia, których potrzebujesz, i czy je masz;
-- ewentualne problemy, oznaczone jako blokujące albo nie.
-
-Potwierdź, aby zainstalować. Rozszerzenie ma teraz status **Nie działa: połączenie nie jest włączone**.
-
-<Callout>
-Ten status jest oczekiwany: instalacja nigdy nie tworzy połączenia.
-</Callout>
-</Step>
-
-<Step>
-### Sprawdź ustawienia
-
-Otwórz rozszerzenie i przejdź do karty **Ustawienia**, między kartami **Szczegóły** i **Połączenie**. Widać na niej grupę `general` z `settings.yaml` z polem `language`, ustawionym na wartość domyślną, angielski. W polskim interfejsie mają etykiety z `locales/pl.yaml`: **Ogólne** i **Język**. Jeśli chcesz, żeby powitania szły z `lang=pl`, wybierz polski i zapisz.
-
-Język ma wartość domyślną, więc rozszerzenie na niego nie czeka. Wymagane ustawienie bez wartości domyślnej sprawiłoby, że rozszerzenie miałoby status **Nie działa: niekompletne ustawienia**, dopóki nie zostanie uzupełnione.
-</Step>
-
-<Step>
-### Skonfiguruj połączenie
-
-Przejdź do karty **Połączenie** rozszerzenia. Wpisz token (httpbin przyjmie dowolny tekst), zapisz i naciśnij **Sprawdź połączenie**.
-
-Opero uruchamia twoją akcję `verify` z zapisanymi wartościami. Gdy przejdzie, włącz połączenie. Oznaczenie **Nie działa** znika: rozszerzenie ma status **Włączony** i działa.
-</Step>
-
-<Step>
-### Użyj kroków i filtra
-
-Utwórz albo otwórz regułę. Kroki **Pozdrów** i **Powitanie** są na liście kroków, każdy z polem **Imię** wygenerowanym z jego wejścia. W zapisanej regule krok greet wygląda tak:
-
-```json title="Krok w jednej z reguł organizacji"
-{
-  "type": "x-hello-ext.greet",
-  "contextKey": "greeting",
-  "config": { "name": "{{ trigger.data.firstName }}" }
-}
-```
-
-Wyjście akcji trafia pod klucz kontekstu kroku, tutaj `greeting`, i mogą go używać kolejne kroki: `{{ greeting.status }}`, `{{ greeting.body.json.greeting }}`.
-
-Jeśli akcja się nie powiedzie, krok kończy się błędem; podłącz jego wyjście błędu, żeby to obsłużyć. Zobacz [Gdy krok się nie powiedzie](/docs/pl/extensions/after-install#when-a-step-fails).
-
-W dowolnym szablonie wypróbuj `{{ "hello" | x_hello_ext_shout }}`.
-</Step>
-
-<Step>
-### Wydaj nową wersję
-
-Zmień coś, podnieś `version` do `0.1.1`, zwaliduj, spakuj i prześlij. Zainstalowane rozszerzenie pokazuje nowszą wersję; naciśnij **Uaktualnij**, przejrzyj plan i potwierdź. Z terminala to samo robi `opero-ext upgrade . --server https://opero.example.com/mcp`.
-
-Reguły, które używają twojego kroku, działają dalej, bo krok zachowuje tożsamość między wersjami, dopóki nazwa akcji się nie zmienia. [Uaktualnianie](/docs/pl/extensions/after-install#upgrading) wymienia, co może zablokować uaktualnienie.
-</Step>
-</Steps>
-
-## Co dalej
+## Dalej [#next]
 
 <Cards>
-  <Card title="Przepis: krok, który liczy" href="/docs/pl/extensions/calculating-step">
+  <Card title="Krok, który tylko liczy" href="/docs/pl/extensions/calculating-step">
     Krok bez połączenia, napisany jako skrypt.
   </Card>
   <Card title="Dokumentacja techniczna" href="/docs/pl/extensions/reference/manifest">
-    Każdy klucz każdego pliku.
+    Wszystkie klucze wszystkich plików.
   </Card>
 </Cards>

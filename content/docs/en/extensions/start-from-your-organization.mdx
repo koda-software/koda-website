@@ -1,6 +1,6 @@
 ---
 title: Start from your organization
-description: "Export an Opero organization's own dictionaries, objects, saved queries, template filters, Custom Blocks, forms, Custom Lists and workspace pages as an extension package folder with opero-ext pull, read what was added and left out, write what the export cannot, then test and install it elsewhere."
+description: "Turn configuration your organization already built into an extension package with opero-ext pull, finish it, and install it in another organization."
 ---
 
 When your organization already has what a package should bring, you do not have to write it again. `opero-ext pull` exports the organization's own configuration into a new package folder. You then write what only you can write (the description, tests, the reasons of permissions), check it, and install the package in another organization.
@@ -34,12 +34,26 @@ Names are made from the organization's keys in the form each file needs, for exa
 <Step>
 ### Run pull
 
-Name a new or empty folder, the package's key, name and publisher, and each asset with `--select`:
+Name a new or empty folder, the package's key, name and publisher, and each asset with `--select`. This run exports a workspace page and a Custom Block:
 
 ```bash title="Terminal"
-opero-ext pull ./orders --server https://opero.example.com/mcp --org <organizationId> \
-  --key orders --name Orders --publisher "Your company" \
-  --select object:sales.orders --select block:order_summary --select page:orders
+opero-ext pull ./contacts-kit --server https://opero.example.com/mcp --org <organizationId> \
+  --key contacts-kit --name "Contacts kit" --publisher "Your company" \
+  --select page:contractors --select block:welcome
+```
+
+```txt title="Output"
+Wrote 10 files to …/contacts-kit
+
+Added, because a selected asset needs them:
+Kind  Ref                  Because
+list  default-contractors  page contractors
+
+To write before upload (also in README.md):
+  block.test_missing  blocks/welcome/block.yaml:5 #/tests
+    Every block has at least one render test.
+
+Next: replace the description in extension.yaml, then opero-ext validate ./contacts-kit and opero-ext test ./contacts-kit.
 ```
 
 The key is the package's, without the `x-` that Opero adds. `--version` sets the version, by default `0.1.0`. A folder that is not empty is refused (exit 2) unless you pass `--force`, which overwrites only the files the export writes and keeps the others.
@@ -50,7 +64,7 @@ Nothing changes in the organization: the export only reads.
 <Step>
 ### Read the report
 
-The command prints the files it wrote and three lists. The same lists are in the folder's `README.md`.
+The command prints up to three lists, and the folder's `README.md` repeats them. An empty list is not printed, which is why this run shows no **Left out** list.
 
 **Added, because a selected asset needs them.** You select what you want; the export brings what it depends on:
 
@@ -94,8 +108,8 @@ Every reference is renamed for the package: a query reads `{{object.<name>}}` in
 Write the description, the reasons and the [tests](/docs/en/extensions/reference/tests), and add translations if you want them. You can now add what the export does not carry, for example [actions](/docs/en/extensions/reference/actions) with `opero-ext add action`.
 
 ```bash title="Terminal"
-opero-ext validate ./orders
-opero-ext test ./orders --server https://opero.example.com/mcp --org <organizationId>
+opero-ext validate ./contacts-kit
+opero-ext test ./contacts-kit --server https://opero.example.com/mcp --org <organizationId>
 ```
 </Step>
 
@@ -105,13 +119,13 @@ opero-ext test ./orders --server https://opero.example.com/mcp --org <organizati
 Plan and install the package in the organization that should get it, as for any package:
 
 ```bash title="Terminal"
-opero-ext install ./orders --server https://opero.example.com/mcp --org <otherOrganizationId>
+opero-ext install ./contacts-kit --server https://opero.example.com/mcp --org <otherOrganizationId>
 ```
 
 Installing needs no Extension authoring module. See [Consent](/docs/en/extensions/reference/cli#consent).
 
 <Callout title="The original stays the organization's own">
-Exporting does not turn the organization's assets into managed ones. Installing the package in the same organization creates new assets under the extension's names (`x-orders`, `x_orders_…`) next to the originals.
+Exporting does not turn the organization's assets into managed ones. Installing the package in the same organization creates new assets under the extension's names (`x-contacts-kit`, `x_contacts_kit_…`) next to the originals.
 </Callout>
 </Step>
 </Steps>
@@ -119,3 +133,14 @@ Exporting does not turn the organization's assets into managed ones. Installing 
 ## Without the command line
 
 The export is also the MCP tool `extensions_export` and the API route `POST /v1/organizations/:orgId/extensions/export`. Both take the key, name, publisher, an optional version and a selection of 1 to 200 references, and answer the files with the same added, left-out and to-write lists. They write nothing and need the same module and permissions. An AI assistant connected to Opero's MCP server uses them for you, and plans and installs packages with `extensions_plan` and `extensions_install`, showing you the plan before it installs.
+
+## Next
+
+<Cards>
+  <Card title="Command-line tool" href="/docs/en/extensions/reference/cli">
+    Every command and option of opero-ext, pull included.
+  </Card>
+  <Card title="Error codes" href="/docs/en/extensions/error-codes#when-an-export-leaves-something-out">
+    Why an export left an asset out.
+  </Card>
+</Cards>

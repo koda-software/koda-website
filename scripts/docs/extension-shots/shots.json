@@ -1,0 +1,670 @@
+{
+  "shots": [
+    {
+      "file": "overview/extension-overview.webp",
+      "page": "index",
+      "state": "Orders (data-ext) installed and running",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "[data-testid=extension-feature-objects]",
+      "clip": {
+        "selectors": [
+          "[data-slot=page-header] h1",
+          "[data-slot=page-header-actions]",
+          "[data-slot=tabs]"
+        ]
+      },
+      "minY": 60,
+      "maxHeight": 816
+    },
+    {
+      "file": "install/upload-checked.webp",
+      "page": "install",
+      "state": "hello-ext 0.1.0 built in opero-back/.tmp/docs-packages/hello-ext (opero-ext pack); the dialog is shot after the check, never submitted",
+      "url": "/manage/$ORG/extensions",
+      "waitFor": "button:text(\"Upload package\")",
+      "steps": [
+        {
+          "click": "button:text(\"Upload package\")"
+        },
+        {
+          "upload": {
+            "selector": "[role=dialog] input[type=file]",
+            "file": "../opero-back/.tmp/docs-packages/hello-ext/hello-ext-0.1.0.zip"
+          }
+        },
+        {
+          "waitFor": "[role=dialog] :text(\"Ready to upload\")"
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "viewportHeight": 1100
+    },
+    {
+      "file": "install/available-cards.webp",
+      "page": "install",
+      "state": "Two private packages uploaded and not installed (in 2026-11-15 Phase 6: Member activities and the storefront listing package)",
+      "url": "/manage/$ORG/extensions?tab=available",
+      "waitFor": "button:text(\"Review and install\")",
+      "clip": {
+        "rect": {
+          "x": 26,
+          "y": 137,
+          "width": 1000,
+          "height": 380
+        }
+      }
+    },
+    {
+      "file": "install/review-dialog.webp",
+      "page": "install",
+      "state": "hello-ext 0.1.0 uploaded and not installed; the dialog's scroll area is unclamped so it fits whole",
+      "url": "/manage/$ORG/extensions?tab=available",
+      "waitFor": "button:text(\"Review and install\")",
+      "steps": [
+        {
+          "eval": "(()=>{const b=[...document.querySelectorAll('[role=tabpanel] button')].find(b=>b.textContent.includes('Review and install') && b.parentElement.parentElement.textContent.includes('A starter extension')); b.click(); return true})()"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] :text(\"After you install\")"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()",
+          "sleep": 300
+        }
+      ],
+      "clip": {
+        "selector": "[data-slot=alert-dialog-content]"
+      },
+      "viewportHeight": 1500
+    },
+    {
+      "file": "install/review-data-access.webp",
+      "page": "install",
+      "state": "Orders (data-ext) 1.0.0 installed with 1.1.0 uploaded; the review of that update shows its data scopes the same way an install review does",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "button:text(\"Review update\")",
+      "steps": [
+        {
+          "click": "button:text(\"Review update\")"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] :text(\"What it can reach\")"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()"
+        },
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('[data-slot=alert-dialog-content] *')].find(e=>e.childElementCount===0&&e.textContent.trim()===\"What it can reach\"); h.closest('section').dataset.shot='access'; return true})()"
+        }
+      ],
+      "clip": {
+        "selector": "[data-shot=access]"
+      },
+      "viewportHeight": 1600
+    },
+    {
+      "file": "upgrade/update-available.webp",
+      "page": "upgrade-and-uninstall",
+      "state": "Shop (screens-ext) 1.0.0 installed with 1.1.0 and 1.2.0 uploaded",
+      "url": "/manage/$ORG/extensions/shop?tab=overview",
+      "waitFor": ":text(\"Nothing blocks this update.\")",
+      "steps": [
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('main p')].find(e=>e.textContent.trim()==='Nothing blocks this update.'); h.closest('section').dataset.shot='update'; return true})()"
+        }
+      ],
+      "clip": {
+        "selector": "[data-shot=update]"
+      }
+    },
+    {
+      "file": "upgrade/review-changelog.webp",
+      "page": "upgrade-and-uninstall",
+      "state": "Shop 1.0.0 installed, 1.2.0 uploaded with a changelog for 1.1.0 and 1.2.0",
+      "url": "/manage/$ORG/extensions/shop?tab=overview",
+      "waitFor": ":text(\"Nothing blocks this update.\")",
+      "steps": [
+        {
+          "click": "button:text(\"Review update\")"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] :text(\"New in this version\")"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()"
+        },
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('[data-slot=alert-dialog-content] *')].find(e=>e.childElementCount===0&&e.textContent.trim()===\"New in this version\"); h.closest('section').dataset.shot='changelog'; return true})()"
+        }
+      ],
+      "clip": {
+        "selectors": [
+          "[data-slot=alert-dialog-header]",
+          "[data-shot=changelog]"
+        ]
+      },
+      "viewportHeight": 1600
+    },
+    {
+      "file": "upgrade/data-loss.webp",
+      "page": "upgrade-and-uninstall",
+      "state": "Orders (data-ext) 1.0.0 installed, 1.1.0 uploaded (drops the Order note object and a field). Never confirm",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "button:text(\"Review update\")",
+      "steps": [
+        {
+          "click": "button:text(\"Review update\")"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] :text(\"This upgrade deletes data\")"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()"
+        },
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('[data-slot=alert-dialog-content] *')].find(e=>e.childElementCount===0&&e.textContent.trim()===\"This upgrade deletes data\"); h.closest('[data-slot=alert]').dataset.shot='loss'; return true})()"
+        }
+      ],
+      "clip": {
+        "selectors": [
+          "[data-slot=alert-dialog-header]",
+          "[data-shot=loss]"
+        ]
+      },
+      "viewportHeight": 1600
+    },
+    {
+      "file": "after-install/content-step.webp",
+      "page": "after-install",
+      "state": "Sandbox (sandbox-ext) installed; the Echo step opened from What it adds",
+      "url": "/manage/$ORG/extensions/sandbox-ext?tab=overview&item=step%3Ax-sandbox-ext.echo",
+      "waitFor": "[data-slot=dialog-content] :text(\"How it works\")",
+      "clip": {
+        "selector": "[data-slot=dialog-content]"
+      }
+    },
+    {
+      "file": "after-install/configuration.webp",
+      "page": "after-install",
+      "state": "Sandbox installed, its connection verified but not activated",
+      "url": "/manage/$ORG/extensions/sandbox-ext?tab=configuration",
+      "waitFor": "[data-testid=extension-connection]",
+      "clip": {
+        "rect": {
+          "x": 21,
+          "y": 546,
+          "width": 1384,
+          "height": 680
+        }
+      },
+      "viewportHeight": 1700
+    },
+    {
+      "file": "after-install/activity-schedules.webp",
+      "page": "after-install",
+      "state": "Order events (events-ext) installed and disabled, so its schedule waits",
+      "url": "/manage/$ORG/extensions/events-ext?tab=activity",
+      "waitFor": ":text(\"Recent runs\")",
+      "clip": {
+        "selector": "[role=tabpanel]"
+      },
+      "viewportHeight": 1200
+    },
+    {
+      "file": "after-install/activity-members.webp",
+      "page": "after-install",
+      "state": "Member activities (member-ext) installed, connection not enabled, no member connected yet",
+      "url": "/manage/$ORG/extensions/member-ext?tab=activity",
+      "waitFor": ":text(\"Member connection\")",
+      "steps": [
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('[role=tabpanel] h2, [role=tabpanel] h3')].find(e=>e.textContent.trim()===\"Connected members\"); h.closest('section').dataset.shot='members'; return true})()"
+        }
+      ],
+      "clip": {
+        "selector": "[data-shot=members]"
+      },
+      "viewportHeight": 1400
+    },
+    {
+      "file": "after-install/managed-rule.webp",
+      "page": "after-install",
+      "state": "Sandbox installed; its Sandbox: Verify rule opened from What it adds",
+      "url": "/manage/$ORG/extensions/sandbox-ext?tab=overview",
+      "waitFor": "main button:text(\"Sandbox: Verify\")",
+      "steps": [
+        {
+          "click": "main button:text(\"Sandbox: Verify\")"
+        },
+        {
+          "waitFor": ":text(\"Read-only: managed by the extension\")"
+        }
+      ],
+      "clip": {
+        "rect": {
+          "x": 17,
+          "y": 17,
+          "width": 1406,
+          "height": 200
+        }
+      }
+    },
+    {
+      "file": "upgrade/uninstall-dialog.webp",
+      "page": "upgrade-and-uninstall",
+      "state": "Orders (data-ext) installed; Uninstall from the header menu, Always removed unfolded. Shot, never confirmed",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "button[aria-label=\"More actions\"]",
+      "steps": [
+        {
+          "click": "button[aria-label=\"More actions\"]"
+        },
+        {
+          "click": "[role=menuitem]:text(\"Uninstall\")"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] summary"
+        },
+        {
+          "click": "[data-slot=alert-dialog-content] summary"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()"
+        }
+      ],
+      "clip": {
+        "selector": "[data-slot=alert-dialog-content]"
+      },
+      "viewportHeight": 1300
+    },
+    {
+      "file": "install/setup-checklist.webp",
+      "page": "install",
+      "state": "hello-ext 0.1.0 just installed (the review's Install lands on ?installed=1); connection not set up",
+      "url": "/manage/$ORG/extensions/hello-ext?installed=1",
+      "waitFor": "[data-testid=extension-setup-checklist]",
+      "clip": {
+        "selectors": [
+          "[data-slot=page-header]",
+          "[data-testid=extension-installed-notice]",
+          "[data-testid=extension-setup-checklist]"
+        ]
+      },
+      "minY": 60
+    },
+    {
+      "file": "after-install/installed-list.webp",
+      "page": "after-install",
+      "state": "Eight fixtures plus Hello installed; Hello's connection not set up",
+      "url": "/manage/$ORG/extensions",
+      "waitFor": "[role=tabpanel] table",
+      "clip": {
+        "rect": {
+          "x": 26,
+          "y": 137,
+          "width": 1389,
+          "height": 455
+        }
+      }
+    },
+    {
+      "file": "after-install/member-actions.webp",
+      "page": "after-install",
+      "state": "The Orders package with blocks (blocks-ext fixture, key orders) 1.2.0 installed",
+      "url": "/manage/$ORG/extensions/orders?tab=overview",
+      "waitFor": ":text(\"What members can use\")",
+      "steps": [
+        {
+          "eval": "(()=>{const h=[...document.querySelectorAll('main h2, main h3')].find(e=>e.textContent.trim()==='What members can use'); h.closest('section').dataset.shot='members'; return true})()"
+        }
+      ],
+      "clip": {
+        "selector": "[data-shot=members]"
+      },
+      "maxHeight": 404,
+      "viewportHeight": 1400
+    },
+    {
+      "file": "tutorial/hello-settings.webp",
+      "page": "tutorial/install-and-use",
+      "state": "hello-ext 0.1.0 installed; Language left at its default",
+      "url": "/manage/$ORG/extensions/hello-ext?tab=configuration",
+      "waitFor": "#settings-extension-configuration-section-general",
+      "clip": {
+        "selector": "#settings-extension-configuration-section-general"
+      },
+      "viewportHeight": 1400,
+      "steps": [
+        {
+          "eval": "(()=>{document.querySelector('#settings-extension-configuration-section-general').style.maxWidth='720px'; return true})()",
+          "sleep": 300
+        }
+      ]
+    },
+    {
+      "file": "tutorial/hello-connection.webp",
+      "page": "tutorial/install-and-use",
+      "state": "hello-ext with the token test-token saved and Test connection passed, before Activate. Hello is now active: press Deactivate in the shot tab state first (and Activate again afterwards) to reshoot",
+      "url": "/manage/$ORG/extensions/hello-ext?tab=configuration",
+      "waitFor": ":text(\"Verified, but inactive\")",
+      "clip": {
+        "selector": "#settings-extension-configuration-section-connection"
+      },
+      "viewportHeight": 1400
+    },
+    {
+      "file": "tutorial/step-picker.webp",
+      "page": "tutorial/install-and-use",
+      "state": "Hello running; the rule 'Greet a new contact' (manual trigger, one Greet step) exists. Its id is in the url; recreate the rule and change the url if it is gone",
+      "url": "/manage/$ORG/rules/b0c864f3-e1c7-4298-8b40-815bfef8bb87",
+      "waitFor": ".react-flow__node-ruleStep",
+      "steps": [
+        {
+          "click": "button:text(\"Add Step\")"
+        },
+        {
+          "waitFor": "[role=dialog] input"
+        },
+        {
+          "click": "[role=dialog] button:text(\"Hello\")",
+          "sleep": 600
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "maxHeight": 505
+    },
+    {
+      "file": "tutorial/greet-step.webp",
+      "page": "tutorial/install-and-use",
+      "state": "The same rule; its Greet step's Name is {{ trigger.user.firstName }}",
+      "url": "/manage/$ORG/rules/b0c864f3-e1c7-4298-8b40-815bfef8bb87",
+      "waitFor": ".react-flow__node-ruleStep",
+      "steps": [
+        {
+          "click": ".react-flow__node-ruleStep"
+        },
+        {
+          "waitFor": "[role=dialog] :text(\"This step saves its result as\")",
+          "sleep": 600
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "maxHeight": 196
+    },
+    {
+      "file": "calculating-step/margin-step.webp",
+      "page": "calculating-step",
+      "state": "Calc (the calc fixture, label Margin) installed and running; the step is added to the tutorial's rule only in the capture tab and never saved",
+      "url": "/manage/$ORG/rules/b0c864f3-e1c7-4298-8b40-815bfef8bb87",
+      "waitFor": ".react-flow__node-ruleStep",
+      "steps": [
+        {
+          "click": "button:text(\"Add Step\")"
+        },
+        {
+          "waitFor": "[role=dialog] input"
+        },
+        {
+          "eval": "(()=>{const i=document.querySelector('[role=dialog] input'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(i,'margin'); i.dispatchEvent(new Event('input',{bubbles:true})); return true})()",
+          "sleep": 800
+        },
+        {
+          "eval": "(()=>{[...document.querySelectorAll('[role=dialog] button, [role=dialog] [role=option]')].find(b=>b.textContent.includes('Computes the margin')).click(); return true})()"
+        },
+        {
+          "sleep": 800
+        },
+        {
+          "eval": "(()=>{[...document.querySelectorAll('.react-flow__node-ruleStep')].find(n=>n.textContent.includes('Margin')).click(); return true})()"
+        },
+        {
+          "waitFor": "[role=dialog] :text(\"This step saves its result as\")",
+          "sleep": 600
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "maxHeight": 286
+    },
+    {
+      "file": "own-data/object-overlay.webp",
+      "page": "own-data",
+      "state": "Orders (data-ext) installed; its Order object opened from What it adds (an intercepted route with Back to the extension)",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "main button:text(\"Order5 fields\")",
+      "steps": [
+        {
+          "click": "main button:text(\"Order5 fields\")"
+        },
+        {
+          "waitFor": "[role=dialog] :text(\"Read-only: managed by the extension\")"
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "maxHeight": 560
+    },
+    {
+      "file": "own-data/query-overlay.webp",
+      "page": "own-data",
+      "state": "Orders (data-ext) installed; its Orders by day query opened from What it adds",
+      "url": "/manage/$ORG/extensions/data-ext?tab=overview",
+      "waitFor": "main button:text(\"Orders by day\")",
+      "steps": [
+        {
+          "click": "main button:text(\"Orders by day\")"
+        },
+        {
+          "waitFor": "[role=dialog] :text(\"SQL Query\")",
+          "sleep": 800
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]"
+      },
+      "maxHeight": 410
+    },
+    {
+      "file": "workspace-screens/shop-page.webp",
+      "page": "workspace-screens",
+      "state": "Shop (screens-ext) 1.0.0 installed; its page x-shop-orders opened in the QA Extensions company (two open orders exist)",
+      "url": "/dashboard/qa-extensions/pages/x-shop-orders",
+      "waitFor": "main :text(\"Open the shop\")",
+      "clip": {
+        "rect": {
+          "x": 264,
+          "y": 72,
+          "width": 1131,
+          "height": 868
+        }
+      },
+      "viewportHeight": 1150,
+      "minY": 60,
+      "note": "Clipped to the page content column so the dark sidebar edge and the block below the page stay out."
+    },
+    {
+      "file": "workspace-screens/shop-form.webp",
+      "page": "workspace-screens",
+      "state": "Shop installed; the order 'QA inline 1' opened in the packaged Order form (it opens in edit mode)",
+      "url": "/dashboard/qa-extensions/custom/x-shop/orders/55afb12b-4ce2-4957-a758-d9630c7d0a0b/edit",
+      "waitFor": "main :text(\"Order QA inline 1\")",
+      "clip": {
+        "rect": {
+          "x": 264,
+          "y": 144,
+          "width": 1131,
+          "height": 565
+        }
+      },
+      "minY": 128,
+      "note": "Clipped to the content column, without the sidebar edge."
+    },
+    {
+      "file": "scheduled-events/trigger-picker.webp",
+      "page": "scheduled-events",
+      "state": "Order events (events-ext) ENABLED for the shot (it is normally left disabled: enable it, shoot, disable it again); the rule 'Greet a new contact', trigger changed only in the capture tab, never saved",
+      "url": "/manage/$ORG/rules/b0c864f3-e1c7-4298-8b40-815bfef8bb87",
+      "waitFor": ".react-flow__node-ruleTrigger",
+      "steps": [
+        {
+          "click": ".react-flow__node-ruleTrigger"
+        },
+        {
+          "click": "[role=dialog] button:text(\"Change trigger\")"
+        },
+        {
+          "click": "[role=dialog] button:text(\"Order events\")",
+          "sleep": 500
+        }
+      ],
+      "clip": {
+        "selector": "[role=dialog]:text(\"Choose trigger\")"
+      },
+      "maxHeight": 430
+    },
+    {
+      "file": "blocks-and-actions/parcel-card.webp",
+      "page": "blocks-and-actions",
+      "state": "parcels (the guide's package, 0.1.1 = the guide's files) installed; organization form 'Parcel' with Parcel card placed under the fields; parcel PX-1042 (in_transit). Records open in edit mode",
+      "url": "/dashboard/qa-extensions/custom/x-parcels/parcels/baa55bee-aefb-414c-a41b-08decd60a312/edit",
+      "waitFor": ".parcel button",
+      "hide": [
+        "button[aria-label=\"Block actions\"]"
+      ],
+      "clip": {
+        "selector": "[data-shot=record]"
+      },
+      "steps": [
+        {
+          "eval": "(()=>{document.querySelector('.parcel').closest('.vl2-region').dataset.shot='record'; return true})()"
+        }
+      ]
+    },
+    {
+      "file": "blocks-and-actions/record-actions.webp",
+      "page": "blocks-and-actions",
+      "state": "The same parcel, with its details panel opened (Open details)",
+      "url": "/dashboard/qa-extensions/custom/x-parcels/parcels/baa55bee-aefb-414c-a41b-08decd60a312/edit",
+      "waitFor": ".parcel button",
+      "steps": [
+        {
+          "click": "button[aria-label=\"Open details\"]"
+        },
+        {
+          "waitFor": "button:text(\"Track parcel\")",
+          "sleep": 500
+        }
+      ],
+      "clip": {
+        "rect": {
+          "x": 1071,
+          "y": 70,
+          "width": 369,
+          "height": 170
+        }
+      },
+      "pad": 0
+    },
+    {
+      "file": "blocks-and-actions/role-permissions.webp",
+      "page": "blocks-and-actions",
+      "state": "parcels installed; the company role Member opened with Edit role, filtered by 'parcel', Track parcels ticked in the capture tab only, never saved",
+      "url": "/manage/$ORG/roles?tab=company",
+      "waitFor": "main td:text(\"Member\")",
+      "steps": [
+        {
+          "eval": "(()=>{const tr=[...document.querySelectorAll('main tr')].find(t=>t.querySelector('td')?.textContent.trim()==='Member'); tr.querySelector('button').click(); return true})()"
+        },
+        {
+          "click": "[role=menuitem]:text(\"Edit role\")"
+        },
+        {
+          "waitFor": "[role=dialog] input[placeholder^=\"Search permissions\"]"
+        },
+        {
+          "eval": "(()=>{const i=document.querySelector('[role=dialog] input[placeholder^=\"Search permissions\"]'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(i,'parcel'); i.dispatchEvent(new Event('input',{bubbles:true})); return true})()",
+          "sleep": 600
+        },
+        {
+          "eval": "(()=>{const row=[...document.querySelectorAll('[role=dialog] div.grid')].find(e=>e.textContent.trim().startsWith('Track parcels')); row.querySelector('[role=checkbox],button').click(); const h=[...document.querySelectorAll('[role=dialog] *')].find(e=>e.children.length===0&&e.textContent.trim()==='Permissions'); h.parentElement.parentElement.parentElement.dataset.shot='perms'; return true})()",
+          "sleep": 400
+        }
+      ],
+      "clip": {
+        "selector": "[data-shot=perms]"
+      }
+    },
+    {
+      "file": "member-accounts/review-member-accounts.webp",
+      "page": "member-accounts",
+      "state": "The guide's member-activities 1.0.0 (opero-back/.tmp/docs-packages/member-activities) uploaded and not installed; its install review, never confirmed",
+      "url": "/manage/$ORG/extensions?tab=available",
+      "waitFor": "button:text(\"Review and install\")",
+      "steps": [
+        {
+          "eval": "(()=>{const b=[...document.querySelectorAll('[role=tabpanel] button')].find(b=>b.textContent.includes('Review and install') && b.parentElement.parentElement.textContent.includes('Members connect their sandbox account')); b.click(); return true})()"
+        },
+        {
+          "waitFor": "[data-slot=alert-dialog-content] :text(\"Member accounts: Sandbox account\")"
+        },
+        {
+          "eval": "(()=>{const c=document.querySelector('[data-slot=alert-dialog-content]'); c.style.maxHeight='none'; for (const e of c.querySelectorAll('*')) { if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { e.style.maxHeight='none'; e.style.overflow='visible'; e.style.height='auto'; } } return true})()",
+          "sleep": 300
+        },
+        {
+          "eval": "(()=>{const find=(t)=>[...document.querySelectorAll('[data-slot=alert-dialog-content] *')].find(e=>e.childElementCount===0&&e.textContent.trim()===t); find('Runs on its own').closest('section').dataset.shot='runs'; find('Member accounts: Sandbox account').closest('section').dataset.shot='member'; return true})()"
+        }
+      ],
+      "clip": {
+        "selectors": [
+          "[data-shot=runs]",
+          "[data-shot=member]"
+        ]
+      },
+      "viewportHeight": 1800
+    },
+    {
+      "file": "member-accounts/client-connection.webp",
+      "page": "member-accounts",
+      "state": "Member activities (member-ext) installed, connection not set up (its OAuth client fields empty)",
+      "url": "/manage/$ORG/extensions/member-ext?tab=configuration",
+      "waitFor": "#settings-extension-configuration-section-connection",
+      "clip": {
+        "selector": "#settings-extension-configuration-section-connection"
+      },
+      "maxHeight": 470,
+      "viewportHeight": 1400
+    },
+    {
+      "file": "listing/listing-sheet.webp",
+      "page": "reference/listing",
+      "state": "storefront 1.2.0 (opero-back/.tmp/docs-packages/storefront, the page's listing example with the screens-ext images) uploaded as a private package and not installed",
+      "url": "/manage/$ORG/extensions?tab=available",
+      "waitFor": "button:text(\"Details\")",
+      "steps": [
+        {
+          "click": "button:text(\"Details\")"
+        },
+        {
+          "waitFor": "[data-slot=sheet-content] h3:text(\"Changelog\")"
+        },
+        {
+          "sleep": 500
+        }
+      ],
+      "clip": {
+        "selector": "[data-slot=sheet-content]"
+      },
+      "pad": 0,
+      "viewportHeight": 1340
+    }
+  ]
+}

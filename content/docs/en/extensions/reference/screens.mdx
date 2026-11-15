@@ -1,9 +1,9 @@
 ---
 title: Forms, lists and pages
-description: "Reference for form.yaml, list.yaml and page.yaml in Opero extensions: forms on the package's own objects with their layouts and default slots, Custom Lists over the package's objects or a built-in source with open-link actions, workspace Custom Pages, { $ref } references between them, URLs, translations, and what install, upgrade and uninstall do to the screens."
+description: Bring the screens members work with, forms on the package's objects, Custom Lists and workspace pages, with form.yaml, list.yaml and page.yaml.
 ---
 
-A package can bring the screens members work with: **forms** on its own objects, **Custom Lists** that list records, and **workspace pages** that put lists, forms, blocks and counters together. They are installed as the organization's Dynamic Forms, Custom Lists and Custom Pages, read-only and managed by the extension. A package places nothing in a menu: an administrator adds its pages to a menu by hand.
+A package can bring the screens members work with: **forms** on its own objects, **Custom Lists** that list records, and **workspace pages** that put lists, forms, blocks and counters together. They are installed as the organization's Dynamic Forms, Custom Lists and Custom Pages, managed by the extension. The guide [Forms, lists and pages](/docs/en/extensions/workspace-screens) builds all three.
 
 <Files>
   <Folder name="forms" defaultOpen>
@@ -58,11 +58,11 @@ pages:
 locales: [pl]
 ```
 
-List the folders under `forms`, `lists` and `pages` in `extension.yaml`, or in an included module's `module.yaml`. `opero-ext add form <name> --object <object>`, `add list <name> [--object <object>]` and `add page <name>` write a starting folder and list it; see [Command-line tool](/docs/en/extensions/reference/cli#options).
+List the folders under `forms`, `lists` and `pages` in `extension.yaml` or an included module's `module.yaml`. `opero-ext add form <name> --object <object>`, `add list <name> [--object <object>]` and `add page <name>` write a starting folder and list it; see [Command-line tool](/docs/en/extensions/reference/cli#options).
 
 ## form.yaml
 
-A form is a Dynamic Form on one of the package's own [objects](/docs/en/extensions/reference/objects): the screen that opens, edits or creates its records.
+A form is a Dynamic Form on one of the package's own [objects](/docs/en/extensions/reference/objects): the screen that opens, edits or creates its records. A package has at most 100 forms.
 
 ```yaml title="forms/order/form.yaml"
 form: order                      # referenced as orders.order
@@ -163,11 +163,11 @@ regions:
 
 ### Default forms
 
-Each object has a default form for viewing, editing and creating its records. A form with `default` takes each slot it names when the slot is empty or held by a form of this extension. A slot the organization filled with its own form is kept, and the install plan says so (`form.default_taken`, not blocking). An upgrade and a reinstall do the same: they never take over a default the organization chose.
+Each object has a default form for viewing, editing and creating its records. A form with `default` takes each slot it names when the slot is empty or held by a form of this extension. A slot the organization filled with its own form is kept, and the install review says so (`form.default_taken`, not blocking). An upgrade and a reinstall do the same: they never take over a default the organization chose.
 
 ## list.yaml
 
-A list is a Custom List over one of the package's objects or over a built-in list source. Members see it where a page or a form embeds it.
+A list is a Custom List over one of the package's objects or over a built-in list source. Members see it where a page or a form embeds it. A package has at most 50 lists.
 
 ```yaml title="lists/open-orders/list.yaml"
 list: open-orders                # installed as x-shop-open-orders
@@ -235,7 +235,7 @@ config:
   views: [{ id: default, name: Default, default: true, config: { schemaVersion: 2 } }]
 ```
 
-The reader checks the shape and the references. Whether the configuration fits its source (its columns, filters and create form) is checked by Opero as the list's own save would: in the install plan (`list.save_validation`), or, for a list over an object the same install creates, when the list is installed.
+The reader checks the shape and the references. Whether the configuration fits its source (its columns, filters and create form) is checked by Opero as the list's own save would: in the install review (`list.save_validation`), or, for a list over an object the same install creates, when the list is installed.
 
 ### Actions
 
@@ -253,7 +253,9 @@ A packaged list carries only `OPEN_LINK` actions, which open an address for a ro
 
 ## page.yaml
 
-A page is a workspace Custom Page: a screen of its own that members open from a menu.
+A page is a workspace Custom Page: a screen of its own that members open from a menu. A package has at most 50 pages, and places none in a menu itself.
+
+![The Shop workspace page: the open orders counter, the list, a summary block and the new order form](/docs/_assets/extensions/workspace-screens/shop-page.webp)
 
 ```yaml title="pages/orders/page.yaml"
 page: orders                     # installed with the slug x-shop-orders
@@ -353,10 +355,7 @@ A reference may stand only where Opero stores an id of its kind:
 | `owned.rowForms.<operation>` of a `field` or `relationTable` node | `form` |
 | `config.create.formId` of a list | `form` |
 
-- A reference anywhere else, or of the wrong kind for its place, is refused with `layout.ref_position`.
-- A reference that is not exactly `{ $ref: "<kind>:<name>" }` is `layout.ref_invalid`.
-- A name the package does not have is `layout.ref_unknown`.
-- Any other key that holds an id (a rule, report, workflow, calendar, SQL list, custom field: every key ending in `Id` or `Ids`), and an id written where a reference belongs, are refused with `layout.reference_unsupported`. Leave such a key out, or empty.
+A reference anywhere else, a reference that is not exactly `{ $ref: "<kind>:<name>" }`, a name the package does not have, and any other key that holds an id (a rule, report, workflow, calendar, SQL list or custom field: every key ending in `Id` or `Ids`) are refused; see [Problems](#problems). Leave such a key out, or empty.
 
 Field keys and relation keys are written as they are: they are the same in every organization that installs the package.
 
@@ -366,47 +365,40 @@ A `url` in a layout, a list action's `config.url` and a form's `config.redirectU
 
 ## Translations
 
-| Key | Translates |
-| --- | --- |
-| `pages.<page>.title`, `description` | A page's title and description. They are installed with the page. |
-| `forms.<object>.<form>.config.title`, `successMessage` | A form's title and success message. `validate` checks them, but the form is installed with its English texts. |
+A page's `title` and `description` go under `pages.<page>`, and a form's `config.title` and `successMessage` under `forms.<object>.<form>.config`; the form is installed with its English texts. Form and list names, column labels and action labels are English only. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
 
-```yaml title="locales/pl.yaml"
-pages:
-  orders:
-    title: Zamówienia
-    description: Otwarte zamówienia i ich liczba.
-forms:
-  orders:
-    order:
-      config:
-        title: Nowe zamówienie
-        successMessage: Zapisano
-```
+## Reserved names
 
-Form names, list names and descriptions, column labels and action labels are English only.
+The organization cannot create a Custom List whose key starts with `x-`, or create or rename a page to a slug that starts with `x-`, so these keys can only be an extension's. The screens are read-only and change only with an upgrade; who may use each form, the object's default forms, a page's exposure and audience, and menus stay the organization's. See [Managed assets](/docs/en/extensions/after-install#managed-assets) and, for who sees the screens after install, [After install](/docs/en/extensions/workspace-screens#after-install).
 
-## After install
+## Upgrades
 
-- **Read-only.** The forms, their layouts, the lists and the pages are managed by the extension. Changing or deleting a form, saving, publishing or restoring a layout of a packaged form or page, saving, archiving or restoring a list, and changing, publishing or archiving a page are refused with `EXTENSION_MANAGED_ASSET`. They change only when the extension is upgraded.
-- **Still the organization's.** Who may use each form (its access, and portal access), the object's default forms, which companies and members see a page, and the menus. An upgrade never changes them.
-- **Who sees them.** A new page is exposed to every company and every member as soon as it is installed. Forms can be used wherever the extension's module `x-<key>` is exposed, which is every company until an administrator narrows it. Lists have no exposure of their own: members see a list where a page or form embeds it. The install plan says what members will see and that pages must be added to a menu by hand.
-- **Reserved names.** The organization cannot create a Custom List whose key starts with `x-`, or create or rename a page to a slug starting with `x-` (`CUSTOM_LIST_KEY_RESERVED`, `CUSTOM_PAGE_SLUG_RESERVED`).
-- **Checked before install.** The install plan checks each form, layout and list as their own saves would, and blocks on a problem (`form.save_validation`, `layout.save_validation`, `list.save_validation`).
-- **Permissions.** Installing forms needs `org.customModules.create` and `org.customModules.update`, lists `org.customLists.create` and `org.customLists.update`, and pages `org.pages.create` and `org.pages.update`. Removing them needs `org.customModules.delete`, `org.customLists.update` and `org.pages.delete`.
-- **Disabled.** Disabling the extension changes nothing that renders: the forms, lists and pages keep working. Actions of the extension placed in them stop until it runs again.
-- **Upgrade.** A changed form or page layout is published as a new version, and a changed list is saved over the old one. A version that drops a form deletes it: its default slots go to another form of the extension of the same type, or stay empty. Dropping a form that the organization's layouts, lists or blocks name warns (`form.in_use`), and dropping the last form of a type of an object warns (`object.formless`). A dropped list or page is archived; the plan warns when the organization's layouts embed the list (`list.in_use`) or its menus open the page (`page.in_use`). None of these block.
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A form or page layout changes | It is published as a new version. | |
+| A list changes | It is saved over the old one. | |
+| A form claims a default slot the organization filled | The organization's form keeps the slot. A warning. | `form.default_taken` |
+| A form the organization's layouts, lists or blocks name is dropped | The form is deleted; its default slots go to another form of the extension of the same type, or stay empty. A warning. | `form.in_use` |
+| The last form of a type of an object is dropped | Members cannot open or create its records until an administrator builds a form. A warning. | `object.formless` |
+| A list the organization's layouts embed is dropped | It is archived, and the embeds show that the extension removed it. A warning. | `list.in_use` |
+| A page the organization's menus open is dropped | It is archived, and the menu items are hidden. A warning. | `page.in_use` |
 
-## Uninstall
+An uninstall deletes the forms and archives the lists and pages; installing again revives the lists and pages under the same ids. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
-Uninstalling removes the screens whichever choice is made for the data:
+## Problems
 
-- **Forms are deleted**, with their layouts and their access. Nothing is generated in their place. The default slots they held are emptied first; slots held by the organization's own forms are untouched.
-- **Lists and pages are archived** as removed by the extension. An embed of such a list shows that the extension removed it. A menu item that opens such a page is kept and hidden. The organization cannot restore the list (`CUSTOM_LIST_EXTENSION_REMOVED`) or the page.
-- With **Delete the data**, the lists over the package's objects are deleted with the objects; a list over a built-in source is archived.
-
-<Callout type="warn" title="Objects left without a form">
-When the data is kept, an object can be left without a form for viewing, editing or creating its records. Until an administrator builds one, its records cannot be opened (`DYNAMIC_FORM_ACCESS_DENIED`) or created. Before you confirm, the uninstall names each such object with its number of records and what to do: open the object in Objects, create a form (it starts with every field), set it as the default and set its access.
-</Callout>
-
-**Installing again** revives the same lists and pages under the same ids, with the company exposure and audience the organization left them, and their menu items show again. The forms are created again and take the default slots that are still empty.
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `form.invalid` | An unknown key, a key of the wrong shape, no `types`, a `default` slot that is not one of its types, a layout that is not a `.yaml` file of the folder with `schemaVersion: 2` and `regions`, or more than 100 forms. | Fix the key the message names. |
+| `form.unknown_object` | `object` names no object of the package. | Fix the key, or add the object. |
+| `list.invalid` | An unknown key, a key of the wrong shape, a `builtIn: dynamicObject` source, or more than 50 lists. | Fix the key; write `source: { object: <key> }` for an object. |
+| `list.unknown_object` | `source.object` names no object of the package. | Fix the key, or add the object. |
+| `list.name_too_long` | The installed key `x-<key>-<list>` is over 64 characters. | Shorten the list's name. |
+| `list.action_unsupported` | A list action that is not `OPEN_LINK`. | Open a link, or move the work to a block action. |
+| `page.invalid` | An unknown key, a key of the wrong shape, a layout that is not a `.yaml` file of the folder with `schemaVersion: 2` and `regions`, or more than 50 pages. | Fix the key the message names. |
+| `layout.ref_invalid` | A reference that is not exactly `{ $ref: "<kind>:<name>" }`. | Write it in that form. |
+| `layout.ref_position` | A reference outside the places in the table, or of the wrong kind for its place. | Move it, or use the kind its place takes. |
+| `layout.ref_unknown` | A reference names something the package does not have. | Fix the name. |
+| `layout.reference_unsupported` | A key that holds an id the package cannot carry, or an id where a reference belongs. | Leave the key out, or use a reference. |
+| `layout.host_not_declared` | A URL that is neither an Opero path nor an https address on a host of `permissions.links`. | Add the host with a reason, or use a path. |
+| `form.save_validation`, `layout.save_validation`, `list.save_validation` | In the install review: a form, a layout or a list would not save as its editor saves it. Blocks the install. | Fix it as the message says. |

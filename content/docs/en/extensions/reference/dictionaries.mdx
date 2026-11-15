@@ -1,9 +1,9 @@
 ---
 title: Dictionaries
-description: "Reference for dictionary.yaml in Opero extensions: a dictionary's entries, its installed key, using it in a select field, translating entry labels, upgrades and uninstalling."
+description: Bring a fixed list of values, such as statuses, with dictionary.yaml, and use it in the select fields of the package's objects.
 ---
 
-A dictionary is a fixed list of values, such as statuses or priorities, that select fields offer. A package can bring its own dictionaries and use them in the fields of its [objects](/docs/en/extensions/reference/objects).
+A dictionary is a fixed list of values, such as statuses or priorities, that select fields offer. A package uses its own dictionaries in the fields of its [objects](/docs/en/extensions/reference/objects), as the guide [A package with its own data](/docs/en/extensions/own-data) does.
 
 ```yaml title="dictionaries/status/dictionary.yaml"
 dictionary: status
@@ -15,12 +15,7 @@ entries:
   - { key: closed, label: Closed, isActive: false }
 ```
 
-Each dictionary has its own folder in `dictionaries/`, listed in `extension.yaml`:
-
-```yaml title="extension.yaml"
-dictionaries:
-  - dictionaries/status
-```
+Each dictionary has its own folder in `dictionaries/`, listed under `dictionaries` in `extension.yaml`.
 
 ## dictionary.yaml
 
@@ -28,7 +23,7 @@ dictionaries:
   type={{
     dictionary: {
       type: 'string',
-      description: 'The name: lower-case letters and digits in words joined by single hyphens, up to 40 characters. Unique in the package.',
+      description: 'The name: words of lower-case letters and digits joined by single hyphens, starting with a letter, up to 40 characters. Unique in the package.',
       required: true,
     },
     name: {
@@ -68,7 +63,7 @@ Each entry:
     },
     icon: {
       type: 'string',
-      description: 'An icon name.',
+      description: 'An icon name, up to 100 characters.',
     },
     isActive: {
       type: 'boolean',
@@ -77,55 +72,32 @@ Each entry:
   }}
 />
 
-## The installed dictionary
+## The installed key
 
-The dictionary is installed as an organization dictionary with the key `x-<key>-<name>`: `status` of the extension `shop-ext` is `x-shop-ext-status`. The organization cannot create a dictionary whose key starts with `x-`.
+A dictionary is installed as an organization dictionary with the key `x-<key>-<name>`: `status` of the extension `shop-ext` is `x-shop-ext-status`. The organization cannot create a dictionary whose key starts with `x-`.
 
-A field of the package names the dictionary by its name, not by the installed key:
+The package's own fields name the dictionary by its name, `options: { dictionary: status }`, not by the installed key. A select field stores the entry's `key`, so a [query](/docs/en/extensions/reference/queries) compares with it: `WHERE f_status = 'open'`.
 
-```yaml title="objects/orders/object.yaml (part)"
-  - key: status
-    name: Status
-    type: SELECT
-    options: { dictionary: status }
-```
+## Translations
 
-A select field stores the entry's `key`, so a [query](/docs/en/extensions/reference/queries) compares with it: `WHERE f_status = 'open'`.
+Only the entry labels are translatable, under `dictionaries.<name>.entries.<key>.label`. The dictionary's `name` and `description` stay in English. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
 
-## Translating entry labels
+## Upgrades
 
-Entry labels are the only texts of a dictionary that can be translated. They go in `locales/<lang>.yaml` under `dictionaries.<name>.entries.<key>.label`:
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| An entry keeps its key | It keeps its identity, and records keep their values. | |
+| An entry is left out | It is removed. While custom fields of the organization name the dictionary, the install review blocks. | `dictionary.save_validation` |
+| A dictionary is dropped | It is deleted, or kept as the organization's own when something still uses it. A warning. | `dictionary.released` |
+| The install takes over a dictionary a previous uninstall kept | It becomes the extension's again. A warning. | `dictionary.adopts_existing` |
 
-```yaml title="locales/pl.yaml"
-dictionaries:
-  status:
-    entries:
-      open: { label: Otwarte }
-      noted: { label: Z notatką }
-      closed: { label: Zamknięte }
-```
-
-The dictionary's `name` and `description` are English only.
-
-## Where the administrator sees them
-
-The install plan lists each dictionary under **What will change**. The extension's **Installed data** tab lists them read-only under **Dictionaries it installed**, with the name, the installed key and the number of entries. They are left out of the **Dictionaries** management list, and stay available wherever a dictionary is picked, for example for a select field of the organization's own objects.
-
-The entries belong to the extension: they cannot be added, changed, reordered or removed, except by an upgrade. A dictionary opened by a link, for example from **Managed by this extension** on the extension's **Details** tab, starts with "Read-only: managed by the extension `<key>`." and a link **Open the extension**, and offers no editing and no delete.
-
-## Upgrades and uninstalling
-
-- **Entries are matched by key.** An entry whose key stays the same keeps its identity, and records keep their values. An entry the new version leaves out is removed.
-- **A dictionary the new version drops** is deleted. If something of the organization still uses it, it is kept as the organization's own dictionary instead, and the plan says so (`dictionary.released`).
-- **Uninstalling** keeps the dictionaries by default, as the organization's own. When the administrator chooses to delete the data, they are deleted for good, except one that something else still uses.
+An uninstall keeps the dictionaries by default, as the organization's own. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `dictionary.invalid` | An unknown key, a name of the wrong form, an entry without `key` or `label`, two entries with the same key, a colour not written `#RRGGBB`, more than 1,000 entries, or more than 50 dictionaries. |
-| `name.duplicate` | Two dictionaries with the same name. |
-| `object.unknown_reference` | A field names a dictionary the package does not have. |
-| `dictionary.save_validation` | In the install plan: the dictionary would not save, for example because an entry the organization's fields still use would be removed. Blocks the install. |
-| `dictionary.adopts_existing` | In the install plan: a dictionary kept by an earlier uninstall is taken over. A warning. |
-| `dictionary.released` | In an upgrade's plan: a dropped dictionary is kept because something still uses it. A warning. |
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `dictionary.invalid` | An unknown key, a name of the wrong form, an entry without `key` or `label`, two entries with the same key, a colour not written `#RRGGBB`, more than 1,000 entries, or more than 50 dictionaries. | Fix the key the message names. |
+| `name.duplicate` | Two dictionaries with the same name. | Rename one. |
+| `object.unknown_reference` | A field names a dictionary the package does not have. | Fix the name, or add the dictionary. |
+| `dictionary.save_validation` | In the install review: the dictionary would not save, for example because entries would be removed while custom fields of the organization name it. Blocks the install. | Keep the entries, or ask the organization to change those fields. |

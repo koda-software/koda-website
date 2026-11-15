@@ -1,19 +1,27 @@
 ---
 title: Before you start
-description: "What you need to build and install an Opero extension: administrator permissions, the Rules module, the Extension authoring module for the authoring tools, the opero-ext command-line tool, an editor and a test credential."
+description: "What you need to build an Opero extension and to install it, how to get the opero-ext tool, and what an extension cannot do yet."
 ---
 
-You need an administrator account in an organization with the Rules module, the command-line tool, and the API documentation of the service you want to call.
+An extension is a folder of YAML files and scripts that you check and pack with a command-line tool, then upload to an organization. This page lists what you need for each half of that work.
+
+## To build
 
 | You need | Why |
 | --- | --- |
-| An administrator account | Uploading and installing need the `org.extensions.*` permissions, plus the permissions to create what the package brings: rules and custom scripts, for a package with data, custom modules, dictionaries and saved queries, and for one with screens, custom modules (forms), Custom Lists and pages. The built-in administrator role has them all. A package that declares [data scopes](/docs/en/extensions/reference/data-permissions) can only be installed by an organization owner. |
-| The Rules module switched on | Extensions install rules. A package with objects also needs the Objects module, one with queries the Queries module, and one that generates documents the Documents module. |
-| The Extension authoring module | Only for the authoring tools: running a package's tests on Opero (`opero-ext test`) and exporting the organization's configuration as a package (`opero-ext pull`). Uploading, installing, upgrading and running extensions do not need it. |
-| The command-line tool | `opero-ext` scaffolds or exports a folder, checks it, writes the zip, tests it on Opero and installs it. See [Command-line tool](/docs/en/extensions/reference/cli). |
-| An editor with YAML support | Optional. The folder `init` writes tells VS Code (with the YAML extension) which schema each file follows, so keys complete and mistakes are underlined as you type. |
-| The service's API documentation | You need the exact URLs, how it authenticates, and what it answers. |
-| A test credential for that service | For the final live check. The contract tests do not need it. |
+| The command-line tool | `opero-ext` scaffolds a package, checks it, packs the zip and uploads it. See [Install the command-line tool](#install-the-command-line-tool). |
+| An editor with YAML support | Optional. The folder `init` writes tells VS Code (with the YAML extension) which schema each file follows, so keys complete as you type. |
+| The service's API documentation | The exact URLs, how the service authenticates and what it answers. |
+| A test credential for that service | Only for the final live check. The package's own tests do not need it. |
+| The **Extension authoring** module | Only for `opero-ext test` (the tests on Opero) and `opero-ext pull` (export). Uploading and installing do not need it. |
+
+## To install
+
+| You need | Why |
+| --- | --- |
+| An administrator account | Uploading and installing need the `org.extensions.*` permissions and the permissions to create what the package brings. The built-in administrator role has them all; [Install an extension](/docs/en/extensions/install#before-you-start) lists them. |
+| The Rules module | Extensions install rules. A package with objects also needs Objects, one with queries the Queries module, one that generates documents the Documents module. |
+| The organization owner role | Only for a package that declares [data scopes](/docs/en/extensions/reference/data-permissions). |
 
 ## Install the command-line tool
 
@@ -36,15 +44,15 @@ irm https://hub.kodasoft.pl/extension-cli/install.ps1 | iex
 </Tab>
 </Tabs>
 
-Check it with `opero-ext version`, and keep it current with `opero-ext update`, which checks the release's signature. [Command-line tool](/docs/en/extensions/reference/cli#install) lists the platforms, what the installers check and what to do when a browser download is blocked.
+Check it with `opero-ext version`, which prints the version and the platform. Keep it current with `opero-ext update`, which checks the release's signature. [Command-line tool](/docs/en/extensions/reference/cli#install) lists the platforms and what to do when a browser download is blocked.
 
 <Callout title="Licence">
-The **Extension authoring** module is a separate licensed module and is off by default. Without it, an organization can still upload, install, upgrade and run extensions; only `opero-ext test` and `opero-ext pull` stop with exit 4, the matching API routes answer `403 MODULE_UNAVAILABLE`, and the matching MCP tools are not offered. An administrator switches it on in the organization's modules when the licence includes it.
+**Extension authoring** is a separate licensed module, off by default. Without it, `opero-ext test` and `opero-ext pull` stop with exit 4; everything else works. An administrator switches it on in the organization's modules when the licence includes it.
 </Callout>
 
 ## Know the rule builder first
 
-It helps to have built at least one rule in Opero with a **Call webhook** step, because a rule file is the same thing written as text. Read [Rules](/docs/en/opero/07-automatyzacja/reguly-wprowadzenie) and [Actions](/docs/en/opero/07-automatyzacja/akcje) if you have not.
+A rule file is a rule written as text, so it helps to have built one rule in Opero with a **Call webhook** step. Read [Rules](/docs/en/opero/07-automatyzacja/reguly-wprowadzenie) and [Actions](/docs/en/opero/07-automatyzacja/akcje) if you have not.
 
 ## Choose the right tool for the job
 
@@ -55,10 +63,32 @@ An extension is not always the lightest answer.
 | Convert or format a single value in templates | A [template filter](/docs/en/extensions/reference/filters) in an extension, or a custom script if only your organization needs it. |
 | Run a bit of logic in one rule only | A **Run script** step written directly in that rule. No extension needed. |
 | Give many rules, or many organizations, one clean step that calls a service | An extension with a [connection](/docs/en/extensions/reference/connection-and-secrets) and actions. |
-| React to something that happens in the outside service | An extension with a [trigger](/docs/en/extensions/reference/triggers) and a [schedule](/docs/en/extensions/reference/schedules) that reads the service and raises an event for what changed. The service cannot call the package: incoming webhooks are not supported yet. |
+| React to something that happens in the outside service | An extension with a [trigger](/docs/en/extensions/reference/triggers) and a [schedule](/docs/en/extensions/reference/schedules) that reads the service and raises an event for what changed. |
 | Work with each member's own account at a service | An extension with a [member connection](/docs/en/extensions/reference/member-connections). |
 | Bring dictionaries, objects, queries, filters or blocks you already built in one organization to others | An extension [exported from that organization](/docs/en/extensions/start-from-your-organization). |
 
-## Next step
+## What an extension cannot do yet
 
-Start the [tutorial](/docs/en/extensions/tutorial/start-the-package), which builds a complete extension in four parts.
+| You cannot | Do this instead |
+| --- | --- |
+| Reach the organization's own objects | A package reads and writes only its own objects and contractors. The rule that uses your step does other record work with the result. |
+| Place anything in a menu | An administrator adds the package's pages to a menu. |
+| Bring forms for objects that are not its own, public forms, portal pages, or list actions that run a rule or a script | Build them in the organization. |
+| Send from a mailbox, or bring email and document templates | Email goes through the installation's email service; documents use a template the organization picks. |
+| Receive webhooks | Read the service on a [schedule](/docs/en/extensions/reference/schedules). Incoming webhooks are planned. |
+| Raise events from a step | Raise them from a schedule run or a member connection hook. |
+| Run on a cron expression, or at an interval the administrator picks | Choose one of the seven fixed intervals of a schedule. |
+| Renew a member's token | The member connects again when the service stops accepting it. |
+| Bring images, fonts or other files for its blocks | Use images the service hosts. |
+| Use form actions in its blocks (`open-form`, `set-field`, `<opero-rating>`), or run a rule by id | Block buttons run the package's own actions. |
+| Raise events or use a member's connection from a block action or a record command, or run a command in the background | Use a schedule for background work. |
+| Offer block actions, commands and links to API tokens, the external API or MCP | Members use them in the app. |
+| Call a host it did not declare, or anything that is not HTTPS | Declare every host under `permissions.network`. |
+
+## Next
+
+<Cards>
+  <Card title="Tutorial: build Hello" href="/docs/en/extensions/tutorial/start-the-package">
+    Build, check, install and use a complete extension in four parts.
+  </Card>
+</Cards>

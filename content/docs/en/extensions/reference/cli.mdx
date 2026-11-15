@@ -1,6 +1,6 @@
 ---
 title: Command-line tool
-description: "Reference for opero-ext, the Opero extension tool: installing and updating it, signing in, and every command (init, add, validate, pack, types, schema, pull, test, push, plan, install, upgrade, list, orgs, login, guide, version, update) with its options, consent, JSON output and exit codes."
+description: "Install opero-ext, sign in, and look up every command with its options, consent, JSON output and exit codes."
 ---
 
 `opero-ext` is the command-line tool for extensions. It scaffolds a package or exports one from your organization, checks it, writes the zip, runs its tests on Opero, uploads it, and plans, installs and upgrades it. It is one executable with Node.js inside; nothing else is needed.
@@ -75,7 +75,7 @@ opero-ext update --version 1.4.0
 
 | Command | Does | Server | Extension authoring module |
 | --- | --- | --- | --- |
-| `init <folder>` | Writes a working package with one action. | No | |
+| `init <folder>` | Writes a working package with one action and a starter [listing](/docs/en/extensions/reference/listing). | No | |
 | `add action <name>` | Adds an action folder and lists it in the manifest. | No | |
 | `add filter <name>` | Adds a filter folder and lists it. | No | |
 | `add trigger <name>` | Adds a trigger folder and lists it. | No | |
@@ -139,7 +139,7 @@ opero-ext init hello-ext --name Hello --publisher "Your company" --typescript
 | `--publisher <name>` | Your company's name. |
 | `--typescript` | Write scripts as `.ts`, with a `tsconfig.json`. |
 
-It refuses to overwrite files that exist. Then fill in the description, the reasons of any permission, and real tests.
+It refuses to overwrite files that exist. Besides the action it writes a starter [listing](/docs/en/extensions/reference/listing): `listing/description.md`, `listing/changelog.md` and a placeholder `listing/icon.png`. Then fill in the description, replace the listing's text and icon, and write the reasons of any permission and real tests.
 
 </Accordion>
 <Accordion title="add action, add filter">
@@ -230,14 +230,16 @@ opero-ext validate .
 opero-ext pack . --out hello.zip
 ```
 
-`validate` reads a folder or a zip as Opero will and prints every problem. For a valid folder it writes `.opero/` again (script types and editor schemas).
+`validate` reads a folder or a zip as Opero will and prints every problem. For a valid folder that already has `.opero/` (one `init` or `add` wrote), it writes the script types and editor schemas there again; it never adds `.opero/` to a folder without it.
 
 | Option | Meaning |
 | --- | --- |
 | `--out <file.zip>` | `pack` only. The zip's name. By default `<key>-<version>.zip`. |
 | `--json` | `validate` only. See [JSON output](#json-output). |
 
-The zip holds only the files `extension.yaml` reaches; TypeScript is packed as the built `.js`. The same folder always produces the same zip, byte for byte.
+The zip holds only the files `extension.yaml` reaches and the [listing](/docs/en/extensions/reference/listing); TypeScript is packed as the built `.js`. The same folder always produces the same zip, byte for byte. When the package has listing images, `pack` prints their total size after the zip's.
+
+For a valid package both commands add notes on stderr that are not problems: that `README.md` is not shown in Opero, when the package has no `listing/description.md`, and which listing images use more than half their size limit.
 
 </Accordion>
 <Accordion title="pull">
@@ -281,7 +283,7 @@ opero-ext plan . --server https://opero.example.com/mcp --org <organizationId>
 
 `list` shows the installed extensions (key, version, status, whether each runs and why not, and its revision) and every version the organization may install: its own private packages and the catalog packages granted to it, each with its package id.
 
-`plan` uploads the folder or zip like `push`, or takes a stored version with `--package-id <id>`, and prints what installing or upgrading to it would do: the permissions with their reasons, what it adds, triggers, schedules, the member connection, package permissions, blocks, member actions, links, the changes, data loss, problems, and the plan hash. A blocked plan exits 1. The plan itself changes nothing.
+`plan` uploads the folder or zip like `push`, or takes a stored version with `--package-id <id>`, and prints what installing or upgrading to it would do: the permissions with their reasons, what it adds, triggers, schedules, the member connection, package permissions, blocks, member actions, links, the changes, data loss, problems, and the plan hash. On an upgrade it starts with the [changelog](/docs/en/extensions/reference/listing#the-changelog) sections since the installed version, under **New since the installed version**. A blocked plan exits 1. The plan itself changes nothing.
 
 </Accordion>
 <Accordion title="install, upgrade">
@@ -364,7 +366,7 @@ A problem prints as its code, then `file:line #/place`, then the message:
     Host "api.httpbin.org" is not listed in permissions.network.
 ```
 
-The offline check covers the files and their shape, including the data scopes each step needs and the action keys, queries, objects and blocks a block names; only the server can run the tests and render the blocks. The fields of a link on a built-in record are checked by the server too. A query's SQL and an object's field types are checked by the install plan. [Error codes](/docs/en/extensions/error-codes) lists every code.
+The offline check covers the files and their shape, including the data scopes each step needs and the action keys, queries, objects and blocks a block names; only the server can run the tests and render the blocks. The fields of a link on a built-in record are checked by the server too. A query's SQL and an object's field types are checked by the install review. [Error codes](/docs/en/extensions/error-codes) lists every code.
 
 ## The working loop
 
@@ -373,7 +375,7 @@ The offline check covers the files and their shape, including the data scopes ea
 Start with `init`, or with `pull` from your organization's own configuration.
 </Step>
 <Step>
-Run `validate` after every edit. It is offline and fast, and keeps `.opero/` types in step with your descriptors.
+Run `validate` after every edit. It is offline and fast, and keeps the `.opero/` types of a folder `init` made in step with your descriptors.
 </Step>
 <Step>
 Run `test` when the files are valid.

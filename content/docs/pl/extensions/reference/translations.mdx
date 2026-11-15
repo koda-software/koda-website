@@ -1,22 +1,13 @@
 ---
 title: Tłumaczenia
-description: "Tłumaczenie rozszerzenia Opero: angielski w deskryptorach, jeden plik locales na język, klucze do przetłumaczenia, limity i powrót do angielskiego przy brakach."
+description: Przetłumacz teksty paczki rozszerzenia na inne języki, po jednym pliku na język. Tekst, który pominiesz, pokazuje się po angielsku.
 ---
 
-Angielski piszesz w deskryptorach. Każdy inny język to jeden plik, `locales/<lang>.yaml`, zagnieżdżony tak jak paczka. Tekst, który pominiesz, wyświetla się po angielsku.
-
-<Steps>
-<Step>
-### Wymień język
+Angielski jest zapisany w deskryptorach. Każdy inny język to jeden plik, `locales/<lang>.yaml`, którego klucze odwzorowują paczkę. Członkowie i administratorzy widzą teksty w swoim języku, a tekst, który pominiesz, pokazuje się po angielsku.
 
 ```yaml title="extension.yaml"
-locales: [pl, de]
+locales: [pl]
 ```
-
-Nie wymieniaj `en`: angielski jest w deskryptorach.
-</Step>
-<Step>
-### Dodaj jeden plik na język
 
 ```yaml title="locales/pl.yaml"
 extension:
@@ -45,44 +36,77 @@ actions:
 filters:
   shout: { description: Zamienia tekst na wielkie litery i dodaje wykrzyknik. }
 ```
-</Step>
-<Step>
-### Zwaliduj
 
-`opero-ext validate .` zgłasza język bez pliku (`locale.missing_file`) i klucz, który nie wskazuje niczego w paczce (`locale.unknown_text`), więc literówka się nie ukryje.
-</Step>
-</Steps>
+## Plik [#the-file]
 
-## Klucze do przetłumaczenia
+`locales` w `extension.yaml` wymienia języki, a każdy z nich potrzebuje swojego pliku.
+
+- Język to dwie małe litery, opcjonalnie z regionem: `pl`, `de`, `pt-BR`. Nie wpisuj `en`.
+- Klucze zagnieżdżają się tak jak paczka. Klucz z kropkami znaczy to samo co klucze zagnieżdżone, więc `httpbin.org: { reason: … }` wskazuje host `httpbin.org`.
+- Każde tłumaczenie to tekst od 1 do 2000 znaków. Paczka ma do 40 języków.
+- Każdy klucz musi wskazywać tekst paczki. Klucz, który niczego nie wskazuje, zostaje odrzucony, więc literówka się nie ukryje.
+
+## Klucze do tłumaczenia [#translatable-keys]
 
 | Klucz | Tłumaczy |
 | --- | --- |
 | `extension.name`, `extension.description` | Nazwę i opis paczki. |
-| `permissions.network.<host>.reason` | Uzasadnienie hosta. Także `permissions.data.<scope>.reason`. |
-| `connection.methods.<method>.label` | Etykietę metody; jej pola w `fields.<field>.label` i `help`. |
+| `permissions.network.<host>.reason` | Powód hosta. Także `permissions.data.<scope>.reason` i `permissions.links.<host>.reason`. |
+| `permissions.pageScript.reason` | Powód skryptów stron. |
+| `permissions.company.<name>.label`, `description`, `reason` | Teksty uprawnienia paczki. |
+| `connection.methods.<method>.label` | Etykietę metody połączenia; jej pola w `fields.<field>.label` i `help`. |
 | `settings.groups.<group>.label`, `description` | Tytuł i opis grupy ustawień. |
-| `settings.fields.<field>.label` | Etykietę ustawienia oraz `help`, według klucza pola, bez jego grupy; pola zagnieżdżone w `fields`, elementy listy w `items`. |
+| `settings.fields.<field>.label`, `help` | Ustawienie, po kluczu pola bez nazwy grupy. |
 | `actions.<action>.label`, `description` | Akcję i jej krok. |
-| `actions.<action>.input.<field>.label` | Etykietę pola i `help`; także `output`, zagnieżdżone pola w `fields`, elementy listy w `items`. |
+| `actions.<action>.input.<field>.label`, `help` | Pole wejścia; `output.<field>` tak samo dla pola wyjścia. |
+| `actions.<action>.confirm.title`, `message` | Potwierdzenie polecenia rekordu. |
 | `filters.<filter>.description` | Opis filtra. |
-| `dictionaries.<dictionary>.entries.<key>.label` | Etykietę pozycji słownika. |
-| `triggers.<trigger>.label`, `description` | Nazwę i opis wyzwalacza; jego pola danych w `data.<field>` i filtry w `config.<field>`, każde z `label` i `help`. |
+| `dictionaries.<dictionary>.entries.<key>.label` | Etykietę wpisu słownika. |
+| `triggers.<trigger>.label`, `description` | Nazwę i opis wyzwalacza; jego pola danych w `data.<field>`, a filtry w `config.<field>`, każde z `label` i `help`. |
 | `schedules.<schedule>.label`, `description` | Nazwę i opis harmonogramu. |
 | `member.label`, `member.description` | Nazwę i opis połączenia członka. |
-| `member.data."<i>"` | Jeden z tekstów `data` połączenia członka, według pozycji od 0, w cudzysłowie. |
-| `member.failures.<name>` | Komunikat błędu łączenia. |
-| `member.config.<field>.label` | Pole formularza członka i jego `help`. |
-| `actions.<action>.confirm.title`, `message` | Potwierdzenie polecenia rekordu. |
+| `member.data."<i>"` | Jeden z tekstów `data` połączenia członka, po jego pozycji od 0, w cudzysłowie. |
+| `member.failures.<name>` | Komunikat nieudanego połączenia. |
+| `member.config.<field>.label`, `help` | Pole formularza członka. |
 | `blocks.<block>.label`, `description` | Nazwę i opis bloku. Jego HTML nie jest tłumaczony. |
 | `links.<link>.label`, `description` | Etykietę i opis linku rekordu; jego pola w `fields.<field>.label`. |
-| `permissions.links.<host>.reason`, `permissions.pageScript.reason` | Uzasadnienie hosta linku i skryptów stron. |
-| `permissions.company.<name>.label`, `description`, `reason` | Teksty uprawnienia paczki. |
 | `pages.<page>.title`, `description` | Tytuł i opis strony. |
-| `forms.<object>.<form>.config.title`, `successMessage` | Tytuł i komunikat po zapisie formularza. Są sprawdzane, ale formularz jest instalowany z tekstami angielskimi. |
+| `forms.<object>.<form>.config.title`, `successMessage` | Tytuł i komunikat powodzenia formularza. Sprawdzane, ale formularz jest instalowany z angielskimi tekstami. |
+| `listing.screenshots.<name>.caption` | Podpis zrzutu ekranu, po nazwie pliku bez rozszerzenia. Długi opis ma własny plik dla każdego języka: zobacz [Wizytówka w katalogu](/docs/pl/extensions/reference/listing#translations). |
 
-## Zasady
+### Pola zagnieżdżone i opcje wyboru [#nested-fields-and-select-options]
 
-- Każde tłumaczenie to tekst do 2000 znaków.
-- Paczka może mieć do 40 języków.
-- Teksty pliku schematu są tylko po angielsku.
-- Nazwy obiektów i ich pól, słowników i zapytań są tylko po angielsku, podobnie jak nazwy formularzy, nazwy i opisy list, etykiety kolumn i etykiety akcji list: Opero nie przechowuje dla nich tłumaczeń, więc tłumaczenie, które którąś z nich wskazuje, jest odrzucane z kodem `locale.unknown_text`. Ze słownika tłumaczy się tylko etykiety pozycji.
+Klucze pól z tabeli wyżej działają na każdym poziomie listy pól:
+
+| Klucz | Tłumaczy |
+| --- | --- |
+| `….<field>.fields.<inner>.label` | Pole wewnątrz pola `object`. |
+| `….<field>.items.fields.<inner>.label` | Pole wewnątrz elementów pola `list`. |
+| `….<field>.options.<value>` | Etykietę opcji pola `select` zapisanej jako `{ value, label }`. |
+
+```yaml title="locales/pl.yaml"
+settings:
+  fields:
+    region:
+      label: Region
+      options: { eu: Europa, us: Stany Zjednoczone }
+```
+
+## Co zostaje po angielsku [#what-stays-in-english]
+
+Opero nie przechowuje dla nich tłumaczeń, więc klucz, który wskazuje jeden z nich, zostaje odrzucony z kodem `locale.unknown_text`:
+
+- nazwy obiektów i ich pól, słowników i zapytań;
+- nazwy formularzy i list, opisy list, etykiety kolumn i etykiety akcji list;
+- teksty pliku JSON Schema użytego zamiast listy pól.
+
+W słowniku tłumaczy się tylko etykiety wpisów.
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `locale.missing_file` | Język z `locales` bez swojego `locales/<lang>.yaml`. | Dodaj plik albo usuń język. |
+| `locale.invalid` | Tekst tam, gdzie powinna być grupa tekstów, albo tekst pusty lub dłuższy niż 2000 znaków. | Odwzoruj strukturę paczki. |
+| `locale.unknown_text` | Klucz, który nie wskazuje żadnego tekstu paczki albo wskazuje tekst, którego się nie tłumaczy. | Popraw klucz albo go usuń. |
+| `manifest.invalid` | `en`, dwa razy ten sam język albo język w złej postaci w `locales`. | Wymień każdy język tłumaczenia raz. |

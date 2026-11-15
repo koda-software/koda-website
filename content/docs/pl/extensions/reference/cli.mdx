@@ -1,6 +1,6 @@
 ---
 title: Narzędzie wiersza poleceń
-description: "Opis opero-ext, narzędzia do rozszerzeń Opero: instalacja i aktualizacja, logowanie i wszystkie polecenia (init, add, validate, pack, types, schema, pull, test, push, plan, install, upgrade, list, orgs, login, guide, version, update) wraz z opcjami, zgodą, wynikiem w JSON i kodami wyjścia."
+description: "Zainstaluj opero-ext, zaloguj się i sprawdź każde polecenie z jego opcjami, zgodą, wynikiem w JSON i kodami wyjścia."
 ---
 
 `opero-ext` to narzędzie wiersza poleceń do rozszerzeń. Tworzy szkielet paczki albo eksportuje ją z twojej organizacji, sprawdza ją, zapisuje plik zip, uruchamia jej testy w Opero, przesyła ją, a także planuje, instaluje i aktualizuje. To jeden plik wykonywalny z wbudowanym Node.js; nic więcej nie jest potrzebne.
@@ -75,7 +75,7 @@ opero-ext update --version 1.4.0
 
 | Polecenie | Co robi | Serwer | Moduł Tworzenie rozszerzeń |
 | --- | --- | --- | --- |
-| `init <folder>` | Zapisuje działającą paczkę z jedną akcją. | Nie | |
+| `init <folder>` | Zapisuje działającą paczkę z jedną akcją i startową [wizytówką](/docs/pl/extensions/reference/listing). | Nie | |
 | `add action <name>` | Dodaje folder akcji i wpisuje go do manifestu. | Nie | |
 | `add filter <name>` | Dodaje folder filtra i wpisuje go na listę. | Nie | |
 | `add trigger <name>` | Dodaje folder wyzwalacza i wpisuje go na listę. | Nie | |
@@ -139,7 +139,7 @@ opero-ext init hello-ext --name Hello --publisher "Your company" --typescript
 | `--publisher <name>` | Nazwa twojej firmy. |
 | `--typescript` | Zapisuje skrypty jako `.ts`, z plikiem `tsconfig.json`. |
 
-Nie nadpisuje istniejących plików. Potem uzupełnij opis, uzasadnienia uprawnień i prawdziwe testy.
+Nie nadpisuje istniejących plików. Oprócz akcji zapisuje startową [wizytówkę](/docs/pl/extensions/reference/listing): `listing/description.md`, `listing/changelog.md` i zastępczą ikonę `listing/icon.png`. Potem uzupełnij opis, podmień tekst i ikonę wizytówki, a także dopisz uzasadnienia uprawnień i prawdziwe testy.
 
 </Accordion>
 <Accordion title="add action, add filter">
@@ -230,14 +230,16 @@ opero-ext validate .
 opero-ext pack . --out hello.zip
 ```
 
-`validate` czyta folder albo zip tak, jak zrobi to Opero, i wypisuje każdy problem. Dla poprawnego folderu zapisuje ponownie `.opero/` (typy skryptów i schematy dla edytora).
+`validate` czyta folder albo zip tak, jak zrobi to Opero, i wypisuje każdy problem. Gdy poprawny folder ma już `.opero/` (zapisane przez `init` albo `add`), zapisuje tam ponownie typy skryptów i schematy dla edytora; do folderu bez `.opero/` nigdy go nie dodaje.
 
 | Opcja | Znaczenie |
 | --- | --- |
 | `--out <file.zip>` | Tylko `pack`. Nazwa pliku zip. Domyślnie `<key>-<version>.zip`. |
 | `--json` | Tylko `validate`. Zobacz [Wynik w JSON](#json-output). |
 
-Zip zawiera tylko pliki, do których prowadzi `extension.yaml`; TypeScript jest pakowany jako zbudowany `.js`. Ten sam folder zawsze daje ten sam zip, bajt w bajt.
+Zip zawiera tylko pliki, do których prowadzi `extension.yaml`, oraz [wizytówkę](/docs/pl/extensions/reference/listing); TypeScript jest pakowany jako zbudowany `.js`. Ten sam folder zawsze daje ten sam zip, bajt w bajt. Gdy paczka ma obrazy wizytówki, `pack` wypisuje po rozmiarze zipa ich łączny rozmiar.
+
+Dla poprawnej paczki oba polecenia dopisują na stderr uwagi, które nie są problemami: że Opero nie pokazuje `README.md`, gdy paczka nie ma `listing/description.md`, oraz które obrazy wizytówki zajmują ponad połowę swojego limitu.
 
 </Accordion>
 <Accordion title="pull">
@@ -281,7 +283,7 @@ opero-ext plan . --server https://opero.example.com/mcp --org <organizationId>
 
 `list` pokazuje zainstalowane rozszerzenia (klucz, wersję, status, czy działa i dlaczego nie, oraz rewizję) i każdą wersję, którą organizacja może zainstalować: jej własne paczki prywatne i udostępnione jej paczki z katalogu, każdą z identyfikatorem paczki.
 
-`plan` przesyła folder albo zip jak `push` albo bierze zapisaną wersję z `--package-id <id>` i wypisuje, co zrobiłaby instalacja albo aktualizacja do niej: uprawnienia z uzasadnieniami, to, co dodaje, wyzwalacze, harmonogramy, połączenie członka, uprawnienia paczki, bloki, akcje członków, linki, zmiany, utratę danych, problemy i skrót planu. Zablokowany plan kończy się kodem 1. Sam plan niczego nie zmienia.
+`plan` przesyła folder albo zip jak `push` albo bierze zapisaną wersję z `--package-id <id>` i wypisuje, co zrobiłaby instalacja albo aktualizacja do niej: uprawnienia z uzasadnieniami, to, co dodaje, wyzwalacze, harmonogramy, połączenie członka, uprawnienia paczki, bloki, akcje członków, linki, zmiany, utratę danych, problemy i skrót planu. Przy aktualizacji zaczyna od sekcji [listy zmian](/docs/pl/extensions/reference/listing#the-changelog) nowszych od zainstalowanej wersji, pod nagłówkiem **New since the installed version**. Zablokowany plan kończy się kodem 1. Sam plan niczego nie zmienia.
 
 </Accordion>
 <Accordion title="install, upgrade">
@@ -364,7 +366,7 @@ Problem jest wypisywany jako kod, potem `file:line #/place`, a potem komunikat:
     Host "api.httpbin.org" is not listed in permissions.network.
 ```
 
-Kontrola offline obejmuje pliki i ich strukturę, łącznie z zakresami danych, których potrzebuje każdy krok, oraz kluczami akcji, zapytaniami, obiektami i blokami, które wskazuje blok; tylko serwer może uruchomić testy i wyrenderować bloki. Pola linku na rekordzie wbudowanym także sprawdza serwer. SQL zapytania i typy pól obiektu sprawdza plan instalacji. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają wszystkie kody.
+Kontrola offline obejmuje pliki i ich strukturę, łącznie z zakresami danych, których potrzebuje każdy krok, oraz kluczami akcji, zapytaniami, obiektami i blokami, które wskazuje blok; tylko serwer może uruchomić testy i wyrenderować bloki. Pola linku na rekordzie wbudowanym także sprawdza serwer. SQL zapytania i typy pól obiektu sprawdza przegląd instalacji. [Kody błędów](/docs/pl/extensions/error-codes) wymieniają wszystkie kody.
 
 ## Cykl pracy [#the-working-loop]
 
@@ -373,7 +375,7 @@ Kontrola offline obejmuje pliki i ich strukturę, łącznie z zakresami danych, 
 Zacznij od `init` albo od `pull` z własnej konfiguracji organizacji.
 </Step>
 <Step>
-Uruchamiaj `validate` po każdej zmianie. Działa offline i szybko, a do tego utrzymuje typy w `.opero/` w zgodzie z twoimi deskryptorami.
+Uruchamiaj `validate` po każdej zmianie. Działa offline i szybko, a w folderze utworzonym przez `init` utrzymuje typy w `.opero/` w zgodzie z twoimi deskryptorami.
 </Step>
 <Step>
 Uruchom `test`, gdy pliki są poprawne.

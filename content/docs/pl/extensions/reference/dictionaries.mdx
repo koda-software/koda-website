@@ -1,9 +1,9 @@
 ---
 title: Słowniki
-description: "Opis dictionary.yaml w rozszerzeniach Opero: pozycje słownika, jego zainstalowany klucz, użycie w polu wyboru, tłumaczenie etykiet pozycji, aktualizacje i odinstalowanie."
+description: Dodaj stałą listę wartości, na przykład statusów, przez dictionary.yaml i używaj jej w polach wyboru obiektów paczki.
 ---
 
-Słownik to stała lista wartości, na przykład statusów albo priorytetów, które oferują pola wyboru. Paczka może przynieść własne słowniki i używać ich w polach swoich [obiektów](/docs/pl/extensions/reference/objects).
+Słownik to stała lista wartości, na przykład statusów albo priorytetów, które oferują pola wyboru. Paczka używa własnych słowników w polach swoich [obiektów](/docs/pl/extensions/reference/objects), tak jak przewodnik [Paczka z własnymi danymi](/docs/pl/extensions/own-data).
 
 ```yaml title="dictionaries/status/dictionary.yaml"
 dictionary: status
@@ -15,20 +15,15 @@ entries:
   - { key: closed, label: Closed, isActive: false }
 ```
 
-Każdy słownik ma własny folder w `dictionaries/`, wymieniony w `extension.yaml`:
+Każdy słownik ma własny folder w `dictionaries/`, wymieniony w `dictionaries` w `extension.yaml`.
 
-```yaml title="extension.yaml"
-dictionaries:
-  - dictionaries/status
-```
-
-## dictionary.yaml
+## dictionary.yaml [#dictionaryyaml]
 
 <TypeTable
   type={{
     dictionary: {
       type: 'string',
-      description: 'Nazwa: małe litery i cyfry w słowach połączonych pojedynczymi myślnikami, do 40 znaków. Unikalna w paczce.',
+      description: 'Nazwa: słowa z małych liter i cyfr połączone pojedynczymi myślnikami, zaczyna się od litery, do 40 znaków. Unikalna w paczce.',
       required: true,
     },
     name: {
@@ -42,19 +37,19 @@ dictionaries:
     },
     entries: {
       type: 'entry[]',
-      description: 'Do 1000 pozycji.',
+      description: 'Do 1000 wpisów.',
       required: true,
     },
   }}
 />
 
-Każda pozycja:
+Każdy wpis:
 
 <TypeTable
   type={{
     key: {
       type: 'string',
-      description: 'Zapisywana wartość, do 100 znaków. Unikalna w słowniku. Aktualizacja dopasowuje pozycje po niej.',
+      description: 'Zapisywana wartość, do 100 znaków. Unikalna w słowniku. Aktualizacja dopasowuje wpisy według niej.',
       required: true,
     },
     label: {
@@ -68,64 +63,41 @@ Każda pozycja:
     },
     icon: {
       type: 'string',
-      description: 'Nazwa ikony.',
+      description: 'Nazwa ikony, do 100 znaków.',
     },
     isActive: {
       type: 'boolean',
-      description: 'false czyni pozycję nieaktywną: nie można jej wybrać przy zapisie rekordu.',
+      description: 'false wyłącza wpis: nie można go wybrać przy zapisie rekordu.',
     },
   }}
 />
 
-## Zainstalowany słownik [#the-installed-dictionary]
+## Klucz po instalacji [#the-installed-key]
 
 Słownik jest instalowany jako słownik organizacji z kluczem `x-<key>-<name>`: `status` rozszerzenia `shop-ext` to `x-shop-ext-status`. Organizacja nie może utworzyć słownika, którego klucz zaczyna się od `x-`.
 
-Pole paczki wskazuje słownik jego nazwą, nie zainstalowanym kluczem:
+Pola paczki wskazują słownik jego nazwą, `options: { dictionary: status }`, a nie kluczem po instalacji. Pole wyboru zapisuje `key` wpisu, więc [zapytanie](/docs/pl/extensions/reference/queries) porównuje z nim: `WHERE f_status = 'open'`.
 
-```yaml title="objects/orders/object.yaml (fragment)"
-  - key: status
-    name: Status
-    type: SELECT
-    options: { dictionary: status }
-```
+## Tłumaczenia [#translations]
 
-Pole wyboru zapisuje `key` pozycji, więc [zapytanie](/docs/pl/extensions/reference/queries) porównuje z nim: `WHERE f_status = 'open'`.
+Tłumaczyć można tylko etykiety wpisów, w `dictionaries.<name>.entries.<key>.label`. `name` i `description` słownika pozostają po angielsku. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations#translatable-keys).
 
-## Tłumaczenie etykiet pozycji [#translating-entry-labels]
+## Aktualizacje [#upgrades]
 
-Etykiety pozycji to jedyne teksty słownika, które można przetłumaczyć. Trafiają do `locales/<lang>.yaml` pod `dictionaries.<name>.entries.<key>.label`:
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Wpis zachowuje klucz | Zachowuje tożsamość, a rekordy zachowują wartości. | |
+| Pominięto wpis | Jest usuwany. Dopóki pola własne organizacji wskazują słownik, przegląd instalacji blokuje. | `dictionary.save_validation` |
+| Usunięto słownik | Jest usuwany albo zachowany jako słownik organizacji, gdy coś nadal go używa. Ostrzeżenie. | `dictionary.released` |
+| Instalacja przejmuje słownik zachowany przy wcześniejszym odinstalowaniu | Słownik znów należy do rozszerzenia. Ostrzeżenie. | `dictionary.adopts_existing` |
 
-```yaml title="locales/pl.yaml"
-dictionaries:
-  status:
-    entries:
-      open: { label: Otwarte }
-      noted: { label: Z notatką }
-      closed: { label: Zamknięte }
-```
-
-`name` i `description` słownika są tylko po angielsku.
-
-## Gdzie widzi je administrator [#where-the-administrator-sees-them]
-
-Plan instalacji wymienia każdy słownik w sekcji **Co się zmieni**. Karta **Zainstalowane dane** rozszerzenia wymienia je tylko do odczytu w sekcji **Zainstalowane słowniki**, z nazwą, zainstalowanym kluczem i liczbą pozycji. Są pominięte na liście zarządzania **Słowniki** i pozostają dostępne wszędzie, gdzie wybiera się słownik, na przykład dla pola wyboru we własnych obiektach organizacji.
-
-Pozycje należą do rozszerzenia: nie da się ich dodać, zmienić, przestawić ani usunąć, chyba że przez aktualizację. Słownik otwarty z odnośnika, na przykład z sekcji **Zarządzane przez to rozszerzenie** na karcie **Szczegóły** rozszerzenia, zaczyna się od „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” i odnośnika **Otwórz rozszerzenie** i nie pozwala na edycję ani usunięcie.
-
-## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
-
-- **Pozycje są dopasowywane po kluczu.** Pozycja, której klucz się nie zmienia, zachowuje tożsamość, a rekordy zachowują swoje wartości. Pozycja pominięta w nowej wersji jest usuwana.
-- **Słownik, który nowa wersja usuwa,** jest kasowany. Jeśli coś w organizacji wciąż go używa, zostaje zamiast tego jako własny słownik organizacji, a plan to zaznacza (`dictionary.released`).
-- **Odinstalowanie** domyślnie zachowuje słowniki jako własne słowniki organizacji. Gdy administrator wybierze usunięcie danych, są one kasowane na stałe, z wyjątkiem tych, których używa coś innego.
+Odinstalowanie domyślnie zachowuje słowniki jako własność organizacji. Co widzi administrator, opisuje strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
 ## Problemy [#problems]
 
-| Kod | Co jest nie tak |
-| --- | --- |
-| `dictionary.invalid` | Nieznany klucz, nazwa o złej postaci, pozycja bez `key` albo `label`, dwie pozycje o tym samym kluczu, kolor niezapisany jako `#RRGGBB`, więcej niż 1000 pozycji albo więcej niż 50 słowników. |
-| `name.duplicate` | Dwa słowniki o tej samej nazwie. |
-| `object.unknown_reference` | Pole wskazuje słownik, którego paczka nie ma. |
-| `dictionary.save_validation` | W planie instalacji: słownika nie da się zapisać, np. dlatego, że zostałaby usunięta pozycja, której wciąż używają pola organizacji. Blokuje instalację. |
-| `dictionary.adopts_existing` | W planie instalacji: przejmowany jest słownik zachowany przy wcześniejszym odinstalowaniu. Ostrzeżenie. |
-| `dictionary.released` | W planie aktualizacji: usuwany słownik zostaje zachowany, bo coś go jeszcze używa. Ostrzeżenie. |
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `dictionary.invalid` | Nieznany klucz, nazwa w złej postaci, wpis bez `key` lub `label`, dwa wpisy o tym samym kluczu, kolor niezapisany jako `#RRGGBB`, więcej niż 1000 wpisów albo więcej niż 50 słowników. | Popraw klucz wskazany w komunikacie. |
+| `name.duplicate` | Dwa słowniki o tej samej nazwie. | Zmień nazwę jednego z nich. |
+| `object.unknown_reference` | Pole wskazuje słownik, którego paczka nie ma. | Popraw nazwę albo dodaj słownik. |
+| `dictionary.save_validation` | W przeglądzie instalacji: słownika nie da się zapisać, na przykład dlatego, że wpisy zostałyby usunięte, a pola własne organizacji wskazują słownik. Blokuje instalację. | Zachowaj wpisy albo poproś organizację o zmianę tych pól. |

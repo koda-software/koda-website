@@ -1,211 +1,156 @@
 ---
-title: After install
-description: "Run an installed Opero extension: the install and upgrade plan, its states, its settings, its installed data, its schedules and connected members, its forms, lists and pages, where its blocks, commands and links are described, what happens when a step fails, how upgrades work and what can block them, and what uninstalling removes or keeps."
+title: Run an installed extension
+description: "Check an installed Opero extension's health, complete its settings and connection, follow its schedules and runs, and decide what members can use."
 ---
 
-An installed extension runs once every required setting has a value and, when it has a connection, the connection is configured, verified and switched on. This page covers what the administrator sees: the plan shown before an install or upgrade, the extension's states, its settings, its data, its schedules and connected members, step failures, upgrades and uninstalling.
+This page covers an extension from the moment it is installed: its health, its three tabs, what members get, and what stays read-only. To install one, see [Install an extension](/docs/en/extensions/install); to upgrade or remove one, see [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall).
 
-## The install plan
+## The list of installed extensions
 
-**Install**, **Upgrade** and **Retry** (after a command stopped part-way) open the same dialog. It shows the plan before anything changes; nothing is installed until you confirm.
+**Extensions** opens on **Installed**. Each row shows what the extension adds, its version and its status; an arrow next to the version means a newer one is available.
 
-| Section | What it shows |
-| --- | --- |
-| **Problems found** | Each problem with its message, marked **Blocking** or **Not blocking**. While one blocks, the confirm button is off and the dialog says **Resolve the blocking issues first.** |
-| **What will change** | Each thing the command creates, changes, leaves alone or removes, marked **Will be created**, **Will change**, **Stays as it is** or **Will be removed**, with its kind: **Rule**, **Template filter**, **Module**, **Object**, **Dictionary** or **Saved query**. A saved query also shows **Reads data** or **Changes data**, and **Show the query's SQL** unfolds its SQL as the package wrote it, with `{{object.<key>}}` where the real table name will go. |
-| **What it adds** | **Rule steps**, **Rule triggers** and **Template filters**, and a note when the extension connects to an outside service. |
-| **What the package may access** | **Hosts its rules may call** and **Data scopes**, each with the author's reason. Each data scope is said in a fixed sentence (listed under [Data permissions](/docs/en/extensions/reference/data-permissions#the-scopes)), after the line "Any rule that uses this extension's steps can then do this in the company it runs in, without its author's own permissions." On an upgrade, what this version asks for that the installed one did not is marked **New in this version**. |
-| **Requirements** | The permissions you need, each marked **You have it** or **Missing**, and the required modules, marked **Module available** or **Not available here**. |
+![Installed extensions with their status; three are inactive](/docs/_assets/extensions/after-install/installed-list.webp)
 
-When the package has [triggers](/docs/en/extensions/reference/triggers), [schedules](/docs/en/extensions/reference/schedules) or a [member connection](/docs/en/extensions/reference/member-connections), the plan also shows them, each in its own section, so that you agree to what runs without anyone pressing a button:
-
-- **Adds triggers your rules can start on**: each trigger with its label, description and the data fields of its events (**Event data**). Each event's data appears in rule run history.
-- **Runs on its own**: each schedule with its label, how often it runs and for what (once, for each active company, or for each connected member), and the action it runs (**Runs:**).
-- **Member accounts: `<label>`**, with the member connection's label: the hosts members sign in at, the scopes members are asked for, what each connection brings in, and the names of the values it stores encrypted and as public information. The plan says that each connected member's data reaches the organization's rules and appears in rule run history. Installing connects no member: each decides for themselves.
-
-When the package has [forms, lists or pages](/docs/en/extensions/reference/screens), the plan also says what members will see (`screens` in the plan that the API, the MCP tools and `opero-ext plan --json` return): each form with its object, its types and the default slots it will take, each list, and each page with its slug. It says that the forms can be used wherever the extension's module `x-<key>` is exposed, and that the pages are visible to every member of every company once installed: narrow them on the extension's page and add them to a menu yourself, because the extension places none.
-
-These parts are covered by your consent like the hosts and scopes: a version that adds a trigger or a schedule, or widens the member connection, has to be agreed to again. They need no organization owner; only data scopes do.
-
-A package with data scopes starts the dialog with the notice "This extension asks for access to data. Only an organization owner can grant data access to an extension, so only an owner can install, upgrade or repair it." For anyone else the confirm button stays off and the dialog says **Only an organization owner can install this extension.**
-
-An upgrade that loses data adds the section **This upgrade deletes data**; see [Upgrading](#upgrading).
-
-If the plan changes while the dialog is open, for example because a rule started using a step, confirming shows "The plan changed since it was shown. Review the updated plan and confirm again." with the new plan.
+**Needs attention** shows only the extensions that do not run, and **Updates** only those with a newer version. Open an extension to see its page.
 
 ## States
 
-The extension's status is shown as one of these, and an enabled extension that does not run also gets a **Not running** mark that says why.
+The status next to the extension's name is one of these. When it does not run, a banner at the top of its page says why, and the button in the header opens the fix.
 
-| Shown as | Meaning |
-| --- | --- |
-| **Enabled**, with no other mark | Running: required modules available, every required setting filled in, and the connection, if there is one, switched on. Steps and filters are offered in the builders. |
-| **Not running: settings incomplete** | A required setting has no value. Fill it in on the **Settings** tab; the list of installed extensions links to it with **Fill in the settings**. |
-| **Not running: connection not enabled** | Normal right after install of a package with a connection. Set up and switch on the connection. |
-| **Not running** | A required module is unavailable, or a catalog package's grant was withdrawn. |
-| **Disabled** | Switched off by an administrator. Everything stays in place and stops. |
-| **Stopped part-way** | An install or upgrade failed in the middle. Run the same command again; it resumes. |
-| **Installing**, **Uninstalling** | A command is running. The other buttons wait for it. |
-
-When the settings are incomplete and the connection is not enabled either, the settings are shown first.
-
-While an extension is not running, its steps are missing from the rule builder, and a saved rule that reaches one fails at that step with `extension_inactive`. Its triggers are missing from the rule builder too, and no event of theirs starts a rule, not even one raised before it stopped. Its schedules wait, and members cannot use their connections. Filters keep working until the extension is disabled, because they call nothing.
-
-## Managed rules and filters
-
-The rules and scripts an extension installs are managed: read-only and hidden from the normal lists. The extension's **Details** tab lists everything it manages under **Managed by this extension**, with a link to each rule, filter, dictionary and saved query.
-
-A managed rule opened from there shows the notice "Read-only: managed by the extension `<key>`." with a link **Open the extension**, and has no **Run** button. An installed rule runs only through its step: running, testing or replaying it by hand, or calling it from another rule, is refused with "This rule belongs to the extension `<key>` and runs only through its rule step, not directly." Managed rules and filters change only when the extension is upgraded.
-
-## Blocks, commands and links
-
-A package can also bring blocks for the organization's pages, actions members run from those blocks or from a record, record links, and its own company permissions. What they do once installed, including what disabling, upgrading and uninstalling do to them, is described with each part: [Blocks](/docs/en/extensions/reference/blocks#after-install), [Block actions and record commands](/docs/en/extensions/reference/member-actions#who-may-use-them), [Record links](/docs/en/extensions/reference/record-links#what-the-install-plan-shows) and [Package permissions](/docs/en/extensions/reference/package-permissions#install-disable-upgrade-uninstall).
-
-## Forms, lists and pages
-
-A package can bring forms for its objects, Custom Lists and workspace pages. Once installed:
-
-- **Members can use them at once.** Pages are exposed to every company and every member, and forms can be used wherever the module `x-<key>` is exposed. Narrow who sees a page (its company exposure and audience) on the extension's page.
-- **No menu entry is added.** Add the pages to a menu yourself. When an uninstall archives a page, its menu items are hidden and kept, and they show again when the extension is installed again.
-- **They are read-only.** Their content changes only with an upgrade. Who may use each form, the object's default forms, a page's exposure and audience, and the menus stay yours, and upgrades never change them.
-- **Disabling** the extension changes nothing for them.
-
-The details, including what an upgrade does to them, are in [Forms, lists and pages](/docs/en/extensions/reference/screens#after-install).
-
-## Settings
-
-When the package has settings, the extension's page has a **Settings** tab right after **Details**. It shows one section per group the package declares, each field with its label, help and default, and marks the required ones.
-
-- **Who can change them.** Reading the settings needs `org.extensions.read`; saving them needs `org.extensions.update`. Without it the form is read-only, and it is also read-only while an install, upgrade or other command runs for the extension.
-- **One value per installed extension.** The values apply to the whole organization, for every company.
-- **Defaults.** A field you never set uses its default. Clear a field and save to go back to the default.
-- **Required settings.** You can save the form with a required field empty, but while a required setting has no value, stored or default, the extension does not run: the tab shows **Settings incomplete** with the missing settings by label, and the extension shows **Not running: settings incomplete**. It runs again as soon as you fill them in and save.
-
-The package's author decides which settings exist; see [Settings](/docs/en/extensions/reference/settings).
-
-## Data
-
-A package can bring its own [objects](/docs/en/extensions/reference/objects), [dictionaries](/docs/en/extensions/reference/dictionaries) and [queries](/docs/en/extensions/reference/queries). After install:
-
-- **The Installed data tab.** The extension's page gains an **Installed data** tab, between **Settings** and **Connection** when those exist. It is read-only and has three parts:
-  - **Objects it installed**: each object with its key and number of records, and a table of its fields (key, name, type). The object's name links to its page.
-  - **Dictionaries it installed**: each dictionary with its name, its installed key and its number of entries.
-  - **Saved queries it installed**: each query with its name, its installed key and how many of the organization's SQL lists, reports and custom blocks use it, then **Reads data** or **Changes data** and **Show the query's SQL**, which unfolds the SQL as installed, with the real table names.
-- **The management screens leave them out.** The **Custom Modules**, **Dictionaries** and **SQL queries** screens do not list the extension's module, objects, dictionaries and queries; they are shown on the extension's page instead.
-- **Everything else offers them.** Rules, Custom List sources, reports, forms, reference and select fields, SQL lists and blocks can pick them like the organization's own.
-- **The shape is the extension's, the records are yours.** Fields, entries and SQL cannot be changed, and the module, objects, dictionaries and queries cannot be deleted, except by an upgrade or an uninstall. Records are added, changed and deleted as usual, and the organization decides which companies see the objects and can build its own forms and lists on them. An object gets a form only when the package ships one ([forms, lists and pages](/docs/en/extensions/reference/screens)).
-- **Disabling** the extension changes nothing for its data: objects, dictionaries and queries stay usable.
-
-When the module, an object, a dictionary or a query is opened by a link, its page starts with the notice "Read-only: managed by the extension `<key>`." and the link **Open the extension**, and offers only what the organization may still do:
-
-| Opened | Not offered | Still offered |
+| Status | What it means | What to do |
 | --- | --- | --- |
-| The module | **Edit**, **Drafts**, **Delete**, new objects | Which companies see it |
-| An object | Changes to its fields, which are shown as a read-only table; **Delete object** | Forms, which companies see it, record access |
-| A dictionary | Editing it and its entries, deleting it; its edit address leads back to the dictionary | |
-| A saved query | Editing and deleting it | Running it |
+| **Running** | Everything it needs is in place. Its steps and filters are offered in the builders. | Nothing. |
+| **Needs settings** | A required setting has no value. | Press **Complete settings** and fill it in. |
+| **Inactive** | The connection is not enabled. This is normal right after installing a package with a connection. | Press **Connect**, then test and activate the connection. |
+| **Not running** | A module it needs is not available to this organization, or the catalog no longer offers it. | Enable the module, or ask the installation's administrator. |
+| **Disabled** | An administrator switched it off. Everything stays in place and stops. | Choose **Enabled** from the status menu. |
+| **Stopped part-way** | An install or upgrade failed in the middle. | Press **Retry**. The command resumes where it stopped. |
+| **Installing**, **Uninstalling** | A command is running. | Wait; the other buttons are off until it ends. |
 
-A package with [data scopes](/docs/en/extensions/reference/data-permissions) lets its steps read and write its own objects, run its queries, update contractors and send messages on the extension's authority, in the company of the rule that uses the step. Only an organization owner can install or upgrade it.
+While an extension does not run, its steps and triggers are missing from the rule builder. A saved rule that reaches one of its steps fails at that step with `extension_inactive`, and no event of its triggers starts a rule. Its schedules wait, and members cannot use their connections. Its template filters keep working until it is disabled.
 
-## Schedules and connected members
+## Overview
 
-When the package has [schedules](/docs/en/extensions/reference/schedules), the extension's page has a **Schedules** tab. Each schedule shows how often it runs and for what, its subjects (once for the organization, one per active company, or one per connected member), how many are **Due now**, **Running now**, **Failing** and, for a schedule over members, **Waiting to reconnect**, and its **Last success**. Its state is one of:
+**Overview** shows the description and **What it adds**: everything the extension installed, grouped by what it is for. Each item says whether rules use it.
 
-| State | Meaning |
+Select an item to see its details: what it does, where it is used and, for a rule step, the steps it runs.
+
+![A rule step's details: what it does, where it is used and how it works](/docs/_assets/extensions/after-install/content-step.webp)
+
+The side column shows **Update available** when there is a newer version, **What it can reach** and **About** the package. **Package details** unfolds its checksum.
+
+## Configuration
+
+**Configuration** holds the extension's settings, its connection and what it was allowed to reach. Changing them needs `org.extensions.update`.
+
+![The Configuration tab with a settings section and the connection](/docs/_assets/extensions/after-install/configuration.webp)
+
+| Section | What you do |
 | --- | --- |
-| **Waiting for the extension** | The extension is not running, so nothing runs. When it runs again, each due subject runs once; missed runs are not made up. |
-| **Not started yet** | No subjects yet. They are added within a minute of the extension running. |
-| **Some runs failing** | A subject's last run failed. It is retried with growing waits, never longer than the interval, and stops counting as failing at its next success. A rate limit is not a failure. |
-| **First run pending** | Nothing has succeeded or failed yet. Each new subject has its first run within its first interval. |
+| Settings, one section per group | Fill in the values and press **Save changes**. A field you never set uses its default. While a required setting has no value, the extension does not run. |
+| **Connection** | Enter the credentials and save, press **Test connection**, then **Activate**. The extension's steps run only while the connection is active. |
+| **What it can reach** | Read only: the hosts and data access it was granted when it was installed. |
+
+Settings apply to the whole organization. The form is read-only while a command runs for the extension, and the connection is read-only while the extension is disabled.
+
+## Activity
+
+**Activity** appears when the extension has rules, schedules or a member connection.
+
+### Schedules
+
+Each schedule shows how often it runs and for what, how many subjects it has (the organization, each active company or each connected member), and how many are due, running, failing or waiting to reconnect.
+
+![The Activity tab: a schedule waiting for the extension, and Recent runs](/docs/_assets/extensions/after-install/activity-schedules.webp)
+
+| State | What it means |
+| --- | --- |
 | **On schedule** | Runs have succeeded and none is failing. |
+| **First run pending** | Nothing has run yet. Each new subject runs within its first interval. |
+| **Not started yet** | No subjects yet. They are added within a minute of the extension running. |
+| **No member connected** | A schedule for each member, and no member has connected yet. |
+| **Some runs failing** | A subject's last run failed. It is retried with growing waits, never longer than the interval. A rate limit is not a failure. |
+| **Waiting for the extension** | The extension does not run. When it runs again, each waiting subject runs once; missed runs are not repeated. |
 
-A subject that stays due for more than a few minutes while the extension runs means Opero's background work is behind. The tab shows no run's data: each run is a run of the action's installed rule, in that rule's run history.
+A subject that stays due for more than a few minutes while the extension runs means Opero's background work is behind.
 
-When the package has a [member connection](/docs/en/extensions/reference/member-connections), the page also has a **Connected members** tab. Its **Member connection** card shows the package's label for it and how many members are connected and waiting to reconnect. Below, each connected member is listed with their company (**Not chosen** until they pick one), when they connected, their **Last successful sync** (**First sync pending** before the first), their status and the last error. The status is **Active**, **Last sync failed** or **Waiting for the member to reconnect**.
+### Connected members
 
-A member waits for themselves when the service refused their token, when an upgrade asks them for more, or when their connection cannot be used, for example because the chosen company is no longer theirs; the last error says which. A member who has not chosen a company yet is skipped without a failure. At most 200 members are listed, with the total.
+For a package with a [member connection](/docs/en/extensions/reference/member-connections), **Connected members** lists each member who connected their own account: their company, their **Last successful sync**, their state and the **Last error**.
 
-Members connect on their own account page: **Connected apps** in their account settings opens **Connected apps and services**, where the extension's member connection appears for each organization that has it installed and running. There a member presses **Connect**, fills in their form, sees when their data last synced, and opens the connection, which has **Disconnect**. A connection that needs them is listed under **Needs attention** with **Reconnect account**. A member sees only their own connection.
+![The Connected members section of an extension that no member has connected to yet](/docs/_assets/extensions/after-install/activity-members.webp)
+
+A member in **Waiting for the member to reconnect** has to connect again: the service refused their account, an upgrade asks for more, or the company they chose is no longer theirs. Members connect on their own account page, under **Connected apps**.
+
+### Recent runs
+
+**Recent runs** lists the latest runs of the extension's rules. Viewing them needs permission to read rules.
+
+## What members can use
+
+When the package offers block buttons, record commands or record links, **Overview** lists them under **What members can use**.
+
+![Actions and links members can use, each with the permission it needs](/docs/_assets/extensions/after-install/member-actions.webp)
+
+A member uses one only in a company it is offered to, only if they are in its audience, and only with the permission it needs on their company role. After installing, each is offered to every company and all their members; **Manage access** narrows that.
+
+## What the organization does next
+
+The package brings parts; the organization decides where members meet them.
+
+| Task | Where |
+| --- | --- |
+| Give the package permissions to company roles | **Roles**. Installing grants them to no one, so until then no member can use the block buttons, commands and links. |
+| Place the package's blocks on pages | The page editor, like your own blocks. |
+| Add the package's pages to a menu | **Menus**. The extension places none in a menu itself. |
+| Narrow which companies and members see a block button, a command or a link | **Manage access** under **What members can use**. |
+| Narrow which companies and members see a page | The page's details under **What it adds**. |
+| Build rules on its steps and triggers | **Rules**. Its steps and triggers are in the rule builder's lists. |
+
+## Managed assets
+
+What an extension installs is managed by it: its rules, filters, module, objects, dictionaries, queries, blocks, forms, lists and pages. They change only when the extension is upgraded.
+
+A managed asset opened from **What it adds** says so at the top and offers only what stays yours.
+
+![A rule installed by an extension, shown read-only](/docs/_assets/extensions/after-install/managed-rule.webp)
+
+| Asset | Read-only | Still yours |
+| --- | --- | --- |
+| Rules and template filters | Everything. A managed rule runs only through its step, never by hand or from another rule. | Nothing. |
+| The module and its objects | Fields, the module itself, deleting them. | Records, which companies see them, record access, your own forms and lists on them. |
+| Dictionaries | Entries, deleting it. | Using it in your own fields. |
+| Saved queries | The SQL, deleting it. | Running it, using it in SQL lists, reports and blocks. |
+| Blocks, forms, lists and pages | Their content. | Who may use each form, the object's default forms, a page's exposure and audience, menus, where blocks are placed. |
+
+Managed rules, scripts, the module, objects, dictionaries and queries are left out of their normal management lists. Pickers in rules, lists, reports, forms and blocks still offer them.
+
+## Disable an extension
+
+Open the status menu next to the name and choose **Disabled**, then confirm **Disable extension**. The dialog lists the active rules that use its steps or triggers: until you enable it again, its triggers start nothing and its steps fail.
+
+Everything it installed stays in place. Its data, forms, lists and pages keep working, its blocks show a notice instead of their content, and members' connections are kept. Choose **Enabled** to switch it back on.
+
+## The install plan
+
+The review shown before an install or upgrade is described in [Install an extension](/docs/en/extensions/install#the-install-review).
 
 ## When a step fails
 
-A failed step carries one of these codes. Connect the step's error port to handle them in the rule.
-
-| Code on the step | Cause |
-| --- | --- |
-| `EXTENSION_ACTION_FAILED` | The action failed, usually because the service answered with an error. Carries `httpStatus`. |
-| `EXTENSION_ACTION_RATE_LIMITED` | The service answered `429`. Carries `retryAfterSeconds` when the service sent it. |
-| `EXTENSION_ACTION_INPUT_INVALID` | The step's input did not match the input fields. |
-| `EXTENSION_ACTION_OUTPUT_INVALID` | The result did not match the output fields. |
-
-When a data step of the extension is refused while it runs, the extension's own rule shows `EXTENSION_SCOPE_DENIED` on its run, and your rule's step fails with `EXTENSION_ACTION_FAILED`.
-
-The message never quotes what the service sent back, because an error body could repeat a secret.
-
-<Callout type="idea" title="Retry on rate limits">
-`EXTENSION_ACTION_RATE_LIMITED` means the service is busy, not that the request was wrong. Handle it on the error port separately from other failures, and use `retryAfterSeconds` to decide when to try again.
-</Callout>
+The codes a failed step carries are listed in [Actions](/docs/en/extensions/reference/actions#when-a-step-fails).
 
 ## Upgrading
 
-Upload a package with a higher version. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm.
-
-- A version is fixed once uploaded. Uploading the same file again changes nothing; a different file with the same version is refused.
-- If the new version removes a step that the organization's rules use, the upgrade is blocked until those rules stop using it (`step.in_use`).
-- If it removes a filter a rule uses, the upgrade is blocked (`filter.in_use`). Templates elsewhere are not checked, so you get a warning either way.
-- If it removes a trigger an organization rule uses, the upgrade is blocked until no rule uses it (`trigger.in_use`). If it removes data fields of a trigger a rule uses, the plan warns (`trigger.data_field_removed`).
-- If it removes a schedule or changes what it runs for, the old schedule's subjects are dropped; a shorter interval applies at once.
-- If it asks members for more (a new scope, another sign-in or token host, a new stored value), the plan warns (`member.reconsent_required`), and after the upgrade every connected member must connect again before anything runs for them.
-- If it changes the credential fields, the connection is switched off after the upgrade until it is verified again. Changes to the settings never do this.
-- If it removes a setting that has a stored value, or changes a setting so that its stored value no longer fits, the value is dropped (`settings.value_dropped`).
-- If it adds a required setting without a default, the extension does not run after the upgrade until you fill it in (`settings.incomplete_after_upgrade`). Neither of these settings problems blocks the upgrade.
-- If it asks for new hosts or data scopes, the plan shows them, with their reasons, as **New in this version**.
-- If it drops an object or a field, or changes a field so that its values must be cleared, the plan shows the section **This upgrade deletes data** (below).
-- If it drops a query that an active SQL list, report or custom block uses, the upgrade is blocked until they stop using it (`query.in_use`).
-- If it drops a dictionary, the dictionary is deleted, or kept as the organization's own when something still uses it (`dictionary.released`).
-- If it drops a form, the form is deleted, and the plan warns when the organization's layouts, lists or blocks name it (`form.in_use`) or when an object is left without a form of a type (`object.formless`). If it drops a list or a page, it is archived, and the plan warns when the organization's layouts embed the list (`list.in_use`) or its menus open the page (`page.in_use`). None of these block.
-
-**This upgrade deletes data** lists each loss with its number of records:
-
-- **Object `<name>` is deleted with its records**
-- **Field `<name>` is deleted with its values**
-- **The values of field `<name>` are cleared**
-- **The translations of field `<name>` are deleted**
-
-The **Upgrade** button stays off until you tick **I understand that this data is deleted for good.** If the data to lose changed after the plan was shown, the upgrade is refused with "This upgrade deletes data. Review what is lost and confirm it before upgrading.", the plan is read again and you tick the box again.
-
-<Callout title="Keep names stable">
-A step keeps its identity as long as the action's name stays the same, and a rule-file step keeps its identity as long as its id stays the same. Rename folders freely; keep `action` names and step ids.
-</Callout>
+See [Upgrade an extension](/docs/en/extensions/upgrade-and-uninstall#upgrade-an-extension).
 
 ## Uninstalling
 
-**Uninstall** opens the dialog **Uninstall this extension?**, which first reads what the uninstall takes with it. It always removes the installed rules, the filters, the stored settings, the schedules, and the connection with every stored credential; the dialog says so ("Its rules, its template filters and its connection with every stored credential are always removed."). The organization's rules never block it.
+See [Uninstall an extension](/docs/en/extensions/upgrade-and-uninstall#uninstall-an-extension).
 
-It also always removes the package's [forms, lists and pages](/docs/en/extensions/reference/screens#uninstall): the forms are deleted, with nothing generated in their place, and the lists and pages are archived as removed by the extension. What is read beforehand lists each form with the organization's layouts, lists and blocks that name it and the access set on it, which is lost; each list with the layouts that embed it; each page with the menu items that open it; and, first, each object that will be left without a form, with its number of records and what to do next.
+## Next
 
-The dialog then shows:
-
-- The organization's rules that use the extension's steps or start on its triggers. Active ones are listed after "N active rules use this extension's steps or triggers and will stop (quarantined):". Inactive ones are listed too: they keep the steps and triggers but cannot be enabled until you remove them.
-- **Saved queries.** Each query of the extension, with what happens to it: **kept as your own query** when an SQL list, report or custom block uses it (with how many), otherwise **deleted: nothing uses it**. This is the same whichever choice you make below.
-- **What happens to its data**, for an extension with objects or dictionaries: **Keep the data** (chosen at first) or **Delete the data**.
-
-| Choice | Objects with their records, the module, the dictionaries |
-| --- | --- |
-| **Keep the data** | Kept, as the organization's own: back in the management lists and editable. Installing the extension again takes them over. |
-| **Delete the data** | Deleted for good, with the forms, view layouts and Custom Lists built on the objects and the organization's own reference fields that point at them; the organization's rules that name an object are stopped (quarantined). A dictionary something else still uses is kept. |
-
-Choosing **Delete the data** lists, for each object, its records, what is deleted with it and the rules that name it, then each dictionary with its entries and whether it is kept. You confirm by typing the extension's key in **Type `<key>` to confirm**. The button reads **Uninstall and keep the data** or **Uninstall and delete the data**.
-
-**Delete the data** cannot be chosen:
-
-- while a saved query that is kept reads a table the deletion would drop: the dialog shows **The data cannot be deleted yet** with the reasons. Stop using the query in those lists, reports or blocks first;
-- when you lack a permission it needs: the choice names them ("You lack: …").
-
-If you lack a permission even keeping the data needs, the dialog lists it under **You lack these permissions** and the uninstall cannot be confirmed. Either way nothing is changed before the check passes.
-
-When the package has a member connection, the dialog adds "Members' connected accounts are disconnected.": the package's `beforeDisconnect` action runs for each member, then every member's connection is removed. Disabling keeps them.
-
-<Callout type="warn" title="Rules that use the extension stop">
-The organization's rules that use the extension's steps or start on its triggers are stopped and marked as quarantined; the dialog lists them. Reinstalling the extension and switching its connection on lets those rules be saved and enabled again.
-</Callout>
+<Cards>
+  <Card title="Upgrade and uninstall" href="/docs/en/extensions/upgrade-and-uninstall">
+    Review a new version, or remove the extension.
+  </Card>
+</Cards>

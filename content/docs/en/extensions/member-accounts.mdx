@@ -1,0 +1,411 @@
+---
+title: Data from each member's account
+description: "Build an Opero extension where each member connects their own account at a service, and a schedule brings each member's new data to the rules."
+---
+
+Some data belongs to people, not companies: each member's activities in a fitness or travel service, for example. This guide builds **Member activities**. The organization enters the service's OAuth client once. Each member then connects their own account, and every hour a schedule reads each connected member's new activities with that member's token and raises the trigger **Activity synced** (`x-member-activities.activity`).
+
+![What the install review shows about the schedule and the member accounts](/docs/_assets/extensions/member-accounts/review-member-accounts.webp)
+
+<Files>
+  <Folder name="member-activities" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="connection" defaultOpen>
+      <File name="connection.yaml" />
+      <File name="member.yaml" />
+    </Folder>
+    <Folder name="actions" defaultOpen>
+      <Folder name="verify-client"><File name="action.yaml" /><File name="rule.yaml" /><File name="tests.yaml" /></Folder>
+      <Folder name="register-member"><File name="action.yaml" /><File name="input.yaml" /><File name="rule.yaml" /><File name="tests.yaml" /></Folder>
+      <Folder name="sync-member"><File name="action.yaml" /><File name="input.yaml" /><File name="rule.yaml" /><File name="tests.yaml" /></Folder>
+    </Folder>
+    <Folder name="triggers" defaultOpen>
+      <Folder name="activity"><File name="trigger.yaml" /></Folder>
+    </Folder>
+    <Folder name="schedules" defaultOpen>
+      <Folder name="sync-members"><File name="schedule.yaml" /></Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+It works like [Events from a service](/docs/en/extensions/scheduled-events), with three differences: a member connection, a trigger that names the member, and a schedule that runs for each connected member.
+
+<Steps>
+<Step>
+### Write the manifest
+
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: member-activities
+version: 1.0.0
+name: Member activities
+description: Members connect their sandbox account; their new activities reach the company's rules every hour.
+publisher: Your company
+requires:
+  modules: [rules]
+permissions:
+  network:
+    - host: auth.example.com
+      reason: Members sign in to the sandbox here.
+    - host: api.example.com
+      reason: Exchanges a member's sign-in for a token, registers members and reads their activities.
+
+connection: connection
+
+actions:
+  - actions/verify-client
+  - actions/register-member
+  - actions/sync-member
+triggers:
+  - triggers/activity
+schedules:
+  - schedules/sync-members
+
+locales: [pl]
+```
+
+Both hosts are listed: members sign in at the first, and the token exchange and the API are on the second.
+</Step>
+
+<Step>
+### Add the connection with the OAuth client
+
+The organization's connection holds the service's OAuth client. Its verify action checks the client by sending it as HTTP Basic with `auth: connection`.
+
+```yaml title="connection/connection.yaml"
+methods:
+  - method: client
+    kind: custom
+    label: Sandbox API client
+    fields:
+      clientId: { type: text, label: Client ID, required: true, secret: false }
+      clientSecret: { type: text, label: Client secret, required: true }
+    scheme: { kind: basic, username: clientId, password: clientSecret }
+verify: verify_client
+member: member.yaml
+```
+
+```yaml title="actions/verify-client/action.yaml"
+action: verify_client
+label: Check the API client
+run: rule.yaml
+tests: tests.yaml
+```
+
+```yaml title="actions/verify-client/rule.yaml"
+entryStepId: check
+steps:
+  - id: check
+    type: CALL_WEBHOOK
+    name: Check the client
+    config:
+      method: GET
+      url: https://api.example.com/v1/client
+      auth: connection
+edges: []
+```
+
+```yaml title="actions/verify-client/tests.yaml"
+- name: the client is sent as HTTP Basic
+  connection: { clientId: client-1, clientSecret: secret-1 }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/client
+        headers: { authorization: Basic Y2xpZW50LTE6c2VjcmV0LTE= }
+      response: { status: 200 }
+  succeeds: true
+```
+
+See [HTTP Basic from the connection](/docs/en/extensions/reference/connection-and-secrets#http-basic-from-the-connection).
+</Step>
+
+<Step>
+### Describe how members connect
+
+`member.yaml` is what members see and agree to: the OAuth addresses and scopes, the form they fill in, and the data that reaches Opero.
+
+```yaml title="connection/member.yaml"
+label: Sandbox account
+description: Sends your sandbox activities to your company's rules.
+oauth:
+  authorize: https://auth.example.com/oauth2/authorize
+  token: https://api.example.com/oauth2/token
+  scopes: [activities.read]
+  client: { id: clientId, secret: clientSecret }
+config:
+  companyId: { type: company, label: Company receiving your data, required: true }
+data:
+  - Activities
+afterConnect:
+  action: register_member
+  output:
+    sandboxUserId: meta
+```
+
+`client` takes the OAuth client from the connection's fields. `config.companyId` asks each member which company their data goes to. After the member agrees, `afterConnect` runs `register_member` and stores its `sandboxUserId` output as public information about the connection. See [member.yaml](/docs/en/extensions/reference/member-connections#memberyaml).
+</Step>
+
+<Step>
+### Register the member
+
+```yaml title="actions/register-member/action.yaml"
+action: register_member
+label: Register a member
+input: input.yaml
+output:
+  sandboxUserId: { type: text, label: Sandbox user }
+run: rule.yaml
+tests: tests.yaml
+```
+
+```yaml title="actions/register-member/input.yaml"
+type: object
+properties:
+  credentialId: { type: string }
+  token: { type: object }
+  config: { type: object }
+required: [credentialId]
+```
+
+```yaml title="actions/register-member/rule.yaml"
+entryStepId: register
+steps:
+  - id: register
+    type: CALL_WEBHOOK
+    name: Register
+    contextKey: registered
+    config:
+      method: POST
+      url: https://api.example.com/v1/users
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+      body: { memberId: "{{ trigger.data.credentialId }}" }
+  - id: keep
+    type: SAVE_TO_CONTEXT
+    name: Keep the id
+    contextKey: output
+    config:
+      value: { sandboxUserId: "{{ registered.body.id }}" }
+edges:
+  - { fromStepId: register, toStepId: keep }
+```
+
+```yaml title="actions/register-member/tests.yaml"
+- name: a member is registered
+  input: { credentialId: c_1, token: { scopes: [activities.read] }, config: { companyId: co_1 } }
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: POST
+        url: https://api.example.com/v1/users
+        headers: { authorization: Bearer test-token }
+        body: { memberId: c_1 }
+      response: { status: 201, body: { id: "1234" } }
+  returns: { sandboxUserId: "1234" }
+```
+
+`{{ userConnection.accessToken }}` is the member's token, put in only while the request is sent. An action that uses it is a member action: it runs only for one member, never as a rule step. In a test, `userConnection` gives that token. See [Connecting: afterConnect](/docs/en/extensions/reference/member-connections#connecting-afterconnect).
+</Step>
+
+<Step>
+### Declare a trigger that names the member
+
+```yaml title="triggers/activity/trigger.yaml"
+trigger: activity
+label: Activity synced
+description: A member's activity is new or changed in the sandbox.
+data:
+  userId: { type: text, label: Member, required: true }
+  id: { type: text, label: Activity, required: true }
+  kind: { type: text, label: Kind, required: true }
+  distanceMeters: { type: number, label: Distance in meters, nullable: true }
+config:
+  member: { type: text, label: Only this member, match: userId }
+```
+
+The data carries the member (`userId`), and the filter **Only this member** lets a rule follow one person.
+</Step>
+
+<Step>
+### Run the schedule for each member
+
+```yaml title="schedules/sync-members/schedule.yaml"
+schedule: sync_members
+label: Sync connected members
+description: Reads each connected member's new activities every hour.
+every: 1h
+forEach: userConnection
+action: sync_member
+```
+
+`forEach: userConnection` gives each connected member their own run. The run's `subject` carries the member's `meta`, and the rule sends that member's token:
+
+```yaml title="actions/sync-member/action.yaml"
+action: sync_member
+label: Sync one member
+input: input.yaml
+run: rule.yaml
+tests: tests.yaml
+```
+
+```yaml title="actions/sync-member/input.yaml"
+type: object
+properties:
+  subject: { type: object }
+  lastSucceededAt: { type: [string, "null"] }
+  firstRun: { type: boolean }
+required: [subject, firstRun]
+```
+
+```yaml title="actions/sync-member/rule.yaml"
+entryStepId: fetch
+steps:
+  - id: fetch
+    type: CALL_WEBHOOK
+    name: New activities
+    contextKey: activities
+    config:
+      method: GET
+      url: "https://api.example.com/v1/activities?user={{ trigger.data.subject.meta.sandboxUserId }}"
+      headers: { Authorization: "Bearer {{ userConnection.accessToken }}" }
+  - id: emit
+    type: EMIT_EVENT
+    name: Raise activity events
+    config:
+      event: activity
+      items: "{{ activities.body.items }}"
+      key: id
+      dedupe: true
+edges:
+  - { fromStepId: fetch, toStepId: emit }
+```
+
+Each member's events go to the company they chose, and dedupe remembers each member's activities separately. See [Schedules](/docs/en/extensions/reference/schedules).
+</Step>
+
+<Step>
+### Test with the member's values
+
+```yaml title="actions/sync-member/tests.yaml"
+- name: a new activity raises an event
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: null
+    firstRun: true
+  userConnection: { accessToken: test-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer test-token }
+      response:
+        status: 200
+        body: { items: [{ userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }] }
+  events:
+    - event: activity
+      key: a-1
+      data: { userId: u_1, id: a-1, kind: run, distanceMeters: 5200 }
+  succeeds: true
+
+- name: a revoked token
+  input:
+    subject: { kind: userConnection, userId: u_1, credentialId: c_1, companyId: co_1, config: { companyId: co_1 }, meta: { sandboxUserId: "1234" } }
+    lastSucceededAt: "2026-11-02T10:00:00Z"
+    firstRun: false
+  userConnection: { accessToken: revoked-token }
+  http:
+    - request:
+        method: GET
+        url: https://api.example.com/v1/activities?user=1234
+        headers: { authorization: Bearer revoked-token }
+      response: { status: 401 }
+  credentialRevoked: true
+```
+
+The second case shows a service that refuses the member's token. In a real run, nothing more runs for that member until they connect again. See [A refused token](/docs/en/extensions/reference/member-connections#a-refused-token).
+</Step>
+
+<Step>
+### Translate it
+
+```yaml title="locales/pl.yaml"
+extension:
+  name: Aktywności członków
+  description: Członkowie łączą swoje konto w sandboksie, a ich nowe aktywności co godzinę trafiają do reguł firmy.
+permissions:
+  network:
+    auth.example.com: { reason: Tutaj członkowie logują się do sandboksa. }
+    api.example.com: { reason: "Wymienia logowanie członka na token, rejestruje członków i odczytuje ich aktywności." }
+member:
+  label: Konto sandboksa
+  description: Wysyła Twoje aktywności z sandboksa do reguł Twojej firmy.
+  data:
+    "0": Aktywności
+  config:
+    companyId: { label: Firma otrzymująca Twoje dane }
+triggers:
+  activity:
+    label: Zsynchronizowana aktywność
+    description: Aktywność członka jest nowa albo zmieniła się w sandboksie.
+    data:
+      userId: { label: Członek }
+      id: { label: Aktywność }
+      kind: { label: Rodzaj }
+      distanceMeters: { label: Dystans w metrach }
+    config:
+      member: { label: Tylko ten członek }
+schedules:
+  sync_members:
+    label: Synchronizacja połączonych członków
+    description: Co godzinę odczytuje nowe aktywności każdego połączonego członka.
+```
+</Step>
+
+<Step>
+### Validate, test and pack
+
+```bash title="Terminal"
+opero-ext validate .
+opero-ext test . --server https://opero.example.com/mcp
+opero-ext pack .
+```
+
+```txt title="Output"
+member-activities 1.0.0 is valid.
+Result  Part             Test                                   Name
+PASS    verify_client    actions/verify-client/tests.yaml#/0    the client is sent as HTTP Basic
+PASS    register_member  actions/register-member/tests.yaml#/0  a member is registered
+PASS    sync_member      actions/sync-member/tests.yaml#/0      a new activity raises an event
+PASS    sync_member      actions/sync-member/tests.yaml#/1      a revoked token
+
+4 of 4 tests passed.
+Wrote …/member-activities-1.0.0.zip (6070 bytes)
+```
+</Step>
+</Steps>
+
+## After install
+
+[Install the zip](/docs/en/extensions/install) as usual; installing connects no member. Then an administrator sets up the connection on the **Configuration** tab with the service's client ID and secret, tests it and activates it:
+
+![The connection on the Configuration tab, asking for the OAuth client's ID and secret](/docs/_assets/extensions/member-accounts/client-connection.webp)
+
+## What members do
+
+While the extension is running, each member finds **Sandbox account** on **Connected apps** in their account settings. A member presses **Connect**, signs in at the service, and chooses the company that receives their data. Opening the connection shows **Connected on**, **Last synced** and **What reaches Opero**, and **Disconnect** removes it. A connection that stopped working is listed under **Needs attention**, with **Reconnect account**.
+
+The administrator follows the members on the extension's **Activity** tab, under **Connected members**: see [Connected members](/docs/en/extensions/after-install#connected-members).
+
+## Next
+
+<Cards>
+  <Card title="Member connections" href="/docs/en/extensions/reference/member-connections">
+    Every key of member.yaml, beforeDisconnect, refused tokens and re-consent.
+  </Card>
+  <Card title="A block, a button and a link" href="/docs/en/extensions/blocks-and-actions">
+    Let members run the package's actions from a block and a record.
+  </Card>
+</Cards>

@@ -1,9 +1,9 @@
 ---
 title: Objects
-description: "Reference for object.yaml in Opero extensions: an object's keys and fields, references to the package's own objects and dictionaries, the x-<key> module, no form, upgrades and where the administrator sees them."
+description: Bring your own tables of records with object.yaml, with fields, references to the package's own objects and dictionaries, and the x-<key> module.
 ---
 
-An object is a table of records that the extension brings with it, such as orders or shipments. When the package is installed, Opero creates a real table for each object, in one module named after the extension: `x-<key>`. The organization then works with the records like with any other object, and the package's own rules can read and write them through [data steps](/docs/en/extensions/reference/data-steps).
+An object is a table of records the extension brings with it, such as orders or shipments. At install, Opero creates a real table for each object, in one module named after the extension, `x-<key>`; the package's rules reach the records through [data steps](/docs/en/extensions/reference/data-steps). The guide [A package with its own data](/docs/en/extensions/own-data) builds two.
 
 ```yaml title="objects/orders/object.yaml"
 object: orders
@@ -23,15 +23,7 @@ fields:
     options: { toObject: order-notes }
 ```
 
-Each object has its own folder in `objects/`, listed in `extension.yaml`. A package with objects lists the `objects` module in `requires.modules`:
-
-```yaml title="extension.yaml"
-requires:
-  modules: [rules, objects]
-objects:
-  - objects/orders
-  - objects/order-notes
-```
+Each object has its own folder in `objects/`, listed under `objects` in `extension.yaml`, and a package with objects lists `objects` in `requires.modules`.
 
 ## object.yaml
 
@@ -68,9 +60,7 @@ objects:
   }}
 />
 
-The other keys the schema builder takes for a new object are accepted too: `isActive`, `isHidden`, `isSingleton`, `isTimeTrackable`, `kind`, `displayLabel`, `recordVisibility`, `recordTenancy`, `recordOwnerField`, `recordLinkedOwnerField`, `recordLinkedOwnerTargetField`, `documentContentFieldKey`, `documentTitleFieldKey` and `contentSourceLanguage`. Opero checks their values when the package is planned for installation, the same way it checks an object an administrator creates.
-
-`id`, `clientId` and `key` are not part of `object.yaml`: the object's key is `object`.
+The other keys the schema builder takes for a new object are accepted too: `isActive`, `isHidden`, `isSingleton`, `isTimeTrackable`, `kind`, `displayLabel`, `recordVisibility`, `recordTenancy`, `recordOwnerField`, `recordLinkedOwnerField`, `recordLinkedOwnerTargetField`, `documentContentFieldKey`, `documentTitleFieldKey` and `contentSourceLanguage`. Their values are checked in the install review, as for an object an administrator creates.
 
 ## Fields
 
@@ -78,7 +68,7 @@ The other keys the schema builder takes for a new object are accepted too: `isAc
   type={{
     key: {
       type: 'string',
-      description: 'A lower-case letter, then lower-case letters, digits and _, up to 50 characters. Unique in the object.',
+      description: 'A lower-case letter, then lower-case letters, digits and _, up to 50 characters. Unique in the object. In a query, the column f_<key>.',
       required: true,
     },
     name: {
@@ -88,12 +78,12 @@ The other keys the schema builder takes for a new object are accepted too: `isAc
     },
     type: {
       type: 'string',
-      description: 'The field type, in upper case, such as TEXT, NUMBER, DATE, SELECT or REFERENCE.',
+      description: 'The schema builder\'s field type, in upper case: TEXT, NUMBER, DATE, SELECT, REFERENCE and the others it offers.',
       required: true,
     },
     options: {
       type: 'object',
-      description: 'The options of the field type, as the schema builder takes them, with the two portable references below.',
+      description: 'The options of the field type, as the schema builder takes them, with the references below.',
     },
     isIndexed: {
       type: 'boolean',
@@ -109,73 +99,49 @@ The other keys the schema builder takes for a new object are accepted too: `isAc
     },
     position: {
       type: 'integer',
-      description: 'The field\'s place in the order of fields.',
+      description: 'The field\'s place in the order of fields, from 0.',
     },
   }}
 />
 
-The field types are the schema builder's: `TEXT`, `TEXTAREA`, `RICH_TEXT`, `NUMBER`, `DECIMAL`, `CURRENCY`, `BOOLEAN`, `DATE`, `DATETIME`, `SELECT`, `MULTI_SELECT`, `REFERENCE`, `EMAIL`, `PHONE`, `URL` and the others it offers. The command-line tool checks that the type is written in upper case; whether a type exists, whether its options are right and whether its module is available is checked when the package is planned for installation.
-
-In a [query](/docs/en/extensions/reference/queries), a field is the column `f_<key>`: the field `ordered_on` is `f_ordered_on`.
+`opero-ext validate` checks that the type is written in upper case. Whether the type exists, its options are right and its module is available is checked in the install review.
 
 ## References inside the package
 
-A field can point at a dictionary or at another object, but only at those of the same package. Write the target's name, not an id:
+A field points at a dictionary or another object of the same package by its name, never by an id. Opero writes the installed ids in their place.
 
 | Option | On a field of type | Names |
 | --- | --- | --- |
-| `dictionary: <name>` | `SELECT`, `MULTI_SELECT` | A [dictionary](/docs/en/extensions/reference/dictionaries) of the package, by the name in its `dictionary.yaml`. |
+| `dictionary: <name>` | `SELECT`, `MULTI_SELECT` | A [dictionary](/docs/en/extensions/reference/dictionaries) of the package. |
 | `toObject: <object>` | `REFERENCE`, `SUBORDINATE_OBJECT_REFERENCE` | An object of the package, by its `object` key. Two objects may point at each other, and an object at itself. |
 
-```yaml title="objects/order-notes/object.yaml"
-object: order-notes
-name: Order note
-namePlural: Order notes
-fields:
-  - { key: text, name: Text, type: TEXT }
-  - key: order
-    name: Order
-    type: REFERENCE
-    options: { toObject: orders }
-```
-
-Opero turns these names into the installed ids when it installs the package. A field may not write `dictionaryId`, `toObjectId`, `toObjectClientId`, `toModuleKey` or `toObjectKey`: a package cannot point at the organization's own dictionaries or objects.
+A field may not write `dictionaryId`, `toObjectId`, `toObjectClientId`, `toModuleKey` or `toObjectKey`: a package cannot point at the organization's own dictionaries or objects.
 
 ## No form comes with an object
 
-Installing an object creates its table and fields only. No form, list, page or menu entry is created for it, and `createDefaultForm` is refused in `object.yaml`.
+Installing an object creates its table and fields only, with no form, list, page or menu entry, so `createDefaultForm` is refused. Ship the screens as [forms, lists and pages](/docs/en/extensions/reference/screens).
 
-To give an object its screens, ship them in the package: [forms, lists and pages](/docs/en/extensions/reference/screens). The organization can also build its own forms, Custom Lists and pages on the object, like on any other object.
+## The module
 
-## Where the administrator sees them
+All of a package's objects live in the module `x-<key>`. The organization cannot create a module whose key starts with `x-`, so the module can only be this extension's. The object's shape is managed by the extension, and its records stay the organization's; see [Managed assets](/docs/en/extensions/after-install#managed-assets).
 
-- **Install plan.** Under **What will change**, the module and each object are listed with what installing it does (**Will be created**, **Will change**, and so on).
-- **The extension's page.** The **Installed data** tab lists, under **Objects it installed**, each object read-only with its key, its number of records and a table of its fields (key, name, type). The object's name links to its page.
-- **Custom Modules screen.** The extension's module is left out of the **Custom Modules** management list.
-- **The object's own page**, opened by a link, starts with "Read-only: managed by the extension `<key>`." and a link **Open the extension**. Its fields are a read-only table and **Delete object** is not offered; its forms, company exposure and record access can still be changed. The module's page offers no **Edit**, **Drafts**, **Delete** or new objects.
-- **Everywhere an object is picked.** Rules, Custom List sources, reports, forms and reference fields offer the objects like any other.
+## Upgrades
 
-The object's shape belongs to the extension: its fields cannot be added, changed or deleted, and the object and module cannot be deleted, except by an upgrade or an uninstall. Everything else stays the organization's: the records, which companies see the object, who sees all records, forms built on it, portal access and the external API profile.
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| An object or a field is added | It is created. | |
+| A field or an object is dropped | Its values or records are deleted, once the administrator confirms the loss. | |
+| A field changes so that its stored values must be cleared | The same. | |
+| The install takes over an object a previous uninstall kept | The object becomes the extension's again. A warning. | `object.adopts_existing` |
 
-The organization cannot create a module whose key starts with `x-`, so the module `x-<key>` can only be this extension's.
-
-## Upgrades and uninstalling
-
-| A new version | What happens |
-| --- | --- |
-| Adds an object or a field | It is created. |
-| Drops a field or an object | The plan lists what is lost, with the number of records. The administrator must confirm before the upgrade runs. |
-| Changes a field so that its stored values must be cleared | Listed and confirmed the same way. |
-
-Uninstalling keeps the module, the objects and their records by default; they become the organization's own. Installing the extension again takes them over. The administrator can also choose to delete them with the extension. See [After install](/docs/en/extensions/after-install#data).
+An uninstall keeps the objects and their records by default, as the organization's own. What the administrator sees is in [When an upgrade deletes data](/docs/en/extensions/upgrade-and-uninstall#when-an-upgrade-deletes-data) and [Keep or delete the data](/docs/en/extensions/upgrade-and-uninstall#keep-or-delete-the-data).
 
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `object.invalid` | An unknown key, a key or field of the wrong shape, `createDefaultForm`, an option that names an id or another module, `dictionary` on a field that is not a select, `toObject` on a field that is not a reference, or more than 50 objects. |
-| `object.unknown_reference` | `dictionary` or `toObject` names nothing in the package. |
-| `name.duplicate` | Two objects with the same `object` key. |
-| `requires.module_undeclared` | The package has objects but `requires.modules` lacks `objects`. |
-| `object.save_validation` | In the install plan: the object or a field would not save, for example an unknown field type or wrong options. Blocks the install. |
-| `object.adopts_existing` | In the install plan: an object kept by an earlier uninstall is taken over. A warning. |
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `object.invalid` | An unknown key, a key or field of the wrong shape, `createDefaultForm`, an option that names an id or another module, `dictionary` on a field that is not a select, `toObject` on a field that is not a reference, or more than 50 objects. | Fix the key the message names. |
+| `object.unknown_reference` | `dictionary` or `toObject` names nothing in the package. | Fix the name, or add the dictionary or object. |
+| `name.duplicate` | Two objects with the same `object` key. | Rename one. |
+| `requires.module_undeclared` | The package has objects but `requires.modules` lacks `objects`. | Add `objects`. |
+| `object.save_validation` | In the install review: the object or a field would not save, for example an unknown field type or wrong options. Blocks the install. | Fix the field as the message says. |

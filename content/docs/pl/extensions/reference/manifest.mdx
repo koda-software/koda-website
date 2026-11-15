@@ -1,25 +1,23 @@
 ---
 title: extension.yaml
-description: "Opis extension.yaml, manifestu rozszerzenia Opero: klucz, wersja, wydawca, wymagania, uprawnienia sieciowe, do danych, linków, skryptów stron i firmowe z uzasadnieniem, połączenie, ustawienia, listy funkcji, w tym wyzwalacze, harmonogramy, bloki, linki, formularze, listy i strony, oraz języki."
+description: Dokumentacja extension.yaml, manifestu paczki rozszerzenia. Jego tożsamość, wymagania, uprawnienia i listy części.
 ---
 
-`extension.yaml` to manifest: tożsamość paczki, jej wymagania, to, do czego ma dostęp, oraz lista wszystkich funkcji, które instaluje.
+`extension.yaml` to manifest na górze folderu paczki. Mówi, czym jest rozszerzenie, czego potrzebuje, do czego może sięgać i jakie części instaluje. [Część 1 samouczka](/docs/pl/extensions/tutorial/start-the-package) pisze taki plik.
 
 ```yaml title="extension.yaml"
 manifestVersion: 2
 extension: hello-ext
-version: 0.1.0
+version: 0.1.1
 name: Hello
 description: A starter extension with a greeting, a call to httpbin.org and a filter.
 publisher: Your company
 requires:
-  opero: ">=2026.1.0"
   modules: [rules]
 permissions:
   network:
     - host: httpbin.org
       reason: Checks the token and sends greetings to the httpbin.org test service.
-
 connection: connection
 settings: settings.yaml
 
@@ -33,7 +31,7 @@ filters:
 locales: [pl]
 ```
 
-## Klucze
+## Klucze [#keys]
 
 <TypeTable
   type={{
@@ -44,56 +42,40 @@ locales: [pl]
     },
     extension: {
       type: 'string',
-      description: 'Klucz. Najpierw mała litera, potem litery, cyfry i myślniki; od 2 do 31 znaków; nie może zaczynać się od x-. Od niego biorą nazwy wszystkie elementy dodawane przez rozszerzenie.',
+      description: 'Klucz: mała litera, potem małe litery, cyfry i myślniki, od 2 do 31 znaków, bez przedrostka x-. Od niego biorą nazwy wszystkie elementy dodawane przez rozszerzenie.',
       required: true,
     },
     version: {
       type: 'string',
-      description: 'Trzy liczby, np. 1.4.0. Bez przyrostków. Każde przesłanie wymaga nowej wersji.',
+      description: 'Trzy liczby całkowite, np. 1.4.0, bez przyrostka.',
       required: true,
     },
     name: {
       type: 'string',
-      description: 'Widoczna na listach, do 120 znaków.',
+      description: 'Widoczna na listach i na stronie rozszerzenia, do 120 znaków. Do tłumaczenia.',
       required: true,
     },
     description: {
       type: 'string',
-      description: 'Jedno lub dwa zdania, do 2000 znaków.',
+      description: 'Jedno lub dwa zdania, do 2000 znaków, widoczne na karcie w katalogu. Do tłumaczenia.',
       required: true,
     },
     publisher: {
       type: 'string',
-      description: 'Kto je stworzył, do 120 znaków.',
+      description: 'Kto je przygotował, do 120 znaków.',
       required: true,
     },
     'requires.opero': {
       type: 'string',
-      description: 'Najstarsze wydanie Opero, na którym działa, zapisane jako ">=2026.22.0" (w cudzysłowie). Starsza instalacja odmówi jego instalacji.',
+      description: 'Najstarsze wydanie Opero, na którym działa, zapisane jako minimum w cudzysłowie: ">=2026.22.0".',
     },
     'requires.modules': {
       type: 'string[]',
-      description: 'Klucze modułów, które muszą być dostępne, np. rules. Paczka z obiektami wymienia objects, z zapytaniami queries, a z zakresem documents:generate documents.',
+      description: 'Klucze modułów, które muszą być dostępne w organizacji, np. rules. Do 50.',
     },
-    'permissions.network': {
-      type: '{ host, reason }[]',
-      description: 'Do 50 dokładnych nazw hostów, z którymi łączy się paczka, każda z uzasadnieniem. Bez symboli wieloznacznych i ścieżek. Wymagane, gdy paczka ma połączenie. Tutaj są też hosty logowania i tokenu połączenia członka.',
-    },
-    'permissions.data': {
-      type: '{ scope, reason }[]',
-      description: 'Zakresy danych, których używają reguły paczki, każdy z uzasadnieniem. Zobacz Uprawnienia do danych.',
-    },
-    'permissions.links': {
-      type: '{ host, reason }[]',
-      description: 'Do 20 dokładnych nazw hostów, które linki rekordów i ekrany paczki otwierają w przeglądarkach członków, każda z uzasadnieniem. Zobacz Linki rekordów oraz Formularze, listy i strony.',
-    },
-    'permissions.pageScript': {
-      type: '{ reason }',
-      description: 'Obecne, gdy blok paczki ma skrypt, z uzasadnieniem. Zobacz Bloki.',
-    },
-    'permissions.company': {
-      type: 'map',
-      description: 'Do 30 uprawnień firmowych, których członkowie potrzebują, żeby używać akcji bloków, poleceń rekordów i linków paczki, każde z etykietą, opisem i uzasadnieniem. Zobacz Uprawnienia paczki.',
+    permissions: {
+      type: 'object',
+      description: 'Do czego paczka może sięgać: network, data, links, pageScript i company. Zobacz Uprawnienia niżej.',
     },
     connection: {
       type: '"connection"',
@@ -101,128 +83,117 @@ locales: [pl]
     },
     settings: {
       type: '"settings.yaml"',
-      description: 'Zawsze settings.yaml: plik na górze paczki, który deklaruje ustawienia rozszerzenia. Zobacz Ustawienia.',
+      description: 'Zawsze settings.yaml: plik, który deklaruje ustawienia rozszerzenia.',
     },
-    actions: {
+    'actions, filters, objects, …': {
       type: 'string[]',
-      description: 'Foldery akcji, zapisane jako actions/<folder>.',
-    },
-    filters: {
-      type: 'string[]',
-      description: 'Foldery filtrów, zapisane jako filters/<folder>.',
-    },
-    objects: {
-      type: 'string[]',
-      description: 'Foldery obiektów, zapisane jako objects/<folder>. Zobacz Obiekty.',
-    },
-    dictionaries: {
-      type: 'string[]',
-      description: 'Foldery słowników, zapisane jako dictionaries/<folder>. Zobacz Słowniki.',
-    },
-    queries: {
-      type: 'string[]',
-      description: 'Foldery zapytań, zapisane jako queries/<folder>. Zobacz Zapytania.',
-    },
-    triggers: {
-      type: 'string[]',
-      description: 'Foldery wyzwalaczy, zapisane jako triggers/<folder>, do 50. Zobacz Wyzwalacze.',
-    },
-    schedules: {
-      type: 'string[]',
-      description: 'Foldery harmonogramów, zapisane jako schedules/<folder>, do 10. Zobacz Harmonogramy.',
-    },
-    blocks: {
-      type: 'string[]',
-      description: 'Foldery bloków, zapisane jako blocks/<folder>, do 50. Zobacz Bloki.',
-    },
-    links: {
-      type: 'string[]',
-      description: 'Foldery linków rekordów, zapisane jako links/<folder>, do 20. Zobacz Linki rekordów.',
-    },
-    forms: {
-      type: 'string[]',
-      description: 'Foldery formularzy, zapisane jako forms/<folder>, do 100. Zobacz Formularze, listy i strony.',
-    },
-    lists: {
-      type: 'string[]',
-      description: 'Foldery list własnych, zapisane jako lists/<folder>, do 50. Zobacz Formularze, listy i strony.',
-    },
-    pages: {
-      type: 'string[]',
-      description: 'Foldery stron, zapisane jako pages/<folder>, do 50. Zobacz Formularze, listy i strony.',
+      description: 'Foldery części, które paczka instaluje, każdy zapisany jako <folder rodzaju>/<folder>. Zobacz Listy części niżej.',
     },
     include: {
       type: 'string[]',
-      description: 'Foldery modułów, każdy z plikiem module.yaml.',
+      description: 'Foldery modułów, każdy z plikiem module.yaml. Do 50.',
     },
     locales: {
       type: 'string[]',
-      description: 'Języki tłumaczeń, np. [pl, de]. Bez en: angielski jest w deskryptorach.',
+      description: 'Języki tłumaczeń, np. [pl, de]. Bez en: angielski jest zapisany w deskryptorach. Do 40.',
+    },
+    'listing.screenshots': {
+      type: '{ file, caption }[]',
+      description: 'Do 8 zrzutów ekranu do katalogu, w kolejności wyświetlania. Zobacz Wizytówka w katalogu.',
     },
   }}
 />
 
-## Uprawnienia sieciowe
+Każdy inny klucz zostaje odrzucony z kodem `manifest.invalid`.
 
-Każdy host, z którym łączy się paczka, jest wymieniony z uzasadnieniem. Administrator widzi każdy host i jego uzasadnienie w planie instalacji, zanim cokolwiek zostanie zainstalowane.
+## Klucz i wersja [#key-and-version]
+
+Klucz nazywa rozszerzenie wszędzie i nigdy się nie zmienia; wersja nazywa jedno przesłanie.
+
+- Opero samo dodaje przedrostek `x-`, więc klucz nie może się od niego zaczynać (`manifest.reserved_key`).
+- Dwa zainstalowane rozszerzenia nie mogą mieć nakładających się kluczy, czyli takich, z których jeden to drugi z `-` i dalszym ciągiem, jak `order` i `order-sync`. Przegląd instalacji odrzuca drugie z kodem `key.overlaps_installed`.
+- Przesłana wersja zachowuje swoją zawartość. Zmianę prześlij jako nową, wyższą wersję.
+
+## Wymagania [#requirements]
+
+`requires` wymienia to, co organizacja musi mieć, żeby przegląd instalacji mógł pójść dalej.
+
+- `requires.opero` to tylko minimum, `">=<rok>.<wydanie>.<poprawka>"`. Starsze Opero odmawia instalacji (`requires.release`).
+- `requires.modules` musi zawierać `objects`, gdy paczka ma obiekty, `queries`, gdy ma zapytania, i `documents`, gdy używa zakresu danych `documents:generate` (`requires.module_undeclared`).
+
+## Uprawnienia [#permissions]
+
+Każde uprawnienie wskazuje, do czego paczka sięga, i podaje powód. Administrator czyta każdy powód w [przeglądzie instalacji](/docs/pl/extensions/install#the-install-review), zanim się zgodzi. Brak powodu jest odrzucany z kodem `permissions.reason_required`.
 
 ```yaml title="extension.yaml"
 permissions:
   network:
     - host: api.example.com
       reason: Creates shipments and reads their tracking numbers.
-    - host: auth.example.com
-      reason: Exchanges the API key for a short-lived access token.
-```
-
-- Wywołanie hosta spoza listy jest odrzucane, zarówno przy sprawdzaniu paczki, jak i w trakcie działania.
-- Host bez uzasadnienia jest odrzucany z kodem `permissions.reason_required`.
-- Paczka z połączeniem wymienia co najmniej jeden host.
-- Paczka z [połączeniem członka](/docs/pl/extensions/reference/member-connections) wymienia host, na którym członkowie się logują, i host, na którym Opero wymienia ich logowanie na token (w przeciwnym razie `member.host_not_listed`).
-- Gdy aktualizacja prosi o nowe hosty, plan oznacza je jako nowe w tej wersji.
-
-## Uprawnienia do danych [#data-permissions]
-
-Paczka, której reguły odczytują lub zapisują dane, uruchamiają zapytania albo wysyłają wiadomości, wymienia [zakresy danych](/docs/pl/extensions/reference/data-permissions), których używa, każdy z uzasadnieniem:
-
-```yaml title="extension.yaml"
-permissions:
   data:
-    - scope: records:read
-      reason: Reads the open orders.
     - scope: records:write
       reason: Stores the status the carrier answers.
 ```
 
-- Zakres spoza ośmiu istniejących jest odrzucany z kodem `permissions.invalid_scope`, zakres bez uzasadnienia z kodem `permissions.reason_required`, a zakres, którego nie używa żadna reguła, z kodem `permissions.unused_scope`.
-- Paczkę z zakresami danych może zainstalować tylko właściciel organizacji. Wyzwalacze, harmonogramy i połączenie członka nie dodają tej zasady.
+| Klucz | Typ | Deklaruje | Dokumentacja |
+| --- | --- | --- | --- |
+| `network` | `{ host, reason }[]` | Do 50 dokładnych nazw hostów, które wywołują reguły paczki. Bez symboli wieloznacznych, portów i ścieżek. | [Hosty sieciowe](#network-hosts) |
+| `data` | `{ scope, reason }[]` | Zakresy danych, których używają reguły paczki. | [Uprawnienia do danych](/docs/pl/extensions/reference/data-permissions) |
+| `links` | `{ host, reason }[]` | Do 20 hostów, które linki rekordów, formularze, listy i strony paczki otwierają w przeglądarkach członków. | [Linki rekordów](/docs/pl/extensions/reference/record-links) |
+| `pageScript` | `{ reason }` | Że blok paczki uruchamia skrypt w przeglądarkach oglądających. | [Bloki](/docs/pl/extensions/reference/blocks#the-script) |
+| `company` | mapa `{ label, description?, reason }` | Do 30 uprawnień paczki, których członkowie potrzebują do jej akcji bloków, poleceń rekordów i linków. | [Uprawnienia paczki](/docs/pl/extensions/reference/package-permissions) |
 
-## Hosty linków, skrypty stron i uprawnienia firmowe [#link-hosts-page-scripts-and-company-permissions]
+Przy aktualizacji przegląd oznacza każde uprawnienie, o które nie prosiła zainstalowana wersja, jako **Nowe w tej wersji**.
 
-Trzy kolejne uprawnienia dotyczą tego, czego używają członkowie, a nie tego, co robią reguły paczki:
+### Hosty sieciowe [#network-hosts]
 
-```yaml title="extension.yaml"
-permissions:
-  links:
-    - host: track.example.com
-      reason: Opens a parcel's tracking page at the carrier.
-  pageScript:
-    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
-  company:
-    track:
-      label: Track parcels
-      description: Ask the carrier where a parcel is, from its page or its card.
-      reason: Each question counts against the organization's carrier quota.
-```
+Paczka może wywoływać tylko hosty, które wymienia, zarówno przy sprawdzaniu, jak i w działaniu.
 
-| Klucz | Deklaruje | Odrzucane, gdy nieużywane |
+- Paczka z połączeniem wymienia co najmniej jeden host (`connection.hosts_required`).
+- Paczka z [połączeniem członka](/docs/pl/extensions/reference/member-connections) wymienia też host, na którym członkowie się logują, i host, na którym Opero wymienia ich logowanie.
+- Każdy host występuje raz.
+
+### Hosty linków, skrypty stron i uprawnienia firmowe [#link-hosts-page-scripts-and-company-permissions]
+
+`links`, `pageScript` i `company` dotyczą tego, czego używają członkowie, a nie tego, co robią reguły paczki. Każde z nich, którego nic w paczce nie używa, zostaje odrzucone, więc przegląd nigdy nie prosi o więcej, niż paczka potrzebuje. Kody opisują strony z tabeli wyżej.
+
+## Listy części [#part-lists]
+
+Każda lista wymienia foldery części zapisane jako `<folder rodzaju>/<folder>`, każdy wpis raz.
+
+| Lista | Postać folderu | Najwyżej |
 | --- | --- | --- |
-| `links` | Hosty, które [linki rekordów](/docs/pl/extensions/reference/record-links) paczki i adresy URL jej [formularzy, list i stron](/docs/pl/extensions/reference/screens#urls) otwierają w przeglądarkach członków. Samo Opero nigdy ich nie wywołuje. | `permissions.unused_link_host` |
-| `pageScript` | Że [blok](/docs/pl/extensions/reference/blocks#the-script) paczki uruchamia skrypt w przeglądarkach oglądających. | `permissions.unused_page_script` |
-| `company` | [Uprawnienia paczki](/docs/pl/extensions/reference/package-permissions), których potrzebują członkowie, według nazwy. | `permissions.unused_company_permission` |
+| `actions` | `actions/<folder>` | 200 |
+| `filters` | `filters/<folder>` | 200 |
+| `objects` | `objects/<folder>` | 50 |
+| `dictionaries` | `dictionaries/<folder>` | 50 |
+| `queries` | `queries/<folder>` | 100 |
+| `triggers` | `triggers/<folder>` | 50 |
+| `schedules` | `schedules/<folder>` | 10 |
+| `blocks` | `blocks/<folder>` | 50 |
+| `links` | `links/<folder>` | 20 |
+| `forms` | `forms/<folder>` | 100 |
+| `lists` | `lists/<folder>` | 50 |
+| `pages` | `pages/<folder>` | 50 |
 
-Każde ma uzasadnienie, które pokazuje plan instalacji. Wersję, która dodaje host linku, uprawnienie firmowe albo skrypt strony, trzeba zaakceptować ponownie.
+Limit liczy całą paczkę razem z [modułami](/docs/pl/extensions/reference/package-folder#modules), z wyjątkiem `actions` i `filters`, których limit dotyczy jednej listy. Nazwa listy `components` jest zarezerwowana dla przyszłej wersji.
 
-## Zarezerwowane listy
+## Problemy [#problems]
 
-Nazwa listy `components` jest zarezerwowana dla przyszłej wersji i dziś odrzucana z kodem `manifest.unsupported_section`.
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `manifest.invalid` | Nieznany klucz, wartość w złej postaci, dwa razy ten sam wpis listy albo `en` w `locales`. | Sprawdź klucz z tabelą wyżej. |
+| `manifest.unsupported_version` | `manifestVersion` jest inne niż 2 albo paczka ma stary format `manifest.json`. | Napisz `extension.yaml` z `manifestVersion: 2`. |
+| `manifest.unsupported_section` | Zarezerwowana lista `components`. | Usuń ją. |
+| `manifest.reserved_key` | `extension` zaczyna się od `x-`. | Pomiń przedrostek; Opero dodaje go samo. |
+| `requires.invalid_release` | `requires.opero` nie jest minimum w postaci `">=2026.22.0"`. | Zapisz je w tej postaci, w cudzysłowie. |
+| `requires.module_undeclared` | Obiekty, zapytania albo zakres `documents:generate` bez `objects`, `queries` lub `documents` w `requires.modules`. | Dodaj moduł. |
+| `permissions.reason_required` | Uprawnienie bez powodu albo zapisane jako sam host lub zakres. | Zapisz `{ host, reason }`, `{ scope, reason }` albo `{ reason }`. |
+| `permissions.unused_scope`, `permissions.unused_link_host`, `permissions.unused_page_script`, `permissions.unused_company_permission` | Zakres danych, host linków, `pageScript` albo uprawnienie paczki, którego nie używa żadna część paczki. Administrator zgadza się tylko na to, czego paczka używa. | Usuń je albo dodaj część, która go używa. |
+| `manifest.unsupported_by_server` | Przy przesyłaniu: to Opero nie instaluje jeszcze części albo nie obsługuje zakresu danych, którego używa paczka. | Pomiń tę część albo poczekaj na Opero, które ją obsługuje. |
+| `requires.release` | W przeglądzie instalacji: to Opero jest starsze niż `requires.opero`. | Zaktualizuj Opero albo obniż wymaganie, jeśli paczka naprawdę działa na starszych wydaniach. |
+| `requires.release_unknown` | W przeglądzie instalacji: instalacja nie zna swojego wydania, więc `requires.opero` nie zostało sprawdzone. Nie blokuje. | Brak. |
+| `requires.module` | W przeglądzie instalacji: moduł z `requires.modules` nie jest dostępny w organizacji. | Administrator włącza moduł albo licencja go dodaje. |
+| `key.overlaps_installed` | W przeglądzie instalacji: klucz zainstalowanego rozszerzenia nakłada się na ten. | Wybierz klucz, który się nie nakłada. |
+| `version.not_newer` | W przeglądzie instalacji: aktualizacja do tej samej albo starszej wersji. | Podnieś `version`. |
+| `EXTENSION_VERSION_EXISTS` | Przy przesyłaniu: ta wersja była już przesłana z inną zawartością. | Podnieś `version`. |

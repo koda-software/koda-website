@@ -1,9 +1,9 @@
 ---
 title: Linki rekordów
-description: "Opis link.yaml w rozszerzeniach Opero: akcja rekordu, która otwiera adres https zbudowany z identyfikatora i pól rekordu, permissions.links, linki na własnych obiektach paczki oraz na kontrahentach, fakturach, budżetach i zgłoszeniach helpdesku ze stałymi zestawami pól, i to, co pokazuje plan instalacji."
+description: Dodaj akcję rekordu, która otwiera stronę twojej usługi dla rekordu, czyli adres https zbudowany z identyfikatora i pól rekordu, przez link.yaml.
 ---
 
-Link rekordu otwiera stronę usługi zewnętrznej dla rekordu, który ogląda członek, na przykład stronę śledzenia przesyłki u przewoźnika. Pojawia się wśród akcji rekordu. Nie uruchamia niczego na serwerze Opero: przeglądarka członka otwiera adres https zbudowany z identyfikatora rekordu i pól, które link deklaruje.
+Link do rekordu otwiera stronę usługi zewnętrznej dla rekordu, który ogląda członek, na przykład stronę śledzenia przesyłki u przewoźnika. Pojawia się wśród akcji rekordu i niczego nie uruchamia na serwerze Opero: przeglądarka członka otwiera adres https zbudowany z identyfikatora rekordu i pól, które deklaruje link. Taki link dodaje przewodnik [Blok, przycisk i link](/docs/pl/extensions/blocks-and-actions).
 
 ```yaml title="links/open-tracking/link.yaml"
 link: open_tracking
@@ -16,7 +16,9 @@ fields:
 url: "https://track.example.com/parcels/{fields.number}?ref={record.id}"
 ```
 
-Wymień folder w liście `links` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add link <name>` zapisuje link, który potem kierujesz na własny host i uprawnienie.
+Wymień folder w `links` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add link <name>` zapisuje link, który kierujesz potem na własny host i uprawnienie. Paczka ma najwyżej 20 linków.
+
+![Panel szczegółów przesyłki z poleceniem Track parcel i linkiem Open tracking page](/docs/_assets/extensions/blocks-and-actions/record-actions.webp)
 
 ## link.yaml [#linkyaml]
 
@@ -24,7 +26,7 @@ Wymień folder w liście `links` w `extension.yaml` albo w `module.yaml` dołąc
   type={{
     link: {
       type: 'string',
-      description: 'Nazwa: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalna w paczce. Akcja rekordu to x-<key>.<link>.',
+      description: 'Nazwa: mała litera, potem małe litery, cyfry i _, do 41 znaków. Unikalna w paczce. Akcja rekordu to x-<key>.<link>.',
       required: true,
     },
     label: {
@@ -38,32 +40,33 @@ Wymień folder w liście `links` w `extension.yaml` albo w `module.yaml` dołąc
     },
     permission: {
       type: 'string',
-      description: 'Nazwa z permissions.company w extension.yaml, którą członkowie muszą mieć (w przeciwnym razie action.permission_undeclared).',
+      description: 'Nazwa z permissions.company w extension.yaml, którą muszą mieć członkowie.',
       required: true,
     },
     targets: {
       type: '{ object } | { entity }[]',
-      description: 'Od 1 do 20 obiektów paczki, { object: <klucz> }, albo dokładnie jeden typ wbudowany, { entity: <typ> }. Nigdy jedno i drugie (link.mixed_targets).',
+      description: 'Od 1 do 20 obiektów paczki, { object: <key> }, albo dokładnie jeden typ wbudowany, { entity: <type> }. Nigdy jedno i drugie.',
       required: true,
     },
     fields: {
       type: 'map',
-      description: 'Do 50 pól, których może używać adres, każde z etykietą pokazywaną przy zgodzie: { <pole>: { label } }. Do przetłumaczenia.',
+      description: 'Do 50 pól, których może używać adres, każde { label } do 120 znaków, pokazywane przy zgodzie. Do przetłumaczenia.',
     },
     url: {
       type: 'string',
-      description: 'Adres: https, z hostem wypisanym wprost. Zobacz Adres.',
+      description: 'Adres, do 2000 znaków. Zobacz Adres.',
       required: true,
     },
   }}
 />
 
+Link nazwany tak samo jak polecenie rekordu paczki jest pomijany: nazwa zostaje przy poleceniu.
+
 ## Adres [#the-address]
 
-- Zaczyna się od `https://` (`link.not_https`), a jego host jest wypisany wprost: bez symbolu zastępczego w hoście, bez nazwy użytkownika i hasła (`link.template_invalid`).
-- Host jest wymieniony w `permissions.links` w `extension.yaml`, z uzasadnieniem (`link.host_not_declared`). Host linku nie jest hostem, który wywołuje paczka, więc nie trafia do `permissions.network`.
-- `{record.id}` to identyfikator rekordu, a `{fields.<field>}` wartość pola, które link deklaruje w `fields` (`link.field_undeclared`). Mogą stać w ścieżce albo w zapytaniu, nie w hoście.
-- Każda wartość jest kodowana tam, gdzie stoi: jako jeden segment ścieżki albo jako wartość w zapytaniu. `A/1 B` w ścieżce staje się `A%2F1%20B`.
+Adres zaczyna się od `https://`, a jego host jest wpisany wprost, bez symbolu zastępczego, nazwy użytkownika i hasła. `{record.id}` to identyfikator rekordu, a `{fields.<field>}` wartość pola, które deklaruje link; oba mogą stać w ścieżce albo w zapytaniu. Każda wartość jest kodowana tam, gdzie stoi, jako jeden segment ścieżki albo wartość parametru, więc `A/1 B` w ścieżce staje się `A%2F1%20B`.
+
+Host jest wymieniony w `permissions.links` w `extension.yaml`, z powodem. Host linku nie jest hostem, który wywołuje paczka, więc nie trafia do `permissions.network`.
 
 ```yaml title="extension.yaml"
 permissions:
@@ -72,17 +75,17 @@ permissions:
       reason: Opens a parcel's tracking page at the carrier.
 ```
 
-Paczka wymienia do 20 hostów linków; host, którego nie otwiera żaden link, jest odrzucany z kodem `permissions.unused_link_host`.
+Paczka wymienia do 20 hostów linków, a każdy otwiera link albo [ekran](/docs/pl/extensions/reference/screens#urls).
 
 ## Linki na obiektach paczki [#links-on-the-packages-objects]
 
-Przy celach `{ object: <klucz> }` każde zadeklarowane pole musi być polem każdego obiektu docelowego (`link.field_not_on_object`). Link pojawia się na rekordzie tych obiektów, gdy:
+Przy celach `{ object: <key> }` każde zadeklarowane pole jest polem każdego obiektu docelowego. Link pojawia się na rekordzie tych obiektów tylko wtedy, gdy spełnione są wszystkie warunki; w przeciwnym razie go nie ma, więc członek nigdy nie dostaje adresu z brakującą wartością:
 
-- członek przechodzi [sprawdzenie](/docs/pl/extensions/reference/member-actions#who-may-use-them), które przechodzi każda akcja bloku, polecenie i link: rozszerzenie działa, link jest udostępniony firmie, członek należy do jego odbiorców i ma jego uprawnienie paczki;
-- każde pole, które link deklaruje, jest na formularzu pokazywanym członkowi;
-- członek może odczytać rekord, a każde zadeklarowane pole ma wartość: tekst, liczbę albo tak/nie. Puste pole albo lista ukrywa link.
-
-W przeciwnym razie linku nie ma; członek nigdy nie dostaje adresu z brakującą wartością.
+| Warunek | Szczegóły |
+| --- | --- |
+| Członek przechodzi sprawdzenie | Rozszerzenie działa, link jest udostępniony firmie, członek jest w jego grupie odbiorców i ma jego uprawnienie. Zobacz [Kto może ich używać](/docs/pl/extensions/reference/member-actions#who-may-use-them). |
+| Pola są w formularzu członka | Każde pole, które deklaruje link, jest w formularzu pokazywanym członkowi. |
+| Pola mają wartości | Członek może odczytać rekord, a każde zadeklarowane pole ma tekst, liczbę albo tak/nie. Puste pole albo lista ukrywa link. |
 
 ## Linki na rekordach wbudowanych [#links-on-built-in-records]
 
@@ -108,12 +111,32 @@ url: "https://registry.example.com/companies/{fields.vatId}"
 
 Daty są zapisywane jako `YYYY-MM-DD`, a kwoty jako zwykłe liczby dziesiętne, na przykład `1230.5`. Do tych zestawów mogą później dojść pola; żadne nie zostanie usunięte. Dane osobowe, takie jak PESEL, adresy e-mail i numery telefonów, są celowo pominięte.
 
-`opero-ext validate` sprawdza tylko postać nazwy pola; Opero odrzuca pole spoza zestawu typu przy przesłaniu z kodem `link.field_unknown`, a `externalId` wymaga swojego `.<system>`.
+Na rekordzie wbudowanym link pojawia się, gdy członek przechodzi to samo sprawdzenie, może odczytać ten rekord (ma uprawnienie do odczytu; dla zgłoszenia dostęp do jego działu) i każde pole ma wartość. Pola nie muszą być na stronie. Na potrzeby zgody przegląd instalacji pokazuje własne etykiety Opero dla tych pól; etykiety, które piszesz, są mimo to wymagane.
 
-Na rekordzie wbudowanym link pojawia się, gdy członek przechodzi to samo sprawdzenie, może odczytać ten rekord (ma uprawnienie do jego odczytu, a dla zgłoszenia dostęp do jego działu) i każde pole ma wartość. Pola nie muszą być na stronie. Przy zgodzie plan instalacji pokazuje dla tych pól etykiety samego Opero, w języku administratora; etykiety, które piszesz, są nadal wymagane.
+## Aktualizacje [#upgrades]
 
-## Co pokazuje plan instalacji [#what-the-install-plan-shows]
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Dodano host linku albo zmienił się adres lub pola linku | Przegląd pokazuje to jako nowe, do akceptacji przez administratora. | |
 
-Plan wymienia każdy link z jego etykietą, hostem, adresem w postaci, w jakiej go napisałeś, i polami z ich etykietami, żeby administrator widział, jakie wartości przeglądarki członków wysyłają na jaki host. Wersję, która dodaje host linku albo zmienia adres lub pola linku, trzeba zaakceptować ponownie. Link bez pól wysyła tylko identyfikator rekordu.
+Każdy link ma osobne udostępnienie i grupę odbiorców, niezależnie od akcji bloków i poleceń rekordów paczki. Co widzi administrator, opisuje sekcja [Z czego mogą korzystać członkowie](/docs/pl/extensions/after-install#what-members-can-use).
 
-Każdy link jest sprawdzany, udostępniany i ma odbiorców osobno, niezależnie od akcji bloków i poleceń rekordów paczki. Link nazwany tak jak polecenie rekordu paczki jest pomijany: nazwa zostaje przy poleceniu.
+## Tłumaczenia [#translations]
+
+Teksty trafiają do `links.<link>`: `label`, `description` i `fields.<field>.label`. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations#translatable-keys).
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `link.invalid` | Nieznany klucz, klucz o złej strukturze albo więcej niż 20 linków. | Popraw klucz wskazany w komunikacie. |
+| `link.not_https` | Adres nie zaczyna się od `https://`. | Użyj adresu https. |
+| `link.template_invalid` | Symbol zastępczy w hoście, nazwa użytkownika lub hasło albo symbol zastępczy innej postaci. | Wpisz host wprost; używaj tylko `{record.id}` i `{fields.<field>}`. |
+| `link.host_not_declared` | Hosta nie ma w `permissions.links`. | Dodaj go z powodem. |
+| `link.field_undeclared` | `{fields.<field>}` wskazuje pole, którego link nie deklaruje. | Dodaj je w `fields`. |
+| `link.unknown_target` | Cel obiektu, który nie jest obiektem paczki. | Popraw klucz albo dodaj obiekt. |
+| `link.field_not_on_object` | Zadeklarowanego pola brakuje w jednym z obiektów docelowych. | Dodaj pole do każdego celu albo usuń cel. |
+| `link.mixed_targets` | Cele obiektów razem z typem wbudowanym albo więcej niż jeden typ wbudowany. | Podziel go na dwa linki. |
+| `link.field_unknown` | Przy przesłaniu: pole spoza zestawu typu wbudowanego albo `externalId` bez `.<system>`. | Użyj pola z tabeli. |
+| `action.permission_undeclared` | `permission` nie wskazuje niczego w `permissions.company`. | Zadeklaruj uprawnienie. |
+| `permissions.unused_link_host` | Host linku, którego nie otwiera żaden link ani ekran. | Usuń go. |

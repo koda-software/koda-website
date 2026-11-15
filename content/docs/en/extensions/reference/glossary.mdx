@@ -1,0 +1,61 @@
+---
+title: Glossary
+description: The words the Extensions pages use, and the names Opero gives to what an extension installs.
+---
+
+## Words
+
+| Word | Meaning |
+| --- | --- |
+| Action | A folder with an `action.yaml`, its logic (a rule file or a script) and its tests. See [Actions](/docs/en/extensions/reference/actions). |
+| Block | A piece of a page that the package brings: HTML with Liquid, CSS and an optional script. See [Blocks](/docs/en/extensions/reference/blocks). |
+| Block action | An action that a button in one of the package's blocks runs, as the member who pressed it. |
+| Catalog package | A package the installation's administrator uploaded and granted to organizations. The other kind is a private package. |
+| Connection | The stored credentials for the outside service, set up by an administrator. See [Connection and secrets](/docs/en/extensions/reference/connection-and-secrets). |
+| Data scope | One entry of `permissions.data`: something the package's rules may do with data, such as `records:write`. See [Data permissions](/docs/en/extensions/reference/data-permissions). |
+| Descriptor | The YAML file that describes one part, such as `action.yaml` or `object.yaml`. Its name is fixed. |
+| Effect | A data or messaging step that a test case scripts, the way `http` scripts a call. See [Tests](/docs/en/extensions/reference/tests#data-and-messaging-steps). |
+| Event | One occurrence of a trigger, with its data, raised by the package's `EMIT_EVENT` step. |
+| Filter | A template filter: a small function that every template of the organization can use. See [Template filters](/docs/en/extensions/reference/filters). |
+| Key | The extension's identifier, for example `hello-ext`. Everything it adds is named after it. |
+| Listing | The icon, long description, screenshots and changelog that administrators read about a package. See [The listing](/docs/en/extensions/reference/listing). |
+| Managed | Installed by an extension, and read-only until the extension changes it. See [Managed assets](/docs/en/extensions/after-install#managed-assets). |
+| Manifest | `extension.yaml`, the file at the top of the folder that lists everything in the package. See [extension.yaml](/docs/en/extensions/reference/manifest). |
+| Member action | An action that uses a member's own connection, `{{ userConnection.<field> }}`. It runs only for one member. |
+| Member connection | A member's own account at the outside service, connected by the member through OAuth. See [Member connections](/docs/en/extensions/reference/member-connections). |
+| Module | A folder of parts with its own `module.yaml`, for a large package. See [Modules](/docs/en/extensions/reference/package-folder#modules). |
+| Package | One uploaded version of an extension: a zip of your folder. A version never changes after upload. |
+| Package permission | A company permission the package declares, which members need for its block actions, record commands and links. See [Package permissions](/docs/en/extensions/reference/package-permissions). |
+| Part | One feature of a package in its own folder: an action, filter, object, trigger, block, page and so on. |
+| Private package | A package an organization uploaded for itself. |
+| Record command | An action offered among a record's actions, run by the member for that record. |
+| Record link | A record action that opens the service's page for the record in the member's browser. |
+| Rule file | An action's logic written as a rule: the steps and edges the rule builder saves. See [Rule files](/docs/en/extensions/reference/rule-files). |
+| Schedule | An action the package runs on its own at a fixed interval, for the installation, each company or each connected member. |
+| Settings | Values that are not secret, chosen by the administrator for the installed extension and read by its actions. |
+| Step | An action published in the rule builder, for the organization's rules to use. |
+| Test case | One entry of an action's tests: an input, the HTTP exchanges and data steps the action makes, the events it raises, and how it ends. It runs at upload without touching the network or any data. See [Tests](/docs/en/extensions/reference/tests). |
+| Trigger | A rule trigger the package declares. The package raises its events; the organization's rules start on them. |
+
+## Names after install
+
+Everything an extension installs is named after its key, so two extensions never collide. A key's hyphens become underscores where a name cannot hold a hyphen.
+
+| What | Name | For key `polar-eu` |
+| --- | --- | --- |
+| Rule step | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Installed rule behind an action | `<package name>: <action label>` | `Polar: Sync` |
+| Template filter | `x_<key with _>_<filter>` | `x_polar_eu_pace` |
+| Connection | `x-<key>` | `x-polar-eu` |
+| Module of the objects | `x-<key>` | `x-polar-eu` |
+| Dictionary | `x-<key>-<dictionary>` | `x-polar-eu-sports` |
+| Saved query | `x_<key with _>_<query>` | `x_polar_eu_weekly_totals` |
+| Rule trigger | `x-<key>.<trigger>` | `x-polar-eu.daily_activity` |
+| Block | `x_<key with _>_<block>` | `x_polar_eu_week_card` |
+| Block action, record command | `x-<key>.<action>` | `x-polar-eu.sync` |
+| Record link | `x-<key>.<link>` | `x-polar-eu.open_profile` |
+| Package permission | `company.x-<key>.<name>` | `company.x-polar-eu.sync` |
+| Custom List | `x-<key>-<list>` | `x-polar-eu-weeks` |
+| Page slug | `x-<key>-<page>` | `x-polar-eu-overview` |
+
+A part keeps its identity across versions as long as its name stays the same, so what the organization built on it keeps working after an upgrade. The organization cannot create its own modules, dictionaries, lists or pages starting with `x-`, or queries, scripts and blocks starting with `x_`.

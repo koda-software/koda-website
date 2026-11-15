@@ -1,9 +1,9 @@
 ---
 title: Data permissions
-description: "Reference for permissions.data in Opero extensions: the eight data scopes, what each lets a packaged rule do, the target rules and refused keys per step, the owner-only install, and what is checked at upload and at run time."
+description: Ask for the data scopes your packaged rules need in permissions.data, and learn who can install such a package and when the scopes are checked.
 ---
 
-A rule of your package can read and write data, run queries and send messages only through data steps, and each data step needs a **data scope** that the package declares in `permissions.data`. The administrator sees every scope with its reason in the install plan before agreeing to it.
+A rule of your package reads and writes data, runs queries and sends messages only through [data steps](/docs/en/extensions/reference/data-steps), and each data step needs a **data scope** the package declares in `permissions.data`. The administrator agrees to every scope, with your reason, in the [install review](/docs/en/extensions/install#access-to-data).
 
 ```yaml title="extension.yaml"
 permissions:
@@ -13,6 +13,25 @@ permissions:
     - scope: records:write
       reason: Stores the status the carrier answers.
 ```
+
+## permissions.data
+
+<TypeTable
+  type={{
+    scope: {
+      type: 'string',
+      description: 'One of the eight scopes below.',
+      required: true,
+    },
+    reason: {
+      type: 'string',
+      description: 'What the extension does with it, in one sentence, from the administrator\'s side. Translatable under permissions.data.<scope>.reason.',
+      required: true,
+    },
+  }}
+/>
+
+Ask only for what you use: a declared scope no packaged rule uses is refused.
 
 ## The scopes
 
@@ -25,90 +44,50 @@ permissions:
 | `contractors:write` | Change the organization's contractors. | `UPDATE_CONTRACTOR` |
 | `email:send` | Send emails to any address through the installation's email service, with any file of the organization attached by its id. | `SEND_EMAIL` |
 | `notifications:send` | Send notifications to members of the organization. | `SEND_NOTIFICATION` |
-| `documents:generate` | Generate documents from a document template the organization's rule author picks. | `GENERATE_DOCUMENT` |
-
-No other scope exists; any other value is refused. How to write each step is on [Data steps](/docs/en/extensions/reference/data-steps).
-
-In the install plan, under **Data scopes**, the administrator reads each scope you declare as a fixed sentence, with your reason below it. You do not write these sentences; they are the same for every package:
-
-| Scope | The sentence in the install plan |
-| --- | --- |
-| `records:read` | Read the records of this extension's own objects. |
-| `records:write` | Create and change records of this extension's own objects. |
-| `queries:run` | Run this extension's own read queries. |
-| `queries:mutate` | Run this extension's own queries that change data. |
-| `contractors:write` | Change your contractors. |
-| `email:send` | Send emails to any address, with files of your organization attached. |
-| `notifications:send` | Send notifications to members of your organization. |
-| `documents:generate` | Create documents from the document templates your rules pick. |
-
-The list starts with "Any rule that uses this extension's steps can then do this in the company it runs in, without its author's own permissions."
+| `documents:generate` | Generate documents from a document template the organization's rule author picks. Also needs `documents` in `requires.modules`. | `GENERATE_DOCUMENT` |
 
 <Callout type="warn" title="Attachments: any file of the organization">
-A `SEND_EMAIL` step may attach any file of the organization by its id: not only a document the same run generated, and not only files of the company the rule runs in or files its author can open. Only files whose source keeps them from rules, such as some email attachments, are refused. So a step that takes a file id from its input lets any rule author of the organization mail that file to any address. This is how it works today; it may be narrowed later, for example to documents the same run generates.
+A `SEND_EMAIL` step may attach any file of the organization by its id: not only a document the same run generated, and not only files of the company the rule runs in or files its author can open. Only files whose source keeps them from rules, such as some email attachments, are refused. So a step that takes a file id from its input lets any rule author of the organization mail that file to any address. This may be narrowed later, for example to documents the same run generates.
 </Callout>
 
 ## Who can install it
 
-The steps of your package run on the **installation's** authority: whoever wrote the organization's rule that uses your step, the step does what the scopes allow, in the company that rule runs for, without that person's own permissions. The consent is therefore the whole authorization, and it must come from someone who may grant all of it.
+The steps of your package run on the **installation's** authority: whoever wrote the organization's rule that uses your step, the step does what the scopes allow, in the company that rule runs for, without that person's own permissions. The consent is therefore the whole authorization.
 
 <Callout type="warn" title="Only an organization owner installs a package with data scopes">
-A package that declares any data scope can be installed, upgraded or repaired only by an organization owner, a member with a role that grants every permission, or a system administrator. For anyone else the install plan is blocked with `permission.owner_required`.
+A package that declares any data scope can be installed, upgraded or repaired only by an organization owner, a member with a role that grants every permission, or a system administrator. For anyone else the install review is blocked with `permission.owner_required`.
 </Callout>
-
-The install dialog of such a package starts with the notice "This extension asks for access to data. Only an organization owner can grant data access to an extension, so only an owner can install, upgrade or repair it.", and for anyone else its confirm button stays off.
 
 ## What each step may name
 
-A package reaches only what it brings with it: its own objects in the module `x-<key>` and its own queries. Every target is written out, never built from a template or a setting.
-
-| Step | Target | Refused in a packaged rule |
-| --- | --- | --- |
-| `FETCH_RECORDS` | `moduleKey: x-<key>`, `objectKey`: an object of the package. | |
-| `CREATE_RECORD` | `targetModuleKey: x-<key>`, `targetObjectKey`: an object of the package. | |
-| `UPDATE_RECORD` | The same, and `target`: the id of the record to change. | No `target`, or `target: self`: a step has no triggering record. |
-| `RUN_QUERY` | `queryKey`: the installed key of a package query, `x_<key with _>_<name>`. The query's `kind` decides the scope: `queries:run` for FETCH, `queries:mutate` for MUTATION. | `queryId` |
-| `UPDATE_CONTRACTOR` | Any contractor of the organization, by `contractorId`. | |
-| `SEND_EMAIL` | Any address. `subject` and `html` written inline; attachments by file id (`attachmentFileIds`, `fileIds`), any file of the organization. | `accountId`, `templateId`, `cc`, `bcc`, `text`, `saveAsDraft` |
-| `SEND_NOTIFICATION` | Members of the organization; the generic notification with `title` and `body`. | `typeKey` |
-| `GENERATE_DOCUMENT` | A data document template. `templateId` is written exactly `{{ trigger.data.<field> }}`, so the organization's rule author picks the template through your step's input. `templateVersionId` is allowed; it can only name the template's current published version. | `entityId`, `invoiceId`; a `templateId` written any other way |
-
-A package with the `documents:generate` scope also lists the `documents` module in `requires.modules`.
-
-## Reasons
-
-Every scope has a `reason`, shown under it in the install plan. Write what the extension does with it, in one sentence, from the administrator's side. Translate it in `locales/<lang>.yaml` under `permissions.data.<scope>.reason`:
-
-```yaml title="locales/pl.yaml"
-permissions:
-  data:
-    records:read: { reason: Odczytuje otwarte zamówienia. }
-    records:write: { reason: Zapisuje status zwrócony przez przewoźnika. }
-```
-
-Ask only for what you use: a declared scope that no rule of the package uses is refused.
+A package reaches only what it brings with it: its own objects in the module `x-<key>` and its own queries, each written out, never built from a template or a setting. Contractors, email addresses and notification recipients are the exceptions the scopes name. Each step's keys, and the keys a packaged rule may not set, are on [Data steps](/docs/en/extensions/reference/data-steps).
 
 ## When it is checked
 
-1. **When the package is read**, by `opero-ext validate` and again at upload: every step of every packaged rule is checked against the table above, with the problems below.
-2. **In the install plan**: whether the person installing is an owner (`permission.owner_required`), and whether this Opero serves every declared scope (`manifest.unsupported_by_server` otherwise).
-3. **Every time a step runs**: the step's settings are checked again after their templates are filled in. A step that would reach outside the scopes fails with `EXTENSION_SCOPE_DENIED` and does nothing. A package that passed upload does not reach this point; it is a second line of defence.
+| When | What is checked | Code on failure |
+| --- | --- | --- |
+| When the package is read, by `opero-ext validate` and at upload | Every step of every packaged rule, against the declared scopes and its targets. | The `step.*` codes on [Data steps](/docs/en/extensions/reference/data-steps#problems) |
+| In the install review | Whether the person installing is an owner, and whether this Opero serves every declared scope. | `permission.owner_required`, `manifest.unsupported_by_server` |
+| Every time a step runs | The step's settings again, after their templates are filled in. A package that passed upload does not fail here; it is a second line of defence. | `EXTENSION_SCOPE_DENIED` |
 
 The [contract tests](/docs/en/extensions/reference/tests#data-and-messaging-steps) run the same check, so a test cannot pass with a step the scopes do not allow.
 
+## Upgrades
+
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A scope is added | It is shown as new in the review, for the administrator to agree to. Only an owner can install the upgrade. | |
+
+What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `permissions.invalid_scope` | A scope that is not one of the eight. |
-| `permissions.reason_required` | A scope without a reason. |
-| `permissions.unused_scope` | A declared scope no packaged rule uses. |
-| `requires.module_undeclared` | The `documents:generate` scope without `documents` in `requires.modules`. |
-| `step.scope_missing` | A data step whose scope the package does not declare. |
-| `step.target_not_own` | A step names a module, object or query that is not the package's own. |
-| `step.target_not_literal` | A module, object or query key comes from a template, a setting included. |
-| `step.config_not_allowed` | A refused key from the table above, an update without a record id, or a `templateId` that is not exactly `{{ trigger.data.<field> }}`. |
-| `step.type_not_allowed` | A step type no scope covers, such as `ATTACH_FILE` or `CALL_RULE`. |
-| `action.verify_uses_data` | The connection's verify action uses a data step. It runs without a company, so it cannot. |
-| `test.invalid` | A test case with `effects` in a package without data scopes. |
-| `permission.owner_required` | In the install plan: the person installing is not an organization owner. Blocks the install. |
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `permissions.invalid_scope` | A scope that is not one of the eight. | Use a scope from the table. |
+| `permissions.reason_required` | A scope without a reason. | Add one sentence. |
+| `permissions.unused_scope` | A declared scope no packaged rule uses. | Remove it. |
+| `requires.module_undeclared` | The `documents:generate` scope without `documents` in `requires.modules`. | Add `documents`. |
+| `test.invalid` | A test case with `effects` in a package without data scopes. | Declare the scope, or remove the effects. |
+| `permission.owner_required` | In the install review: the person installing is not an organization owner. Blocks the install. | Ask an owner to install it. |
+| `manifest.unsupported_by_server` | At upload or in the install review: this Opero does not serve one of the scopes yet. | Wait for an Opero that serves it, or drop the scope. |

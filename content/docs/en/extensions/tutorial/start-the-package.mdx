@@ -1,24 +1,24 @@
 ---
 title: "Part 1: Start the package"
-description: "Scaffold an Opero extension with opero-ext init, read the manifest, the first action, its script and its test, then validate the package."
+description: "Scaffold the Hello extension with opero-ext init, read the manifest, the first action, its script and its test, and validate the package."
 ---
 
-In this tutorial you build an extension called `hello-ext` against [httpbin.org](https://httpbin.org), a public service that echoes requests back. It ends with a token connection, a check that the token works, a step called `greet` that calls the service, a step called `hello` that only computes, and a filter called `shout`.
+In this part you scaffold the `hello-ext` package and read what the tool wrote. At the end you have a valid package with one step that builds a greeting.
 
-Every file shown is the complete file as the finished package holds it.
+The tutorial builds `hello-ext` against [httpbin.org](https://httpbin.org), a public service that echoes requests back. Every file shown is the complete file as the finished package holds it.
 
 | Part | What you do |
 | --- | --- |
 | 1. Start the package | Scaffold with `init` and read what it wrote. |
-| 2. [Call a service](/docs/en/extensions/tutorial/call-a-service) | A connection, a check, a step that calls an API, a filter, a translation. |
-| 3. [Check and pack](/docs/en/extensions/tutorial/check-and-pack) | Validate, pack, run the tests on the server. |
-| 4. [Install and use](/docs/en/extensions/tutorial/install-and-use) | Upload, install, connect, use it in a rule, ship a new version. |
+| 2. [Call a service](/docs/en/extensions/tutorial/call-a-service) | Add a connection, a setting, a step that calls httpbin.org, a filter and a translation. |
+| 3. [Check and pack](/docs/en/extensions/tutorial/check-and-pack) | Validate, pack the zip and run the tests on Opero. |
+| 4. [Install and use](/docs/en/extensions/tutorial/install-and-use) | Upload, install, connect, use the step in a rule and ship a new version. |
 
 <Steps>
 <Step>
 ### Create the folder
 
-Let the command-line tool write a working package:
+Let the command-line tool write a working package. The folder name gives the extension its key; `--key` chooses another.
 
 ```bash title="Terminal"
 opero-ext init hello-ext --name Hello
@@ -29,51 +29,23 @@ opero-ext init hello-ext --name Hello
   actions/hello/action.yaml
   actions/hello/tests.yaml
   actions/hello/run.js
+  listing/description.md
+  listing/changelog.md
+  listing/icon.png
   README.md
   .gitignore
   jsconfig.json
   .vscode/settings.json
-Wrote 8 files in …/hello-ext.
+Wrote 11 files in …/hello-ext.
 ```
 
-The folder name gives the key; pass `--key` to choose another, and `--publisher` for your company's name. The package already validates, and its one action already has a passing test.
-
-<Files>
-  <Folder name="hello-ext" defaultOpen>
-    <File name="extension.yaml" />
-    <Folder name="actions" defaultOpen>
-      <Folder name="hello" defaultOpen>
-        <File name="action.yaml" />
-        <File name="run.js" />
-        <File name="tests.yaml" />
-      </Folder>
-    </Folder>
-    <File name="README.md" />
-    <File name=".gitignore" />
-    <File name="jsconfig.json" />
-    <Folder name=".vscode">
-      <File name="settings.json" />
-    </Folder>
-    <Folder name=".opero" disabled />
-  </Folder>
-</Files>
-
-| File | Holds | Packed |
-| --- | --- | --- |
-| `extension.yaml` | The list of everything the package installs. | Yes |
-| `actions/hello/action.yaml` | What the action is called, takes and returns. | Yes |
-| `actions/hello/run.js` | Its logic. | Yes |
-| `actions/hello/tests.yaml` | Its test. | Yes |
-| `README.md`, `.gitignore` | For you and your repository. | No |
-| `jsconfig.json` | Type checking for the scripts. | No |
-| `.vscode/settings.json` | Editor completion for the YAML files. | No |
-| `.opero/` | Generated types and schemas. | No |
+Only what `extension.yaml` reaches goes into the zip, plus the `listing/` folder that the catalog shows. `README.md`, `.gitignore`, `jsconfig.json` and `.vscode/` are for you and your editor.
 </Step>
 
 <Step>
-### Read the manifest
+### Describe the package
 
-`extension.yaml` holds the identity of the package and lists every part it installs:
+`extension.yaml`, the manifest, holds the package's identity and lists every part it installs. Replace the placeholder description:
 
 ```yaml title="extension.yaml"
 # The package's contents: every feature it installs is listed here.
@@ -81,30 +53,41 @@ manifestVersion: 2
 extension: hello-ext
 version: 0.1.0
 name: Hello
-description: Hello, an Opero extension.
+description: A starter extension with a greeting, a call to httpbin.org and a filter. # [!code highlight]
 publisher: Your company
 requires:
   modules: [rules]
 
 actions:
   - actions/hello
+
+# What the catalog shows is under listing/: icon.png, description.md and
+# changelog.md. Screenshots are listed here, in order, with their captions:
+# listing:
+#   screenshots:
+#     - file: listing/screenshots/main.png
+#       caption: The main screen
 ```
 
-- `extension` is the key. It names everything the extension adds: lower-case letters, digits and hyphens, 2 to 31 characters, starting with a letter and not with `x-`. Pick one that is not another extension's key plus `-…` (or the other way round): an organization cannot install both `order` and `order-sync`.
-- `version` is three numbers. Each upload needs a new one.
-- `name` and `description` are shown in the extension list, in English. Translations come later.
-- `actions` lists action folders as `actions/<folder>`. A folder that is not listed is not part of the package, and an `action.yaml` that no list names is refused, so this file is always the whole truth.
+| Key | What it is |
+| --- | --- |
+| `extension` | The key that names everything the extension adds. An organization cannot install two extensions whose keys overlap, such as `order` and `order-sync`. |
+| `version` | Three numbers. Each upload needs a new one. |
+| `name`, `description` | What the extension list shows, in English. Part 2 translates them. |
+| `actions` | The action folders. A folder that is not listed is not part of the package. |
+
+Every key is in [extension.yaml](/docs/en/extensions/reference/manifest); the catalog files are in [The listing](/docs/en/extensions/reference/listing).
 </Step>
 
 <Step>
-### Read the hello action
+### Describe the action
 
-Change the scaffold's placeholder description, and the descriptor reads:
+An action is one operation, here exposed as a rule step. Replace the placeholder description in `action.yaml`:
 
 ```yaml title="actions/hello/action.yaml"
 action: hello
 label: Hello
-description: Builds a greeting for a name.
+description: Builds a greeting for a name. # [!code highlight]
 
 input:
   name: { type: text, label: Name, required: true }
@@ -118,12 +101,20 @@ expose:
   ruleStep: { category: data }
 ```
 
-- `action` is the action's name. The folder name does not matter: you can move or rename the folder without changing anything that uses the action.
-- `input` and `output` are [field lists](/docs/en/extensions/reference/actions#field-lists). Each field has a type and a label; the input becomes the step's form in the rule builder.
-- `run` names the logic: a script, or a rule file as you will see in Part 2.
-- `expose.ruleStep` publishes the action as the step `x-hello-ext.hello`. Without `expose`, the action is installed but rule authors do not see it.
+| Key | What it is |
+| --- | --- |
+| `action` | The action's name. The folder name does not matter. |
+| `input`, `output` | [Field lists](/docs/en/extensions/reference/actions#field-lists). The input becomes the step's form in the rule builder. |
+| `run` | The logic: a script, or a rule file as in Part 2. |
+| `expose.ruleStep` | Publishes the action as the step `x-hello-ext.hello`, listed under the `data` category. |
 
-The script is a module with one exported function. It receives one argument and returns the action's output. Pick the language you scaffolded with:
+See [Actions and field lists](/docs/en/extensions/reference/actions) for every key.
+</Step>
+
+<Step>
+### Read the script
+
+The script exports one function. It receives the input and returns the action's output.
 
 <Tabs items={['JavaScript', 'TypeScript']}>
 <Tab value="JavaScript">
@@ -136,12 +127,10 @@ const run = ({ input }) => {
 export default run;
 ```
 
-The comment on the first line gives the function its type, which the tool generates from `action.yaml` into `.opero/types`. Your editor then completes `input.name` and flags a field the action does not declare.
+The first-line comment types the function from `action.yaml`, so your editor completes `input.name`.
 
 </Tab>
 <Tab value="TypeScript">
-
-Scaffold with `--typescript`. The script is then `run.ts`, the descriptor says `run: run.ts`, and the folder has a `tsconfig.json`:
 
 ```ts title="actions/hello/run.ts"
 import type { Action } from '../../.opero/types';
@@ -152,14 +141,18 @@ const run: Action<'hello'> = ({ input }) => {
 export default run;
 ```
 
-The tool removes the types when it checks and packs. The zip carries a `run.js`, and Opero never sees TypeScript.
+Scaffold with `--typescript` to get `run.ts`. The tool removes the types when it packs, so the zip carries a `run.js`.
 
 </Tab>
 </Tabs>
 
 The argument also holds `settings`, `company`, `user` and `context`; see [Scripts](/docs/en/extensions/reference/scripts).
+</Step>
 
-The test gives an input and the exact output expected:
+<Step>
+### Read the test
+
+A test case gives an input and the exact output expected. Opero runs it at every upload.
 
 ```yaml title="actions/hello/tests.yaml"
 - name: a name gets a greeting
@@ -173,6 +166,8 @@ The test gives an input and the exact output expected:
 <Step>
 ### Validate
 
+The check works offline and takes a moment, so run it after every edit. It also writes `.opero/`, the types and schemas your editor uses.
+
 ```bash title="Terminal"
 opero-ext validate hello-ext
 ```
@@ -180,11 +175,13 @@ opero-ext validate hello-ext
 ```txt title="Output"
 hello-ext 0.1.0 is valid.
 ```
-
-This check works offline and takes a moment, so run it after every edit. When the package is valid, it also writes `.opero/` again, so the types follow your descriptors.
 </Step>
 </Steps>
 
 ## Next
 
-Continue with [Part 2: Call a service](/docs/en/extensions/tutorial/call-a-service).
+<Cards>
+  <Card title="Part 2: Call a service" href="/docs/en/extensions/tutorial/call-a-service">
+    Add a connection, a setting and a step that calls httpbin.org.
+  </Card>
+</Cards>

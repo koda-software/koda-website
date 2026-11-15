@@ -1,25 +1,23 @@
 ---
 title: extension.yaml
-description: "Reference for extension.yaml, the Opero extension manifest: key, version, publisher, requirements, network, data, link, page script and company permissions with reasons, connection, settings, feature lists including triggers, schedules, blocks, links, forms, lists and pages, and locales."
+description: Reference for extension.yaml, the manifest of an extension package. Its identity, requirements, permissions and the lists of its parts.
 ---
 
-`extension.yaml` is the manifest: the package's identity, what it requires, what it may access, and the list of every feature it installs.
+`extension.yaml` is the manifest at the top of the package folder. It says who the extension is, what it needs, what it may reach, and which parts it installs. [Part 1 of the tutorial](/docs/en/extensions/tutorial/start-the-package) writes one.
 
 ```yaml title="extension.yaml"
 manifestVersion: 2
 extension: hello-ext
-version: 0.1.0
+version: 0.1.1
 name: Hello
 description: A starter extension with a greeting, a call to httpbin.org and a filter.
 publisher: Your company
 requires:
-  opero: ">=2026.1.0"
   modules: [rules]
 permissions:
   network:
     - host: httpbin.org
       reason: Checks the token and sends greetings to the httpbin.org test service.
-
 connection: connection
 settings: settings.yaml
 
@@ -44,22 +42,22 @@ locales: [pl]
     },
     extension: {
       type: 'string',
-      description: 'The key. A lower-case letter first, then letters, digits and hyphens; 2 to 31 characters; not starting with x-. Everything the extension adds is named after it.',
+      description: 'The key: a lower-case letter, then lower-case letters, digits and hyphens, 2 to 31 characters, not starting with x-. Everything the extension adds is named after it.',
       required: true,
     },
     version: {
       type: 'string',
-      description: 'Three numbers, such as 1.4.0. No suffixes. Each upload needs a new version.',
+      description: 'Three whole numbers, such as 1.4.0, with no suffix.',
       required: true,
     },
     name: {
       type: 'string',
-      description: 'Shown in lists, up to 120 characters.',
+      description: 'Shown in lists and on the extension\'s page, up to 120 characters. Translatable.',
       required: true,
     },
     description: {
       type: 'string',
-      description: 'One or two sentences, up to 2,000 characters.',
+      description: 'One or two sentences, up to 2,000 characters, shown on the catalog card. Translatable.',
       required: true,
     },
     publisher: {
@@ -69,160 +67,133 @@ locales: [pl]
     },
     'requires.opero': {
       type: 'string',
-      description: 'The oldest Opero release it works on, written ">=2026.22.0" (quoted). An older installation refuses to install it.',
+      description: 'The oldest Opero release it works on, written as a quoted minimum: ">=2026.22.0".',
     },
     'requires.modules': {
       type: 'string[]',
-      description: 'Module keys that must be available, for example rules. A package with objects lists objects, one with queries lists queries, one with the documents:generate scope lists documents.',
+      description: 'Module keys that must be available in the organization, such as rules. Up to 50.',
     },
-    'permissions.network': {
-      type: '{ host, reason }[]',
-      description: 'Up to 50 exact host names the package calls, each with why. No wildcards, no paths. Required when the package has a connection. A member connection\'s sign-in and token hosts are listed here too.',
-    },
-    'permissions.data': {
-      type: '{ scope, reason }[]',
-      description: 'The data scopes the package\'s rules use, each with why. See Data permissions.',
-    },
-    'permissions.links': {
-      type: '{ host, reason }[]',
-      description: 'Up to 20 exact host names the package\'s record links and screens open in members\' browsers, each with why. See Record links and Forms, lists and pages.',
-    },
-    'permissions.pageScript': {
-      type: '{ reason }',
-      description: 'Present when a block of the package has a script, with why. See Blocks.',
-    },
-    'permissions.company': {
-      type: 'map',
-      description: 'Up to 30 company permissions members need to use the package\'s block actions, record commands and links, each with label, description and reason. See Package permissions.',
+    permissions: {
+      type: 'object',
+      description: 'What the package may reach: network, data, links, pageScript and company. See Permissions below.',
     },
     connection: {
       type: '"connection"',
-      description: 'Always connection: the folder holding connection.yaml.',
+      description: 'Always connection: the folder that holds connection.yaml.',
     },
     settings: {
       type: '"settings.yaml"',
-      description: 'Always settings.yaml: the file at the top of the package that declares the extension\'s settings. See Settings.',
+      description: 'Always settings.yaml: the file that declares the extension\'s settings.',
     },
-    actions: {
+    'actions, filters, objects, …': {
       type: 'string[]',
-      description: 'Action folders, written actions/<folder>.',
-    },
-    filters: {
-      type: 'string[]',
-      description: 'Filter folders, written filters/<folder>.',
-    },
-    objects: {
-      type: 'string[]',
-      description: 'Object folders, written objects/<folder>. See Objects.',
-    },
-    dictionaries: {
-      type: 'string[]',
-      description: 'Dictionary folders, written dictionaries/<folder>. See Dictionaries.',
-    },
-    queries: {
-      type: 'string[]',
-      description: 'Query folders, written queries/<folder>. See Queries.',
-    },
-    triggers: {
-      type: 'string[]',
-      description: 'Trigger folders, written triggers/<folder>, up to 50. See Triggers.',
-    },
-    schedules: {
-      type: 'string[]',
-      description: 'Schedule folders, written schedules/<folder>, up to 10. See Schedules.',
-    },
-    blocks: {
-      type: 'string[]',
-      description: 'Block folders, written blocks/<folder>, up to 50. See Blocks.',
-    },
-    links: {
-      type: 'string[]',
-      description: 'Record link folders, written links/<folder>, up to 20. See Record links.',
-    },
-    forms: {
-      type: 'string[]',
-      description: 'Form folders, written forms/<folder>, up to 100. See Forms, lists and pages.',
-    },
-    lists: {
-      type: 'string[]',
-      description: 'Custom List folders, written lists/<folder>, up to 50. See Forms, lists and pages.',
-    },
-    pages: {
-      type: 'string[]',
-      description: 'Page folders, written pages/<folder>, up to 50. See Forms, lists and pages.',
+      description: 'The part folders the package installs, each written <kind folder>/<folder>. See Part lists below.',
     },
     include: {
       type: 'string[]',
-      description: 'Module folders, each with a module.yaml.',
+      description: 'Module folders, each with a module.yaml. Up to 50.',
     },
     locales: {
       type: 'string[]',
-      description: 'Translation languages, such as [pl, de]. Not en: English is in the descriptors.',
+      description: 'Translation languages, such as [pl, de]. Not en: English is written in the descriptors. Up to 40.',
+    },
+    'listing.screenshots': {
+      type: '{ file, caption }[]',
+      description: 'Up to 8 screenshots for the catalog, in display order. See The listing.',
     },
   }}
 />
 
-## Network permissions
+Any other key is refused with `manifest.invalid`.
 
-Every host the package calls is listed with a reason. The administrator sees each host and its reason in the install plan, before anything is installed.
+## Key and version
+
+The key names the extension everywhere and never changes; the version names one upload.
+
+- Opero adds the `x-` prefix itself, so a key may not start with it (`manifest.reserved_key`).
+- Two installed extensions cannot have overlapping keys, where one is the other followed by `-` and more, such as `order` and `order-sync`. The install review refuses the second with `key.overlaps_installed`.
+- A version, once uploaded, keeps its content. Upload a change under a new, higher version.
+
+## Requirements
+
+`requires` lists what the organization must have for the install review to go ahead.
+
+- `requires.opero` is a minimum only, `">=<year>.<release>.<patch>"`. An older Opero refuses the install (`requires.release`).
+- `requires.modules` must name `objects` when the package has objects, `queries` when it has queries, and `documents` when it uses the `documents:generate` data scope (`requires.module_undeclared`).
+
+## Permissions
+
+Each permission names what the package reaches and says why. The administrator reads every reason in the [install review](/docs/en/extensions/install#the-install-review) before agreeing. A missing reason is refused with `permissions.reason_required`.
 
 ```yaml title="extension.yaml"
 permissions:
   network:
     - host: api.example.com
       reason: Creates shipments and reads their tracking numbers.
-    - host: auth.example.com
-      reason: Exchanges the API key for a short-lived access token.
-```
-
-- A call to a host that is not listed is refused, both when the package is checked and when it runs.
-- A host without a reason is refused with `permissions.reason_required`.
-- A package with a connection lists at least one host.
-- A package with a [member connection](/docs/en/extensions/reference/member-connections) lists the host members sign in at and the host Opero exchanges their sign-in at (`member.host_not_listed` otherwise).
-- When an upgrade asks for new hosts, the plan marks them as new in that version.
-
-## Data permissions
-
-A package whose rules read or write data, run queries or send messages lists the [data scopes](/docs/en/extensions/reference/data-permissions) it uses, each with a reason:
-
-```yaml title="extension.yaml"
-permissions:
   data:
-    - scope: records:read
-      reason: Reads the open orders.
     - scope: records:write
       reason: Stores the status the carrier answers.
 ```
 
-- A scope that is not one of the eight is refused with `permissions.invalid_scope`, one without a reason with `permissions.reason_required`, and one no rule uses with `permissions.unused_scope`.
-- A package with data scopes can only be installed by an organization owner. Triggers, schedules and a member connection do not add this rule.
+| Key | Type | Declares | Reference |
+| --- | --- | --- | --- |
+| `network` | `{ host, reason }[]` | Up to 50 exact host names the package's rules call. No wildcards, ports or paths. | [Network hosts](#network-hosts) |
+| `data` | `{ scope, reason }[]` | The data scopes the package's rules use. | [Data permissions](/docs/en/extensions/reference/data-permissions) |
+| `links` | `{ host, reason }[]` | Up to 20 hosts the package's record links, forms, lists and pages open in members' browsers. | [Record links](/docs/en/extensions/reference/record-links) |
+| `pageScript` | `{ reason }` | That a block of the package runs a script in viewers' browsers. | [Blocks](/docs/en/extensions/reference/blocks#the-script) |
+| `company` | map of `{ label, description?, reason }` | Up to 30 package permissions that members need for its block actions, record commands and links. | [Package permissions](/docs/en/extensions/reference/package-permissions) |
 
-## Link hosts, page scripts and company permissions
+On an upgrade, the review marks each permission the installed version did not ask for as **New in this version**.
 
-Three more permissions concern what members use, not what the package's rules do:
+### Network hosts
 
-```yaml title="extension.yaml"
-permissions:
-  links:
-    - host: track.example.com
-      reason: Opens a parcel's tracking page at the carrier.
-  pageScript:
-    reason: The parcel card keeps the carrier's last answer on screen while the page is open.
-  company:
-    track:
-      label: Track parcels
-      description: Ask the carrier where a parcel is, from its page or its card.
-      reason: Each question counts against the organization's carrier quota.
-```
+The package may call only the hosts it lists, both when it is checked and when it runs.
 
-| Key | Declares | Refused when unused |
+- A package with a connection lists at least one host (`connection.hosts_required`).
+- A package with a [member connection](/docs/en/extensions/reference/member-connections) also lists the host members sign in at and the host Opero exchanges their sign-in at.
+- Each host is listed once.
+
+### Link hosts, page scripts and company permissions
+
+`links`, `pageScript` and `company` concern what members use, not what the package's rules do. Each one that nothing in the package uses is refused, so the review never asks for more than the package needs. The codes are on the pages in the table above.
+
+## Part lists
+
+Each list names part folders, written `<kind folder>/<folder>`, and each entry once.
+
+| List | Folder form | Up to |
 | --- | --- | --- |
-| `links` | The hosts the package's [record links](/docs/en/extensions/reference/record-links), and the URLs of its [forms, lists and pages](/docs/en/extensions/reference/screens#urls), open in members' browsers. Opero itself never calls them. | `permissions.unused_link_host` |
-| `pageScript` | That a [block](/docs/en/extensions/reference/blocks#the-script) of the package runs a script in viewers' browsers. | `permissions.unused_page_script` |
-| `company` | The [package permissions](/docs/en/extensions/reference/package-permissions) members need, by name. | `permissions.unused_company_permission` |
+| `actions` | `actions/<folder>` | 200 |
+| `filters` | `filters/<folder>` | 200 |
+| `objects` | `objects/<folder>` | 50 |
+| `dictionaries` | `dictionaries/<folder>` | 50 |
+| `queries` | `queries/<folder>` | 100 |
+| `triggers` | `triggers/<folder>` | 50 |
+| `schedules` | `schedules/<folder>` | 10 |
+| `blocks` | `blocks/<folder>` | 50 |
+| `links` | `links/<folder>` | 20 |
+| `forms` | `forms/<folder>` | 100 |
+| `lists` | `lists/<folder>` | 50 |
+| `pages` | `pages/<folder>` | 50 |
 
-Each carries a reason that the install plan shows. A version that adds a link host, a company permission or the page script has to be agreed to again.
+A limit counts the whole package, the [modules](/docs/en/extensions/reference/package-folder#modules) included, except for `actions` and `filters`, whose limit is per list. The list name `components` is reserved for a later version.
 
-## Reserved lists
+## Problems
 
-The list name `components` is reserved for a later version and refused today with `manifest.unsupported_section`.
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `manifest.invalid` | An unknown key, a value of the wrong form, a list entry written twice, or `en` in `locales`. | Check the key against the table above. |
+| `manifest.unsupported_version` | `manifestVersion` is not 2, or the package is in the old `manifest.json` format. | Write an `extension.yaml` with `manifestVersion: 2`. |
+| `manifest.unsupported_section` | The reserved list `components`. | Remove it. |
+| `manifest.reserved_key` | `extension` starts with `x-`. | Leave the prefix out; Opero adds it. |
+| `requires.invalid_release` | `requires.opero` is not a minimum such as `">=2026.22.0"`. | Write it in that form, quoted. |
+| `requires.module_undeclared` | Objects, queries or the `documents:generate` scope without `objects`, `queries` or `documents` in `requires.modules`. | Add the module. |
+| `permissions.reason_required` | A permission without a reason, or written as a bare host or scope. | Write `{ host, reason }`, `{ scope, reason }` or `{ reason }`. |
+| `permissions.unused_scope`, `permissions.unused_link_host`, `permissions.unused_page_script`, `permissions.unused_company_permission` | A data scope, link host, `pageScript` or package permission that no part of the package uses. The administrator consents only to what the package uses. | Remove it, or add the part that uses it. |
+| `manifest.unsupported_by_server` | At upload: this Opero does not install a part, or serve a data scope, that the package uses yet. | Leave the part out, or wait for an Opero that supports it. |
+| `requires.release` | In the install review: this Opero is older than `requires.opero`. | Update Opero, or lower the requirement if the package really works on older releases. |
+| `requires.release_unknown` | In the install review: the installation does not know its release, so `requires.opero` was not checked. Does not block. | None. |
+| `requires.module` | In the install review: a module in `requires.modules` is not available in the organization. | The administrator turns the module on, or the licence adds it. |
+| `key.overlaps_installed` | In the install review: an installed extension's key overlaps this one. | Choose a key that does not overlap. |
+| `version.not_newer` | In the install review: an upgrade to the same or an older version. | Raise `version`. |
+| `EXTENSION_VERSION_EXISTS` | At upload: this version was uploaded before with other content. | Raise `version`. |

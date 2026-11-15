@@ -1,14 +1,16 @@
 ---
 title: Akcje bloków i polecenia rekordów
-description: "Pozwól członkom organizacji samodzielnie uruchamiać akcje rozszerzenia Opero: expose.blockAction dla przycisków w blokach paczki, expose.recordCommand dla poleceń na rekordach, rekord, dla którego działa akcja (trigger.record), wynik, który pokazuje polecenie, kto może ich używać, testy i błędy."
+description: Pozwól członkom samodzielnie uruchamiać akcje paczki, przyciskiem w bloku albo poleceniem na rekordzie, przez expose.blockAction i expose.recordCommand.
 ---
 
-Krok reguły jest dla osób, które budują reguły. Akcję można też zaoferować członkom organizacji, którzy uruchamiają ją sami:
+Krok reguły jest dla osób, które budują reguły. Akcję można też udostępnić członkom organizacji, którzy uruchamiają ją sami, tak jak w przewodniku [Blok, przycisk i link](/docs/pl/extensions/blocks-and-actions):
 
-- **Akcję bloku** (`expose.blockAction`) uruchamia przycisk w jednym z [bloków](/docs/pl/extensions/reference/blocks#buttons-that-run-actions) paczki.
-- **Polecenie rekordu** (`expose.recordCommand`) pojawia się wśród akcji rekordu, na rekordach, których dotyczy: własnych obiektach paczki albo rekordach wbudowanych, takich jak kontrahenci.
+| Udostępnienie | Członkowie uruchamiają ją z | Działa dla |
+| --- | --- | --- |
+| `expose.blockAction` | Przycisku w jednym z [bloków](/docs/pl/extensions/reference/blocks#buttons-that-run-actions) paczki. | Rekordu, który pokazuje strona, albo bez rekordu na stronie własnej. |
+| `expose.recordCommand` | Akcji rekordu, którego dotyczy: obiektu paczki albo rekordu wbudowanego, na przykład kontrahenta. | Tego rekordu. |
 
-W obu przypadkach akcja działa jako członek, który ją uruchomił, dla rekordu, który ogląda. Akcja bloku działa też z bloku na stronie własnej, gdzie uruchamia się bez rekordu. Jedna akcja może być jednym i drugim, a także krokiem reguły.
+W obu przypadkach akcja działa jako członek, który ją uruchomił. Jedna akcja może być jednocześnie akcją bloku, poleceniem rekordu i krokiem reguły.
 
 ```yaml title="actions/track-parcel/action.yaml"
 action: track_parcel
@@ -33,7 +35,7 @@ expose:
     result: { message: message, details: [status, scannedAt] }
 ```
 
-Akcja oferowana członkom potrzebuje `description`, a każde udostępnienie wskazuje [uprawnienie paczki](/docs/pl/extensions/reference/package-permissions), które członkowie muszą mieć.
+Akcja udostępniona członkom potrzebuje `description`, a każde udostępnienie wskazuje [uprawnienie paczki](/docs/pl/extensions/reference/package-permissions), które członkowie muszą mieć.
 
 ## expose.blockAction [#exposeblockaction]
 
@@ -41,13 +43,13 @@ Akcja oferowana członkom potrzebuje `description`, a każde udostępnienie wska
   type={{
     permission: {
       type: 'string',
-      description: 'Nazwa z permissions.company w extension.yaml (w przeciwnym razie action.permission_undeclared).',
+      description: 'Nazwa z permissions.company w extension.yaml.',
       required: true,
     },
   }}
 />
 
-Blok paczki uruchamia ją przyciskiem `run-action`, którego `data-action` to `x-<key>.<action>`. `data-input` przycisku to dane wejściowe akcji. Zobacz [Przyciski, które uruchamiają akcje](/docs/pl/extensions/reference/blocks#buttons-that-run-actions).
+Blok paczki uruchamia ją przyciskiem `run-action`, którego `data-action` to `x-<key>.<action>`, a `data-input` to wejście akcji.
 
 ## expose.recordCommand [#exposerecordcommand]
 
@@ -60,54 +62,53 @@ Blok paczki uruchamia ją przyciskiem `run-action`, którego `data-action` to `x
     },
     targets: {
       type: '{ object } | { entity }[]',
-      description: 'Od 1 do 20 typów rekordów, na których pojawia się polecenie: { object: <klucz> } dla obiektu paczki albo { entity: contractor | sales_invoice | cost_invoice | budget | helpdesk_ticket }.',
+      description: 'Od 1 do 20 typów rekordów: { object: <key> } dla obiektu paczki albo { entity: contractor | sales_invoice | cost_invoice | budget | helpdesk_ticket }.',
       required: true,
     },
     icon: {
       type: 'string',
-      description: 'Nazwa ikony: małe litery, cyfry i myślniki.',
+      description: 'Nazwa ikony: mała litera, potem małe litery, cyfry i myślniki, do 64 znaków.',
     },
     intent: {
-      type: 'primary | secondary | danger',
+      type: '"primary" | "secondary" | "danger"',
       description: 'Jak wyraźnie polecenie jest pokazywane.',
       default: 'secondary',
     },
     editGated: {
       type: 'boolean',
-      description: 'Polecenie jest niedostępne, dopóki rekord jest tylko do odczytu na swoim etapie procesu.',
+      description: 'Polecenie jest niedostępne, gdy rekord jest tylko do odczytu na swoim etapie procesu.',
       default: 'false',
     },
     confirm: {
       type: '{ title, message }',
-      description: 'Pytanie, na które członek odpowiada przed uruchomieniem polecenia: tytuł do 120 znaków i komunikat do 500. Do przetłumaczenia.',
+      description: 'Pytanie, na które członek najpierw odpowiada: tytuł do 120 znaków i komunikat do 500. Do przetłumaczenia.',
     },
     'result.message': {
       type: 'string',
-      description: 'Pole wyniku, którego wartość jest pokazywana jako komunikat polecenia.',
+      description: 'Pole wyjścia, którego wartość jest pokazywana jako komunikat polecenia.',
     },
     'result.details': {
       type: 'string[]',
-      description: 'Do 20 pól wyniku pokazywanych pod nim, każde z etykietą z pól wyniku.',
+      description: 'Do 20 pól wyjścia pokazywanych pod nim, każde ze swoją etykietą wyjścia.',
     },
   }}
 />
 
-Formularz polecenia to pola wejściowe akcji: akcja bez danych wejściowych uruchamia się, gdy tylko członek potwierdzi. Pola wskazane w `result` muszą być polami wyniku akcji (`action.record_command_unknown_field`), a obiekt w `targets` musi być obiektem paczki (`action.record_command_unknown_target`).
+Formularz polecenia to pola wejścia akcji; akcja bez wejścia działa, gdy tylko członek potwierdzi. Polecenie pojawia się tylko na rekordach, których dotyczy, i nie ma go w zewnętrznym API ani w MCP. Jego klucz, `x-<key>.<action>`, można ukryć na etapie procesu jak każdą akcję rekordu.
 
-Polecenie jest pokazywane tylko na rekordach, których dotyczy; na rekordzie obiektu paczki tylko na tym obiekcie. Nie jest oferowane tokenom API i nie ma go w zewnętrznym API ani w MCP. Jego klucz, `x-<key>.<action>`, można ukryć na etapie procesu jak każdą akcję rekordu.
+![Panel szczegółów przesyłki z poleceniem Track parcel i linkiem Open tracking page](/docs/_assets/extensions/blocks-and-actions/record-actions.webp)
 
 ## Rekord, dla którego działa akcja [#the-record-the-action-runs-for]
 
-Akcja dostaje rekord przez odwołanie, nie jego wartości:
+Akcja dostaje rekord przez odwołanie, a nie jego wartości:
 
-| Napisz | Aby dostać |
+| Napisz | Żeby dostać |
 | --- | --- |
 | `{{ trigger.record.id }}` | Identyfikator rekordu. |
 | `{{ trigger.record.type }}` | `custom_record` dla rekordu obiektu; `contractor`, `sales_invoice`, `cost_invoice`, `budget` albo `helpdesk_ticket` dla rekordu wbudowanego. |
 | `{{ trigger.record.moduleKey }}`, `{{ trigger.record.objectKey }}` | Dla rekordu obiektu: `x-<key>` i klucz obiektu. |
-| `{{ trigger.data.<field> }}` | Pole danych wejściowych akcji, jak w każdej akcji. |
 
-Skrypt dostaje to samo jako `record` w swoim argumencie: `{ type, id, moduleKey, objectKey }` albo `null`, gdy akcja działa bez rekordu, na przykład z bloku na stronie własnej.
+Skrypt dostaje to samo jako `record` w argumencie albo `null`, gdy akcja działa bez rekordu. Żeby odczytać wartości rekordu, pobierz go krokiem [`FETCH_RECORDS`](/docs/pl/extensions/reference/data-steps#fetch-records).
 
 ```yaml title="actions/track-parcel/rule.yaml"
 entryStepId: ask
@@ -129,33 +130,29 @@ edges:
   - { fromStepId: ask, toStepId: answer }
 ```
 
-Aby odczytać wartości rekordu, pobierz go [krokiem danych](/docs/pl/extensions/reference/data-steps) (`FETCH_RECORDS`, z zakresem `records:read`).
-
 ## Co dostaje członek [#what-the-member-gets-back]
 
-| Uruchomione z | Po powodzeniu |
+| Uruchomione z | Po sukcesie |
 | --- | --- |
-| Bloku | Tekst `message` w wyniku jest pokazywany członkowi. Blok dostaje cały wynik w zdarzeniu `opero:action-done`, a potem się odświeża. |
-| Polecenia rekordu | Pole wyniku `result.message` jest pokazywane jako komunikat, a pod nim pola `result.details`, każde z etykietą wyniku w języku członka. |
+| Bloku | Tekst `message` z wyjścia jest pokazywany członkowi. Blok dostaje całe wyjście w zdarzeniu `opero:action-done`, a potem się odświeża. |
+| Polecenia rekordu | Pole `result.message` jest pokazywane jako komunikat, a pod nim pola `result.details`, każde z etykietą wyjścia w języku członka. |
 
-Gdy akcja się nie powiedzie, członek widzi jej komunikat, który nigdy nie cytuje odpowiedzi usługi. Uruchomienie trwające dłużej niż 15 sekund jest zgłaszane członkowi jako wciąż trwające; nie jest przerywane.
+Gdy akcja się nie powiedzie, członek widzi jej komunikat, który nigdy nie cytuje odpowiedzi usługi. Uruchomienie dłuższe niż 15 sekund jest zgłaszane jako wciąż trwające; nie jest przerywane.
 
 ## Kto może ich używać [#who-may-use-them]
 
-Każda akcja bloku, polecenie rekordu i [link rekordu](/docs/pl/extensions/reference/record-links) jest sprawdzane w tej kolejności, za każdym razem, gdy jest pokazywane, i ponownie przy użyciu:
+Każda akcja bloku, polecenie rekordu i [link do rekordu](/docs/pl/extensions/reference/record-links) są sprawdzane w tej kolejności, za każdym razem, gdy są pokazywane, i ponownie przy użyciu:
 
-1. **Rozszerzenie działa**: jest włączone, jego ustawienia są kompletne, a połączenie włączone.
+1. **Rozszerzenie działa**: jest włączone, ma kompletne ustawienia i włączone połączenie.
 2. **Jest udostępnione firmie członka.** Po instalacji każda akcja bloku, polecenie i link są udostępnione wszystkim firmom.
-3. **Członek należy do jego odbiorców.** Po instalacji są to wszyscy członkowie.
+3. **Członek jest w jego grupie odbiorców.** Po instalacji to każdy członek.
 4. **Członek ma jego uprawnienie paczki**, `company.x-<key>.<name>`, przez jedną ze swoich ról.
 
-Organizacja może zawęzić firmy i odbiorców każdego z nich osobno, więc akcja bloku i polecenie rekordu tej samej akcji mogą trafiać do różnych osób. Aktualizacja zachowuje te ustawienia dla tego, co zostaje.
-
-Polecenie rekordu albo link, które nie przechodzą sprawdzenia, w ogóle nie są pokazywane; z tych powodów nigdy nie są pokazywane jako nieaktywne. Blok dostaje `false` w `extension_actions` dla akcji bloku, której oglądający nie może uruchomić.
+Organizacja może osobno zawęzić firmy i odbiorców każdego z nich, a aktualizacja zachowuje te wybory. Polecenie albo link, które nie przejdą sprawdzenia, w ogóle nie są pokazywane, nigdy jako wyłączone. Blok dostaje `false` w `extension_actions` dla akcji bloku, której oglądający nie może uruchomić.
 
 ## Testy [#tests]
 
-Przypadek testowy takiej akcji podaje rekord w `record`:
+Przypadek testowy takiej akcji podaje rekord w `record`: `type`, `id`, a dla `custom_record` obiekt paczki jako `object`. Zobacz [Testy](/docs/pl/extensions/reference/tests#a-test-case).
 
 ```yaml title="actions/track-parcel/tests.yaml"
 - name: the carrier's status comes back
@@ -173,27 +170,41 @@ Przypadek testowy takiej akcji podaje rekord w `record`:
     scannedAt: "2026-11-12T08:30:00Z"
 ```
 
-`record` przyjmuje `type` (`custom_record` albo typ wbudowany), `id`, a dla `custom_record` obiekt paczki jako `object`. Uruchomienie widzi wtedy `trigger.record` z `moduleKey: x-<key>` i tym `objectKey`.
+## Czego te akcje nie mogą robić [#what-these-actions-cannot-do]
 
-## Czego te akcje nie potrafią [#what-these-actions-cannot-do]
+| Akcja, która | Nie może być akcją bloku ani poleceniem rekordu | Kod |
+| --- | --- | --- |
+| Zgłasza zdarzenia krokiem `EMIT_EVENT` | Zdarzenia pochodzą tylko z harmonogramów i haków połączenia członka. | `event.emitted_from_step` |
+| Używa `{{ userConnection.<field> }}` | Wartości członka istnieją tylko w uruchomieniach członka. | `action.member_outside_member_run` |
+| Jest uruchamiana przez harmonogram | Akcja harmonogramu nie jest udostępniana. | `schedule.action_exposed` |
 
-- **Zgłaszać zdarzeń.** Akcja z `EMIT_EVENT` nie może być akcją bloku ani poleceniem rekordu (`event.emitted_from_step`).
-- **Używać połączenia członka.** Akcja, która używa `{{ userConnection.<field> }}`, też nie może nimi być (`action.member_outside_member_run`).
-- **Być uruchamiane przez harmonogram.** Akcja harmonogramu nie jest udostępniana (`schedule.action_exposed`).
-- **Działać w tle.** Polecenie działa, a członek czeka.
+Polecenie zawsze działa, gdy członek czeka; nic nie działa w tle.
 
-## Gdy uruchomienie członka zostanie odrzucone [#when-a-members-run-is-refused]
+## Gdy uruchomienie członka zostaje odrzucone [#when-a-members-run-is-refused]
 
 Ekrany pokazują je członkowi; kody mają znaczenie, gdy czytasz API.
 
 | Kod | Kiedy |
 | --- | --- |
 | `EXTENSION_INACTIVE` (409) | Akcja bloku rozszerzenia, które nie działa. |
-| `EXTENSION_ACTION_FORBIDDEN` (403) | Członek nie należy do odbiorców albo nie ma uprawnienia paczki. `meta.reason` mówi, które z nich. |
-| `block_action_unavailable` (404) | Akcji bloku nie ma na stronie członka, nie jest udostępniona jego firmie albo zainstalowana wersja już jej nie ma. Strona jest sprawdzana tak, jak renderuje się dla członka, więc przycisk, który blok przed nim pomija, na przykład bo `extension_actions` ma wartość `false`, też jest niedostępny. |
-| `ENTITY_ACTION_NOT_FOUND` (404) | Członek nie może już uruchomić polecenia rekordu, na przykład bo rozszerzenie zostało wyłączone. |
-| `ENTITY_ACTION_DISABLED` (409) | Polecenie `editGated` na rekordzie, który jest tylko do odczytu na swoim etapie. |
-| `EXTENSION_ACTION_INPUT_INVALID` (400) | Dane wejściowe nie pasują do pól wejściowych akcji. |
-| `EXTENSION_ACTION_RATE_LIMITED` (429) | Usługa odpowiedziała `429`. Niesie `retryAfterSeconds`, jeśli usługa je podała. |
-| `EXTENSION_ACTION_FAILED`, `EXTENSION_ACTION_OUTPUT_INVALID` (422) | Akcja zadziałała i się nie powiodła albo zwróciła wynik niepasujący do pól wyniku. |
+| `EXTENSION_ACTION_FORBIDDEN` (403) | Członek jest spoza grupy odbiorców albo nie ma uprawnienia paczki. `meta.reason` mówi, które z nich. |
+| `block_action_unavailable` (404) | Akcji bloku nie ma na stronie członka w postaci, w jakiej się dla niego renderuje, nie jest udostępniona jego firmie albo zainstalowana wersja już jej nie ma. |
+| `ENTITY_ACTION_NOT_FOUND` (404) | Polecenie rekordu nie jest już dostępne dla członka, na przykład dlatego, że rozszerzenie wyłączono. |
+| `ENTITY_ACTION_DISABLED` (409) | Polecenie z `editGated` na rekordzie, który na swoim etapie jest tylko do odczytu. |
+| `EXTENSION_ACTION_INPUT_INVALID` (400) | Wejście nie pasuje do pól wejścia akcji. |
+| `EXTENSION_ACTION_RATE_LIMITED` (429) | Usługa odpowiedziała `429`. Zawiera `retryAfterSeconds`, gdy usługa go podała. |
+| `EXTENSION_ACTION_FAILED`, `EXTENSION_ACTION_OUTPUT_INVALID` (422) | Akcja zadziałała i się nie powiodła albo zwróciła wyjście niepasujące do jej pól wyjścia. |
 | `ENTITY_ACTION_TIMEOUT` (504) | Brak odpowiedzi w ciągu 15 sekund. Uruchomienie trwa dalej. |
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `action.invalid` | Akcja udostępniona członkom bez `description` albo klucz udostępnienia o złej strukturze. | Dodaj opis; popraw klucz wskazany w komunikacie. |
+| `action.permission_undeclared` | `permission` nie wskazuje niczego w `permissions.company`. | Zadeklaruj uprawnienie albo popraw nazwę. |
+| `action.record_command_invalid` | Polecenie rekordu bez celu albo z więcej niż 20 celami. | Wskaż od 1 do 20 celów. |
+| `action.record_command_unknown_target` | Cel obiektu, który nie jest obiektem paczki. | Popraw klucz albo dodaj obiekt. |
+| `action.record_command_unknown_field` | `result` wskazuje pole, które nie jest polem wyjścia akcji. | Wskaż pole wyjścia. |
+| `event.emitted_from_step` | Akcja, która zgłasza zdarzenia, jest udostępniona. | Zgłaszaj zdarzenia z akcji harmonogramu. |
+| `action.member_outside_member_run` | Akcja, która używa wartości członka, jest udostępniona. | Uruchamiaj ją z haka albo harmonogramu połączenia członka. |
+| `schedule.action_exposed` | Akcja harmonogramu jest udostępniona. | Daj harmonogramowi własną akcję. |

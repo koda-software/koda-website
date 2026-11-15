@@ -1,109 +1,147 @@
 ---
 title: "Part 4: Install and use"
-description: "Upload the Hello extension to Opero, review the install plan, check its settings, set up and verify the connection, use the new step and filter in a rule, and ship a new version."
+description: "Upload and install the Hello extension, connect it to httpbin.org, use its Greet step in a rule, run the rule and ship a new version."
 ---
 
-In this part you upload the package, install it, check its settings, connect it, use its step in a rule and ship a second version.
+In this part you install the zip from Part 3 in an organization and use its step. At the end a rule of yours calls httpbin.org through Hello, and Hello runs a second version.
 
 <Steps>
 <Step>
-### Upload
+### Upload the zip
 
-In Opero open **Manage → Extensions**, choose **Upload package** and pick the zip. Opero repeats the offline checks and then runs your test cases.
+In the organization's administration, open **Integrations** → **Extensions**, press **Upload package** and choose `hello-ext-0.1.0.zip`. Opero checks the package and runs its five tests before it stores anything.
 
-If anything fails, nothing is stored and you see the list of problems with their files and lines. If all pass, the package appears under **Available to install** as a private package of your organization.
+![The upload dialog after the check: ready to upload, every contract test passed](/docs/_assets/extensions/install/upload-checked.webp)
 
-You can also upload from a terminal or let an AI assistant do it:
+Press **Upload and review**. When the check finds problems instead, fix them, pack again and choose the new zip.
+</Step>
 
-<Tabs items={['Opero screen', 'Command-line tool', 'AI assistant']}>
-<Tab value="Opero screen">
+<Step>
+### Install it
 
-**Manage → Extensions → Upload package**, then pick the zip. The limit is 10 MB.
+The review shows what Hello adds and that it calls `httpbin.org`, with your reason. [The install review](/docs/en/extensions/install#the-install-review) explains each part.
 
-</Tab>
+![The install review: what it adds, what it can reach and what to do after installing](/docs/_assets/extensions/install/review-dialog.webp)
+
+Press **Install**. Hello is now **Inactive**, because installing never sets up a connection.
+</Step>
+
+<Step>
+### Check the setting
+
+Open the **Configuration** tab. The **General** section from `settings.yaml` shows **Language** at its default, `en`.
+
+![Hello's settings: the language used for greetings](/docs/_assets/extensions/tutorial/hello-settings.webp)
+
+Choose `pl` and press **Save changes** if you want greetings sent with `lang=pl`.
+</Step>
+
+<Step>
+### Set up the connection
+
+In the **Connection** section, enter any text as the **API token** (httpbin.org accepts every token) and press **Create**. Press **Test connection**, which runs your `verify` action, then **Activate**.
+
+![Hello's connection after a successful test, ready to activate](/docs/_assets/extensions/tutorial/hello-connection.webp)
+
+Hello is now **Running**. [Run an installed extension](/docs/en/extensions/after-install#configuration) covers the rest of this tab.
+</Step>
+
+<Step>
+### Add the step to a rule
+
+Open **Configuration** → **Rules**, press **Create**, name the rule and press **Create**. Under **Pipeline**, press **Add Step**: **Greet** is under **Hello** in the **Integrations** group.
+
+![The step list with Hello's Greet step in the extension's own group](/docs/_assets/extensions/tutorial/step-picker.webp)
+
+The **Hello** step declared `category: data`, so it is under **Data**. Searching for "hello" finds both.
+</Step>
+
+<Step>
+### Fill in the step
+
+The form comes from the action's input. Set **Name** to `{{ trigger.user.firstName }}`, press **Done**, then **Save changes**.
+
+![The Greet step's form, generated from the action's input](/docs/_assets/extensions/tutorial/greet-step.webp)
+
+The step saves its result as `greet`, so later steps read `{{ greet.status }}` and `{{ greet.body.json.greeting }}`.
+</Step>
+
+<Step>
+### Run the rule
+
+Press **Run**, open the menu next to **Dry run** and choose **Execute rule**. **Execution Result** shows **Success**, and the Greet step's state holds httpbin.org's answer.
+
+A **Dry run** shows what the rule would do without calling the service. If the action fails, the step fails; see [When a step fails](/docs/en/extensions/reference/actions#when-a-step-fails).
+</Step>
+
+<Step>
+### Describe it for the catalog
+
+The extension's **Overview** still shows the placeholder text that `init` wrote. Replace `listing/description.md`; it is Markdown, and the [listing](/docs/en/extensions/reference/listing) explains what it may hold.
+
+```md title="listing/description.md"
+# Hello
+
+Hello is the extension the Opero tutorial builds. It adds two rule steps and a
+template filter:
+
+- **Greet** sends a greeting for a name to httpbin.org and returns its answer.
+- **Hello** builds a greeting without calling anything.
+- `x_hello_ext_shout` upper-cases a text in any template.
+
+Connect it with any token: httpbin.org accepts every one.
+```
+</Step>
+
+<Step>
+### Ship a new version
+
+Raise `version` in `extension.yaml` to `0.1.1`, and say what changed at the top of the changelog:
+
+```md title="listing/changelog.md"
+## 0.1.1
+
+- A real description for the catalog.
+
+## 0.1.0
+
+- First version.
+```
+
+Run `opero-ext validate .` and `opero-ext pack .`:
+
+```txt title="Output"
+hello-ext 0.1.1 is valid.
+Wrote …/hello-ext-0.1.1.zip (5731 bytes; listing images 1325 bytes)
+```
+
+Upload the new zip and press **Upload and review**. The review is now **Upgrade Hello**, with **New in this version** from your changelog; press **Upgrade**. The connection and the rule keep working, because the step keeps its name.
+</Step>
+</Steps>
+
+## Other ways to upload
+
+<Tabs items={['Command-line tool', 'AI assistant']}>
 <Tab value="Command-line tool">
 
 ```bash title="Terminal"
 opero-ext push . --server https://opero.example.com/mcp
 ```
 
-Add `--org <organizationId>` when you belong to more than one organization. `opero-ext install .` goes further: it uploads, prints the plan described in the next step, asks for your consent and installs. See [Consent](/docs/en/extensions/reference/cli#consent).
+`opero-ext install .` uploads, prints the review, asks for your consent and installs; `opero-ext upgrade .` does the same for a new version. See [Consent](/docs/en/extensions/reference/cli#consent).
 
 </Tab>
 <Tab value="AI assistant">
 
-An AI assistant connected to Opero's MCP server can upload the zip for you. Ask it to upload the package file to your organization; it runs the same checks and tests. It can also plan, install and upgrade (`extensions_plan`, `extensions_install`, `extensions_upgrade`): it must show you the plan first and install only once you agree.
+An AI assistant connected to Opero's MCP server can upload the zip, review it, install it and upgrade it. It must show you the review first and install only once you agree.
 
 </Tab>
 </Tabs>
-</Step>
 
-<Step>
-### Install
-
-Press **Install**. Opero shows a plan before it changes anything:
-
-- what will be created: three rules (`Hello: Hello`, `Hello: Verify`, `Hello: Greet`) and one template filter;
-- the hosts the package may call, each with your reason (`httpbin.org`);
-- the permissions you need and whether you have them;
-- any problem, marked blocking or not.
-
-Confirm to install. The extension now shows as **Not running: connection not enabled**.
-
-<Callout>
-That status is expected: installing never creates a connection.
-</Callout>
-</Step>
-
-<Step>
-### Check the settings
-
-Open the extension and go to its **Settings** tab, between **Details** and **Connection**. It shows the **General** section from `settings.yaml` with the **Language** field, set to its default, English. Choose Polish and save if you want greetings sent with `lang=pl`.
-
-The language has a default, so the extension does not wait for it. A required setting without a default would show the extension as **Not running: settings incomplete** until it is filled in.
-</Step>
-
-<Step>
-### Set up the connection
-
-Go to the extension's **Connection** tab. Enter a token (httpbin accepts any text), save, and press **Test connection**.
-
-Opero runs your `verify` action with the values you saved. When it passes, switch the connection on. The **Not running** mark goes away: the extension shows **Enabled** and runs.
-</Step>
-
-<Step>
-### Use the steps and the filter
-
-Create or open a rule. The steps **Greet** and **Hello** are in the step list, each with a **Name** field generated from its input. In the rule as saved, a greet step looks like this:
-
-```json title="A step in one of the organization's rules"
-{
-  "type": "x-hello-ext.greet",
-  "contextKey": "greeting",
-  "config": { "name": "{{ trigger.data.firstName }}" }
-}
-```
-
-The action's output lands under the step's context key, here `greeting`, for later steps to use: `{{ greeting.status }}`, `{{ greeting.body.json.greeting }}`.
-
-If the action fails, the step fails; connect its error port to handle that. See [When a step fails](/docs/en/extensions/after-install#when-a-step-fails).
-
-In any template, try `{{ "hello" | x_hello_ext_shout }}`.
-</Step>
-
-<Step>
-### Ship a new version
-
-Change something, raise `version` to `0.1.1`, validate, pack and upload. The installed extension shows the newer version; press **Upgrade**, review the plan and confirm. From a terminal, `opero-ext upgrade . --server https://opero.example.com/mcp` does the same.
-
-Rules that use your step keep working, because a step keeps its identity across versions as long as the action's name stays the same. [Upgrading](/docs/en/extensions/after-install#upgrading) lists what can block an upgrade.
-</Step>
-</Steps>
-
-## What next
+## Next
 
 <Cards>
-  <Card title="Recipe: a calculating step" href="/docs/en/extensions/calculating-step">
+  <Card title="A step that only calculates" href="/docs/en/extensions/calculating-step">
     A step with no connection, written as a script.
   </Card>
   <Card title="Reference" href="/docs/en/extensions/reference/manifest">

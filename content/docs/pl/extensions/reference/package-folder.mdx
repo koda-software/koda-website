@@ -1,161 +1,149 @@
 ---
 title: Folder paczki
-description: "Jak zbudowany jest folder paczki rozszerzenia Opero: manifest, ustawienia, foldery połączenia i połączenia członka, akcji, filtrów, obiektów, słowników, zapytań, wyzwalaczy, harmonogramów, bloków, linków, formularzy, list i stron, moduły, tłumaczenia, nazwy plików i zasady YAML."
+description: Jak zbudowany jest folder paczki rozszerzenia, gdzie trafia każda jej część oraz jakie zasady nazw i YAML obowiązują każdy plik paczki.
 ---
 
-Paczka to folder z `extension.yaml` na górze i jednym folderem na każdą funkcję. Do paczki należy tylko to, co wymienia manifest.
+Paczka to folder z `extension.yaml` na górze i osobnym folderem na każdą część. Do paczki należy tylko to, co wymienia `extension.yaml`. [Część 1 samouczka](/docs/pl/extensions/tutorial/start-the-package) buduje taką paczkę od zera.
+
+Najmniejsza paczka ma manifest i jedną akcję:
 
 <Files>
-  <Folder name="your-extension" defaultOpen>
+  <Folder name="hello-ext" defaultOpen>
     <File name="extension.yaml" />
-    <File name="settings.yaml" />
-    <Folder name="connection" defaultOpen>
-      <File name="connection.yaml" />
-      <File name="member.yaml" />
-    </Folder>
     <Folder name="actions" defaultOpen>
-      <Folder name="create-shipment" defaultOpen>
+      <Folder name="hello" defaultOpen>
         <File name="action.yaml" />
-        <File name="rule.yaml (lub run.js / run.ts)" />
+        <File name="run.js" />
         <File name="tests.yaml" />
       </Folder>
     </Folder>
-    <Folder name="filters" defaultOpen>
-      <Folder name="tracking-url" defaultOpen>
-        <File name="filter.yaml" />
-        <File name="filter.js" />
-      </Folder>
-    </Folder>
-    <Folder name="objects" defaultOpen>
-      <Folder name="shipments" defaultOpen>
-        <File name="object.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="dictionaries" defaultOpen>
-      <Folder name="carrier" defaultOpen>
-        <File name="dictionary.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="queries" defaultOpen>
-      <Folder name="shipments-by-day" defaultOpen>
-        <File name="query.yaml" />
-        <File name="query.sql" />
-      </Folder>
-    </Folder>
-    <Folder name="triggers" defaultOpen>
-      <Folder name="shipment-delivered" defaultOpen>
-        <File name="trigger.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="schedules" defaultOpen>
-      <Folder name="sync-shipments" defaultOpen>
-        <File name="schedule.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="blocks" defaultOpen>
-      <Folder name="shipment-card" defaultOpen>
-        <File name="block.yaml" />
-        <File name="block.html" />
-        <File name="block.css" />
-        <File name="block.js" />
-        <File name="tests.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="links" defaultOpen>
-      <Folder name="open-tracking" defaultOpen>
-        <File name="link.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="forms" defaultOpen>
-      <Folder name="shipment" defaultOpen>
-        <File name="form.yaml" />
-        <File name="layout.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="lists" defaultOpen>
-      <Folder name="open-shipments" defaultOpen>
-        <File name="list.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="pages" defaultOpen>
-      <Folder name="shipments" defaultOpen>
-        <File name="page.yaml" />
-        <File name="layout.yaml" />
-      </Folder>
-    </Folder>
-    <Folder name="locales" defaultOpen>
-      <File name="pl.yaml" />
-    </Folder>
-    <File name="README.md" />
-    <Folder name=".github" disabled />
-    <Folder name=".opero" disabled />
   </Folder>
 </Files>
 
-| Ścieżka | Zawiera |
-| --- | --- |
-| `extension.yaml` | Tożsamość, wymagania i uprawnienia oraz listy wszystkiego innego. Wymagany. Zobacz [extension.yaml](/docs/pl/extensions/reference/manifest). |
-| `actions/<folder>/` | `action.yaml`, plik wskazany w `run` (plik reguły, skrypt albo plik reguły i skrypty, których używają jego kroki), plik lub folder z testami oraz ewentualne pliki schematów. Zobacz [Akcje](/docs/pl/extensions/reference/actions). |
-| `filters/<folder>/` | `filter.yaml` i jego skrypt. Zobacz [Filtry](/docs/pl/extensions/reference/filters). |
-| `objects/<folder>/` | `object.yaml`: jeden obiekt paczki. Zobacz [Obiekty](/docs/pl/extensions/reference/objects). |
-| `dictionaries/<folder>/` | `dictionary.yaml`: jeden słownik. Zobacz [Słowniki](/docs/pl/extensions/reference/dictionaries). |
-| `queries/<folder>/` | `query.yaml` i plik `.sql`, który wskazuje. Zobacz [Zapytania](/docs/pl/extensions/reference/queries). |
-| `triggers/<folder>/` | `trigger.yaml`: jeden wyzwalacz reguł paczki i plik schematu jego danych, jeśli go używa. Zobacz [Wyzwalacze](/docs/pl/extensions/reference/triggers). |
-| `schedules/<folder>/` | `schedule.yaml`: jeden harmonogram. Zobacz [Harmonogramy](/docs/pl/extensions/reference/schedules). |
-| `blocks/<folder>/` | `block.yaml`, plik HTML, wskazane przez niego pliki CSS i skryptu oraz testy renderowania. Zobacz [Bloki](/docs/pl/extensions/reference/blocks). |
-| `links/<folder>/` | `link.yaml`: jeden link rekordu. Zobacz [Linki rekordów](/docs/pl/extensions/reference/record-links). |
-| `forms/<folder>/` | `form.yaml` i plik jego układu: jeden formularz na obiekcie paczki. Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#formyaml). |
-| `lists/<folder>/` | `list.yaml`: jedna lista własna. Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#listyaml). |
-| `pages/<folder>/` | `page.yaml` i plik jej układu: jedna strona obszaru roboczego. Zobacz [Formularze, listy i strony](/docs/pl/extensions/reference/screens#pageyaml). |
-| `settings.yaml` | Ustawienia rozszerzenia, gdy `extension.yaml` zawiera `settings: settings.yaml`. Zobacz [Ustawienia](/docs/pl/extensions/reference/settings). |
-| `connection/` | `connection.yaml`, gdy `extension.yaml` zawiera `connection: connection`, oraz `member.yaml`, gdy `connection.yaml` zawiera `member: member.yaml`. Zobacz [Połączenie i sekrety](/docs/pl/extensions/reference/connection-and-secrets) i [Połączenia członków](/docs/pl/extensions/reference/member-connections). |
-| `<module>/module.yaml` | Grupa funkcji we własnym folderze, dla dużej paczki. Zobacz [Moduły](#modules). |
-| `locales/<lang>.yaml` | Jedno tłumaczenie na każdy język z listy `locales`. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations). |
-| Wszystko inne | README, changelog, licencja, pliki CI, ustawienia edytora: pomijane i niepakowane. |
+```yaml title="extension.yaml"
+manifestVersion: 2
+extension: hello-ext
+version: 0.1.0
+name: Hello
+description: A starter extension with a greeting.
+publisher: Your company
+requires:
+  modules: [rules]
+
+actions:
+  - actions/hello
+```
+
+## Gdzie trafia każda część [#where-each-part-goes]
+
+Każda część ma własny folder w folderze swojego rodzaju, na przykład `actions/greet/`. Plik deskryptora w nim ma stałą nazwę.
+
+| Ścieżka | Deskryptor i inne pliki | Dokumentacja |
+| --- | --- | --- |
+| `extension.yaml` | Manifest: tożsamość, wymagania, uprawnienia i lista wszystkich części. Wymagany. | [extension.yaml](/docs/pl/extensions/reference/manifest) |
+| `actions/<folder>/` | `action.yaml`, plik reguły albo skrypt wskazany w `run`, testy, pliki schematów. | [Akcje](/docs/pl/extensions/reference/actions) |
+| `filters/<folder>/` | `filter.yaml` i jego skrypt. | [Filtry szablonów](/docs/pl/extensions/reference/filters) |
+| `objects/<folder>/` | `object.yaml`. | [Obiekty](/docs/pl/extensions/reference/objects) |
+| `dictionaries/<folder>/` | `dictionary.yaml`. | [Słowniki](/docs/pl/extensions/reference/dictionaries) |
+| `queries/<folder>/` | `query.yaml` i jego plik `.sql`. | [Zapytania](/docs/pl/extensions/reference/queries) |
+| `triggers/<folder>/` | `trigger.yaml` i plik schematu danych, jeśli go używa. | [Wyzwalacze](/docs/pl/extensions/reference/triggers) |
+| `schedules/<folder>/` | `schedule.yaml`. | [Harmonogramy](/docs/pl/extensions/reference/schedules) |
+| `blocks/<folder>/` | `block.yaml`, jego pliki HTML, CSS i skryptu oraz testy renderowania. | [Bloki](/docs/pl/extensions/reference/blocks) |
+| `links/<folder>/` | `link.yaml`. | [Linki rekordów](/docs/pl/extensions/reference/record-links) |
+| `forms/<folder>/` | `form.yaml` i plik jego układu. | [Formularze, listy i strony](/docs/pl/extensions/reference/screens#formyaml) |
+| `lists/<folder>/` | `list.yaml`. | [Formularze, listy i strony](/docs/pl/extensions/reference/screens#listyaml) |
+| `pages/<folder>/` | `page.yaml` i plik jej układu. | [Formularze, listy i strony](/docs/pl/extensions/reference/screens#pageyaml) |
+| `settings.yaml` | Ustawienia rozszerzenia, gdy `extension.yaml` zawiera `settings: settings.yaml`. | [Ustawienia](/docs/pl/extensions/reference/settings) |
+| `connection/` | `connection.yaml`, gdy `extension.yaml` zawiera `connection: connection`, oraz `member.yaml`, gdy wskazuje go `connection.yaml`. | [Połączenie i sekrety](/docs/pl/extensions/reference/connection-and-secrets), [Połączenia członków](/docs/pl/extensions/reference/member-connections) |
+| `<module>/` | `module.yaml` i foldery części tego modułu. | [Moduły](#modules) |
+| `locales/` | Jeden plik `<lang>.yaml` na każdy język z `locales`. | [Tłumaczenia](/docs/pl/extensions/reference/translations) |
+| `listing/` | Ikona, długi opis, zrzuty ekranu i lista zmian. Wszystko opcjonalne. | [Wizytówka w katalogu](/docs/pl/extensions/reference/listing) |
+
+## Pliki, które Opero pomija [#files-opero-ignores]
+
+Wszystko inne w folderze należy do ciebie: `README.md`, `CHANGELOG.md` na górze paczki, licencja, pliki CI, ustawienia edytora i generowany folder `.opero/`. `opero-ext pack` ich nie pakuje, a Opero nigdy ich nie czyta.
 
 <Callout type="warn">
-Plik deskryptora (`action.yaml`, `filter.yaml`, `object.yaml` itd.), którego nie wymienia żadna lista, zostaje odrzucony z kodem `layout.unlisted_feature`. Dodaj jego folder do listy albo go usuń. To samo dotyczy pliku `settings.yaml`, którego nie wskazuje `extension.yaml`, i pliku `connection/member.yaml`, którego nie wskazuje `connection.yaml`.
+Plik deskryptora, którego nie wymienia żadna lista, zostaje odrzucony z kodem `layout.unlisted_feature`, gdziekolwiek leży, chyba że w folderze o nazwie zaczynającej się od kropki (np. `.github/`). To samo dotyczy pliku `settings.yaml`, którego nie wskazuje `extension.yaml`, i pliku `connection/member.yaml`, którego nie wskazuje `connection.yaml`.
 </Callout>
 
-## Nazwy
+## Nazwy [#naming]
 
-- Każdy plik używany przez paczkę ma ścieżkę małymi literami: litery, cyfry, `.`, `_` i `-`.
-- Nazwy deskryptorów są stałe. Nazwy folderów wybierasz sam i nigdy nie stają się identyfikatorami, więc możesz zmienić nazwę folderu bez psucia czegokolwiek, co korzysta z danej funkcji.
+Każda ścieżka używana przez paczkę jest pisana małymi literami: litery, cyfry, `.`, `_` i `-`, a każdy jej człon zaczyna się od litery albo cyfry.
 
-## Zasady YAML
+- Wpis listy ma postać `<folder rodzaju>/<folder>`, np. `actions/greet`, nigdy głębiej.
+- Nazwy folderów wybierasz sam. Nigdy nie stają się identyfikatorami: nazwę akcji, filtra czy obiektu bierze się z jego deskryptora. Możesz zmienić nazwę folderu bez psucia tego, co korzysta z części.
+- Plik wskazany w deskryptorze (`run`, `script`, plik schematu) to ścieżka względem folderu części i nie wychodzi poza niego.
 
-YAML jest czytany ściśle:
+## Zasady YAML [#yaml-rules]
 
-- jeden dokument na plik, UTF-8;
-- bez kotwic, aliasów, tagów, kluczy scalania i powtórzonych kluczy.
+Każdy plik YAML jest czytany ściśle, jako YAML 1.2.
+
+- Jeden dokument na plik, w UTF-8, niepusty.
+- Bez kotwic, aliasów, tagów, kluczy scalania i powtórzonych kluczy.
+- `yes`, `no`, `on` i `off` to teksty. Wartości logiczne zapisuj jako `true` i `false`.
 
 JSON jest poprawnym YAML-em, więc regułę wyeksportowaną z edytora reguł możesz wkleić bez zmian.
 
 ## Moduły [#modules]
 
-Duża paczka może grupować funkcje w folderach modułów. Każdy folder modułu zawiera `module.yaml`:
-
-```yaml title="billing/module.yaml"
-module: billing
-name: Billing
-description: Invoice and payment steps.
-actions:
-  - actions/create-invoice
-  - actions/send-invoice
-filters:
-  - filters/invoice-number
-```
-
-| Klucz | Znaczenie |
-| --- | --- |
-| `module` | Klucz modułu. |
-| `name` | Jego nazwa. |
-| `description` | Opcjonalny. |
-| `actions`, `filters`, `objects`, `dictionaries`, `queries`, `triggers`, `schedules`, `blocks`, `links`, `forms`, `lists`, `pages` | Jego własne listy, względem folderu modułu. Obiekty ze wszystkich folderów modułów i tak trafiają do jednego modułu `x-<key>` rozszerzenia. |
-
-`extension.yaml` wskazuje folder modułu w `include`. Moduły mają tylko jeden poziom zagnieżdżenia.
+Duża paczka może grupować części w folderach modułów. `extension.yaml` wskazuje każdy folder modułu w `include`, a folder zawiera `module.yaml` z listami własnych części:
 
 ```yaml title="extension.yaml"
 include:
   - billing
 ```
+
+```yaml title="billing/module.yaml"
+module: billing
+name: Billing
+description: Invoice steps.
+actions:
+  - actions/create-invoice
+```
+
+<TypeTable
+  type={{
+    module: {
+      type: 'string',
+      description: 'Nazwa modułu: mała litera, potem małe litery, cyfry i myślniki, do 41 znaków. Unikalna w paczce.',
+      required: true,
+    },
+    name: {
+      type: 'string',
+      description: 'Do 120 znaków.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Do 2000 znaków.',
+    },
+    'actions, filters, objects, …': {
+      type: 'string[]',
+      description: 'Te same listy co w extension.yaml, względem folderu modułu: actions, filters, objects, dictionaries, queries, triggers, schedules, blocks, links, forms, lists i pages.',
+    },
+  }}
+/>
+
+- Moduły mają jeden poziom: `module.yaml` nie może dołączać (`include`) innego modułu.
+- Nazwa folderu modułu to małe litery, cyfry i `-` i nie może być nazwą folderu części (`actions`, `objects`, …), `connection` ani `locales`.
+- Obiekty ze wszystkich modułów i tak trafiają do jednego modułu rozszerzenia, `x-<key>`.
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `manifest.missing` | Brak `extension.yaml` na górze folderu albo pliku zip. | Spakuj folder, który go zawiera. |
+| `layout.invalid_path` | Wpis listy, który nie ma postaci `<folder rodzaju>/<folder>`, albo nazwa pliku wychodząca poza folder części lub łamiąca zasady nazw. | Użyj pokazanej postaci; trzymaj pliki w folderze części. |
+| `layout.missing_descriptor` | Folder z listy bez swojego deskryptora albo `settings: settings.yaml` bez pliku. | Dodaj plik albo popraw wpis. |
+| `layout.unlisted_feature` | Deskryptor, `settings.yaml` albo `connection/member.yaml`, którego nic nie wskazuje. | Dodaj go do listy lub wskaż albo usuń. |
+| `manifest.missing_file` | Deskryptor wskazuje plik, którego nie ma w paczce. | Dodaj plik albo popraw nazwę. |
+| `include.invalid` | Wpis `include` o złej lub zarezerwowanej nazwie albo bez `module.yaml`. | Popraw nazwę folderu albo dodaj jego `module.yaml`. |
+| `include.nested` | `module.yaml` z `include`. | Dołączaj wszystkie moduły w `extension.yaml`. |
+| `name.duplicate` | Dwie części jednego rodzaju o tej samej nazwie, dwa moduły o tym samym `module` albo dwa formularze o tej samej nazwie na jednym obiekcie. | Zmień jedną z nazw. |
+| `file.invalid_yaml` | Plik nie jest YAML-em, jest pusty, nie jest w UTF-8 albo ma zły kształt na najwyższym poziomie. | Popraw wskazany wiersz; tekst zawierający `: ` ujmij w cudzysłów. |
+| `file.yaml_feature_not_allowed` | Kotwica, alias, tag, klucz scalania albo drugi dokument. | Wpisz wartości wprost. |
+| `archive.invalid_path` | Plik używany przez paczkę ma w nazwie wielkie litery, spacje lub inne znaki spoza zasad nazw. | Zmień jego nazwę. |
+| `archive.invalid` | Przesłany plik nie jest czytelnym plikiem zip. | Spakuj folder poleceniem `opero-ext pack`. |
+| `archive.unsafe_path` | Wpis zip wychodzący poza folder, dowiązanie albo dwa razy ta sama ścieżka. | Spakuj folder poleceniem `opero-ext pack`. |
+| `archive.too_large`, `archive.too_many_entries`, `archive.entry_too_large` | Plik zip, plik w nim albo ich liczba przekracza [limit](/docs/pl/extensions/reference/limits). | Usuń pliki, których paczka nie używa, albo je zmniejsz. |

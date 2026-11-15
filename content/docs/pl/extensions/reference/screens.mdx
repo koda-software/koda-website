@@ -1,9 +1,9 @@
 ---
 title: Formularze, listy i strony
-description: "Opis form.yaml, list.yaml i page.yaml w rozszerzeniach Opero: formularze na własnych obiektach paczki z układami i domyślnymi miejscami, listy własne na obiektach paczki albo na wbudowanym źródle z akcjami otwierającymi link, strony własne obszaru roboczego, odwołania { $ref } między nimi, adresy URL, tłumaczenia oraz to, co z ekranami robią instalacja, aktualizacja i odinstalowanie."
+description: Dodaj ekrany członków, czyli formularze na obiektach paczki, listy własne i strony obszaru roboczego, przez form.yaml, list.yaml i page.yaml.
 ---
 
-Paczka może przynieść ekrany, na których pracują członkowie: **formularze** na własnych obiektach, **listy własne** (Custom Lists), które wyświetlają rekordy, i **strony obszaru roboczego**, które łączą listy, formularze, bloki i liczniki. Są instalowane jako formularze dynamiczne, listy własne i strony własne (Custom Pages) organizacji, tylko do odczytu i zarządzane przez rozszerzenie. Paczka niczego nie umieszcza w menu: administrator dodaje jej strony do menu ręcznie.
+Paczka może przynieść ekrany, na których pracują członkowie: **formularze** na własnych obiektach, **listy własne** (Custom Lists), które wyświetlają rekordy, i **strony obszaru roboczego**, które łączą listy, formularze, bloki i liczniki. Są instalowane jako formularze dynamiczne, listy własne i strony własne (Custom Pages) organizacji, zarządzane przez rozszerzenie. Wszystkie trzy buduje przewodnik [Formularze, listy i strony](/docs/pl/extensions/workspace-screens).
 
 <Files>
   <Folder name="forms" defaultOpen>
@@ -62,7 +62,7 @@ Wpisz foldery na listach `forms`, `lists` i `pages` w `extension.yaml` albo w `m
 
 ## form.yaml [#formyaml]
 
-Formularz to formularz dynamiczny na jednym z własnych [obiektów](/docs/pl/extensions/reference/objects) paczki: ekran, który otwiera, edytuje albo tworzy jego rekordy.
+Formularz to formularz dynamiczny na jednym z własnych [obiektów](/docs/pl/extensions/reference/objects) paczki: ekran, który otwiera, edytuje albo tworzy jego rekordy. Paczka ma najwyżej 100 formularzy.
 
 ```yaml title="forms/order/form.yaml"
 form: order                      # referenced as orders.order
@@ -163,11 +163,11 @@ regions:
 
 ### Formularze domyślne [#default-forms]
 
-Każdy obiekt ma domyślny formularz do oglądania, edycji i tworzenia rekordów. Formularz z `default` zajmuje każde wskazane miejsce, które jest puste albo zajęte przez formularz tego rozszerzenia. Miejsce, w którym organizacja ustawiła własny formularz, zostaje bez zmian, a plan instalacji to mówi (`form.default_taken`, nie blokuje). Aktualizacja i ponowna instalacja robią to samo: nigdy nie przejmują domyślnego formularza wybranego przez organizację.
+Każdy obiekt ma domyślny formularz do oglądania, edycji i tworzenia rekordów. Formularz z `default` zajmuje każde wskazane miejsce, które jest puste albo zajęte przez formularz tego rozszerzenia. Miejsce, w którym organizacja ustawiła własny formularz, zostaje bez zmian, a przegląd instalacji to mówi (`form.default_taken`, nie blokuje). Aktualizacja i ponowna instalacja robią to samo: nigdy nie przejmują domyślnego formularza wybranego przez organizację.
 
 ## list.yaml [#listyaml]
 
-Lista to lista własna na jednym z obiektów paczki albo na wbudowanym źródle list. Członkowie widzą ją tam, gdzie osadza ją strona albo formularz.
+Lista to lista własna na jednym z obiektów paczki albo na wbudowanym źródle list. Członkowie widzą ją tam, gdzie osadza ją strona albo formularz. Paczka ma najwyżej 50 list.
 
 ```yaml title="lists/open-orders/list.yaml"
 list: open-orders                # installed as x-shop-open-orders
@@ -235,7 +235,7 @@ config:
   views: [{ id: default, name: Default, default: true, config: { schemaVersion: 2 } }]
 ```
 
-Czytnik sprawdza budowę i odwołania. To, czy konfiguracja pasuje do źródła (kolumny, filtry i formularz tworzenia), Opero sprawdza tak, jak zrobiłby to zapis samej listy: w planie instalacji (`list.save_validation`), a dla listy na obiekcie, który tworzy ta sama instalacja, przy instalowaniu listy.
+Czytnik sprawdza budowę i odwołania. To, czy konfiguracja pasuje do źródła (kolumny, filtry i formularz tworzenia), Opero sprawdza tak, jak zrobiłby to zapis samej listy: w przeglądzie instalacji (`list.save_validation`), a dla listy na obiekcie, który tworzy ta sama instalacja, przy instalowaniu listy.
 
 ### Akcje [#actions]
 
@@ -253,7 +253,9 @@ Lista z paczki ma tylko akcje `OPEN_LINK`, które otwierają adres dla wiersza. 
 
 ## page.yaml [#pageyaml]
 
-Strona to strona własna obszaru roboczego: osobny ekran, który członkowie otwierają z menu.
+Strona to strona własna obszaru roboczego: osobny ekran, który członkowie otwierają z menu. Paczka ma najwyżej 50 stron i sama nie umieszcza żadnej w menu.
+
+![Strona Shop w obszarze roboczym: licznik otwartych zamówień, lista, blok podsumowania i formularz nowego zamówienia](/docs/_assets/extensions/workspace-screens/shop-page.webp)
 
 ```yaml title="pages/orders/page.yaml"
 page: orders                     # installed with the slug x-shop-orders
@@ -353,10 +355,7 @@ Odwołanie może stać tylko tam, gdzie Opero przechowuje identyfikator jego rod
 | `owned.rowForms.<operation>` węzła `field` albo `relationTable` | `form` |
 | `config.create.formId` listy | `form` |
 
-- Odwołanie w każdym innym miejscu albo niewłaściwego rodzaju dla swojego miejsca jest odrzucane z kodem `layout.ref_position`.
-- Odwołanie, które nie ma dokładnie postaci `{ $ref: "<kind>:<name>" }`, to `layout.ref_invalid`.
-- Nazwa, której paczka nie ma, to `layout.ref_unknown`.
-- Każdy inny klucz z identyfikatorem (reguły, raportu, procesu, kalendarza, listy SQL, pola własnego: każdy klucz kończący się na `Id` albo `Ids`) oraz identyfikator wpisany tam, gdzie należy się odwołanie, są odrzucane z kodem `layout.reference_unsupported`. Pomiń taki klucz albo zostaw go pustym.
+Odrzucane są: odwołanie w każdym innym miejscu, odwołanie, które nie ma dokładnie postaci `{ $ref: "<kind>:<name>" }`, nazwa, której paczka nie ma, i każdy inny klucz z identyfikatorem (reguły, raportu, procesu, kalendarza, listy SQL albo pola własnego: każdy klucz kończący się na `Id` lub `Ids`); zobacz [Problemy](#problems). Pomiń taki klucz albo zostaw go pustym.
 
 Klucze pól i relacji wpisuje się bez zmian: są takie same w każdej organizacji, która instaluje paczkę.
 
@@ -366,47 +365,40 @@ Klucze pól i relacji wpisuje się bez zmian: są takie same w każdej organizac
 
 ## Tłumaczenia [#translations]
 
-| Klucz | Tłumaczy |
-| --- | --- |
-| `pages.<page>.title`, `description` | Tytuł i opis strony. Są instalowane razem ze stroną. |
-| `forms.<object>.<form>.config.title`, `successMessage` | Tytuł i komunikat po zapisie formularza. `validate` je sprawdza, ale formularz jest instalowany z tekstami angielskimi. |
+`title` i `description` strony trafiają do `pages.<page>`, a `config.title` i `successMessage` formularza do `forms.<object>.<form>.config`; formularz jest instalowany z angielskimi tekstami. Nazwy formularzy i list, etykiety kolumn i akcji są tylko po angielsku. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations#translatable-keys).
 
-```yaml title="locales/pl.yaml"
-pages:
-  orders:
-    title: Zamówienia
-    description: Otwarte zamówienia i ich liczba.
-forms:
-  orders:
-    order:
-      config:
-        title: Nowe zamówienie
-        successMessage: Zapisano
-```
+## Zastrzeżone nazwy [#reserved-names]
 
-Nazwy formularzy, nazwy i opisy list, etykiety kolumn i etykiety akcji są tylko po angielsku.
+Organizacja nie może utworzyć listy własnej z kluczem zaczynającym się od `x-` ani utworzyć strony ze slugiem zaczynającym się od `x-` lub nadać jej takiego sluga, więc te klucze mogą należeć tylko do rozszerzenia. Ekrany są tylko do odczytu i zmieniają się tylko przy aktualizacji; to, kto może używać każdego formularza, formularze domyślne obiektu, udostępnienie i odbiorcy strony oraz menu pozostają w gestii organizacji. Zobacz [Zasoby zarządzane](/docs/pl/extensions/after-install#managed-assets), a to, kto widzi ekrany po instalacji, w sekcji [Po instalacji](/docs/pl/extensions/workspace-screens#after-install).
 
-## Po instalacji [#after-install]
+## Aktualizacje [#upgrades]
 
-- **Tylko do odczytu.** Formularze, ich układy, listy i strony są zarządzane przez rozszerzenie. Zmiana albo usunięcie formularza, zapis, publikacja albo przywrócenie układu formularza lub strony z paczki, zapis, archiwizacja albo przywrócenie listy oraz zmiana, publikacja albo archiwizacja strony są odrzucane z kodem `EXTENSION_MANAGED_ASSET`. Zmieniają się tylko przy aktualizacji rozszerzenia.
-- **Nadal należy do organizacji.** To, kto może używać każdego formularza (jego dostęp i dostęp z portalu), domyślne formularze obiektu, to, które firmy i którzy członkowie widzą stronę, oraz menu. Aktualizacja nigdy tego nie zmienia.
-- **Kto je widzi.** Nowa strona jest udostępniona każdej firmie i każdemu członkowi zaraz po instalacji. Formularzy można używać wszędzie tam, gdzie udostępniony jest moduł rozszerzenia `x-<key>`, czyli w każdej firmie, dopóki administrator tego nie zawęzi. Listy nie mają własnego udostępnienia: członkowie widzą listę tam, gdzie osadza ją strona albo formularz. Plan instalacji mówi, co zobaczą członkowie, i że strony trzeba dodać do menu ręcznie.
-- **Zastrzeżone nazwy.** Organizacja nie może utworzyć listy własnej z kluczem zaczynającym się od `x-` ani utworzyć strony ze slugiem zaczynającym się od `x-` lub zmienić slugu na taki (`CUSTOM_LIST_KEY_RESERVED`, `CUSTOM_PAGE_SLUG_RESERVED`).
-- **Sprawdzane przed instalacją.** Plan instalacji sprawdza każdy formularz, układ i listę tak, jak zrobiłby to ich własny zapis, i blokuje przy problemie (`form.save_validation`, `layout.save_validation`, `list.save_validation`).
-- **Uprawnienia.** Instalacja formularzy wymaga `org.customModules.create` i `org.customModules.update`, list `org.customLists.create` i `org.customLists.update`, a stron `org.pages.create` i `org.pages.update`. Ich usunięcie wymaga `org.customModules.delete`, `org.customLists.update` i `org.pages.delete`.
-- **Wyłączone.** Wyłączenie rozszerzenia nie zmienia niczego, co się wyświetla: formularze, listy i strony działają dalej. Akcje rozszerzenia umieszczone w nich przestają działać, dopóki rozszerzenie znów nie działa.
-- **Aktualizacja.** Zmieniony układ formularza albo strony jest publikowany jako nowa wersja, a zmieniona lista jest zapisywana w miejsce starej. Wersja, która pomija formularz, usuwa go: jego domyślne miejsca przechodzą na inny formularz rozszerzenia tego samego typu albo zostają puste. Pominięcie formularza, który wskazują układy, listy albo bloki organizacji, daje ostrzeżenie (`form.in_use`), a pominięcie ostatniego formularza danego typu na obiekcie - ostrzeżenie `object.formless`. Pominięta lista albo strona jest archiwizowana; plan ostrzega, gdy listę osadzają układy organizacji (`list.in_use`) albo stronę otwierają jej menu (`page.in_use`). Żadne z nich nie blokuje.
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Zmienił się układ formularza albo strony | Jest publikowany jako nowa wersja. | |
+| Zmieniła się lista | Jest zapisywana w miejsce poprzedniej. | |
+| Formularz zajmuje domyślne miejsce, które organizacja wypełniła | Miejsce zachowuje formularz organizacji. Ostrzeżenie. | `form.default_taken` |
+| Usunięto formularz, który wskazują układy, listy albo bloki organizacji | Formularz jest usuwany; jego miejsca domyślne przechodzą na inny formularz rozszerzenia tego samego typu albo zostają puste. Ostrzeżenie. | `form.in_use` |
+| Usunięto ostatni formularz danego typu dla obiektu | Członkowie nie mogą otwierać ani tworzyć jego rekordów, dopóki administrator nie zbuduje formularza. Ostrzeżenie. | `object.formless` |
+| Usunięto listę, którą osadzają układy organizacji | Jest archiwizowana, a osadzenia pokazują, że rozszerzenie ją usunęło. Ostrzeżenie. | `list.in_use` |
+| Usunięto stronę, którą otwierają menu organizacji | Jest archiwizowana, a pozycje menu są ukrywane. Ostrzeżenie. | `page.in_use` |
 
-## Odinstalowanie [#uninstall]
+Odinstalowanie usuwa formularze oraz archiwizuje listy i strony; ponowna instalacja przywraca listy i strony pod tymi samymi identyfikatorami. Co widzi administrator, opisuje strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
-Odinstalowanie usuwa ekrany niezależnie od wyboru dotyczącego danych:
+## Problemy [#problems]
 
-- **Formularze są usuwane** razem z układami i dostępem. Nic nie jest generowane w ich miejsce. Domyślne miejsca, które zajmowały, są najpierw zwalniane; miejsc zajętych przez własne formularze organizacji to nie dotyczy.
-- **Listy i strony są archiwizowane** jako usunięte przez rozszerzenie. Osadzona taka lista pokazuje, że usunęło ją rozszerzenie. Pozycja menu, która otwiera taką stronę, zostaje i jest ukryta. Organizacja nie może przywrócić listy (`CUSTOM_LIST_EXTENSION_REMOVED`) ani strony.
-- Przy **Usuń dane** listy na obiektach paczki są usuwane razem z obiektami; lista na wbudowanym źródle jest archiwizowana.
-
-<Callout type="warn" title="Obiekty bez formularza">
-Gdy dane zostają, obiekt może zostać bez formularza do oglądania, edycji albo tworzenia rekordów. Dopóki administrator go nie zbuduje, rekordów nie da się otworzyć (`DYNAMIC_FORM_ACCESS_DENIED`) ani utworzyć. Przed potwierdzeniem odinstalowanie wymienia każdy taki obiekt z liczbą rekordów i tym, co zrobić: otwórz obiekt w Obiektach, utwórz formularz (zaczyna się ze wszystkimi polami), ustaw go jako domyślny i ustaw jego dostęp.
-</Callout>
-
-**Ponowna instalacja** przywraca te same listy i strony pod tymi samymi identyfikatorami, z udostępnieniem firmom i odbiorcami, jakie zostawiła organizacja, a ich pozycje menu znów są widoczne. Formularze są tworzone od nowa i zajmują domyślne miejsca, które nadal są puste.
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `form.invalid` | Nieznany klucz, klucz o złej strukturze, brak `types`, miejsce w `default` spoza jego typów, układ, który nie jest plikiem `.yaml` z folderu z `schemaVersion: 2` i `regions`, albo więcej niż 100 formularzy. | Popraw klucz wskazany w komunikacie. |
+| `form.unknown_object` | `object` nie wskazuje żadnego obiektu paczki. | Popraw klucz albo dodaj obiekt. |
+| `list.invalid` | Nieznany klucz, klucz o złej strukturze, źródło `builtIn: dynamicObject` albo więcej niż 50 list. | Popraw klucz; dla obiektu napisz `source: { object: <key> }`. |
+| `list.unknown_object` | `source.object` nie wskazuje żadnego obiektu paczki. | Popraw klucz albo dodaj obiekt. |
+| `list.name_too_long` | Klucz po instalacji `x-<key>-<list>` ma ponad 64 znaki. | Skróć nazwę listy. |
+| `list.action_unsupported` | Akcja listy inna niż `OPEN_LINK`. | Otwieraj link albo przenieś pracę do akcji bloku. |
+| `page.invalid` | Nieznany klucz, klucz o złej strukturze, układ, który nie jest plikiem `.yaml` z folderu z `schemaVersion: 2` i `regions`, albo więcej niż 50 stron. | Popraw klucz wskazany w komunikacie. |
+| `layout.ref_invalid` | Odwołanie, które nie ma dokładnie postaci `{ $ref: "<kind>:<name>" }`. | Zapisz je w tej postaci. |
+| `layout.ref_position` | Odwołanie poza miejscami z tabeli albo niewłaściwego rodzaju dla swojego miejsca. | Przenieś je albo użyj rodzaju, który przyjmuje to miejsce. |
+| `layout.ref_unknown` | Odwołanie wskazuje coś, czego paczka nie ma. | Popraw nazwę. |
+| `layout.reference_unsupported` | Klucz z identyfikatorem, którego paczka nie może przenieść, albo identyfikator tam, gdzie powinno być odwołanie. | Pomiń klucz albo użyj odwołania. |
+| `layout.host_not_declared` | Adres URL, który nie jest ani ścieżką Opero, ani adresem https na hoście z `permissions.links`. | Dodaj host z powodem albo użyj ścieżki. |
+| `form.save_validation`, `layout.save_validation`, `list.save_validation` | W przeglądzie instalacji: formularza, układu albo listy nie da się zapisać tak, jak zapisuje je ich edytor. Blokuje instalację. | Popraw je zgodnie z komunikatem. |

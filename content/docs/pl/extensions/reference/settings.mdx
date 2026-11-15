@@ -1,9 +1,11 @@
 ---
 title: Ustawienia
-description: "Opis settings.yaml w rozszerzeniach Opero: grupy i pola, wartości domyślne i ustawienia wymagane, odczyt wartości w plikach reguł i skryptach, podawanie ich w testach, aktualizacje i tłumaczenia."
+description: Daj rozszerzeniu wartości, które wybiera administrator, na przykład region albo rozmiar partii, i odczytuj je w plikach reguł, skryptach i testach.
 ---
 
-Ustawienia to wartości, które administrator wybiera dla zainstalowanego rozszerzenia, na przykład region, język albo liczbę rekordów wysyłanych w jednym wywołaniu. Nie są sekretne: sekret należy do [połączenia](/docs/pl/extensions/reference/connection-and-secrets). Paczka może mieć ustawienia z połączeniem albo bez niego.
+Ustawienia to wartości, które administrator wybiera dla zainstalowanego rozszerzenia, na przykład region, język albo liczbę rekordów wysyłanych w jednym wywołaniu. Nie są sekretne: sekret należy do [połączenia](/docs/pl/extensions/reference/connection-and-secrets). Administrator wypełnia je na karcie [Konfiguracja](/docs/pl/extensions/after-install#configuration) rozszerzenia.
+
+![Karta Konfiguracja z sekcją ustawień i połączeniem](/docs/_assets/extensions/after-install/configuration.webp)
 
 ```yaml title="settings.yaml"
 groups:
@@ -20,13 +22,7 @@ groups:
       owner: { type: text, label: Owner e-mail, required: true }
 ```
 
-Plik leży na najwyższym poziomie paczki, obok `extension.yaml`, który go wskazuje:
-
-```yaml title="extension.yaml"
-settings: settings.yaml
-```
-
-`settings.yaml` to jedyna dopuszczalna wartość. Plik `settings.yaml`, którego nie wskazuje `extension.yaml`, jest odrzucany z kodem `layout.unlisted_feature`.
+Plik leży na najwyższym poziomie paczki, obok `extension.yaml`, który wskazuje go wpisem `settings: settings.yaml`. To jedyna dopuszczalna wartość.
 
 ## settings.yaml [#settingsyaml]
 
@@ -36,7 +32,7 @@ Plik ma jeden klucz, `groups`: listę od 1 do 20 grup. Każda grupa to jedna sek
   type={{
     group: {
       type: 'string',
-      description: 'Klucz grupy: małe litery, cyfry i _, zaczyna się od litery, do 41 znaków. Unikalny w pliku.',
+      description: 'Klucz grupy: mała litera, potem małe litery, cyfry i _, do 41 znaków. Unikalny w pliku.',
       required: true,
     },
     label: {
@@ -50,47 +46,28 @@ Plik ma jeden klucz, `groups`: listę od 1 do 20 grup. Każda grupa to jedna sek
     },
     fields: {
       type: 'field list',
-      description: 'Co najmniej jedno pole. Ta sama lista pól co wejście akcji.',
+      description: 'Co najmniej jedno pole, jak w wejściu akcji, bez secret i hint. Bez pliku schematu.',
       required: true,
     },
   }}
 />
 
-`fields` to [lista pól](/docs/pl/extensions/reference/actions#field-lists): każde pole ma `type` i może mieć `label`, `help`, `required`, `default` oraz `options`, `items` albo `fields`, zależnie od typu. Dwie rzeczy różnią się od wejścia akcji:
+`fields` to [lista pól](/docs/pl/extensions/reference/actions#field-lists). Wartość, która musi pozostać tajna, to pole danych uwierzytelniających połączenia, dlatego `secret` i `hint` są tu odrzucane.
 
-- `secret` i `hint` są odrzucane. Wartość, która musi pozostać tajna, to pole danych uwierzytelniających połączenia.
-- Zamiast listy nie można użyć pliku schematu.
+## Klucze pól są unikalne w pliku [#field-keys-are-unique-in-the-file]
 
-<Callout title="Klucze pól są unikalne w całym pliku">
-Grupa tylko układa formularz. Wartości to jeden płaski zestaw pól, więc dwie grupy nie mogą zadeklarować tego samego klucza pola (`name.duplicate`), a przeniesienie pola do innej grupy niczego nie zmienia dla akcji, które je odczytują. Plik ma łącznie najwyżej 100 pól.
-</Callout>
+Grupa tylko układa formularz. Wartości to jeden płaski zestaw najwyżej 100 pól, więc dwie grupy nie mogą zadeklarować tego samego klucza pola, a przeniesienie pola do innej grupy niczego nie zmienia dla akcji, które je odczytują.
 
-## Gdzie są przechowywane wartości [#where-the-values-live]
+## Wartości domyślne [#defaults]
 
-Wartości należą do rozszerzenia zainstalowanego w organizacji: jedna wartość na ustawienie, taka sama dla każdej firmy. Nie są częścią połączenia.
-
-- **Wartości domyślne obowiązują, dopóki nic nie zapisano.** Opero przechowuje tylko to, co ustawił administrator. Pole z `default` bez zapisanej wartości ma wartość domyślną, a wartość domyślna zmieniona w nowej wersji od razu obowiązuje we wszystkich ustawieniach, których administrator nie ustawił.
-- **Pole bez wartości domyślnej i bez zapisanej wartości nie ma wartości.** Brakuje go w tym, co odczytują akcje.
-
-## Co widzi administrator [#what-the-administrator-sees]
-
-Strona rozszerzenia ma kartę **Ustawienia** zaraz po karcie **Szczegóły**, widoczną, gdy paczka ma ustawienia. Ma jedną sekcję na każdą grupę, z jej etykietą i opisem, a w niej każde pole z etykietą, pomocą, wartością domyślną i oznaczeniem pola wymaganego, w języku oglądającego.
-
-Odczyt ustawień wymaga `org.extensions.read`, a zapis `org.extensions.update`; bez tego uprawnienia formularz jest tylko do odczytu. Jest też tylko do odczytu, gdy dla rozszerzenia trwa instalacja, aktualizacja albo inne polecenie.
-
-Formularz można zapisać z pustym polem wymaganym. Wartość każdego wypełnionego pola musi pasować do tego pola, a pole, którego plik nie deklaruje, jest odrzucane.
+Pole bez zapisanej wartości ma wartość z `default`. Opero przechowuje tylko to, co ustawił administrator, więc wartość domyślna zmieniona w nowej wersji od razu obowiązuje we wszystkich ustawieniach, których administrator nie ustawił. Pola bez zapisanej wartości i bez wartości domyślnej brakuje w tym, co odczytują akcje.
 
 ## Wymagane ustawienia [#required-settings]
 
-Pole z `required: true` musi mieć wartość, zapisaną albo domyślną. Dopóki jej nie ma:
-
-- rozszerzenie ma status **Nie działa: niekompletne ustawienia**, a karta **Ustawienia** pokazuje **Niekompletne ustawienia** z etykietami brakujących ustawień;
-- jego kroków brakuje w edytorze reguł, a zapisana reguła, która do nich dotrze, kończy się błędem na tym kroku z kodem `extension_inactive`.
-
-Rozszerzenie znów działa, gdy tylko administrator uzupełni brakujące ustawienia i zapisze. Ten warunek nie zależy od połączenia: rozszerzenie z połączeniem musi mieć zarówno kompletne ustawienia, jak i włączone połączenie.
+Dopóki pole z `required: true` nie ma wartości, zapisanej ani domyślnej, rozszerzenie nie działa: jego kroków brakuje w edytorze reguł, a zapisana reguła, która do nich dotrze, kończy się błędem `extension_inactive`. Rozszerzenie znów działa, gdy tylko wartość zostanie zapisana. Zobacz [Stany](/docs/pl/extensions/after-install#states).
 
 <Callout type="idea" title="Podaj wartość domyślną, gdy ma to sens">
-Wymagane pole z wartością domyślną nigdy nie zatrzymuje rozszerzenia. Pomiń wartość domyślną tylko dla wartości, której nikt nie zgadnie, na przykład numeru konta albo adresu e-mail. Wtedy rozszerzenie nie działa zaraz po instalacji, dopóki administrator jej nie uzupełni.
+Wymagane pole z wartością domyślną nigdy nie zatrzymuje rozszerzenia. Pomiń wartość domyślną tylko dla wartości, której nikt nie zgadnie, na przykład numeru konta albo adresu e-mail.
 </Callout>
 
 ## Odczyt ustawień [#reading-settings]
@@ -100,7 +77,7 @@ Akcje odczytują wartości z zastosowanymi wartościami domyślnymi. Ustawienia 
 <Tabs items={['Plik reguły', 'Skrypt']}>
 <Tab value="Plik reguły">
 
-Napisz `{{ trigger.settings.<field> }}`:
+Napisz `{{ trigger.settings.<field> }}`. Ustawienie nie może podać hosta w URL kroku **Wywołaj webhook**.
 
 ```yaml title="actions/quote/rule.yaml"
 entryStepId: call
@@ -115,8 +92,6 @@ steps:
       body: { weight: "{{ trigger.data.weight }}", contact: "{{ trigger.settings.owner }}" } # [!code highlight]
 edges: []
 ```
-
-Host w URL kroku **Wywołaj webhook** nadal trzeba wpisać wprost: ustawienie nie może go podać.
 
 </Tab>
 <Tab value="Skrypt">
@@ -138,26 +113,11 @@ export default run;
 </Tab>
 </Tabs>
 
-Paczka bez `settings.yaml` dostaje pusty obiekt. Akcja weryfikująca połączenie też dostaje zapisane ustawienia.
-
-Narzędzie wiersza poleceń generuje z `settings.yaml` typ `Settings` w `.opero/types/index.d.ts`. Pole z wartością domyślną nigdy nie jest w nim opcjonalne, bo zawsze ma wartość:
-
-```ts title=".opero/types/index.d.ts (fragment)"
-export type Settings = {
-  /** Region */
-  region: "eu" | "us";
-  /** Use the sandbox */
-  sandbox?: boolean;
-  /** Batch size: Parcels per call. */
-  batchSize: number;
-  /** Owner e-mail */
-  owner: string;
-};
-```
+Paczka bez `settings.yaml` dostaje pusty obiekt. Akcja weryfikująca połączenie też dostaje ustawienia. W wygenerowanym typie `Settings` w `.opero/types/index.d.ts` pole z wartością domyślną nigdy nie jest opcjonalne, bo zawsze ma wartość.
 
 ## Ustawienia w testach [#settings-in-tests]
 
-Przypadek testowy podaje ustawienia w `settings:`, na najwyższym poziomie przypadku. Pola, które przypadek pomija, dostają wartości domyślne:
+Przypadek testowy podaje ustawienia w `settings:`, na najwyższym poziomie przypadku. Pola, które przypadek pomija, dostają wartości domyślne, a wynik musi pasować do `settings.yaml`, więc wymagane ustawienie bez wartości domyślnej podaje się w każdym przypadku.
 
 ```yaml title="actions/quote/tests.yaml"
 - name: the region and the owner come from the settings
@@ -170,68 +130,31 @@ Przypadek testowy podaje ustawienia w `settings:`, na najwyższym poziomie przyp
         body: { weight: "2", contact: ops@example.com }
       response: { status: 200, body: { price: 12 } }
   succeeds: true
-
-- name: the region defaults to eu
-  input: { weight: "2" }
-  settings: { owner: ops@example.com }
-  http:
-    - request: { method: POST, url: https://api.example.com/v1/quotes?region=eu }
-      response: { status: 200, body: { price: 10 } }
-  succeeds: true
 ```
 
-- Ustawienia przypadku, po uzupełnieniu wartościami domyślnymi, muszą pasować do `settings.yaml`. Wymagane ustawienie bez wartości domyślnej trzeba więc podać w każdym przypadku, także w przypadkach akcji, które go nie odczytują.
-- `settings` w paczce bez `settings.yaml` jest odrzucane z kodem `test.invalid`.
-- `connection` w przypadku testowym zawiera tylko pola danych uwierzytelniających. Ustawienia w `connection.config` są odrzucane z kodem `test.invalid`.
+## Aktualizacje [#upgrades]
 
-## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
-
-Nowa wersja może dodawać, zmieniać i usuwać ustawienia. Plan instalacji pokazuje, co aktualizacja zrobi z zapisanymi wartościami, zanim się na nią zgodzisz; żaden z tych problemów nie blokuje aktualizacji.
-
-| Nowa wersja | Co się dzieje | W planie |
+| Zmiana w nowej wersji | Co się dzieje | Kod |
 | --- | --- | --- |
-| Usuwa pole, które ma zapisaną wartość | Wartość jest odrzucana. | `settings.value_dropped` |
-| Zmienia pole tak, że zapisana wartość już do niego nie pasuje | Wartość jest odrzucana. | `settings.value_dropped` |
-| Dodaje wymagane pole bez wartości domyślnej | Po aktualizacji rozszerzenie nie działa, dopóki administrator go nie uzupełni. | `settings.incomplete_after_upgrade` |
-| Zmienia wartość domyślną | Nowa wartość domyślna obowiązuje we wszystkich ustawieniach, których administrator nie ustawił. | Nic |
+| Usunięto pole, które ma zapisaną wartość | Wartość jest odrzucana. Ostrzeżenie. | `settings.value_dropped` |
+| Pole zmieniło się tak, że zapisana wartość już do niego nie pasuje | Wartość jest odrzucana. Ostrzeżenie. | `settings.value_dropped` |
+| Dodano wymagane pole bez wartości domyślnej | Po aktualizacji rozszerzenie stoi, dopóki administrator go nie uzupełni. Ostrzeżenie. | `settings.incomplete_after_upgrade` |
+| Zmieniono wartość domyślną | Nowa wartość domyślna obowiązuje we wszystkich ustawieniach, których administrator nie ustawił. | |
 
-Zmiany ustawień nigdy nie wyłączają połączenia. Odinstalowanie usuwa zapisane wartości razem z rozszerzeniem; ponowna instalacja zaczyna od wartości domyślnych.
+Zmiany ustawień nigdy nie wyłączają połączenia. Odinstalowanie usuwa zapisane wartości. Co widzi administrator, opisuje strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
 ## Tłumaczenia [#translations]
 
-Teksty ustawień i grup tłumaczy się w `locales/<lang>.yaml`, pod `settings`:
-
-```yaml title="locales/pl.yaml"
-settings:
-  groups:
-    general: { label: Ogólne }
-    sync:
-      label: Synchronizacja
-      description: Ile jest wysyłane w jednym wywołaniu.
-  fields:
-    region: { label: Region }
-    sandbox: { label: Użyj środowiska testowego }
-    batchSize: { label: Rozmiar partii, help: Liczba paczek w jednym wywołaniu. }
-    owner: { label: E-mail właściciela }
-```
-
-| Klucz | Tłumaczy |
-| --- | --- |
-| `settings.groups.<group>.label`, `description` | Tytuł i opis grupy. |
-| `settings.fields.<field>.label`, `help` | Etykietę i pomoc ustawienia; pola zagnieżdżone w `fields`, elementy listy w `items`. |
-
-Pola są wymienione w `settings.fields` według klucza, bez grupy. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations).
+Teksty grup trafiają do `settings.groups.<group>`, a teksty pól do `settings.fields.<field>`, według klucza pola, bez grupy. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations#translatable-keys).
 
 ## Problemy [#problems]
 
-| Kod | Co jest nie tak |
-| --- | --- |
-| `settings.invalid` | `settings.yaml` ma nieznany klucz, nie ma grup, ma więcej niż 20 grup, grupę bez `label` lub `fields` albo więcej niż 100 pól. |
-| `name.duplicate` | Dwie grupy albo dwa pola w dowolnym miejscu pliku mają ten sam klucz. |
-| `field.invalid` | Pole o złej strukturze, w tym `secret` lub `hint` w ustawieniu. |
-| `layout.unlisted_feature` | `settings.yaml`, którego nie wskazuje `extension.yaml`. |
-| `layout.missing_descriptor` | `extension.yaml` zawiera `settings: settings.yaml`, ale brakuje pliku. |
-| `connection.invalid` | `connection.yaml` nadal ma blok `settings`. Przenieś go do `settings.yaml`. |
-| `test.invalid` | Przypadek testowy, którego ustawienia nie pasują do `settings.yaml` albo który podaje ustawienia w `connection.config`. |
-
-Wszystkie kody są wymienione w [Kodach błędów](/docs/pl/extensions/error-codes).
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `settings.invalid` | Nieznany klucz, brak grup albo więcej niż 20, grupa bez `label` lub `fields` albo więcej niż 100 pól. | Trzymaj się powyższych kluczy i limitów. |
+| `name.duplicate` | Dwie grupy albo dwa pola w dowolnym miejscu pliku o tym samym kluczu. | Zmień nazwę jednego z nich. |
+| `field.invalid` | Pole o złej strukturze, w tym `secret` lub `hint` w ustawieniu. | Przenieś wartość tajną do połączenia. |
+| `layout.unlisted_feature` | `settings.yaml`, którego nie wskazuje `extension.yaml`. | Dodaj `settings: settings.yaml`. |
+| `layout.missing_descriptor` | `extension.yaml` zawiera `settings: settings.yaml`, ale brakuje pliku. | Dodaj plik albo usuń klucz. |
+| `connection.invalid` | `connection.yaml` nadal ma blok `settings`. | Przenieś go do `settings.yaml`. |
+| `test.invalid` | Przypadek testowy, którego ustawienia nie pasują do `settings.yaml` albo który podaje ustawienia w `connection.config`. | Podaj je w `settings:`, tak jak deklaruje je plik. |

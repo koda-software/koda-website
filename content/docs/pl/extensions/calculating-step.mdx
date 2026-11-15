@@ -1,25 +1,11 @@
 ---
-title: "Przepis: krok, który tylko liczy"
-description: "Zbuduj rozszerzenie Opero z czterech plików z krokiem reguły Calculate margin napisanym jako skrypt, bez połączenia i bez dostępu do sieci."
+title: Krok, który tylko liczy
+description: "Zbuduj małe rozszerzenie Opero z krokiem reguły Margin napisanym jako skrypt, bez połączenia i bez dostępu do sieci."
 ---
 
-Krok nie musi niczego wywoływać. Pomiń połączenie i uprawnienia sieciowe, a logikę napisz jako skrypt. Skoro nie ma połączenia do skonfigurowania, rozszerzenie działa zaraz po instalacji. Cała paczka to cztery pliki.
+Krok nie musi niczego wywoływać. Ta paczka dodaje krok **Margin** (`x-calc-ext.margin`), który przyjmuje cenę i koszt, a zwraca marżę i jej wartość procentową. Nie ma połączenia ani dostępu do sieci, więc działa zaraz po instalacji.
 
-Przykład dodaje krok **Calculate margin** (`x-calc-ext.margin`), który przyjmuje cenę i koszt, a zwraca marżę i jej wartość procentową.
-
-<Steps>
-<Step>
-### Utwórz szkielet
-
-Zacznij od szkieletu, dodaj akcję i usuń przykład:
-
-```bash title="Terminal"
-opero-ext init calc-ext --name Calc
-cd calc-ext
-opero-ext add action margin
-```
-
-Usuń folder `actions/hello`. Paczka ma wtedy cztery pliki:
+![Formularz kroku Margin w edytorze reguł](/docs/_assets/extensions/calculating-step/margin-step.webp)
 
 <Files>
   <Folder name="calc-ext" defaultOpen>
@@ -31,12 +17,27 @@ Usuń folder `actions/hello`. Paczka ma wtedy cztery pliki:
         <File name="tests.yaml" />
       </Folder>
     </Folder>
+    <Folder name="listing" />
   </Folder>
 </Files>
+
+<Steps>
+<Step>
+### Utwórz szkielet [#scaffold]
+
+Zacznij od szkieletu, dodaj akcję i usuń przykładowy folder `actions/hello`. `init` zapisuje też wizytówkę i pliki dla edytora, jak w [samouczku](/docs/pl/extensions/tutorial/start-the-package).
+
+```bash title="Terminal"
+opero-ext init calc-ext --name Calc
+cd calc-ext
+opero-ext add action margin
+```
 </Step>
 
 <Step>
-### Napisz manifest
+### Napisz manifest [#write-the-manifest]
+
+Zastąp `extension.yaml`, który nie wymienia już `actions/hello`:
 
 ```yaml title="extension.yaml"
 # The package's contents: every feature it installs is listed here.
@@ -55,15 +56,17 @@ actions:
 </Step>
 
 <Step>
-### Opisz akcję
+### Opisz akcję [#describe-the-action]
+
+Pola wejściowe stają się formularzem kroku; `help` otwiera się ze znaku zapytania obok etykiety.
 
 ```yaml title="actions/margin/action.yaml"
 action: margin
-label: Calculate margin
-description: Works out the margin between a price and a cost.
+label: Margin
+description: Computes the margin and the margin percentage of a price and a cost.
 
 input:
-  price: { type: text, label: Price, required: true }
+  price: { type: text, label: Price, help: "A decimal number, written as text.", required: true }
   cost: { type: text, label: Cost, required: true }
 output:
   margin: { type: number, label: Margin }
@@ -82,7 +85,9 @@ Wartości, które reguła podaje krokowi, są sprawdzane względem jego pól wej
 </Step>
 
 <Step>
-### Napisz skrypt
+### Napisz skrypt [#write-the-script]
+
+Rzucenie błędu kończy krok błędem.
 
 ```js title="actions/margin/run.js"
 /** @type {import('../../.opero/types').Action<'margin'>} */
@@ -100,14 +105,12 @@ const run = ({ input }) => {
 };
 export default run;
 ```
-
-Rzucenie błędu kończy krok błędem.
 </Step>
 
 <Step>
-### Przetestuj
+### Przetestuj [#test-it]
 
-Pierwszy przypadek porównuje dokładny wynik, drugi dowodzi, że błędne wejście kończy się błędem:
+Pierwszy przypadek porównuje dokładny wynik, drugi dowodzi, że błędne wejście kończy się błędem.
 
 ```yaml title="actions/margin/tests.yaml"
 - name: a price of 200 and a cost of 150 give 25 percent
@@ -121,7 +124,7 @@ Pierwszy przypadek porównuje dokładny wynik, drugi dowodzi, że błędne wejś
 </Step>
 
 <Step>
-### Zwaliduj i spakuj
+### Zwaliduj i spakuj [#validate-and-pack]
 
 ```bash title="Terminal"
 opero-ext validate .
@@ -130,25 +133,33 @@ opero-ext pack .
 
 ```txt title="Wynik"
 calc-ext 0.1.0 is valid.
-Wrote …/calc-ext-0.1.0.zip (1309 bytes)
+Wrote …/calc-ext-0.1.0.zip (2161 bytes; listing images 1325 bytes)
 ```
-
-Prześlij i zainstaluj paczkę jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use); nie ma kroku konfigurowania połączenia.
 </Step>
 </Steps>
 
-## Użyj go w regule
+## Po instalacji [#after-install]
 
-W regule krok zapisuje się tak, a kolejne kroki odczytują `{{ result.marginPercent }}`:
+[Zainstaluj plik zip](/docs/pl/extensions/install) jak zwykle. Nie ma niczego do skonfigurowania: ani ustawień, ani połączenia, więc rozszerzenie od razu ma status **Działa**. Krok jest w kategorii **Dane** edytora reguł, bo deklaruje `category: data`.
+
+W regule krok zapisuje swój wynik jako `margin`, więc kolejne kroki odczytują `{{ margin.marginPercent }}`:
 
 ```json title="Krok w jednej z reguł organizacji"
 {
   "type": "x-calc-ext.margin",
-  "contextKey": "result",
+  "contextKey": "margin",
   "config": { "price": "{{ trigger.data.price }}", "cost": "{{ trigger.data.cost }}" }
 }
 ```
 
-## Gdy krok to za dużo
+## Gdy krok to za dużo [#when-a-step-is-too-much]
 
-Jeśli obliczenie to jednowierszowe przeliczenie pojedynczej wartości, [filtr szablonu](/docs/pl/extensions/reference/filters) jest lżejszy niż krok. Jeśli potrzebuje go tylko jedna reguła, krok **Uruchom skrypt** napisany bezpośrednio w tej regule w ogóle nie wymaga rozszerzenia.
+Jeśli obliczenie przelicza pojedynczą wartość, [filtr szablonu](/docs/pl/extensions/reference/filters) jest lżejszy niż krok. Jeśli potrzebuje go tylko jedna reguła, krok **Uruchom skrypt** napisany bezpośrednio w tej regule w ogóle nie wymaga rozszerzenia.
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Paczka z własnymi danymi" href="/docs/pl/extensions/own-data">
+    Dodaj obiekt, słownik i zapytanie oraz krok, który pracuje na ich rekordach.
+  </Card>
+</Cards>

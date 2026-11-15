@@ -1,9 +1,11 @@
 ---
 title: Settings
-description: "Reference for settings.yaml in Opero extensions: groups and fields, defaults and required settings, reading values in rule files and scripts, giving them in tests, upgrades and translations."
+description: Give an extension values the administrator chooses, such as a region or a batch size, and read them in rule files, scripts and tests.
 ---
 
-Settings are values the administrator chooses for an installed extension, such as a region, a language or how many records to send in one call. They are not secret: a secret belongs in the [connection](/docs/en/extensions/reference/connection-and-secrets). A package can have settings with or without a connection.
+Settings are values the administrator chooses for an installed extension, such as a region, a language or how many records to send in one call. They are not secret: a secret belongs in the [connection](/docs/en/extensions/reference/connection-and-secrets). The administrator fills them in on the extension's [Configuration](/docs/en/extensions/after-install#configuration) tab.
+
+![The Configuration tab with a settings section and the connection](/docs/_assets/extensions/after-install/configuration.webp)
 
 ```yaml title="settings.yaml"
 groups:
@@ -20,13 +22,7 @@ groups:
       owner: { type: text, label: Owner e-mail, required: true }
 ```
 
-The file sits at the top of the package, next to `extension.yaml`, which names it:
-
-```yaml title="extension.yaml"
-settings: settings.yaml
-```
-
-`settings.yaml` is the only accepted value. A `settings.yaml` that `extension.yaml` does not name is refused with `layout.unlisted_feature`.
+The file sits at the top of the package, next to `extension.yaml`, which names it with `settings: settings.yaml`. That is the only accepted value.
 
 ## settings.yaml
 
@@ -36,7 +32,7 @@ The file holds one key, `groups`: a list of 1 to 20 groups. Each group is one se
   type={{
     group: {
       type: 'string',
-      description: 'The group\'s key: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the file.',
+      description: 'The group\'s key: a lower-case letter, then lower-case letters, digits and _, up to 41 characters. Unique in the file.',
       required: true,
     },
     label: {
@@ -50,47 +46,28 @@ The file holds one key, `groups`: a list of 1 to 20 groups. Each group is one se
     },
     fields: {
       type: 'field list',
-      description: 'At least one field. The same field list as an action\'s input.',
+      description: 'At least one field, as in an action\'s input, without secret and hint. No schema file.',
       required: true,
     },
   }}
 />
 
-`fields` is a [field list](/docs/en/extensions/reference/actions#field-lists): each field has a `type` and may have `label`, `help`, `required`, `default`, and `options`, `items` or `fields` for its type. Two things differ from an action's input:
+`fields` is a [field list](/docs/en/extensions/reference/actions#field-lists). A value that must stay secret is a credential field of the connection, so `secret` and `hint` are refused here.
 
-- `secret` and `hint` are refused. A value that must stay secret is a credential field of the connection.
-- A schema file cannot stand in place of the list.
+## Field keys are unique in the file
 
-<Callout title="Field keys are unique across the whole file">
-A group only arranges the form. The values are one flat set of fields, so two groups cannot declare the same field key (`name.duplicate`), and moving a field to another group changes nothing for the actions that read it. The file holds at most 100 fields in all.
-</Callout>
+A group only arranges the form. The values are one flat set of at most 100 fields, so two groups cannot declare the same field key, and moving a field to another group changes nothing for the actions that read it.
 
-## Where the values live
+## Defaults
 
-The values belong to the organization's installed extension: one value per setting, the same for every company. They are not part of the connection.
-
-- **Defaults apply while nothing is stored.** Opero stores only what the administrator sets. A field with a `default` and no stored value reads as its default, and a default changed by a new version applies at once to every setting the administrator has not set.
-- **A field without a default and without a stored value has no value.** It is missing from what the actions read.
-
-## What the administrator sees
-
-The extension's page has a **Settings** tab right after **Details**, shown when the package has settings. It has one section per group, with the group's label and description, and each field with its label, help, default and required mark, in the viewer's language.
-
-Reading the settings needs `org.extensions.read`, and saving them needs `org.extensions.update`; without it the form is read-only. It is also read-only while an install, upgrade or other command runs for the extension.
-
-A save may leave a required field empty. The value of every field that is filled in must fit its field, and a field the file does not declare is refused.
+A field without a stored value reads as its `default`. Opero stores only what the administrator sets, so a default changed by a new version applies at once to every setting the administrator has not set. A field with neither a stored value nor a default is missing from what actions read.
 
 ## Required settings
 
-A field with `required: true` must have a value, stored or default. While one has none:
-
-- the extension shows **Not running: settings incomplete**, and the **Settings** tab shows **Settings incomplete** with the missing settings by label;
-- its steps are missing from the rule builder, and a saved rule that reaches one fails at that step with `extension_inactive`.
-
-It starts running again as soon as the administrator fills the missing settings in and saves. This condition is independent of the connection: an extension with a connection must have both its settings complete and its connection switched on.
+While a field with `required: true` has no value, stored or default, the extension does not run: its steps are missing from the rule builder, and a saved rule that reaches one fails with `extension_inactive`. It runs again as soon as the value is saved. See [States](/docs/en/extensions/after-install#states).
 
 <Callout type="idea" title="Give a default when one makes sense">
-A required field with a default never stops the extension. Leave the default out only for a value nobody can guess, such as an account number or an e-mail address. Then the extension does not run right after install until the administrator fills it in.
+A required field with a default never stops the extension. Leave the default out only for a value nobody can guess, such as an account number or an e-mail address.
 </Callout>
 
 ## Reading settings
@@ -100,7 +77,7 @@ Actions read the values with the defaults applied. Settings are not secret, so t
 <Tabs items={['Rule file', 'Script']}>
 <Tab value="Rule file">
 
-Write `{{ trigger.settings.<field> }}`:
+Write `{{ trigger.settings.<field> }}`. A setting cannot supply the host of a **Call Webhook** URL.
 
 ```yaml title="actions/quote/rule.yaml"
 entryStepId: call
@@ -115,8 +92,6 @@ steps:
       body: { weight: "{{ trigger.data.weight }}", contact: "{{ trigger.settings.owner }}" } # [!code highlight]
 edges: []
 ```
-
-The host of a **Call webhook** URL must still be written out: a setting cannot supply it.
 
 </Tab>
 <Tab value="Script">
@@ -138,26 +113,11 @@ export default run;
 </Tab>
 </Tabs>
 
-A package without `settings.yaml` gets an empty object. The verify action of a connection gets the stored settings too.
-
-The command-line tool generates a `Settings` type from `settings.yaml` in `.opero/types/index.d.ts`. A field with a default is never optional in it, because it always has a value:
-
-```ts title=".opero/types/index.d.ts (part)"
-export type Settings = {
-  /** Region */
-  region: "eu" | "us";
-  /** Use the sandbox */
-  sandbox?: boolean;
-  /** Batch size: Parcels per call. */
-  batchSize: number;
-  /** Owner e-mail */
-  owner: string;
-};
-```
+A package without `settings.yaml` gets an empty object. The connection's verify action gets the settings too. The generated `Settings` type in `.opero/types/index.d.ts` makes a field with a default never optional, because it always has a value.
 
 ## Settings in tests
 
-A test case gives settings under `settings:`, at the top level of the case. Defaults apply to the fields the case leaves out:
+A test case gives settings under `settings:`, at the top level of the case. Defaults apply to the fields the case leaves out, and the result must match `settings.yaml`, so a required setting without a default is given in every case.
 
 ```yaml title="actions/quote/tests.yaml"
 - name: the region and the owner come from the settings
@@ -170,68 +130,31 @@ A test case gives settings under `settings:`, at the top level of the case. Defa
         body: { weight: "2", contact: ops@example.com }
       response: { status: 200, body: { price: 12 } }
   succeeds: true
-
-- name: the region defaults to eu
-  input: { weight: "2" }
-  settings: { owner: ops@example.com }
-  http:
-    - request: { method: POST, url: https://api.example.com/v1/quotes?region=eu }
-      response: { status: 200, body: { price: 10 } }
-  succeeds: true
 ```
 
-- The settings of a case, with the defaults applied, must match `settings.yaml`. A required setting without a default must therefore be given in every case, including cases of actions that do not read it.
-- `settings` in a package without `settings.yaml` is refused with `test.invalid`.
-- `connection` in a test case holds credential fields only. Settings under `connection.config` are refused with `test.invalid`.
+## Upgrades
 
-## Upgrades and uninstalling
-
-A new version can add, change and remove settings. The install plan shows what an upgrade does to the stored values before you agree; none of these problems blocks the upgrade.
-
-| The new version | What happens | In the plan |
+| Change in a new version | What happens | Code |
 | --- | --- | --- |
-| Removes a field that has a stored value | The value is dropped. | `settings.value_dropped` |
-| Changes a field so that its stored value no longer fits | The value is dropped. | `settings.value_dropped` |
-| Adds a required field without a default | The extension does not run after the upgrade until the administrator fills it in. | `settings.incomplete_after_upgrade` |
-| Changes a default | The new default applies to every setting the administrator has not set. | Nothing |
+| A field with a stored value is removed | The value is dropped. A warning. | `settings.value_dropped` |
+| A field changes so that its stored value no longer fits | The value is dropped. A warning. | `settings.value_dropped` |
+| A required field without a default is added | The extension stops after the upgrade until the administrator fills it in. A warning. | `settings.incomplete_after_upgrade` |
+| A default changes | The new default applies to every setting the administrator has not set. | |
 
-Changing settings never switches the connection off. Uninstalling removes the stored values with the extension; installing it again starts from the defaults.
+Changing settings never switches the connection off. Uninstalling removes the stored values. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
 ## Translations
 
-Setting and group texts are translated in `locales/<lang>.yaml`, under `settings`:
-
-```yaml title="locales/pl.yaml"
-settings:
-  groups:
-    general: { label: Ogólne }
-    sync:
-      label: Synchronizacja
-      description: Ile jest wysyłane w jednym wywołaniu.
-  fields:
-    region: { label: Region }
-    sandbox: { label: Użyj środowiska testowego }
-    batchSize: { label: Rozmiar partii, help: Liczba paczek w jednym wywołaniu. }
-    owner: { label: E-mail właściciela }
-```
-
-| Key | Translates |
-| --- | --- |
-| `settings.groups.<group>.label`, `description` | A group's title and description. |
-| `settings.fields.<field>.label`, `help` | A setting's label and help; nested fields under `fields`, list items under `items`. |
-
-Fields are listed under `settings.fields` by their key, without their group. See [Translations](/docs/en/extensions/reference/translations).
+Group texts go under `settings.groups.<group>`, field texts under `settings.fields.<field>`, by the field's key without its group. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
 
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `settings.invalid` | `settings.yaml` has an unknown key, no groups, more than 20 groups, a group without `label` or `fields`, or more than 100 fields. |
-| `name.duplicate` | Two groups, or two fields anywhere in the file, have the same key. |
-| `field.invalid` | A field of the wrong shape, including `secret` or `hint` on a setting. |
-| `layout.unlisted_feature` | A `settings.yaml` that `extension.yaml` does not name. |
-| `layout.missing_descriptor` | `extension.yaml` says `settings: settings.yaml` but the file is missing. |
-| `connection.invalid` | `connection.yaml` still has a `settings` block. Move it to `settings.yaml`. |
-| `test.invalid` | A test case whose settings do not match `settings.yaml`, or that gives settings under `connection.config`. |
-
-Every code is listed under [Error codes](/docs/en/extensions/error-codes).
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `settings.invalid` | An unknown key, no groups or more than 20, a group without `label` or `fields`, or more than 100 fields. | Keep to the keys and limits above. |
+| `name.duplicate` | Two groups, or two fields anywhere in the file, with the same key. | Rename one. |
+| `field.invalid` | A field of the wrong shape, including `secret` or `hint` on a setting. | Move a secret value to the connection. |
+| `layout.unlisted_feature` | A `settings.yaml` that `extension.yaml` does not name. | Add `settings: settings.yaml`. |
+| `layout.missing_descriptor` | `extension.yaml` says `settings: settings.yaml`, but the file is missing. | Add the file, or remove the key. |
+| `connection.invalid` | `connection.yaml` still has a `settings` block. | Move it to `settings.yaml`. |
+| `test.invalid` | A test case whose settings do not match `settings.yaml`, or that gives settings under `connection.config`. | Give them under `settings:`, as the file declares them. |

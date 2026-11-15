@@ -1,9 +1,9 @@
 ---
 title: Zgłaszanie zdarzeń
-description: "Opis kroku EMIT_EVENT w plikach reguł rozszerzeń Opero: jego ustawienia, elementy i klucze, deduplikacja i co znaczy niezmieniony, limity i błędy, gdzie wolno go używać oraz dostarczanie co najmniej raz."
+description: Zgłaszaj zdarzenia własnych wyzwalaczy paczki krokiem EMIT_EVENT, z kluczami i deduplikacją, żeby niezmieniony element nie uruchamiał reguły dwa razy.
 ---
 
-Reguła z paczki zgłasza zdarzenia własnych [wyzwalaczy](/docs/pl/extensions/reference/triggers) paczki krokiem `EMIT_EVENT`. Każdy element listy staje się jednym zdarzeniem, a każde zdarzenie może uruchomić reguły organizacji na tym wyzwalaczu.
+Reguła paczki zgłasza zdarzenia własnych [wyzwalaczy](/docs/pl/extensions/reference/triggers) paczki krokiem `EMIT_EVENT`. Każdy element listy staje się jednym zdarzeniem, a każde zdarzenie może uruchomić reguły organizacji na tym wyzwalaczu. Używa go przewodnik [Zdarzenia z usługi](/docs/pl/extensions/scheduled-events).
 
 ```yaml title="actions/sync-orders/rule.yaml"
 entryStepId: fetch
@@ -34,12 +34,12 @@ edges:
   type={{
     event: {
       type: 'string',
-      description: 'Nazwa jednego z wyzwalaczy paczki, wpisana wprost. Nie szablon i nigdy wyzwalacz innego rozszerzenia.',
+      description: 'Nazwa jednego z wyzwalaczy paczki, wpisana wprost. Nigdy szablon ani wyzwalacz innego rozszerzenia.',
       required: true,
     },
     items: {
       type: 'string',
-      description: 'Jedno wyrażenie {{ … }} i nic wokół niego, dające listę obiektów: jedno zdarzenie na obiekt.',
+      description: 'Jedno wyrażenie {{ … }} bez niczego wokół, dające listę obiektów: jedno zdarzenie na obiekt.',
       required: true,
     },
     key: {
@@ -54,54 +54,44 @@ edges:
   }}
 />
 
-Nic więcej nie jest przyjmowane (`step.config_not_allowed`). W szczególności krok nie ustawia firmy ani wykonawcy: zdarzenie należy do firmy uruchomienia, które je zgłasza, pochodzi od rozszerzenia i niesie łańcuch reguł tego uruchomienia, więc reguła, która już jest w tym łańcuchu, nie uruchamia się ponownie.
+Nic więcej nie jest przyjmowane. Krok nie ustawia firmy ani wykonawcy: zdarzenie należy do firmy uruchomienia, które je zgłasza, pochodzi od rozszerzenia i niesie łańcuch reguł tego uruchomienia, więc reguła, która już jest w tym łańcuchu, nie startuje ponownie.
 
 ## Elementy [#items]
 
-`items` daje listę. Każdy jej element to obiekt, który musi pasować do `data` wyzwalacza:
+Każdy element `items` to obiekt, który musi pasować do `data` wyzwalacza: pole, którego lista pól nie wymienia, brak wymaganego pola albo wartość złego typu są odrzucane, a pole oznaczone `nullable` może mieć wartość `null`. Gdy odpowiedź usługi ma inny kształt, najpierw przekształć ją krokiem **Uruchom skrypt** albo krokami list (`TRANSFORM`, `FILTER` i innymi).
 
-- pole, którego lista pól wyzwalacza nie wymienia, jest odrzucane, tak samo jak brak pola wymaganego albo wartość złego typu;
-- pole oznaczone `nullable` może mieć wartość `null`;
-- jeden element to najwyżej 32 KB JSON.
+`key` wskazuje pole, którego wartość identyfikuje element. W każdym elemencie ta wartość to tekst o długości od 1 do 200 znaków albo liczba.
 
-Gdy odpowiedź usługi nie ma kształtu wyzwalacza, najpierw ją przekształć krokiem **Uruchom skrypt** albo krokami list (`TRANSFORM`, `FILTER` i innymi) i podaj `EMIT_EVENT` wynik.
-
-`key` wskazuje pole, którego wartość identyfikuje element. W każdym elemencie ta wartość musi być tekstem o długości od 1 do 200 znaków albo liczbą.
-
-## Wynik kroku [#the-steps-result]
-
-Krok zwraca `{ emitted, unchanged }`: ile zdarzeń zgłosił i ile elementów pominął, bo się nie zmieniły. Pod kluczem kontekstu `output` staje się wynikiem akcji, jak w przykładzie; pod innym kluczem mogą go odczytać dalsze kroki.
+Krok zwraca `{ emitted, unchanged }`: ile zdarzeń zgłosił i ile elementów pominął, bo się nie zmieniły.
 
 ## Deduplikacja [#dedupe]
 
-Bez `dedupe` każdy element jest zgłaszany przy każdym uruchomieniu. Z `dedupe: true` i `key`:
+Bez `dedupe` każdy element jest zgłaszany przy każdym uruchomieniu. Z `dedupe: true` i `key` element jest zgłaszany, gdy Opero nie pamięta jego klucza albo gdy jego treść różni się od ostatnio zgłoszonej dla tego klucza.
 
-- Element jest zgłaszany, gdy Opero nie pamięta jego klucza albo gdy jego treść różni się od tej, która ostatnio została zgłoszona pod tym kluczem. Wtedy zostaje zapamiętany.
-- Element jest **niezmieniony**, gdy wszystkie jego dane są takie same jak przy ostatnim zgłoszeniu pod tym kluczem. Kolejność pól nie ma znaczenia; każda inna różnica, nawet w polu, którego reguły nie czytają, liczy się jako zmiana.
-- Pamięć jest osobna dla każdego podmiotu uruchomienia: instalacji, jednej firmy albo jednego połączonego członka. Ten sam klucz w dwóch firmach to dwa elementy.
-- Klucz, który powtarza się w jednym kroku, jest porównywany z tym, co ten krok właśnie zgłosił.
-- Jak długo element jest pamiętany, mówi [`dedupe.retentionDays`](/docs/pl/extensions/reference/triggers#dedupe-retention) wyzwalacza.
-
-`dedupe: true` bez `key` jest odrzucane z kodem `event.key_required`.
+| Zasada | Szczegóły |
+| --- | --- |
+| Niezmieniony | Wszystkie dane elementu są takie same jak przy ostatnim zgłoszeniu dla tego klucza. Kolejność pól nie ma znaczenia; każda inna różnica jest zmianą, nawet w polu, którego nie odczytuje żadna reguła. |
+| Na podmiot uruchomienia | Pamięć jest osobna dla instalacji, firmy albo połączonego członka. Ten sam klucz w dwóch firmach to dwa elementy. |
+| W jednym kroku | Powtarzający się klucz jest porównywany z tym, co krok właśnie zgłosił. |
+| Jak długo | [`dedupe.retentionDays`](/docs/pl/extensions/reference/triggers#dedupe-retention) wyzwalacza. |
 
 ## Dostarczane co najmniej raz [#delivered-at-least-once]
 
-Przy deduplikacji Opero najpierw zgłasza zdarzenie, a dopiero potem je zapamiętuje. Jeśli coś przerwie pracę pomiędzy, następne uruchomienie zgłosi ten sam element jeszcze raz. Bez deduplikacji każde uruchomienie i tak zgłasza każdy element. Reguły organizacji na wyzwalaczu powinny więc być napisane tak, żeby dwukrotne otrzymanie zdarzenia nie szkodziło: znajdź rekord po kluczu elementu i zaktualizuj go albo utwórz, gdy go brakuje.
+Opero najpierw zgłasza zdarzenie, a potem je zapamiętuje, więc jeśli coś przerwie pracę pomiędzy, następne uruchomienie zgłosi ten sam element ponownie. Reguły organizacji na wyzwalaczu powinny więc traktować drugie zdarzenie jako nieszkodliwe: znaleźć rekord po kluczu elementu i go zaktualizować albo utworzyć, gdy go brakuje.
 
-## Gdzie wolno go używać [#where-it-may-be-used]
+## Gdzie można go używać [#where-it-may-be-used]
 
 `EMIT_EVENT` działa tylko w uruchomieniach, które Opero rozpoczyna dla samego rozszerzenia:
 
 | Akcję, która go używa, uruchamia | Dozwolone |
 | --- | --- |
 | [Harmonogram](/docs/pl/extensions/reference/schedules) | Tak |
-| Akcja `afterConnect` albo `beforeDisconnect` [połączenia członka](/docs/pl/extensions/reference/member-connections) | Tak |
-| Reguła organizacji, jako krok reguły (`expose.ruleStep`) | Nie: `event.emitted_from_step` |
-| **Sprawdź połączenie** w połączeniu (`verify`) | Nie: `event.emitted_from_step` |
+| Hak `afterConnect` albo `beforeDisconnect` [połączenia członka](/docs/pl/extensions/reference/member-connections) | Tak |
+| Reguła organizacji, jako krok reguły | Nie |
+| Członek, jako akcja bloku albo polecenie rekordu | Nie |
+| **Sprawdź połączenie**, jako akcja weryfikująca | Nie |
 
-- Akcja, której reguła używa `EMIT_EVENT`, nigdy więc nie jest udostępniana jako krok. Zobacz [Akcje](/docs/pl/extensions/reference/actions).
-- Własne reguły organizacji nie mogą używać `EMIT_EVENT`: edytor reguł go nie oferuje, a zapis reguły, która go zawiera, jest odrzucany (`step_type_managed_only`).
-- Akcja, która go używa, potrzebuje co najmniej jednego przypadku testowego wymieniającego oczekiwane zdarzenia (`test.event_untested`). Zobacz [Testy](/docs/pl/extensions/reference/tests#events).
+Własne reguły organizacji też nie mogą używać `EMIT_EVENT`: edytor reguł go nie oferuje, a zapis reguły, która go zawiera, jest odrzucany (`step_type_managed_only`). Akcja, która go używa, potrzebuje co najmniej jednego przypadku testowego wymieniającego oczekiwane zdarzenia; zobacz [Testy](/docs/pl/extensions/reference/tests#events).
 
 ## Limity i błędy [#limits-and-failures]
 
@@ -109,25 +99,23 @@ Przy deduplikacji Opero najpierw zgłasza zdarzenie, a dopiero potem je zapamię
 | --- | --- |
 | Elementy w jednym kroku | 500 |
 | Zdarzenia w jednym uruchomieniu | 2000 |
-| Jeden element | 32 KB JSON |
+| Jeden element | 32 KB JSON-a |
 
-Każdy element jest sprawdzany, zanim którykolwiek zostanie zgłoszony. Gdy sprawdzenie się nie powiedzie, krok kończy się błędem, niczego nie zgłasza, a uruchomienie zatrzymuje się na nim, chyba że port błędu kroku jest podłączony. Zdarzenia zgłoszone przez wcześniejsze kroki uruchomienia pozostają zgłoszone.
+Każdy element jest sprawdzany, zanim jakikolwiek zostanie zgłoszony. Gdy sprawdzenie się nie powiedzie, krok kończy się błędem i niczego nie zgłasza, a uruchomienie zatrzymuje się na nim, chyba że port błędu kroku jest podłączony. Zdarzenia zgłoszone przez wcześniejsze kroki uruchomienia pozostają zgłoszone. Dla harmonogramu liczy się to jako nieudane uruchomienie.
 
-| Kod | Przyczyna |
+| Kod przy uruchomieniu | Przyczyna |
 | --- | --- |
-| `EXTENSION_EVENT_INVALID` | `items` nie jest listą, element nie jest obiektem, nie pasuje do danych wyzwalacza, ma ponad 32 KB albo nie ma użytecznego klucza. |
+| `EXTENSION_EVENT_INVALID` | `items` nie jest listą albo element nie jest obiektem, nie pasuje do danych wyzwalacza, ma ponad 32 KB albo nie ma użytecznego klucza. |
 | `EXTENSION_EVENT_LIMIT` | Ponad 500 elementów w kroku albo ponad 2000 zdarzeń w uruchomieniu. |
-| `EXTENSION_EVENT_NOT_ALLOWED` | Uruchomienie nie zostało rozpoczęte przez Opero dla rozszerzenia albo zainstalowana wersja nie deklaruje tego wyzwalacza. Paczka, która przeszła sprawdzenie, go nie spotyka. |
-
-Błąd widać w uruchomieniu reguły akcji; w harmonogramie liczy się jako nieudane uruchomienie.
+| `EXTENSION_EVENT_NOT_ALLOWED` | Uruchomienie nie zostało rozpoczęte przez Opero dla rozszerzenia albo wyzwalacza nie deklaruje zainstalowana wersja. Paczka, która przeszła sprawdzenia, go nie spotyka. |
 
 ## Problemy [#problems]
 
-| Kod | Co jest nie tak |
-| --- | --- |
-| `event.unknown` | `event` nie wskazuje wyzwalacza paczki. |
-| `event.not_literal` | `event` jest szablonem. |
-| `event.key_required` | `dedupe: true` bez `key`. |
-| `event.emitted_from_step` | Akcja, która zgłasza zdarzenia, jest udostępniona jako krok reguły albo jest akcją weryfikacji połączenia. |
-| `step.config_not_allowed` | Ustawienie inne niż cztery powyższe, `items`, które nie jest jednym wyrażeniem, `dedupe` inne niż true lub false albo `key`, które nie jest polem danych wyzwalacza. |
-| `test.event_untested` | Żaden przypadek testowy akcji nie wymienia oczekiwanych zdarzeń. |
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `event.unknown` | `event` nie wskazuje żadnego wyzwalacza paczki. | Popraw nazwę albo dodaj wyzwalacz. |
+| `event.not_literal` | `event` jest szablonem. | Wpisz nazwę wyzwalacza wprost. |
+| `event.key_required` | `dedupe: true` bez `key`. | Dodaj pole, które identyfikuje element. |
+| `event.emitted_from_step` | Akcja, która zgłasza zdarzenia, jest w jakikolwiek sposób udostępniona albo jest akcją weryfikującą połączenie. | Uruchamiaj ją z harmonogramu albo z haka połączenia członka. |
+| `step.config_not_allowed` | Ustawienie inne niż cztery powyższe, `items`, które nie jest jednym wyrażeniem, `dedupe`, które nie jest true ani false, albo `key`, który nie jest polem danych wyzwalacza. | Trzymaj się czterech ustawień. |
+| `test.event_untested` | Żaden przypadek testowy akcji nie wymienia oczekiwanych zdarzeń. | Dodaj przypadek z `events`. |

@@ -1,9 +1,11 @@
 ---
 title: Bloki
-description: "Opis block.yaml w rozszerzeniach Opero: HTML, CSS i skrypt bloku, jego dane wejściowe, zapytania paczki i odczyty rekordów, które pokazuje, odświeżanie, Liquid, z którym jest renderowany, przyciski run-action, renderowanie innych bloków paczki, testy renderowania oraz to, co z blokami robią instalacja, aktualizacja i odinstalowanie."
+description: Pokazuj dane paczki na stronach rekordów i stronach własnych przez block.yaml, HTML w Liquid, CSS, skrypt, przyciski akcji i testy renderowania.
 ---
 
-Blok to fragment strony: HTML napisany w Liquid, z własnym CSS i, jeśli paczka to deklaruje, ze skryptem działającym w przeglądarce oglądającego. Zainstalowany blok jest blokiem własnym (Custom Block) organizacji, który organizacja umieszcza na stronach rekordów i stronach własnych tak jak swoje bloki. Pokazuje dane paczki, przez jej zapytania i odczyty rekordów, a jego przyciski uruchamiają akcje paczki.
+Blok to fragment strony: HTML napisany w Liquid, z własnym CSS i, jeśli paczka to deklaruje, ze skryptem działającym w przeglądarce oglądającego. Zainstalowany blok jest blokiem własnym (Custom Block) organizacji, umieszczanym na stronach rekordów i stronach własnych tak jak jej bloki, który pokazuje dane paczki i uruchamia jej akcje. Taki blok buduje przewodnik [Blok, przycisk i link](/docs/pl/extensions/blocks-and-actions).
+
+![Karta przesyłki na stronie przesyłki, z plakietką statusu i przyciskiem Track now](/docs/_assets/extensions/blocks-and-actions/parcel-card.webp)
 
 <Files>
   <Folder name="blocks" defaultOpen>
@@ -44,7 +46,7 @@ refresh: { intervalSeconds: 300 }
 tests: tests.yaml
 ```
 
-Wymień folder w liście `blocks` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add block <name>` zapisuje blok z HTML, CSS i jednym testem renderowania i dopisuje go do listy.
+Wymień folder w `blocks` w `extension.yaml` albo w `module.yaml` dołączonego modułu. `opero-ext add block <name>` zapisuje blok z HTML, CSS i jednym testem renderowania i dopisuje go do listy. Paczka ma najwyżej 50 bloków.
 
 ## block.yaml [#blockyaml]
 
@@ -107,7 +109,7 @@ Wymień folder w liście `blocks` w `extension.yaml` albo w `module.yaml` dołą
 
 ## Dane wejściowe [#inputs]
 
-Dane wejściowe to wartość, którą wybiera każde umieszczenie bloku: tytuł, status, rekord. Klucz to litera, a po niej litery, cyfry i `_`, do 64 znaków.
+Dane wejściowe to wartość, którą wybiera każde umieszczenie bloku: tytuł, status, rekord. Klucz to mała litera, a po niej litery, cyfry i `_`, do 64 znaków.
 
 ```yaml
 inputs:
@@ -173,7 +175,7 @@ queries:
 
 Wynik to `queries.<key>` w HTML: `rows`, `first`, `rowCount`, `hasMore` i `state` (`ready` albo `error` lub `unavailable`, gdy zapytanie nie mogło się wykonać, bez wierszy). Jedno nieudane zapytanie nigdy nie psuje bloku. Na stronie firmy zapytanie działa w tej firmie. Jak każde zapisane zapytanie nie stosuje widoczności własnych rekordów.
 
-Plan instalacji sprawdza parametry względem zapytania. Blok może też wskazać zapytanie, które tworzy ta sama instalacja.
+Przegląd instalacji sprawdza parametry względem zapytania. Blok może też wskazać zapytanie, które tworzy ta sama instalacja.
 
 ## Odczyty rekordów [#record-reads]
 
@@ -196,7 +198,7 @@ records:
 | --- | --- |
 | `object` | Obiekt paczki, wskazany kluczem (w przeciwnym razie `block.unknown_object`). |
 | `fields` | Od 1 do 50 kluczy pól, które niesie każdy wiersz, oprócz `id`, `created_at` i `updated_at`. |
-| `filter` | Grupa filtrów zapisana jak filtr bazowy listy własnej: `{ op: AND, items: [{ field, operator, value }] }`. `value` może być Liquidem renderowanym w kontekście bloku: `inputs` oraz `record`, `company` i reszta tego, co widzi HTML. Sprawdza ją plan instalacji. |
+| `filter` | Grupa filtrów zapisana jak filtr bazowy listy własnej: `{ op: AND, items: [{ field, operator, value }] }`. `value` może być Liquidem renderowanym w kontekście bloku: `inputs` oraz `record`, `company` i reszta tego, co widzi HTML. Sprawdza ją przegląd instalacji. |
 | `sort` | Do 5 wpisów `{ field, direction }`. Od najnowszych, gdy pominięte. |
 | `limit` | Od 1 do 50 wierszy. 10, gdy pominięte. |
 
@@ -354,11 +356,43 @@ Każdy blok ma `tests.yaml` z 1 do 20 przypadkami renderowania. Opero renderuje 
 
 Nic nie jest odczytywane ani uruchamiane: żadne zapytanie, odczyt rekordów ani skrypt. Bloki paczki renderowane przez `{% render %}` działają. Przypadek kończy się błędem `test.render_mismatch` przy tekście, który się nie zgadza, albo `test.render_failed`, gdy szablonu nie da się wyrenderować, na przykład bo używa filtra spoza wbudowanych filtrów Opero. Przypadki renderowania wliczają się do 200 testów paczki i dzielą jej 60 sekund.
 
-## Po instalacji [#after-install]
+## Zainstalowany blok [#the-installed-block]
 
-- **Tylko do odczytu.** Zainstalowany blok to zarządzany blok własny `x_<key>_<block>`. Organizacja umieszcza go tak jak swoje bloki i wypełnia jego dane wejściowe, ale nie może go zmienić ani zarchiwizować. Jej własne bloki nie mogą mieć kluczy zaczynających się od `x_`.
-- **Plan instalacji** wymienia każdy blok z zapytaniami, które uruchamia, i akcjami, które oferuje, a dla bloku ze skryptem także sam skrypt, bo działa on w przeglądarkach członków. Wersję, która po raz pierwszy prosi o skrypty stron, trzeba zaakceptować ponownie. Instalacja bloków wymaga `org.customBlocks.create`, `org.customBlocks.update` i `org.customHtml.update`.
-- **Plan blokuje instalację**, gdy istnieje blok o tym kluczu, który nie należy do rozszerzenia (`block.adopts_existing`), gdy bloku nie da się zapisać (`block.save_validation`) albo gdy zmiana zepsułaby strony, które go umieszczają, lub bloki, które go renderują (`block.breaking_change`).
-- **Wyłączone.** Dopóki rozszerzenie jest wyłączone, jego bloki pokazują komunikat zamiast swojego HTML i nie uruchamiają zapytań.
-- **Aktualizacja.** Blok zachowuje tożsamość i umieszczenia między wersjami, dopóki jego nazwa `block` się nie zmienia. Wersja, która usuwa umieszczony blok, daje ostrzeżenie (`block.removed_placed`); blok jest archiwizowany, a jego umieszczenia pokazują, że rozszerzenie go usunęło. Organizacja nie może sama go przywrócić; przywraca go instalacja wersji rozszerzenia, która znów ma ten blok. Wersja, która usuwa akcję bloku wskazywaną przez jeden z własnych bloków organizacji, jest zablokowana (`block_action.in_use`).
-- **Odinstalowanie.** Bloki są archiwizowane, nie usuwane. Ich umieszczenia zostają i pokazują, że rozszerzenie zostało usunięte, a odinstalowanie wymienia je wcześniej. Organizacja nie może sama przywrócić takiego bloku; ponowna instalacja rozszerzenia przywraca te same bloki, a ich umieszczenia znów działają.
+Blok jest instalowany jako zarządzany blok własny z kluczem `x_<key z _>_<block>`. Organizacja umieszcza go i wypełnia jego dane wejściowe, ale nie może go zmienić ani zarchiwizować, a jej własne bloki nie mogą używać kluczy zaczynających się od `x_`. Gdy rozszerzenie jest wyłączone, blok pokazuje komunikat zamiast swojego HTML i nie uruchamia zapytań. Zobacz [Zasoby zarządzane](/docs/pl/extensions/after-install#managed-assets).
+
+## Aktualizacje [#upgrades]
+
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Blok zachowuje nazwę `block` | Zachowuje tożsamość i swoje umieszczenia. | |
+| Usunięto umieszczony blok | Jest archiwizowany, a jego umieszczenia pokazują, że rozszerzenie go usunęło. Wersja, która znów ma ten blok, przywraca go. Ostrzeżenie. | `block.removed_placed` |
+| Zmiana zepsułaby strony, które umieszczają blok, albo bloki, które go renderują | Zablokowane. | `block.breaking_change` |
+| Usunięto akcję bloku, którą wskazuje jeden z własnych bloków organizacji | Zablokowane, dopóki ten blok się nie zmieni. | `block_action.in_use` |
+| Blok po raz pierwszy prosi o skrypty na stronach | Przegląd pokazuje to jako nowe, do akceptacji przez administratora. | |
+
+Odinstalowanie archiwizuje bloki; ich umieszczenia zostają i pokazują, że rozszerzenie usunięto, a ponowna instalacja przywraca te same bloki. Co widzi administrator, opisuje strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
+## Tłumaczenia [#translations]
+
+`label` i `description` bloku trafiają do `blocks.<block>`. Jego HTML nie jest tłumaczony: wybieraj teksty według `actor.locale`. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations#translatable-keys).
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `block.invalid` | Nieznany klucz, klucz o złej strukturze, plik spoza folderu bloku albo przekraczający swój rozmiar, bloki renderujące się nawzajem głębiej niż na trzech poziomach albo więcej niż 50 bloków. | Popraw klucz albo plik wskazany w komunikacie. |
+| `block.name_too_long` | Klucz po instalacji `x_<key z _>_<block>` ma ponad 64 znaki. | Skróć nazwę bloku. |
+| `block.test_missing` | Blok bez przypadku renderowania. | Dodaj przypadek do jego `tests.yaml`. |
+| `block.unknown_query` | Zapytanie, którego paczka nie ma. | Popraw nazwę albo dodaj zapytanie. |
+| `block.unknown_object` | Odczyt rekordów albo dane wejściowe typu rekord wskazują obiekt, którego paczka nie ma. | Popraw klucz albo dodaj obiekt. |
+| `block.unknown_action` | `data-action` nie wskazuje żadnej akcji paczki udostępnionej blokom. | Dodaj do akcji `expose.blockAction` albo popraw klucz. |
+| `block.reference_not_literal` | Klucz akcji albo renderowanego bloku zbudowany z szablonu. | Wpisz klucz wprost. |
+| `block.render_not_own` | `{% render %}` wskazuje blok, który nie należy do paczki. | Renderuj tylko klucze `x_<key z _>_<block>` paczki. |
+| `block.render_cycle` | Bloki paczki renderują się nawzajem w kółko. | Przerwij cykl. |
+| `block.rule_unsupported` | Przycisk `run-rule`. | Uruchom akcję paczki przez `run-action`. |
+| `block.form_unsupported` | `open-form`, `set-field` albo `<opero-rating>`. | Zmieniaj rekord akcją bloku. |
+| `block.script_undeclared` | Blok ze skryptem w paczce bez `permissions.pageScript`. | Zadeklaruj je, z powodem. |
+| `permissions.unused_page_script` | `permissions.pageScript` w paczce, której bloki nie mają skryptu. | Usuń je. |
+| `block.adopts_existing` | W przeglądzie instalacji: istnieje blok o tym kluczu, który nie należy do rozszerzenia. Blokuje instalację. | Zmień nazwę bloku albo poproś organizację o zmianę nazwy jej bloku. |
+| `block.save_validation` | W przeglądzie instalacji: bloku nie da się zapisać jako bloku własnego. Blokuje instalację. | Popraw blok zgodnie z komunikatem. |
+| `test.render_mismatch`, `test.render_failed` | Przypadek renderowania znalazł niepasujący tekst albo szablon się nie wyrenderował. | Zobacz [Testy renderowania](#render-tests). |

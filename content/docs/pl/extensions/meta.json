@@ -2,15 +2,23 @@
   "title": "Rozszerzenia",
   "pages": [
     "index",
+    "---Korzystanie z rozszerzeń---",
+    "install",
+    "after-install",
+    "upgrade-and-uninstall",
+    "---Tworzenie rozszerzeń---",
     "before-you-start",
     "tutorial",
+    "---Przewodniki---",
     "calculating-step",
     "own-data",
+    "workspace-screens",
     "scheduled-events",
+    "member-accounts",
     "blocks-and-actions",
     "start-from-your-organization",
+    "---Do sprawdzenia---",
     "reference",
-    "after-install",
     "error-codes"
   ]
 }

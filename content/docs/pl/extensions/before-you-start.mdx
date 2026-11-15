@@ -1,19 +1,27 @@
 ---
 title: Zanim zaczniesz
-description: "Czego potrzebujesz, by zbudować i zainstalować rozszerzenie Opero: uprawnień administratora, modułu Reguły, modułu Tworzenie rozszerzeń dla narzędzi autorskich, narzędzia opero-ext, edytora i testowego tokenu."
+description: "Czego potrzebujesz, by zbudować rozszerzenie Opero i je zainstalować, jak zdobyć narzędzie opero-ext i czego rozszerzenie jeszcze nie potrafi."
 ---
 
-Potrzebujesz konta administratora w organizacji z modułem Reguły, narzędzia wiersza poleceń i dokumentacji API usługi, którą chcesz wywoływać.
+Rozszerzenie to folder plików YAML i skryptów, który sprawdzasz i pakujesz narzędziem wiersza poleceń, a potem przesyłasz do organizacji. Ta strona wymienia, czego potrzebujesz do każdej z tych dwóch części pracy.
+
+## Do budowania [#to-build]
 
 | Potrzebujesz | Dlaczego |
 | --- | --- |
-| Konta administratora | Przesyłanie i instalacja wymagają uprawnień `org.extensions.*` oraz uprawnień do tworzenia tego, co przynosi paczka: reguł i skryptów własnych, w paczce z danymi także modułów własnych, słowników i zapisanych zapytań, a w paczce z ekranami modułów własnych (formularze), list własnych i stron. Wbudowana rola administratora ma je wszystkie. Paczkę, która deklaruje [zakresy danych](/docs/pl/extensions/reference/data-permissions), może zainstalować tylko właściciel organizacji. |
-| Włączonego modułu Reguły | Rozszerzenia instalują reguły. Paczka z obiektami potrzebuje też modułu Obiekty, paczka z zapytaniami modułu Zapytania SQL, a paczka, która generuje dokumenty, modułu Dokumenty. |
-| Modułu Tworzenie rozszerzeń | Tylko dla narzędzi autorskich: uruchamiania testów paczki w Opero (`opero-ext test`) i eksportu konfiguracji organizacji jako paczki (`opero-ext pull`). Przesyłanie, instalacja, aktualizacja i działanie rozszerzeń go nie wymagają. |
-| Narzędzia wiersza poleceń | `opero-ext` tworzy szkielet folderu albo go eksportuje, sprawdza go, zapisuje plik zip, testuje go w Opero i instaluje. Zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli). |
-| Edytora z obsługą YAML | Opcjonalnie. Folder utworzony przez `init` podpowiada VS Code (z rozszerzeniem YAML), jakiego schematu używa każdy plik, więc klucze się uzupełniają, a błędy są podkreślane w trakcie pisania. |
-| Dokumentacji API usługi | Potrzebujesz dokładnych adresów URL, sposobu uwierzytelniania i tego, co usługa zwraca. |
-| Testowych danych uwierzytelniających do tej usługi | Do końcowego sprawdzenia na żywo. Testy kontraktowe ich nie potrzebują. |
+| Narzędzia wiersza poleceń | `opero-ext` tworzy szkielet paczki, sprawdza ją, pakuje plik zip i go przesyła. Zobacz [Zainstaluj narzędzie wiersza poleceń](#install-the-command-line-tool). |
+| Edytora z obsługą YAML | Opcjonalnie. Folder utworzony przez `init` podpowiada VS Code (z rozszerzeniem YAML), jakiego schematu używa każdy plik, więc klucze uzupełniają się w trakcie pisania. |
+| Dokumentacji API usługi | Dokładnych adresów URL, sposobu uwierzytelniania i tego, co usługa zwraca. |
+| Testowych danych uwierzytelniających do tej usługi | Tylko do końcowego sprawdzenia na żywo. Własne testy paczki ich nie potrzebują. |
+| Modułu **Tworzenie rozszerzeń** | Tylko dla `opero-ext test` (testy w Opero) i `opero-ext pull` (eksport). Przesyłanie i instalacja go nie wymagają. |
+
+## Do instalacji [#to-install]
+
+| Potrzebujesz | Dlaczego |
+| --- | --- |
+| Konta administratora | Przesyłanie i instalacja wymagają uprawnień `org.extensions.*` oraz uprawnień do tworzenia tego, co przynosi paczka. Wbudowana rola administratora ma je wszystkie; wymienia je strona [Instalacja rozszerzenia](/docs/pl/extensions/install#before-you-start). |
+| Modułu Reguły | Rozszerzenia instalują reguły. Paczka z obiektami potrzebuje też modułu Obiekty, paczka z zapytaniami modułu Zapytania SQL, a paczka, która generuje dokumenty, modułu Dokumenty. |
+| Roli właściciela organizacji | Tylko dla paczki, która deklaruje [zakresy danych](/docs/pl/extensions/reference/data-permissions). |
 
 ## Zainstaluj narzędzie wiersza poleceń [#install-the-command-line-tool]
 
@@ -36,17 +44,17 @@ irm https://hub.kodasoft.pl/extension-cli/install.ps1 | iex
 </Tab>
 </Tabs>
 
-Sprawdź je poleceniem `opero-ext version` i aktualizuj poleceniem `opero-ext update`, które sprawdza podpis wydania. [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli#install) wymienia platformy, to, co sprawdzają instalatory, i co zrobić, gdy pobranie przez przeglądarkę zostanie zablokowane.
+Sprawdź je poleceniem `opero-ext version`, które wypisuje wersję i platformę. Aktualizuj je poleceniem `opero-ext update`, które sprawdza podpis wydania. [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli#install) wymienia platformy i podpowiada, co zrobić, gdy przeglądarka zablokuje pobieranie.
 
 <Callout title="Licencja">
-**Tworzenie rozszerzeń** to osobny, licencjonowany moduł, domyślnie wyłączony. Bez niego organizacja nadal może przesyłać, instalować, aktualizować i uruchamiać rozszerzenia; tylko `opero-ext test` i `opero-ext pull` kończą się kodem 4, odpowiadające im ścieżki API zwracają `403 MODULE_UNAVAILABLE`, a odpowiadające im narzędzia MCP nie są oferowane. Administrator włącza go w modułach organizacji, gdy obejmuje go licencja.
+**Tworzenie rozszerzeń** to osobny, licencjonowany moduł, domyślnie wyłączony. Bez niego `opero-ext test` i `opero-ext pull` kończą się kodem 4, a cała reszta działa. Administrator włącza go w modułach organizacji, gdy obejmuje go licencja.
 </Callout>
 
-## Najpierw poznaj edytor reguł
+## Najpierw poznaj edytor reguł [#know-the-rule-builder-first]
 
-Warto zbudować w Opero choć jedną regułę z krokiem **Wywołaj webhook**, bo plik reguły to dokładnie to samo, tylko zapisane jako tekst. Jeśli jeszcze tego nie znasz, przeczytaj [Reguły](/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie) i [Akcje](/docs/pl/opero/07-automatyzacja/akcje).
+Plik reguły to reguła zapisana jako tekst, więc warto zbudować w Opero choć jedną regułę z krokiem **Wywołaj webhook**. Jeśli jeszcze tego nie znasz, przeczytaj [Reguły](/docs/pl/opero/07-automatyzacja/reguly-wprowadzenie) i [Akcje](/docs/pl/opero/07-automatyzacja/akcje).
 
-## Wybierz właściwe narzędzie
+## Wybierz właściwe narzędzie [#choose-the-right-tool-for-the-job]
 
 Rozszerzenie nie zawsze jest najlżejszym rozwiązaniem.
 
@@ -55,10 +63,32 @@ Rozszerzenie nie zawsze jest najlżejszym rozwiązaniem.
 | Przeliczyć lub sformatować pojedynczą wartość w szablonach | [Filtra szablonu](/docs/pl/extensions/reference/filters) w rozszerzeniu albo skryptu własnego, jeśli potrzebuje go tylko twoja organizacja. |
 | Uruchomić trochę logiki tylko w jednej regule | Kroku **Uruchom skrypt** napisanego bezpośrednio w tej regule. Rozszerzenie nie jest potrzebne. |
 | Dać wielu regułom albo wielu organizacjom jeden czytelny krok, który wywołuje usługę | Rozszerzenia z [połączeniem](/docs/pl/extensions/reference/connection-and-secrets) i akcjami. |
-| Reagować na zdarzenia w usłudze zewnętrznej | Rozszerzenia z [wyzwalaczem](/docs/pl/extensions/reference/triggers) i [harmonogramem](/docs/pl/extensions/reference/schedules), który odczytuje usługę i zgłasza zdarzenie dla tego, co się zmieniło. Usługa nie może wywołać paczki: przychodzące webhooki nie są jeszcze obsługiwane. |
+| Reagować na zdarzenia w usłudze zewnętrznej | Rozszerzenia z [wyzwalaczem](/docs/pl/extensions/reference/triggers) i [harmonogramem](/docs/pl/extensions/reference/schedules), który odczytuje usługę i zgłasza zdarzenie dla tego, co się zmieniło. |
 | Pracować z własnym kontem każdego członka w usłudze | Rozszerzenia z [połączeniem członka](/docs/pl/extensions/reference/member-connections). |
 | Przenieść słowniki, obiekty, zapytania, filtry albo bloki zbudowane już w jednej organizacji do innych | Rozszerzenia [wyeksportowanego z tej organizacji](/docs/pl/extensions/start-from-your-organization). |
 
-## Następny krok
+## Czego rozszerzenie jeszcze nie potrafi [#what-an-extension-cannot-do-yet]
 
-Zacznij [samouczek](/docs/pl/extensions/tutorial/start-the-package), w którym zbudujesz kompletne rozszerzenie w czterech częściach.
+| Nie możesz | Zamiast tego |
+| --- | --- |
+| Sięgać do własnych obiektów organizacji | Paczka odczytuje i zapisuje tylko swoje obiekty i kontrahentów. Pozostałą pracę na rekordach wykonuje z wynikiem reguła, która używa twojego kroku. |
+| Umieszczać czegokolwiek w menu | Administrator dodaje strony paczki do menu. |
+| Dostarczać formularzy dla obcych obiektów, formularzy publicznych, stron portalu ani akcji list, które uruchamiają regułę albo skrypt | Zbuduj je w organizacji. |
+| Wysyłać ze skrzynki pocztowej ani przynosić szablonów e-maili i dokumentów | E-maile idą przez usługę e-mail instalacji, a dokumenty korzystają z szablonu, który wybiera organizacja. |
+| Odbierać webhooków | Odczytuj usługę według [harmonogramu](/docs/pl/extensions/reference/schedules). Przychodzące webhooki są zaplanowane. |
+| Zgłaszać zdarzeń z kroku | Zgłaszaj je z uruchomienia harmonogramu albo z akcji połączenia członka. |
+| Uruchamiać się według wyrażenia cron albo w odstępie wybranym przez administratora | Wybierz jeden z siedmiu stałych odstępów harmonogramu. |
+| Odnawiać tokenu członka | Członek łączy się ponownie, gdy usługa przestanie go przyjmować. |
+| Przynosić obrazów, czcionek ani innych plików dla swoich bloków | Używaj obrazów udostępnianych przez usługę. |
+| Używać w blokach akcji formularzy (`open-form`, `set-field`, `<opero-rating>`) ani uruchamiać reguły po identyfikatorze | Przyciski bloków uruchamiają własne akcje paczki. |
+| Zgłaszać zdarzeń ani używać połączenia członka z akcji bloku czy polecenia rekordu ani uruchamiać polecenia w tle | Do pracy w tle użyj harmonogramu. |
+| Oferować akcji bloków, poleceń i linków tokenom API, w zewnętrznym API ani w MCP | Członkowie używają ich w aplikacji. |
+| Wywoływać hosta, którego nie zadeklarowano, ani niczego, co nie jest HTTPS | Zadeklaruj każdy host w `permissions.network`. |
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Samouczek: rozszerzenie Hello" href="/docs/pl/extensions/tutorial/start-the-package">
+    Zbuduj, sprawdź, zainstaluj i wykorzystaj kompletne rozszerzenie w czterech częściach.
+  </Card>
+</Cards>

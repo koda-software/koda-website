@@ -1,25 +1,32 @@
 ---
 title: Kroki danych
-description: "Kroki danych i wiadomości w plikach reguł rozszerzeń Opero: pobieranie, tworzenie i aktualizacja rekordów paczki, uruchamianie jej zapytań, aktualizacja kontrahentów, e-mail z załącznikiem, powiadomienia członków i generowanie dokumentów, każdy z testem."
+description: Napisz kroki, które czytają i zapisują rekordy paczki, uruchamiają jej zapytania, wysyłają e-maile i powiadomienia oraz generują dokumenty.
 ---
 
-Kroki danych to kroki reguł, które dotykają danych Opero albo coś wysyłają: rekordy, zapytania, kontrahenci, e-maile, powiadomienia i dokumenty. Plik reguły twojej paczki może ich używać, gdy paczka deklaruje [zakres danych](/docs/pl/extensions/reference/data-permissions), którego każdy z nich potrzebuje. Ta strona pokazuje każdy krok tak, jak zapisuje się go w pliku reguły, razem z efektem, który planuje dla niego [przypadek testowy](/docs/pl/extensions/reference/tests#data-and-messaging-steps).
+Kroki danych to kroki reguł, które dotykają danych Opero albo coś wysyłają. Plik reguły twojej paczki może użyć takiego kroku, gdy paczka deklaruje [zakres danych](/docs/pl/extensions/reference/data-permissions), którego on potrzebuje. Każdy krok poniżej ma swoje klucze i efekt, który planuje dla niego [przypadek testowy](/docs/pl/extensions/reference/tests#data-and-messaging-steps). Kroków rekordów używa przewodnik [Paczka z własnymi danymi](/docs/pl/extensions/own-data).
 
-<Callout title="Zanim go napiszesz">
+| Krok | Zakres | Wynik pod jego `contextKey` |
+| --- | --- | --- |
+| [`FETCH_RECORDS`](#fetch-records) | `records:read` | `{ rows, rowCount, truncated }` |
+| [`CREATE_RECORD`](#create-a-record) | `records:write` | `{ id }` |
+| [`UPDATE_RECORD`](#update-a-record) | `records:write` | Brak |
+| [`RUN_QUERY`](#run-a-query) | `queries:run` albo `queries:mutate` | Wiersze albo `{ operation, rowCount, rows }` |
+| [`UPDATE_CONTRACTOR`](#update-a-contractor) | `contractors:write` | Brak |
+| [`GENERATE_DOCUMENT`](#generate-a-document) | `documents:generate` | `{ fileId, … }` |
+| [`SEND_EMAIL`](#send-an-email) | `email:send` | Brak |
+| [`SEND_NOTIFICATION`](#send-a-notification) | `notifications:send` | `{ notificationId, … }` |
+
+## Zasady dla każdego kroku danych [#rules-for-every-data-step]
+
 - Krok działa w firmie, dla której działa reguła organizacji używająca twojego kroku. Uruchomienie bez firmy kończy się błędem na tym kroku.
 - Każdy klucz modułu, obiektu i zapytania jest wpisany wprost. Szablon w jego miejscu jest odrzucany.
-- Każdy krok publikuje swój wynik pod swoim `contextKey`, jak każdy krok. Krok bez wyniku niczego nie publikuje.
-</Callout>
+- Przykłady poniżej należą do paczki o kluczu `shop-ext`, więc jej moduł to `x-shop-ext`.
 
-## Rekordy [#records]
+## Pobranie rekordów [#fetch-records]
 
-Obiekty paczki należą do modułu `x-<key>`. Reguła wskazuje obiekt kluczem `object` z jego `object.yaml`. Przykładowa paczka poniżej ma klucz `shop-ext`, więc jej moduł to `x-shop-ext`.
+`FETCH_RECORDS` odczytuje rekordy jednego obiektu paczki.
 
-### Pobranie rekordów [#fetch-records]
-
-`FETCH_RECORDS` odczytuje rekordy jednego obiektu. Zakres `records:read`.
-
-```yaml title="actions/note-order/rule.yaml (fragment)"
+```yaml title="actions/note-order/rule.yaml (part)"
   - id: fetch
     type: FETCH_RECORDS
     name: First open order
@@ -34,21 +41,21 @@ Obiekty paczki należą do modułu `x-<key>`. Reguła wskazuje obiekt kluczem `o
       limit: 1
 ```
 
-| Klucz | Znaczenie |
-| --- | --- |
-| `moduleKey` | Zawsze `x-<key>`. |
-| `objectKey` | Obiekt paczki. |
-| `filters` | Opcjonalny. Lista `{ field, operator, value }`, z których wszystkie muszą być spełnione. `operator` to jeden z: `eq`, `neq`, `contains`, `startsWith`, `endsWith`, `in`, `notIn`, `gt`, `gte`, `lt`, `lte`, `between`, `isNull`, `isNotNull`, `isEmpty`, `isNotEmpty`, `hasAny`, `hasAll`, `hasNone`, `near`. |
-| `sortBy`, `sortDirection` | Opcjonalne. Klucz pola oraz `asc` (domyślnie) albo `desc`. |
-| `limit` | Wymagany. Od 1 do 100. |
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `moduleKey` | Tak | Zawsze `x-<key>`. |
+| `objectKey` | Tak | Obiekt paczki. |
+| `limit` | Tak | Od 1 do 100. |
+| `filters` | Nie | Do 20 warunków `{ field, operator, value }`, które wszystkie muszą być spełnione. `operator` to jeden z: `eq`, `neq`, `contains`, `startsWith`, `endsWith`, `in`, `notIn`, `gt`, `gte`, `lt`, `lte`, `between`, `isNull`, `isNotNull`, `isEmpty`, `isNotEmpty`, `hasAny`, `hasAll`, `hasNone`, `near`. |
+| `sortBy`, `sortDirection` | Nie | Klucz pola oraz `asc` (domyślnie) albo `desc`. |
 
-Wynik to `{ rows, rowCount, truncated }`. Każdy wiersz ma `id` rekordu i jego pola według kluczy, więc następny krok odczytuje `{{ orders.rows[0].id }}` i `{{ orders.rows[0].number }}`. `truncated` ma wartość true, gdy pasujących rekordów było więcej niż `limit`.
+Każdy wiersz ma `id` rekordu i jego pola według klucza, więc późniejszy krok odczytuje `{{ orders.rows[0].id }}`. `truncated` ma wartość true, gdy pasowało więcej rekordów niż `limit`. W teście efektem jest `{ step: FETCH_RECORDS, objectKey: orders }` z wierszami jako `response`.
 
-### Utworzenie rekordu [#create-a-record]
+## Utworzenie rekordu [#create-a-record]
 
-`CREATE_RECORD` dodaje jeden rekord. Zakres `records:write`.
+`CREATE_RECORD` dodaje jeden rekord do obiektu paczki.
 
-```yaml
+```yaml title="actions/note-order/rule.yaml (part)"
   - id: note
     type: CREATE_RECORD
     name: Add the note
@@ -61,13 +68,19 @@ Wynik to `{ rows, rowCount, truncated }`. Każdy wiersz ma `id` rekordu i jego p
         order: "{{ orders.rows[0].id }}"
 ```
 
-`fieldMapping` przypisuje wartości kluczom pól; pole referencji przyjmuje id rekordu, na który wskazuje. Wynik to `{ id }`, id nowego rekordu.
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `targetModuleKey` | Tak | Zawsze `x-<key>`. |
+| `targetObjectKey` | Tak | Obiekt paczki. |
+| `fieldMapping` | Tak | Klucze pól i ich wartości. Pole odwołania przyjmuje identyfikator rekordu, na który wskazuje. |
 
-### Aktualizacja rekordu [#update-a-record]
+Wynikiem jest `{ id }`, identyfikator nowego rekordu. W teście `response` efektu to `{ id: … }`.
 
-`UPDATE_RECORD` zmienia jeden rekord, wskazany po id. Zakres `records:write`.
+## Aktualizacja rekordu [#update-a-record]
 
-```yaml
+`UPDATE_RECORD` zmienia jeden rekord obiektów paczki, wskazany identyfikatorem.
+
+```yaml title="actions/note-order/rule.yaml (part)"
   - id: mark
     type: UPDATE_RECORD
     name: Mark the order
@@ -81,11 +94,14 @@ Wynik to `{ rows, rowCount, truncated }`. Każdy wiersz ma `id` rekordu i jego p
         last_note: "{{ note.id }}"
 ```
 
-`target` jest wymagany: krok nie ma rekordu, który go wyzwolił, więc `target: self` jest odrzucane. `fieldUpdates` przypisuje kluczom pól nowe wartości. Krok nie ma wyniku.
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `target` | Tak | Identyfikator rekordu. `target: self` jest odrzucane, bo krok paczki nie ma rekordu wyzwalającego. |
+| `targetModuleKey` | Tak | Zawsze `x-<key>`. |
+| `targetObjectKey` | Tak | Obiekt paczki. |
+| `fieldUpdates` | Tak | Klucze pól i ich nowe wartości. |
 
-### Ich test [#their-test]
-
-Trzy powyższe kroki, zaplanowane po kolei:
+Krok nie ma wyniku, więc jego efekt w teście nie ma `response`. Trzy kroki rekordów powyżej, zaplanowane po kolei:
 
 ```yaml title="actions/note-order/tests.yaml"
 - name: the note is added and the order marked
@@ -110,7 +126,7 @@ Trzy powyższe kroki, zaplanowane po kolei:
 
 ## Uruchomienie zapytania [#run-a-query]
 
-`RUN_QUERY` uruchamia jedno z [zapytań](/docs/pl/extensions/reference/queries) paczki po jego zainstalowanym kluczu, `x_<klucz z _>_<name>`. Zapytanie FETCH potrzebuje zakresu `queries:run`, zapytanie MUTATION zakresu `queries:mutate`.
+`RUN_QUERY` uruchamia jedno z [zapytań](/docs/pl/extensions/reference/queries) paczki według klucza po instalacji. Zapytanie FETCH potrzebuje `queries:run`, zapytanie MUTATION `queries:mutate`.
 
 ```yaml title="actions/count-open/rule.yaml"
 entryStepId: close
@@ -132,9 +148,12 @@ edges:
   - { fromStepId: close, toStepId: count }
 ```
 
-`params` podaje parametry zapytania po nazwie; w ich wartościach można używać szablonów. `queryId` jest odrzucane.
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `queryKey` | Tak | `x_<key z _>_<name>`, klucz zapytania paczki po instalacji. `queryId` jest odrzucane. |
+| `params` | Nie | Parametry zapytania według nazwy. Ich wartości mogą używać szablonów. |
 
-Wynik zapytania FETCH to lista jego wierszy, tutaj `[{ open: 3 }]`. Wynik zapytania MUTATION to `{ operation, rowCount, rows }`.
+Wynikiem zapytania FETCH jest lista wierszy, tu `[{ open: 3 }]`. Wynikiem zapytania MUTATION jest `{ operation, rowCount, rows }`. Akcja, która deklaruje pola wyjścia, zwraca obiekt, więc wybierz wartości krokiem `SAVE_TO_CONTEXT` pod `output`, zamiast zwracać wiersze.
 
 ```yaml title="actions/count-open/tests.yaml"
 - name: the old orders are closed and the open ones counted
@@ -152,7 +171,7 @@ Wynik zapytania FETCH to lista jego wierszy, tutaj `[{ open: 3 }]`. Wynik zapyta
 
 ## Aktualizacja kontrahenta [#update-a-contractor]
 
-`UPDATE_CONTRACTOR` zmienia jednego z kontrahentów organizacji. Zakres `contractors:write`. W połączeniu z wywołaniem usługi utrzymuje dane kontrahenta w zgodzie z tą usługą:
+`UPDATE_CONTRACTOR` zmienia jednego z kontrahentów organizacji. Poprzedzony wywołaniem usługi utrzymuje dane kontrahenta w zgodzie z tą usługą.
 
 ```yaml title="actions/refresh-contractor/rule.yaml"
 entryStepId: lookup
@@ -167,7 +186,6 @@ steps:
   - id: store
     type: UPDATE_CONTRACTOR
     name: Store the phone
-    contextKey: output
     config:
       contractorId: "{{ trigger.data.contractorId }}"
       fields: { phone: "{{ customer.body.phone }}" }
@@ -175,7 +193,12 @@ edges:
   - { fromStepId: lookup, toStepId: store }
 ```
 
-`contractorId` wskazuje kontrahenta, zwykle z wejścia kroku. `fields` zawiera pola kontrahenta do zmiany, np. `email`, `phone` albo `website`. Krok nie ma wyniku, więc jego efekt nie ma `response`:
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `contractorId` | Tak | Kontrahent, zwykle z wejścia kroku. |
+| `fields` | Tak | Pola kontrahenta do zmiany, na przykład `email`, `phone` albo `website`. |
+
+Krok nie ma wyniku, więc jego efekt nie ma `response`:
 
 ```yaml title="actions/refresh-contractor/tests.yaml"
 - name: the phone the shop has is stored
@@ -191,9 +214,49 @@ edges:
   succeeds: true
 ```
 
-## Dokumenty, e-maile i powiadomienia [#documents-email-and-notifications]
+## Wygenerowanie dokumentu [#generate-a-document]
 
-Ta akcja generuje potwierdzenie zamówienia, wysyła je klientowi e-mailem jako załącznik i informuje współpracownika. Potrzebuje zakresów `documents:generate`, `email:send` i `notifications:send` oraz modułu `documents` w `requires.modules`.
+`GENERATE_DOCUMENT` renderuje szablon dokumentu danych organizacji. Szablonu nigdy nie wybiera paczka: wybiera go autor reguły organizacji w wejściu twojego kroku. Paczka z tym krokiem wymienia `documents` w `requires.modules`.
+
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `templateId` | Tak | Dokładnie `{{ trigger.data.<field> }}`. Każda inna postać jest odrzucana. |
+| `data` | Nie | To, co renderuje szablon. |
+| `templateVersionId` | Nie | Wersja szablonu; renderuje się tylko jego bieżąca opublikowana wersja. |
+| `metadata` | Nie | Zapisywane z wygenerowanym plikiem. |
+| `entityId`, `invoiceId` | Odrzucane | Paczka renderuje tylko szablony danych, nigdy rekord. |
+
+Wynik ma `fileId`, `documentGenerationJobId`, `templateId`, `templateVersionId`, `mimeType` i `originalName`; przekaż `fileId` dalej, żeby dołączyć plik. Gdy generowanie dokumentów jest w organizacji wyłączone, krok kończy się błędem.
+
+## Wysłanie e-maila [#send-an-email]
+
+`SEND_EMAIL` wysyła przez usługę e-mail instalacji.
+
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `to` | Tak | Adres. |
+| `subject`, `html` | Nie | Wpisane w kroku. Dozwolone są też `bodyFormat`, `locale` i `data`. |
+| `attachmentFileIds` | Nie | Identyfikatory plików do dołączenia, na przykład dokumentu wygenerowanego we wcześniejszym kroku. `fileIds` to starsza nazwa. Można dołączyć dowolny plik organizacji; zobacz [Załączniki](/docs/pl/extensions/reference/data-permissions#the-scopes). |
+| `accountId`, `templateId`, `cc`, `bcc`, `text`, `saveAsDraft` | Odrzucane | Paczka nie wysyła poczty ze skrzynki i nie wybiera szablonu e-maila. |
+
+Krok nie ma wyniku. Bez usługi e-mail w instalacji kończy się błędem `service_connection_not_configured`.
+
+## Wysłanie powiadomienia [#send-a-notification]
+
+`SEND_NOTIFICATION` wysyła ogólne powiadomienie, z tytułem i treścią, do członków organizacji.
+
+| Klucz | Wymagany | Znaczenie |
+| --- | --- | --- |
+| `recipients` | Tak | Kto je dostaje, na przykład `userIds`. Dostają je tylko aktywni członkowie organizacji. |
+| `title`, `body` | Nie | Teksty powiadomienia. |
+| `linkUrl`, `payload`, `entityRef`, `dedupeKey`, `collapseWindowMinutes` | Nie | Jak w edytorze reguł. |
+| `typeKey` | Odrzucane | Paczka wysyła tylko ogólne powiadomienie. |
+
+Wynikiem jest `{ notificationId, recipientCount, collapsed, suppressed }`.
+
+## Dokument, e-mail i powiadomienie [#a-document-an-email-and-a-notification]
+
+Ta akcja renderuje potwierdzenie zamówienia, wysyła je klientowi e-mailem jako załącznik i powiadamia współpracownika. Potrzebuje zakresów `documents:generate`, `email:send` i `notifications:send`. Jej krawędzie błędów zachowują przyczynę, gdy krok się nie powiedzie.
 
 ```yaml title="actions/confirm-order/action.yaml"
 action: confirm_order
@@ -211,7 +274,7 @@ input:
 run: rule.yaml
 tests: tests.yaml
 expose:
-  ruleStep: { category: messaging }
+  ruleStep: { category: notifications }
 ```
 
 ```yaml title="actions/confirm-order/rule.yaml"
@@ -258,36 +321,6 @@ edges:
   - { fromStepId: mail, toStepId: unavailable, branchKey: error }
 ```
 
-### Wygenerowanie dokumentu [#generate-a-document]
-
-`GENERATE_DOCUMENT` generuje dokument z szablonu dokumentu z danych organizacji. Zakres `documents:generate`.
-
-- `templateId` zapisuje się dokładnie jako `{{ trigger.data.<field> }}`: szablonu nigdy nie wybiera twoja paczka, tylko autor reguły organizacji, w wejściu twojego kroku. Każda inna postać jest odrzucana.
-- `data` to dane, które generuje szablon. Dozwolone są też `templateVersionId` i `metadata`.
-- `entityId` i `invoiceId` są odrzucane: paczka generuje tylko szablony z danych, nigdy rekord.
-- Wynik zawiera `fileId`, `documentGenerationJobId`, `templateId`, `templateVersionId`, `mimeType` i `originalName`. Przekaż dalej `fileId`, żeby dołączyć plik.
-- Gdy generowanie dokumentów jest wyłączone w organizacji, krok kończy się błędem z komunikatem "GENERATE_DOCUMENT requires document generation to be enabled".
-
-### Wysłanie e-maila [#send-an-email]
-
-`SEND_EMAIL` wysyła przez usługę e-mail instalacji. Zakres `email:send`.
-
-- `to`, `subject` i `html` wpisuje się w kroku. Dozwolone są też `bodyFormat`, `locale` i `data`.
-- Pliki dołącza się po id przez `attachmentFileIds` (albo `fileIds`), na przykład dokument wygenerowany przez wcześniejszy krok. W ten sposób można dołączyć dowolny plik organizacji, nie tylko wygenerowany w tym samym uruchomieniu; zobacz [Załączniki](/docs/pl/extensions/reference/data-permissions#the-scopes). Może to zostać zawężone.
-- `accountId` (skrzynka pocztowa), `templateId` (szablon e-maila) oraz dostępne tylko dla skrzynek `cc`, `bcc`, `text` i `saveAsDraft` są odrzucane.
-- Bez usługi e-mail w instalacji krok kończy się błędem z kodem `service_connection_not_configured`.
-- Krok nie ma wyniku.
-
-### Wysłanie powiadomienia [#send-a-notification]
-
-`SEND_NOTIFICATION` wysyła ogólne powiadomienie, z `title` i `body`, do członków organizacji. Zakres `notifications:send`.
-
-- `recipients.userIds` wymienia użytkowników. Powiadomienie dostają tylko aktywni członkowie organizacji.
-- Dozwolone są też `linkUrl`, `payload`, `entityRef`, `dedupeKey` i `collapseWindowMinutes`; `typeKey` jest odrzucane.
-- Wynik to `{ notificationId, recipientCount, collapsed, suppressed }`.
-
-### Ich test [#their-test-1]
-
 ```yaml title="actions/confirm-order/tests.yaml"
 - name: the confirmation is rendered, emailed with its file and announced
   input:
@@ -326,10 +359,20 @@ edges:
 
 ## Gdy krok danych się nie powiedzie [#when-a-data-step-fails]
 
-Krok danych zakończony błędem powoduje błąd twojej akcji jak każdy krok, chyba że przechwyci go krawędź `error`, jak w przykładzie powyżej: krok tej krawędzi odczytuje `{{ error.code }}` i `{{ error.message }}`. Reguła organizacji, która używa twojego kroku, widzi wtedy `EXTENSION_ACTION_FAILED`, gdy akcja się nie powiedzie.
-
-Krok, który w trakcie działania sięgnąłby poza zadeklarowane zakresy, kończy się błędem `EXTENSION_SCOPE_DENIED` i niczego nie robi. Zobacz [Uprawnienia do danych](/docs/pl/extensions/reference/data-permissions#when-it-is-checked).
+Nieudany krok danych kończy twoją akcję błędem jak każdy krok, chyba że przechwyci go krawędź `error`; krok tej krawędzi odczytuje `{{ error.code }}` i `{{ error.message }}`. Reguła organizacji, która używa twojego kroku, widzi `EXTENSION_ACTION_FAILED`, gdy akcja się nie powiedzie. Krok, który przy uruchomieniu sięgnąłby poza zadeklarowane zakresy, kończy się błędem `EXTENSION_SCOPE_DENIED` i nic nie robi. `UPDATE_RECORD`, którego identyfikator rekordu wychodzi pusty, jak wtedy, gdy wcześniejszy krok niczego nie znalazł, kończy się błędem `EXTENSION_STEP_NO_TARGET`.
 
 ## Skrypty nie dostają danych [#scripts-get-no-data]
 
-Krok **Uruchom skrypt** ani skrypt uruchamiany przez akcję nie może odczytywać ani zapisywać danych i nie może wysyłać powiadomień: w paczce skrypty nie dostają pomocników danych. Najpierw pobierz dane krokiem i przekaż je skryptowi przez kontekst, a potem zapisz wynik skryptu kolejnym krokiem.
+Krok **Uruchom skrypt** ani skrypt uruchamiany przez akcję nie może odczytywać ani zapisywać danych ani wysyłać powiadomień: w paczce skrypty nie dostają pomocników danych. Najpierw pobierz dane krokiem, przekaż je skryptowi przez kontekst, a wynik skryptu zapisz kolejnym krokiem.
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `step.scope_missing` | Krok danych, którego zakresu paczka nie deklaruje. | Dodaj zakres do `permissions.data`, z powodem. |
+| `step.target_not_own` | Krok wskazuje moduł inny niż `x-<key>`, obiekt, którego paczka nie ma, albo klucz zapytania, który nie jest kluczem `x_<key z _>_<name>` zapytania paczki. | Wskaż własny obiekt albo zapytanie paczki. |
+| `step.target_not_literal` | Klucz modułu, obiektu albo zapytania pochodzi z szablonu, także z ustawienia. | Wpisz klucz wprost. |
+| `step.config_not_allowed` | Odrzucany klucz z tabel powyżej, aktualizacja bez identyfikatora rekordu albo z `target: self`, albo `templateId`, który nie jest dokładnie `{{ trigger.data.<field> }}`. | Usuń klucz albo zapisz go tak, jak mówi tabela. |
+| `step.type_not_allowed` | Typ kroku, którego nie obejmuje żaden zakres, na przykład `ATTACH_FILE` albo `CALL_RULE`. | Przenieś tę pracę do reguły organizacji, która używa twojego kroku. |
+| `action.verify_uses_data` | Akcja weryfikująca połączenie używa kroku danych. | Ogranicz akcję weryfikującą do wywołań i logiki. |
+| `test.invalid` | Przypadek testowy z `effects` w paczce bez zakresów danych. | Zadeklaruj zakres albo usuń efekty. |

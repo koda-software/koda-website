@@ -1,9 +1,9 @@
 ---
 title: Skrypty
-description: "Skrypty rozszerzeń Opero w JavaScripcie lub TypeScripcie: budowa modułu, argument skryptu akcji, funkcje filtrów, skrypty bloków, generowane typy, piaskownica i błędy."
+description: Pisz skrypty paczki rozszerzenia w JavaScripcie albo TypeScripcie, z kształtem modułu, argumentem każdego rodzaju skryptu i generowanymi typami.
 ---
 
-Każdy skrypt to moduł z dokładnie jedną funkcją `export default`, bez `import` i bez innych eksportów. Każdy działa osobno w piaskownicy, bez dostępu do sieci i bazy danych.
+Skrypt to moduł JavaScript albo TypeScript z dokładnie jedną funkcją `export default`, bez `import` i bez innych eksportów. Działa samodzielnie w piaskownicy, bez dostępu do sieci i bazy danych. Skryptów używają akcje, kroki plików reguł, filtry szablonów i bloki; na skrypcie opiera się [Krok, który tylko liczy](/docs/pl/extensions/calculating-step).
 
 <Tabs items={['JavaScript', 'TypeScript']}>
 <Tab value="JavaScript">
@@ -45,14 +45,16 @@ Napisz `export default function name(…)` albo stałą, a po niej `export defau
 
 ## Rodzaje skryptów [#kinds-of-script]
 
-| Skrypt | Otrzymuje | Zwraca |
-| --- | --- | --- |
-| `run: run.js` w `action.yaml` | Jeden argument: `{ input, settings, company, user, record, context }` | Wynik akcji. Może być `async`. |
-| `code: { $file: step.js }` w pliku reguły | Ten sam argument | Wynik kroku, pod jego `contextKey`. |
-| `script` filtra | `(value, args, context)` | Przefiltrowaną wartość, od razu: nie `async`. |
-| `script` bloku | `ctx`, kontekst bloku, w przeglądarce oglądającego. Zobacz [Bloki](/docs/pl/extensions/reference/blocks#the-script). | Nic albo funkcję, która sprząta przed kolejnym uruchomieniem bloku. |
+| Skrypt | Wskazuje go | Dostaje | Zwraca |
+| --- | --- | --- | --- |
+| Skrypt akcji | `run: run.js` w `action.yaml` | Argument opisany niżej | Wynik akcji. Może być `async`. |
+| Skrypt kroku | `code: { $file: step.js }` w pliku reguły | Argument opisany niżej | Wynik kroku, pod jego `contextKey`. Może być `async`. |
+| Skrypt filtra | `script` w `filter.yaml` | `(value, args, context)` | Przefiltrowaną wartość, od razu: nie `async`. Zobacz [Filtry szablonów](/docs/pl/extensions/reference/filters#the-function). |
+| Skrypt bloku | `script` w `block.yaml` | `ctx`, w przeglądarce oglądającego. Zobacz [Bloki](/docs/pl/extensions/reference/blocks#the-script). | Nic albo funkcję, która sprząta przed kolejnym uruchomieniem bloku. |
 
-## Argument
+## Argument [#the-argument]
+
+Skrypt akcji i skrypt kroku dostają jeden obiekt:
 
 <TypeTable
   type={{
@@ -62,7 +64,7 @@ Napisz `export default function name(…)` albo stałą, a po niej `export defau
     },
     settings: {
       type: 'object',
-      description: 'Ustawienia rozszerzenia, z zastosowanymi wartościami domyślnymi. {} w paczce bez settings.yaml. Nigdy nie zawiera sekretu.',
+      description: 'Ustawienia rozszerzenia, z zastosowanymi wartościami domyślnymi; {} w paczce bez settings.yaml. Nigdy nie zawiera sekretu.',
     },
     company: {
       type: '{ id } | undefined',
@@ -70,11 +72,11 @@ Napisz `export default function name(…)` albo stałą, a po niej `export defau
     },
     user: {
       type: '{ id, email, firstName, lastName }',
-      description: 'Użytkownik, w imieniu którego działa uruchomienie.',
+      description: 'Użytkownik, w imieniu którego działa uruchomienie. Uruchomienie systemowe ma użytkownika systemowego.',
     },
     record: {
       type: '{ type, id, moduleKey?, objectKey? } | null',
-      description: 'Rekord, dla którego działa akcja bloku albo polecenie rekordu, przez odwołanie. W pozostałych przypadkach null. Zobacz Akcje bloków i polecenia rekordów.',
+      description: 'Rekord, dla którego działa akcja bloku albo polecenie rekordu, przez odwołanie; w pozostałych przypadkach null.',
     },
     context: {
       type: 'object',
@@ -87,7 +89,7 @@ Napisz `export default function name(…)` albo stałą, a po niej `export defau
 Skrypt paczki nie może odczytywać ani zapisywać rekordów, uruchamiać zapytań ani wysyłać powiadomień: nie dostaje pomocników danych. To, czego potrzebuje, pobierz najpierw [krokiem danych](/docs/pl/extensions/reference/data-steps) i odczytaj z `context`; jego wynik zapisz kolejnym krokiem.
 </Callout>
 
-## Błędy
+## Błędy [#errors]
 
 Rzucenie błędu powoduje błąd akcji, a więc i kroku, który ją wywołał:
 
@@ -97,24 +99,25 @@ if (!Number.isFinite(price)) {
 }
 ```
 
-Numery linii się zgadzają: problem znaleziony przez kontrole w linii 3 twojego skryptu jest zgłaszany w linii 3.
+Problem wykryty przy odczycie paczki jest zgłaszany w swoim wierszu twojego skryptu: Opero zostawia każdy wiersz tam, gdzie go napisałeś.
 
 <Callout type="warn">
-Gdy skrypt rzuci błąd w trakcie działania, krok zgłasza obecnie „Script execution failed” bez numeru linii. Numery linii są tylko dla problemów wykrytych przy odczycie lub budowaniu paczki, więc pokryj ścieżki błędów [testami](/docs/pl/extensions/reference/tests).
+Gdy skrypt rzuci błąd w trakcie działania, krok zgłasza „Script execution failed” bez numeru wiersza. Pokryj ścieżki błędów [testami](/docs/pl/extensions/reference/tests).
 </Callout>
 
-## Generowane typy
+## Generowane typy [#generated-types]
 
-`.opero/types/index.d.ts` jest generowany z deskryptorów przez `types`, a także przez `validate`, `pack`, `add` i `init`, gdy paczka jest poprawna. Deklaruje:
+`opero-ext types` zapisuje `.opero/types/index.d.ts` na podstawie deskryptorów. Zapisują go też `init` i `add`, a `validate` i `pack` odświeżają go, gdy paczka jest poprawna i ma już folder `.opero/`.
 
 | Typ | Dla |
 | --- | --- |
-| `Action<'name'>` | Skryptu `run`. |
-| `StepScript<'name'>` | Skryptu `$file` w pliku reguły. |
+| `Action<'name'>` | Skryptu akcji. |
+| `StepScript<'name'>` | Skryptu kroku w pliku reguły tej akcji. |
 | `Filter` | Skryptu filtra. |
+| `Block` | Skryptu [bloku](/docs/pl/extensions/reference/blocks#the-script), funkcji od `ctx`. Tylko w paczce z blokami. |
 | `Settings` | Ustawień rozszerzenia z `settings.yaml`. Pole z wartością domyślną nie jest opcjonalne. |
 | `ScriptArgument<'name'>` | Argumentu skryptów akcji. |
-| `Block` | Skryptu [bloku](/docs/pl/extensions/reference/blocks#the-script), funkcji od `ctx`. |
+| `Triggers` | Danych zdarzeń każdego wyzwalacza. |
 
 W JavaScripcie użyj typu przez linię JSDoc, którą zapisuje szkielet, i sprawdź skrypty poleceniem:
 
@@ -122,18 +125,30 @@ W JavaScripcie użyj typu przez linię JSDoc, którą zapisuje szkielet, i spraw
 npx tsc -p jsconfig.json
 ```
 
-## TypeScript
+Pole z [pliku schematu](/docs/pl/extensions/reference/actions#schema-files) nie ma typu.
 
-Deskryptor może wskazywać plik `.ts`. Narzędzie usuwa typy i pakuje plik `.js` z tymi samymi liniami.
+## TypeScript [#typescript]
+
+Deskryptor może wskazywać plik `.ts`. `opero-ext` usuwa typy i pakuje obok niego plik `.js` z tymi samymi wierszami.
 
 Akceptowany jest tylko TypeScript, który staje się JavaScriptem po usunięciu typów:
 
 - bez `enum`, `namespace`, właściwości parametrów i rzutowań `<T>`;
-- linie `import type` są usuwane razem z typami; każdy inny `import` jest odrzucany;
+- wiersze `import type` są usuwane razem z typami; każdy inny `import` jest odrzucany;
 - plik `.js` trzymany obok `.ts` nie jest używany.
 
-Problem z modułem wykryty w skrypcie `.ts`, np. brak domyślnego eksportu, jest zgłaszany w pliku `.js` zbudowanym przez narzędzie. To, co odrzuca usuwanie typów, jest zgłaszane w pliku `.ts`.
+Problem z modułem, np. brak domyślnego eksportu, jest zgłaszany w pliku `.js` zbudowanym przez narzędzie. To, co odrzuca usuwanie typów, jest zgłaszane w pliku `.ts`.
 
-<Callout type="warn" title="Kontrola modułu czyta linie">
-Linia wewnątrz literału szablonowego albo komentarza blokowego, która zaczyna się od `export` lub `import` w pierwszej kolumnie, jest odczytywana jako instrukcja modułu i odrzucana. Dodaj wcięcie do takich linii.
+<Callout type="warn" title="Kontrola modułu czyta wiersze">
+Wiersz wewnątrz literału szablonowego albo komentarza blokowego, który zaczyna się od `export` lub `import` w pierwszej kolumnie, jest odczytywany jako instrukcja modułu i odrzucany. Dodaj wcięcie do takich wierszy.
 </Callout>
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `script.invalid` | Żaden wiersz albo więcej niż jeden zaczyna się od `export default`, wiersz importuje lub eksportuje coś innego, plik jest pusty, domyślny eksport filtra jest `async` albo TypeScript nie daje się oczyścić z typów. | Zostaw jedną funkcję `export default` i żadnego innego `import` ani `export`. |
+| `script.not_built` | Plik zip wskazuje skrypt `.ts` bez pliku `.js` obok niego. | Spakuj poleceniem `opero-ext pack`. |
+| `script.missing_file` | Skrypt `$file`, którego nie ma w paczce. | Dodaj plik albo popraw nazwę. |
+| `script.invalid_path` | Wartość `$file`, która nie jest plikiem `.js` ani `.ts` w folderze akcji. | Wskaż plik skryptu w tym folderze, względem niego. |
+| `manifest.missing_file` | `run` albo `script` filtra wskazuje plik `.js`, którego nie ma w paczce. | Dodaj plik albo popraw nazwę. |

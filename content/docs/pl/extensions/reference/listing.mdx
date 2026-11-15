@@ -1,0 +1,180 @@
+---
+title: Wizytówka w katalogu
+description: Daj rozszerzeniu ikonę, długi opis, zrzuty ekranu i listę zmian do katalogu, w plikach folderu listing.
+---
+
+Wizytówka to to, co administratorzy czytają o rozszerzeniu przed instalacją i po niej: ikona, długi opis, zrzuty ekranu z podpisami i lista zmian. Leży w folderze `listing/` paczki, więc ma wersje razem z kodem i tłumaczy się jak każdy inny tekst. Niczego z niej nie wpisujesz w Opero.
+
+**Szczegóły** na karcie paczki w sekcji **Dostępne do instalacji** otwierają wizytówkę. Karta **Przegląd** zainstalowanego rozszerzenia pokazuje jego opis i zrzuty ekranu, a przegląd aktualizacji pokazuje listę zmian.
+
+![Wizytówka dostępnej paczki: ikona, nazwa, długi opis, zrzuty ekranu i lista zmian](/docs/_assets/extensions/listing/listing-sheet.webp)
+
+Każda część jest opcjonalna. Paczka bez folderu `listing/` pokazuje tylko `name` i `description` z `extension.yaml`.
+
+<Files>
+  <Folder name="your-extension" defaultOpen>
+    <File name="extension.yaml" />
+    <Folder name="listing" defaultOpen>
+      <File name="icon.png" />
+      <File name="description.md" />
+      <File name="description.pl.md" />
+      <File name="changelog.md" />
+      <Folder name="screenshots" defaultOpen>
+        <File name="orders.png" />
+        <File name="settings.png" />
+      </Folder>
+    </Folder>
+    <Folder name="locales" defaultOpen>
+      <File name="pl.yaml" />
+    </Folder>
+  </Folder>
+</Files>
+
+| Ścieżka | Zawiera | Limit |
+| --- | --- | --- |
+| `listing/icon.png` | Ikonę. Może też być `icon.jpg`, `icon.jpeg` albo `icon.webp`; jedna na paczkę. | Kwadrat, od 128 do 1024 px boku, 256 KB |
+| `listing/description.md` | Długi opis po angielsku. | 50 KB |
+| `listing/description.<lang>.md` | Jego tłumaczenie na język z listy `locales`. | 50 KB |
+| `listing/changelog.md` | Co zmieniło się w każdej wersji. Nie jest tłumaczona. | 100 KB |
+| `listing/screenshots/` | Zrzuty ekranu wymienione w `extension.yaml` i inne obrazy, które pokazuje opis. | Zobacz [Zrzuty ekranu](#screenshots) |
+
+`opero-ext init` zapisuje `listing/description.md`, `listing/changelog.md` i zastępczą ikonę `listing/icon.png`. Przed publikacją podmień wszystkie trzy.
+
+## Ikona [#the-icon]
+
+`listing/icon.png`, `icon.jpg`, `icon.jpeg` albo `icon.webp` widać na karcie w katalogu i na stronie rozszerzenia. Bez ikony Opero pokazuje kafelek z pierwszą literą nazwy.
+
+## Długi opis [#the-long-description]
+
+`listing/description.md` to Markdown wyświetlany nad zrzutami ekranu. Krótki `description` z `extension.yaml` pozostaje tekstem na karcie w katalogu.
+
+```md title="listing/description.md"
+# Orders
+
+Keeps your shop's orders in Opero and updates their status as they ship.
+
+## What it adds
+
+- An **Orders** list with live status.
+- A rule step that creates a shipment.
+
+![The orders list](screenshots/orders.png)
+
+See the [setup guide](https://example.com/orders-setup) or [what it adds](#what-it-adds).
+```
+
+Opis może zawierać:
+
+- **obrazy wyłącznie z paczki**, ze ścieżką względem `listing/`: `screenshots/orders.png` to `listing/screenshots/orders.png`;
+- **linki** do `http`, `https`, `mailto` albo do sekcji opisu (`#section`); otwierają się w nowej karcie;
+- **Markdown, nie HTML.** Bloki kodu i kod w tekście nie są sprawdzane, więc możesz pokazać HTML jako przykład.
+
+### Tłumaczenia [#translations]
+
+`listing/description.<lang>.md` tłumaczy opis, na przykład `listing/description.pl.md`. Jego język musi być w `locales`, a angielski `description.md` musi istnieć. Język bez własnego pliku pokazuje opis angielski.
+
+## Zrzuty ekranu [#screenshots]
+
+Zrzuty ekranu to jedyna część wizytówki, którą wymienia `extension.yaml`, żeby zachowały kolejność i podpisy.
+
+```yaml title="extension.yaml"
+listing:
+  screenshots:
+    - file: listing/screenshots/orders.png
+      caption: Orders with live status
+    - file: listing/screenshots/settings.png
+      caption: Choose which stores to sync
+```
+
+<TypeTable
+  type={{
+    file: {
+      type: 'string',
+      description: 'listing/screenshots/<name>.png, .jpg, .jpeg albo .webp. Nazwa to małe litery, cyfry, _ i -, do 64 znaków, unikalna bez względu na rozszerzenie.',
+      required: true,
+    },
+    caption: {
+      type: 'string',
+      description: 'Widoczny pod zrzutem, do 200 znaków. Do tłumaczenia.',
+      required: true,
+    },
+  }}
+/>
+
+Paczka ma do 8 zrzutów ekranu, wyświetlanych w podanej kolejności. Każdy z nich:
+
+- ma krótszy bok co najmniej 320 px, a dłuższy najwyżej 3840 px;
+- ma proporcje od 1:2 (pionowy) do 3:1 (poziomy);
+- waży najwyżej 1,5 MB.
+
+Podpis tłumaczy się w `locales/<lang>.yaml` w `listing.screenshots`, po nazwie pliku bez rozszerzenia:
+
+```yaml title="locales/pl.yaml"
+listing:
+  screenshots:
+    orders: { caption: Zamówienia z bieżącym statusem }
+    settings: { caption: Wybierz sklepy do synchronizacji }
+```
+
+## Lista zmian [#the-changelog]
+
+`listing/changelog.md` to Markdown z jedną sekcją na wersję, od najnowszej:
+
+```md title="listing/changelog.md"
+## 1.2.0
+
+- Orders can be filtered by store.
+
+## [1.1.0] - 2026-10-02
+
+- A rule step that creates a shipment.
+
+## 1.0.0
+
+- First version.
+```
+
+Sekcja zaczyna się od nagłówka `##`, który zaczyna się od wersji: `## 1.2.0`, `## [1.2.0]` albo `## v1.2.0`, z datą po niej lub bez. Trwa do następnego nagłówka tego poziomu. Reszta pliku jest pomijana: lista zmian bez takich nagłówków nic nie pokazuje i nie jest odrzucana.
+
+Przed aktualizacją przegląd pokazuje sekcje nowsze od zainstalowanej wersji, do instalowanej wersji włącznie. `opero-ext plan` i `opero-ext upgrade` wypisują je pod **New since the installed version**, a `--json` zwraca je jako `changelog`.
+
+## Zasady dla obrazów [#image-rules]
+
+Obowiązują ikonę, zrzuty ekranu i każdy obraz, który pokazuje opis.
+
+| Zasada | Limit |
+| --- | --- |
+| Format | PNG, JPEG albo WebP, odczytany z bajtów pliku, które muszą pasować do jego rozszerzenia. Bez SVG i GIF. |
+| Obrazy łącznie | 16, razem z ikoną. |
+| Rozmiar obrazu innego niż ikona | 1,5 MB i 3840 px na dłuższym boku. |
+| Rozmiar pliku zip | Każdy obraz wlicza się do 10 MB pliku zip. |
+
+`validate` i `pack` dodają uwagę przy obrazie, który zajmuje ponad połowę swojego limitu: skompresuj go przed publikacją.
+
+## Nieużywane pliki [#files-nothing-uses]
+
+Każdy plik w `listing/` musi być ikoną, opisem, listą zmian, wymienionym zrzutem ekranu albo obrazem pokazywanym w opisie. Wszystko inne zostaje odrzucone z kodem `listing.unused_file`.
+
+<Callout>
+`README.md` i `CHANGELOG.md` na górze paczki należą do ciebie: Opero ich nie pokazuje, a `pack` ich nie pakuje. Gdy paczka ma `README.md`, ale nie ma `listing/description.md`, `validate` i `pack` dodają uwagę, że README nie jest wyświetlane.
+</Callout>
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `listing.invalid` | Dwie ikony w jednej paczce. | Zostaw jedną `listing/icon.*`. |
+| `listing.missing_file` | Zrzut ekranu albo obraz z opisu, którego nie ma w paczce, albo przetłumaczony opis bez angielskiego. | Dodaj plik lub popraw ścieżkę; najpierw napisz `description.md`. |
+| `listing.unused_file` | Plik w `listing/`, którego nic nie używa. | Usuń go, dodaj jako zrzut ekranu albo pokaż w opisie. |
+| `listing.unknown_locale` | `description.<lang>.md`, którego języka nie ma w `locales`. | Dodaj język do `locales` albo zmień nazwę pliku. |
+| `listing.image_invalid` | Obraz, który nie jest PNG, JPEG ani WebP, którego bajty nie pasują do rozszerzenia, albo obraz z opisu spoza `listing/`. | Przekonwertuj go lub zmień nazwę; trzymaj obrazy w `listing/`. |
+| `listing.image_too_large` | Ikona ponad 256 KB albo inny obraz ponad 1,5 MB. | Skompresuj go. |
+| `listing.image_dimensions` | Ikona, która nie jest kwadratem lub nie ma od 128 do 1024 px, zrzut ekranu poza swoim rozmiarem lub proporcjami albo obraz ponad 3840 px na dłuższym boku. | Zmień rozmiar lub przytnij. |
+| `listing.image_external` | Obraz w opisie z innej witryny. | Umieść obraz w `listing/` i użyj ścieżki względnej. |
+| `listing.too_many_images` | Ponad 16 obrazów razem z ikoną. | Pokaż mniej. |
+| `listing.description_too_large` | Opis ponad 50 KB. | Skróć go. |
+| `listing.description_html` | Surowy HTML w opisie. | Użyj Markdown. |
+| `listing.link_invalid` | Link w opisie, który nie jest `http`, `https`, `mailto` ani `#section`. | Zmień albo usuń link. |
+| `listing.changelog_too_large` | Lista zmian ponad 100 KB. | Usuń najstarsze wersje. |
+| `manifest.invalid` | Wpis zrzutu ekranu z nieznanym kluczem, ścieżką spoza `listing/screenshots/`, bez podpisu albo dziewiąty zrzut. | Popraw wpis. |
+| `name.duplicate` | Dwa zrzuty ekranu o tej samej nazwie, bez względu na rozszerzenia. | Zmień jedną z nazw: nazwa wyznacza klucz tłumaczenia podpisu. |

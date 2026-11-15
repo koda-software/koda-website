@@ -1,0 +1,127 @@
+---
+title: Instalacja rozszerzenia
+description: "Prześlij paczkę rozszerzenia do Opero, sprawdź, co dodaje i do czego ma dostęp, zainstaluj ją i dokończ konfigurację."
+---
+
+Ta strona prowadzi od pliku zip do zainstalowanego rozszerzenia, gotowego do konfiguracji. Pracujesz na ekranie **Rozszerzenia** w administracji organizacji, w menu **Integracje**.
+
+## Zanim zaczniesz [#before-you-start]
+
+| Potrzebujesz | Do czego |
+| --- | --- |
+| `org.extensions.create` | Przesłania paczki prywatnej i instalacji. |
+| `org.extensions.read` | Oglądania listy, przeglądu i strony zainstalowanego rozszerzenia. |
+| Uprawnień do tworzenia tego, co przynosi paczka | Instalacji. Przegląd wymienia je w sekcji **Potrzebne do instalacji**; wbudowana rola administratora ma je wszystkie. |
+| Modułów, których wymaga paczka | Instalacji. Większość paczek wymaga modułu Reguły; paczka z obiektami także modułu Obiekty, a paczka z zapytaniami modułu Zapytania. |
+| Roli właściciela organizacji | Instalacji paczki, która prosi o dostęp do danych. |
+
+## Skąd pochodzą paczki [#where-packages-come-from]
+
+| Rodzaj | Oznaczenie | Kto ją dodaje |
+| --- | --- | --- |
+| Paczka prywatna | **Pakiet prywatny** | Ktoś z twojej organizacji przesyła plik zip. Zainstalować ją może tylko twoja organizacja. |
+| Paczka z katalogu | **Katalog** | Administrator instalacji przesyła ją i udostępnia organizacjom. Niczego nie przesyłasz. |
+
+Oba rodzaje czekają w sekcji **Dostępne do instalacji**, dopóki ktoś ich nie zainstaluje.
+
+## Instalacja paczki [#install-a-package]
+
+<Steps>
+<Step>
+### Prześlij plik zip [#upload-the-zip]
+
+Na ekranie **Rozszerzenia** kliknij **Prześlij pakiet** i wybierz plik zip o rozmiarze do 10 MB. Opero sprawdza paczkę i uruchamia jej testy kontraktowe, zanim cokolwiek zapisze.
+
+![Okno przesyłania po sprawdzeniu: paczka gotowa do przesłania, wszystkie testy kontraktowe zaliczone](/docs/_assets/extensions/install/upload-checked.webp)
+
+**Gotowe do przesłania** oznacza, że paczka jest poprawna. Gdy sprawdzenie znajdzie problemy, każdy jest wymieniony z plikiem i kodem; popraw je w paczce i wybierz plik ponownie.
+</Step>
+<Step>
+### Przejrzyj ją [#review-it]
+
+Kliknij **Prześlij i przejrzyj**. Paczka zostaje zapisana i od razu otwiera się jej przegląd: przegląd instalacji dla nowej paczki albo przegląd aktualizacji, gdy zainstalowana jest jej wcześniejsza wersja. Przegląd pokazuje wszystko, co paczka zrobi, zanim cokolwiek się zmieni; zobacz [Przegląd instalacji](#the-install-review).
+
+![Przegląd instalacji: werdykt, co dodaje, do czego ma dostęp i co zrobić po instalacji](/docs/_assets/extensions/install/review-dialog.webp)
+
+Jeśli zamkniesz przegląd albo paczka pochodzi z katalogu, czeka ona w sekcji **Dostępne do instalacji**. Każda karta mówi, co paczka dodaje i z czym się łączy, a **Szczegóły** otwierają [wizytówkę](/docs/pl/extensions/reference/listing) autora. Kliknij na karcie **Przejrzyj i zainstaluj**, aby ponownie otworzyć przegląd.
+
+![Paczki dostępne do instalacji, każda z informacją, co dodaje i z czym się łączy](/docs/_assets/extensions/install/available-cards.webp)
+</Step>
+<Step>
+### Zainstaluj [#install]
+
+Kliknij **Zainstaluj**. Otwiera się strona rozszerzenia z informacją, że zostało zainstalowane.
+</Step>
+<Step>
+### Dokończ konfigurację [#finish-setting-up]
+
+**Dokończ konfigurację** wymienia, czego jeszcze brakuje, zanim rozszerzenie zacznie działać, zwykle ustawień i połączenia. Każdy krok ma przycisk, który otwiera właściwe miejsce.
+
+![Lista konfiguracji po instalacji: zostało jeszcze połączenie](/docs/_assets/extensions/install/setup-checklist.webp)
+
+Przejdź dalej do strony [Działanie zainstalowanego rozszerzenia](/docs/pl/extensions/after-install#configuration).
+</Step>
+</Steps>
+
+Autorzy mogą też przesyłać i instalować paczki z wiersza poleceń, poleceniami `opero-ext push` i `opero-ext install`; zobacz [Narzędzie wiersza poleceń](/docs/pl/extensions/reference/cli#consent).
+
+## Przegląd instalacji [#the-install-review]
+
+To samo okno przeglądu pokazuje się przy instalacji, [aktualizacji](/docs/pl/extensions/upgrade-and-uninstall) i ponowieniu polecenia przerwanego w trakcie. Nic się nie zmienia, dopóki nie potwierdzisz.
+
+| Część | Co z niej wynika |
+| --- | --- |
+| Werdykt | Baner na górze, widoczny tylko wtedy, gdy coś wymaga twojej uwagi: liczba problemów do rozwiązania, uwaga, że instalować może tylko właściciel, albo **Gotowe do instalacji**, gdy paczka przejmuje coś, co już masz. Ostrzeżenia, które nie blokują, są zwinięte pod **N ostrzeżeń nieblokujących**. |
+| **Co dodaje** | Wszystko, co paczka instaluje, pogrupowane według rodzaju: reguły i kroki reguł, filtry szablonów, obiekty, zapisane zapytania, bloki, formularze, listy, strony i połączenie. Wszystkim, co jest tu wymienione, zarządza rozszerzenie. |
+| **Do czego ma dostęp** | Hosty poza Opero, które mogą wywoływać jego reguły, jego dostęp do danych organizacji i skrypty, które uruchamia na stronach. Każda pozycja ma uzasadnienie autora. |
+| **Dodaje bloki do Twoich stron** | Każdy blok wraz ze skryptem, który uruchamia w przeglądarkach członków, jeśli taki ma (**Pokaż skrypt**). |
+| **Dodaje uprawnienia dla ról w firmach** | Uprawnienia paczki, których członkowie potrzebują, żeby korzystać z jej możliwości. Instalacja nikomu ich nie nadaje. |
+| **Z czego mogą korzystać członkowie** | Każdy przycisk w bloku, polecenie rekordu i link wraz z uprawnieniem, którego wymaga. |
+| **Linki do innych serwisów** | Dla każdego linku rekordu: co wysyła z przeglądarek członków i do którego hosta. |
+| **Ekrany, które zobaczą członkowie** | Jej formularze, listy i strony. Strony widzi każdy członek każdej firmy, dopóki tego nie zawęzisz. |
+| **Działa samodzielnie** | Jej harmonogramy: jak często każdy działa, dla kogo i co uruchamia. |
+| **Konta członków** | O co członkowie są proszeni, gdy łączą własne konto, i co jest przechowywane. Instalacja nie łączy żadnego członka. |
+| **Po instalacji** | Co jeszcze musisz zrobić: skonfigurować połączenie, dodać strony do menu, przypisać uprawnienia rolom w firmach. |
+| **Potrzebne do instalacji** | Pokazywane, gdy czegoś brakuje: każde uprawnienie z oznaczeniem **Masz je** albo **Brakuje**, każdy moduł z oznaczeniem **Moduł dostępny** albo **Niedostępny tutaj**. |
+
+Część pojawia się tylko wtedy, gdy paczka ma coś, co do niej należy.
+
+### Dostęp do danych [#access-to-data]
+
+Paczka może prosić o odczyt i zmianę własnych rekordów, uruchamianie swoich zapytań, zmianę kontrahentów, wysyłanie e-maili i powiadomień albo tworzenie dokumentów. Każdy zakres jest opisany stałym zdaniem i uzasadnieniem autora.
+
+![Zakresy danych, o które prosi paczka, każdy z uzasadnieniem autora](/docs/_assets/extensions/install/review-data-access.webp)
+
+Każda reguła, która używa kroków paczki, może wtedy robić to w firmie, w której działa, bez uprawnień swojego autora.
+
+<Callout type="warn" title="Dostęp do danych przyznaje tylko właściciel organizacji">
+W przypadku paczki z zakresami danych werdykt dla każdego innego użytkownika brzmi **To rozszerzenie może zainstalować tylko właściciel organizacji.**, a instalacja pozostaje wyłączona. To samo dotyczy jej aktualizacji i ponowień.
+</Callout>
+
+### Co obejmuje twoja zgoda [#what-your-consent-covers]
+
+Instalując, zgadzasz się na hosty, zakresy danych, wyzwalacze, harmonogramy, połączenie członka i ekrany pokazane w przeglądzie. Późniejsza wersja, która dodaje lub rozszerza którąkolwiek z tych rzeczy, pokazuje ją jako **Nowe w tej wersji** i wymaga ponownej zgody.
+
+### Gdy przegląd się zmienia [#when-the-review-changes]
+
+Jeśli coś się zmieni, gdy okno jest otwarte, na przykład jakaś reguła zacznie używać kroku, potwierdzenie pokaże komunikat „Plan zmienił się od chwili wyświetlenia. Przejrzyj zaktualizowany plan i potwierdź ponownie.” razem z nowym przeglądem.
+
+| Widzisz | Co zrobić |
+| --- | --- |
+| **N problemów do rozwiązania** | Przeczytaj każdy problem. Większość wymaga najpierw zmiany w twojej organizacji albo nowej wersji paczki. |
+| **Potrzebne do instalacji** z oznaczeniem **Brakuje** | Poproś administratora, który ma to uprawnienie, albo włącz moduł. |
+| Ostrzeżenie, że klucze się nakładają | Klucz innego zainstalowanego rozszerzenia nakłada się na klucz tego. Zainstaluj tylko jedno z nich albo poproś autora o inny klucz. |
+| **Gotowe do instalacji** z informacją, że paczka przejmuje część tego, co już masz | Paczka instaluje coś pod nazwą, której już używasz. Przeczytaj ostrzeżenia, a potem potwierdź. |
+
+Kody stojące za każdym problemem są wymienione w [Kodach błędów](/docs/pl/extensions/error-codes#in-the-install-review).
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Działanie zainstalowanego rozszerzenia" href="/docs/pl/extensions/after-install">
+    Stan, ustawienia, połączenie i to, co dostają członkowie.
+  </Card>
+  <Card title="Aktualizacja i odinstalowanie" href="/docs/pl/extensions/upgrade-and-uninstall">
+    Przejrzyj nową wersję albo usuń rozszerzenie.
+  </Card>
+</Cards>

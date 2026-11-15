@@ -1,9 +1,9 @@
 ---
 title: Tests
-description: "Write contract tests for Opero extension actions: inputs, settings, connection values, scripted HTTP exchanges, scripted data and messaging steps (effects), expected events, member values, the record a block action or record command runs for, expected outcomes, and block render cases, run offline at upload."
+description: Write the test cases every action needs. They script the calls and data steps an action makes, and Opero runs them offline at every upload.
 ---
 
-Every action has at least one test case. A case gives an input, lists the HTTP exchanges and the data steps the action is expected to make and the events it is expected to raise, and says how it ends. Opero runs every case at upload, without sending anything over the network, without reading or writing any data and without starting any rule.
+Every action has at least one test case. A case gives an input, scripts the HTTP calls and data steps the action is expected to make, and says how it ends. Opero runs every case at upload, and on demand through `opero-ext test`, without sending anything over the network, reading or writing any data, or starting any rule. [Part 3 of the tutorial](/docs/en/extensions/tutorial/check-and-pack) runs them.
 
 ```yaml title="actions/greet/tests.yaml"
 - name: the greeting is sent
@@ -28,11 +28,13 @@ Every action has at least one test case. A case gives an input, lists the HTTP e
 
 ## A test case
 
+A test file is a list of cases. Each case has a name, what the action runs with, and exactly one [outcome](#how-a-case-ends).
+
 <TypeTable
   type={{
     name: {
       type: 'string',
-      description: 'Shown in results.',
+      description: 'Shown in results, up to 200 characters.',
       required: true,
     },
     input: {
@@ -41,52 +43,65 @@ Every action has at least one test case. A case gives an input, lists the HTTP e
     },
     settings: {
       type: 'object',
-      description: 'The extension\'s settings for this case. Defaults apply to the fields left out. Only in a package with settings.yaml.',
+      description: 'The extension\'s settings for this case. Only in a package with settings.yaml. See Settings in a case.',
     },
     connection: {
       type: 'object',
-      description: 'The credential fields, for a package with a connection. Settings do not go here.',
+      description: 'The credential fields, for a package with a connection.',
     },
     companyId: {
-      type: 'string',
-      description: 'For packages with company credentials.',
+      type: 'string | null',
+      description: 'The company the case runs for, for packages with company credentials.',
     },
     http: {
       type: 'exchange[]',
-      description: 'The exchanges, in order, up to 50. Each request has method, url and optionally headers and body; each response has status and optionally headers and body.',
+      description: 'The HTTP calls the action makes, in order, up to 50. See HTTP exchanges.',
     },
     effects: {
       type: 'effect[]',
-      description: 'The data and messaging steps, in order, up to 50. Only in a package with data scopes. See below.',
+      description: 'The data and messaging steps the action takes, in order, up to 50. Only in a package with data scopes.',
     },
     events: {
       type: '{ event, key?, data? }[]',
-      description: 'The events the action must raise, in order, up to 500. Only for an action that raises events. See Events.',
+      description: 'The events the action must raise, in order, up to 500. Only for an action that raises events.',
     },
     seen: {
       type: '{ event, key, data }[]',
-      description: 'What Opero already remembers for dedupe when the case starts, up to 500. Only for an action that raises events.',
+      description: 'What Opero already remembers for dedupe when the case starts, up to 500.',
     },
     userConnection: {
       type: 'object',
-      description: 'The member\'s values: accessToken, refreshToken or a secret output of afterConnect, as texts. Only for a member action.',
+      description: 'The member\'s values, as texts. Only for a member action.',
     },
     record: {
       type: '{ type, id, object? }',
-      description: 'The record the action runs for, read as trigger.record. type is custom_record, contractor, sales_invoice, cost_invoice, budget or helpdesk_ticket; object names a package object. See Block actions and record commands.',
+      description: 'The record a block action or record command runs for, read as trigger.record. type is custom_record, contractor, sales_invoice, cost_invoice, budget or helpdesk_ticket; object names a package object.',
     },
   }}
 />
 
-Only the request headers you name are compared; write their names in lower case.
+## HTTP exchanges
+
+Each entry of `http` is a `request` the action must send next and the `response` it gets back.
+
+| Key | Meaning |
+| --- | --- |
+| `request.method` | `GET`, `POST`, `PUT`, `PATCH` or `DELETE`. Required. |
+| `request.url` | The whole `https://` URL, query included. Required. |
+| `request.headers` | Headers that must be sent with these values. Names match in any case; headers you leave out are not compared. |
+| `request.body` | The body, compared exactly when given. A JSON body is compared as JSON. |
+| `response.status` | The status the action gets, `100` to `599`. Required. |
+| `response.headers`, `response.body` | What else the action gets back. |
+
+The values Opero puts in for secrets are in the request before it is compared, so a case checks `Bearer test-token` with the `token` it gives under `connection`.
 
 ## Settings in a case
 
-The settings of a case, with the defaults applied, must match `settings.yaml`. A required setting without a default must therefore be given in every case, including cases of actions that do not read it. A case that gives settings in a package without `settings.yaml`, or that gives them under `connection.config`, is refused with `test.invalid`. See [Settings in tests](/docs/en/extensions/reference/settings#settings-in-tests).
+The settings of a case, with the defaults applied, must match `settings.yaml`. A required setting without a default is therefore given in every case, also in the cases of actions that do not read it. See [Settings in tests](/docs/en/extensions/reference/settings#settings-in-tests).
 
 ## Data and messaging steps
 
-When the action's rule uses [data steps](/docs/en/extensions/reference/data-steps), the case scripts them in `effects`, the way `http` scripts the calls. No record is read or written and nothing is sent: each step takes its effect and returns the effect's `response`.
+When the action's rule uses [data steps](/docs/en/extensions/reference/data-steps), the case scripts them in `effects`, the way `http` scripts the calls. No record is read or written and nothing is sent: each step is compared with its effect and returns the effect's `response`.
 
 ```yaml title="actions/sync-order/tests.yaml"
 - name: the open order gets the status the carrier answers
@@ -114,16 +129,13 @@ When the action's rule uses [data steps](/docs/en/extensions/reference/data-step
 | --- | --- |
 | `request.step` | The step type: `FETCH_RECORDS`, `CREATE_RECORD`, `UPDATE_RECORD`, `RUN_QUERY`, `UPDATE_CONTRACTOR`, `SEND_EMAIL`, `SEND_NOTIFICATION` or `GENERATE_DOCUMENT`. Required. |
 | Other `request` keys | Keys of the step's settings, compared with what the step was given after its templates were filled in. Keys you leave out are not compared. |
-| `response` | What the step returns. It must have the shape the real step returns. Leave it out for a step that returns nothing: `UPDATE_RECORD`, `UPDATE_CONTRACTOR` and `SEND_EMAIL`. |
+| `response` | What the step returns, in the shape the real step returns. Leave it out for `UPDATE_RECORD`, `UPDATE_CONTRACTOR` and `SEND_EMAIL`, which return nothing. |
 
-- `effects` and `http` are two separate lists, each in the order the action uses them.
-- A `RUN_QUERY` effect names the query by its installed key, as the rule does: `queryKey: x_orders_ext_orders_by_day`.
-- A case with `effects` in a package without [data scopes](/docs/en/extensions/reference/data-permissions) is refused with `test.invalid`.
-- The step is checked against the declared scopes before it takes its effect, so a test cannot pass with a step the scopes do not allow.
+`effects` and `http` are two separate lists, each in the order the action uses them. A `RUN_QUERY` effect names the query by its installed key, as the rule does: `queryKey: x_orders_ext_orders_by_day`. Each step is checked against the package's data scopes before it takes its effect, so a test cannot pass with a step the scopes do not allow.
 
 ## Events
 
-For an action whose rule uses [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events), a case lists the events the run must raise under `events`, and may say under `seen` what Opero already remembers when the case starts, to test dedupe.
+For an action whose rule uses [`EMIT_EVENT`](/docs/en/extensions/reference/raising-events), `events` lists the events the run must raise, and `seen` says what Opero already remembers when the case starts, to test dedupe.
 
 ```yaml title="actions/sync-orders/tests.yaml"
 - name: an order seen before, unchanged, raises nothing
@@ -148,14 +160,11 @@ For an action whose rule uses [`EMIT_EVENT`](/docs/en/extensions/reference/raisi
 | `events[].data` | The event's data. Compared exactly when given. |
 | `seen[]` | `event`, `key` and `data` of an item as it was last raised. An item with the same key and the same data is unchanged. |
 
-- `events` is compared in order. `events: []` says the run raises nothing; a case without `events` does not check events at all.
-- Each raised event is checked against the trigger's data, as in a real run, so a case cannot pass with an event the trigger would refuse.
-- Nothing is queued and no rule starts: the events are only recorded.
-- An action that raises events needs at least one case whose `events` is not empty (`test.event_untested`). A non-empty `events` or `seen` on an action that raises none is refused with `test.invalid`, and an event name that is not a trigger of the package with `event.unknown`.
+`events` is compared in order. `events: []` says the run raises nothing; a case without `events` does not check events at all. Each raised event is checked against the trigger's data, as in a real run. Nothing is queued and no rule starts. An action that raises events needs at least one case whose `events` is not empty.
 
 ## Member actions
 
-A [member action](/docs/en/extensions/reference/member-connections#the-members-values-in-rules) uses `{{ userConnection.<field> }}`. Its case gives those values under `userConnection`, and the `input` the hook or the schedule passes:
+A [member action](/docs/en/extensions/reference/member-connections#the-members-values-in-rules) uses `{{ userConnection.<field> }}`. Its case gives those values under `userConnection`, and the `input` the hook or the schedule passes.
 
 ```yaml title="actions/sync-member/tests.yaml"
 - name: a revoked token
@@ -173,12 +182,11 @@ A [member action](/docs/en/extensions/reference/member-connections#the-members-v
   credentialRevoked: true
 ```
 
-- `userConnection` is accepted only on a member action, and only with `accessToken`, `refreshToken` and the `secret` outputs of `afterConnect` (`test.invalid` otherwise).
-- `credentialRevoked: true` is the outcome of a member action whose request with the member's token was answered `401`. In a real run, that member is then [parked](/docs/en/extensions/reference/member-connections#a-refused-token). A `401` to a request without the member's token is an ordinary failure: expect `fails: { status: 401 }`.
+`userConnection` takes `accessToken`, `refreshToken` and the `secret` outputs of `afterConnect`. `credentialRevoked: true` is the outcome when a request that carried the member's token was answered `401`; in a real run, that member is then [parked](/docs/en/extensions/reference/member-connections#a-refused-token). A `401` to a request without the member's token is an ordinary failure: expect `fails: { status: 401 }`.
 
 ## Block render cases
 
-Each [block](/docs/en/extensions/reference/blocks#render-tests) has its own `tests.yaml` of render cases: the inputs, query rows and record rows to render with, and texts the HTML must or must not contain. Opero renders them at upload, after the action cases, within the same limits.
+Each [block](/docs/en/extensions/reference/blocks#render-tests) has its own `tests.yaml` of render cases: the inputs and rows to render with, and texts the HTML must or must not contain. Opero renders them at upload, after the action cases, within the same limits.
 
 ## How a case ends
 
@@ -250,19 +258,7 @@ A script that calls nothing needs no `http` list:
 
 ## When a case fails
 
-A case is named by its file and position, for example `actions/greet/tests.yaml#/0`. It fails when the action:
-
-- makes a request the case did not expect;
-- makes a request that differs in method, URL, a named header or the body;
-- leaves a scripted exchange unused;
-- runs a data step the case did not script next, or one whose settings differ from a key the effect names;
-- is given a `response` that does not have the shape the step returns;
-- leaves a scripted effect unused;
-- raises an event the case does not list next, raises one whose trigger, key or data differs, or does not raise one the case lists;
-- ends in a different outcome;
-- returns an output that does not match `returns`, or does not match the output fields.
-
-The codes are listed under [Error codes](/docs/en/extensions/error-codes#only-at-upload-when-the-tests-run).
+A failing case is named by its file and position, for example `actions/greet/tests.yaml#/0`, and for an exchange or an effect by the place inside it, such as `…#/0/http/1`. Every failing case of the package is reported in one run. The codes are listed under [Problems](#problems).
 
 ## Limits
 
@@ -270,16 +266,14 @@ The codes are listed under [Error codes](/docs/en/extensions/error-codes#only-at
 | --- | --- |
 | Cases per action | 1 to 50 |
 | Cases per package | 200, action cases and block render cases together |
-| Render cases per block | 1 to 20 |
-| Exchanges per case | 50 |
-| Effects per case | 50 |
+| Exchanges and effects per case | 50 each |
 | `events` and `seen` per case | 500 each |
 | Time per case | 10 seconds |
 | Time for all cases of a package | 60 seconds |
 
 ## Several test files
 
-`tests` in `action.yaml` may name a folder instead of a file. Every `.yaml` file in that folder is then a test file:
+`tests` in `action.yaml` may name a folder instead of a file. Every `.yaml` file directly in that folder is then a test file:
 
 <Files>
   <Folder name="actions" defaultOpen>
@@ -297,3 +291,34 @@ The codes are listed under [Error codes](/docs/en/extensions/error-codes#only-at
 ```yaml title="actions/greet/action.yaml"
 tests: tests/
 ```
+
+## Problems
+
+When the package is read, by `opero-ext validate` and at upload:
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `test.invalid` | A case of the wrong shape, no outcome or two, an input that does not match the input fields, settings that do not match `settings.yaml` or given without it or under `connection.config`, `effects` without data scopes, `events` or `seen` on an action that raises none, `userConnection` or `credentialRevoked` on an action that is not a member action, or more than 50 cases. | Fix the case as the message says. |
+| `action.missing_test` | An action without a case. | Write one. |
+| `event.unknown` | `events` or `seen` names no trigger of the package. | Fix the name. |
+| `test.event_untested` | No case of an action that raises events lists the events it expects. | Add a case with a non-empty `events`. |
+
+When the cases run, at upload and in `opero-ext test`:
+
+| Code | What happened |
+| --- | --- |
+| `test.unexpected_request` | The action made a request the case did not script. |
+| `test.request_mismatch` | The method, URL, a named header or the body differs from the case. |
+| `test.unused_exchange` | The case scripted a request the action never made. |
+| `test.unexpected_effect` | The action ran a data step the case did not script next. |
+| `test.effect_mismatch` | A key an effect names differs from what the step was given, or the effect's `response` does not have the shape the step returns. |
+| `test.unused_effect` | The case scripted a data step the action never ran. |
+| `test.unexpected_event` | The action raised an event after those the case lists. |
+| `test.event_mismatch` | A raised event differs from the one listed at that position: its trigger, key or data. |
+| `test.missing_event` | The case lists an event the action did not raise. |
+| `test.outcome_mismatch` | The action ended differently than the case says, or with another status. |
+| `test.output_mismatch` | The output differs from `returns`. |
+| `test.output_schema` | The output does not match the output fields. |
+| `test.failed` | The case could not finish, for example it ran out of time, or the package has more than 200 cases. |
+
+The codes of block render cases are under [Blocks](/docs/en/extensions/reference/blocks#render-tests).

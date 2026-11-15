@@ -1,9 +1,11 @@
 ---
 title: Blocks
-description: "Reference for block.yaml in Opero extensions: a block's HTML, CSS and script, its inputs, the package queries and record reads it shows, refresh, the Liquid it renders with, run-action buttons, rendering other blocks of the package, render tests, and what install, upgrade and uninstall do to blocks."
+description: Show the package's data on record pages and custom pages with block.yaml, Liquid HTML, CSS, a script, buttons that run actions and render tests.
 ---
 
-A block is a piece of a page: HTML written with Liquid, with its own CSS and, when the package declares it, a script that runs in the viewer's browser. An installed block is a Custom Block of the organization, which it places on record pages and custom pages like its own blocks. It shows the package's data, through the package's queries and record reads, and its buttons run the package's actions.
+A block is a piece of a page: HTML written with Liquid, with its own CSS and, when the package declares it, a script that runs in the viewer's browser. An installed block is a Custom Block of the organization, placed on record pages and custom pages like its own blocks, that shows the package's data and runs the package's actions. The guide [A block, a button and a link](/docs/en/extensions/blocks-and-actions) builds one.
+
+![The Parcel card on a parcel's page, with the status badge and the Track now button](/docs/_assets/extensions/blocks-and-actions/parcel-card.webp)
 
 <Files>
   <Folder name="blocks" defaultOpen>
@@ -44,7 +46,7 @@ refresh: { intervalSeconds: 300 }
 tests: tests.yaml
 ```
 
-List the folder under `blocks` in `extension.yaml`, or in an included module's `module.yaml`. `opero-ext add block <name>` writes a block with its HTML, CSS and one render test, and lists it.
+List the folder under `blocks` in `extension.yaml` or an included module's `module.yaml`. `opero-ext add block <name>` writes a block with its HTML, CSS and one render test, and lists it. A package has at most 50 blocks.
 
 ## block.yaml
 
@@ -107,7 +109,7 @@ List the folder under `blocks` in `extension.yaml`, or in an included module's `
 
 ## Inputs
 
-An input is a value each placement of the block chooses: a title, a status, a record. Its key is a letter followed by letters, digits and `_`, up to 64 characters.
+An input is a value each placement of the block chooses: a title, a status, a record. Its key is a lower-case letter followed by letters, digits and `_`, up to 64 characters.
 
 ```yaml
 inputs:
@@ -173,7 +175,7 @@ queries:
 
 The result is `queries.<key>` in the HTML: `rows`, `first`, `rowCount`, `hasMore` and `state` (`ready`, or `error` or `unavailable` when the query could not run, with no rows). One query that fails never fails the block. On a company page the query runs in that company. Like every saved query, it does not apply own-record visibility.
 
-The install plan checks the parameters against the query. A block may also name a query the same install creates.
+The install review checks the parameters against the query. A block may also name a query the same install creates.
 
 ## Record reads
 
@@ -196,7 +198,7 @@ records:
 | --- | --- |
 | `object` | An object of the package, by its key (`block.unknown_object` otherwise). |
 | `fields` | 1 to 50 field keys each row carries, besides `id`, `created_at` and `updated_at`. |
-| `filter` | A filter group, written as a Custom List's base filter: `{ op: AND, items: [{ field, operator, value }] }`. A `value` may be Liquid, rendered with the block's context: `inputs`, and `record`, `company` and the rest of what the HTML sees. Checked by the install plan. |
+| `filter` | A filter group, written as a Custom List's base filter: `{ op: AND, items: [{ field, operator, value }] }`. A `value` may be Liquid, rendered with the block's context: `inputs`, and `record`, `company` and the rest of what the HTML sees. Checked by the install review. |
 | `sort` | Up to 5 `{ field, direction }` entries. Newest first when left out. |
 | `limit` | 1 to 50 rows. 10 when left out. |
 
@@ -354,11 +356,43 @@ Each block has a `tests.yaml` with 1 to 20 render cases. Opero renders every cas
 
 Nothing is read or run: no query, no record read, no script. Blocks of the package rendered with `{% render %}` work. A case fails with `test.render_mismatch` at the text that did not match, or with `test.render_failed` when the template does not render, for example because it uses a filter outside Opero's built-in ones. Render cases count toward the 200 tests of a package and share its 60 seconds.
 
-## After install
+## The installed block
 
-- **Read-only.** An installed block is a managed Custom Block `x_<key>_<block>`. The organization places it like its own blocks and fills in its inputs, but cannot change or archive it. Its own blocks cannot use keys starting with `x_`.
-- **The install plan** lists each block with the queries it runs and the actions it offers, and, for a block with a script, the script itself, because it runs in members' browsers. A version that newly asks for page scripts has to be agreed to again. Installing blocks needs `org.customBlocks.create`, `org.customBlocks.update` and `org.customHtml.update`.
-- **The plan blocks the install** when a block of that key exists and is not the extension's (`block.adopts_existing`), when a block would not save (`block.save_validation`), or when a change would break the pages that place it or the blocks that render it (`block.breaking_change`).
-- **Disabled.** While the extension is disabled, its blocks show a notice instead of their HTML and run no queries.
-- **Upgrade.** A block keeps its identity and its placements across versions as long as its `block` name stays the same. A version that drops a placed block warns (`block.removed_placed`); the block is archived, and its placements show that the extension removed it. The organization cannot restore it itself; installing a version of the extension that has the block again brings it back. A version that drops a block action that one of the organization's own blocks names is blocked (`block_action.in_use`).
-- **Uninstall.** The blocks are archived, not deleted. Their placements stay and show that the extension was removed, and the uninstall lists them beforehand. The organization cannot restore such a block itself; installing the extension again brings the same blocks back, and their placements work again.
+A block is installed as a managed Custom Block with the key `x_<key with _>_<block>`. The organization places it and fills in its inputs, but cannot change or archive it, and its own blocks cannot use keys that start with `x_`. While the extension is disabled, the block shows a notice instead of its HTML and runs no queries. See [Managed assets](/docs/en/extensions/after-install#managed-assets).
+
+## Upgrades
+
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A block keeps its `block` name | It keeps its identity and its placements. | |
+| A placed block is dropped | It is archived, and its placements show that the extension removed it. A version that has the block again brings it back. A warning. | `block.removed_placed` |
+| A change would break the pages that place the block or the blocks that render it | Blocked. | `block.breaking_change` |
+| A block action that one of the organization's own blocks names is dropped | Blocked until that block changes. | `block_action.in_use` |
+| A block newly asks for page scripts | It is shown as new in the review, for the administrator to agree to. | |
+
+An uninstall archives the blocks; their placements stay and show that the extension was removed, and installing it again brings the same blocks back. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
+## Translations
+
+A block's `label` and `description` go under `blocks.<block>`. Its HTML is not translated: use `actor.locale` to choose between texts. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
+
+## Problems
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `block.invalid` | An unknown key, a key of the wrong shape, a file that is not in the block's folder or is over its size, blocks rendering each other more than three levels deep, or more than 50 blocks. | Fix the key or the file the message names. |
+| `block.name_too_long` | The installed key `x_<key with _>_<block>` is over 64 characters. | Shorten the block's name. |
+| `block.test_missing` | A block without a render case. | Add a case to its `tests.yaml`. |
+| `block.unknown_query` | A query the package does not have. | Fix the name, or add the query. |
+| `block.unknown_object` | A record read or record input names an object the package does not have. | Fix the key, or add the object. |
+| `block.unknown_action` | `data-action` names no action of the package exposed to blocks. | Add `expose.blockAction` to the action, or fix the key. |
+| `block.reference_not_literal` | An action key or a rendered block's key built from a template. | Write the key out. |
+| `block.render_not_own` | `{% render %}` names a block that is not the package's. | Render only `x_<key with _>_<block>` keys of the package. |
+| `block.render_cycle` | Blocks of the package render each other in a circle. | Break the circle. |
+| `block.rule_unsupported` | A `run-rule` button. | Run the package's action with `run-action`. |
+| `block.form_unsupported` | `open-form`, `set-field` or `<opero-rating>`. | Change the record with a block action. |
+| `block.script_undeclared` | A block with a script in a package without `permissions.pageScript`. | Declare it, with a reason. |
+| `permissions.unused_page_script` | `permissions.pageScript` in a package whose blocks have no script. | Remove it. |
+| `block.adopts_existing` | In the install review: a block with that key exists and is not the extension's. Blocks the install. | Rename the block, or ask the organization to rename theirs. |
+| `block.save_validation` | In the install review: the block would not save as a Custom Block. Blocks the install. | Fix the block as the message says. |
+| `test.render_mismatch`, `test.render_failed` | A render case found a text that did not match, or the template did not render. | See [Render tests](#render-tests). |

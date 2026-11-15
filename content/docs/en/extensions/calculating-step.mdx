@@ -1,25 +1,11 @@
 ---
-title: "Recipe: a step that only calculates"
-description: "Build a four-file Opero extension with a Calculate margin rule step written as a script, with no connection and no network access."
+title: A step that only calculates
+description: "Build a small Opero extension with a Margin rule step written as a script, with no connection and no network access."
 ---
 
-A step does not have to call anything. Leave out the connection and the network permissions, and write the logic as a script. With no connection to set up, the extension runs as soon as it is installed. The whole package is four files.
+A step does not have to call anything. This package adds a **Margin** step (`x-calc-ext.margin`) that takes a price and a cost and returns the margin and its percentage. It has no connection and no network access, so it runs as soon as it is installed.
 
-The example adds a step **Calculate margin** (`x-calc-ext.margin`) that takes a price and a cost and returns the margin and its percentage.
-
-<Steps>
-<Step>
-### Scaffold
-
-Start with the scaffold, add the action, and remove the example:
-
-```bash title="Terminal"
-opero-ext init calc-ext --name Calc
-cd calc-ext
-opero-ext add action margin
-```
-
-Delete the `actions/hello` folder. The package then holds four files:
+![The Margin step's form in the rule builder](/docs/_assets/extensions/calculating-step/margin-step.webp)
 
 <Files>
   <Folder name="calc-ext" defaultOpen>
@@ -31,12 +17,27 @@ Delete the `actions/hello` folder. The package then holds four files:
         <File name="tests.yaml" />
       </Folder>
     </Folder>
+    <Folder name="listing" />
   </Folder>
 </Files>
+
+<Steps>
+<Step>
+### Scaffold
+
+Start from the scaffold, add the action, and delete the example `actions/hello` folder. `init` also writes the listing and the files for your editor, as in the [tutorial](/docs/en/extensions/tutorial/start-the-package).
+
+```bash title="Terminal"
+opero-ext init calc-ext --name Calc
+cd calc-ext
+opero-ext add action margin
+```
 </Step>
 
 <Step>
 ### Write the manifest
+
+Replace `extension.yaml`, which no longer lists `actions/hello`:
 
 ```yaml title="extension.yaml"
 # The package's contents: every feature it installs is listed here.
@@ -57,13 +58,15 @@ actions:
 <Step>
 ### Describe the action
 
+The input fields become the step's form; `help` opens from a question mark next to the label.
+
 ```yaml title="actions/margin/action.yaml"
 action: margin
-label: Calculate margin
-description: Works out the margin between a price and a cost.
+label: Margin
+description: Computes the margin and the margin percentage of a price and a cost.
 
 input:
-  price: { type: text, label: Price, required: true }
+  price: { type: text, label: Price, help: "A decimal number, written as text.", required: true }
   cost: { type: text, label: Cost, required: true }
 output:
   margin: { type: number, label: Margin }
@@ -84,6 +87,8 @@ The values a rule gives a step are checked against its input fields when the rul
 <Step>
 ### Write the script
 
+Throwing an error fails the step.
+
 ```js title="actions/margin/run.js"
 /** @type {import('../../.opero/types').Action<'margin'>} */
 const run = ({ input }) => {
@@ -100,14 +105,12 @@ const run = ({ input }) => {
 };
 export default run;
 ```
-
-Throwing an error fails the step.
 </Step>
 
 <Step>
 ### Test it
 
-The first case compares the exact result; the second proves that bad input fails:
+The first case compares the exact result; the second proves that bad input fails.
 
 ```yaml title="actions/margin/tests.yaml"
 - name: a price of 200 and a cost of 150 give 25 percent
@@ -130,25 +133,33 @@ opero-ext pack .
 
 ```txt title="Output"
 calc-ext 0.1.0 is valid.
-Wrote …/calc-ext-0.1.0.zip (1309 bytes)
+Wrote …/calc-ext-0.1.0.zip (2161 bytes; listing images 1325 bytes)
 ```
-
-Upload and install as in the [tutorial](/docs/en/extensions/tutorial/install-and-use); there is no connection step.
 </Step>
 </Steps>
 
-## Use it in a rule
+## After install
 
-In a rule, the step is saved like this, and later steps read `{{ result.marginPercent }}`:
+[Install the zip](/docs/en/extensions/install) as usual. There is nothing to set up: no settings and no connection, so the extension is **Running** at once. The step is listed under **Data** in the rule builder, because it declares `category: data`.
+
+In a rule, the step saves its result as `margin`, so later steps read `{{ margin.marginPercent }}`:
 
 ```json title="A step in one of the organization's rules"
 {
   "type": "x-calc-ext.margin",
-  "contextKey": "result",
+  "contextKey": "margin",
   "config": { "price": "{{ trigger.data.price }}", "cost": "{{ trigger.data.cost }}" }
 }
 ```
 
 ## When a step is too much
 
-If the calculation is a one-line conversion of a single value, a [template filter](/docs/en/extensions/reference/filters) is lighter than a step. If only one rule needs it, a **Run script** step written directly in that rule needs no extension at all.
+If the calculation converts a single value, a [template filter](/docs/en/extensions/reference/filters) is lighter than a step. If only one rule needs it, a **Run script** step written directly in that rule needs no extension at all.
+
+## Next
+
+<Cards>
+  <Card title="A package with its own data" href="/docs/en/extensions/own-data">
+    Bring an object, a dictionary and a query, and a step that works with their records.
+  </Card>
+</Cards>

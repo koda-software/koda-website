@@ -1,9 +1,9 @@
 ---
 title: Schedules
-description: "Reference for schedule.yaml in Opero extensions: intervals, running once for the installation, for each company or for each connected member, the input each run receives, rate limits, failures, and what happens when the extension is disabled, upgraded or uninstalled."
+description: Run an action of the package on its own at a fixed interval with schedule.yaml, once for the installation, for each company or for each connected member.
 ---
 
-A schedule runs one of the package's actions on its own, at a fixed interval, without any rule of the organization. Use it to read a service regularly and [raise events](/docs/en/extensions/reference/raising-events) for what is new or changed.
+A schedule runs one of the package's actions on its own, at a fixed interval, without any rule of the organization. Use it to read a service regularly and [raise events](/docs/en/extensions/reference/raising-events) for what is new or changed. The guides [Events from a service](/docs/en/extensions/scheduled-events) and [Data from each member's account](/docs/en/extensions/member-accounts) each build one.
 
 ```yaml title="schedules/sync-orders/schedule.yaml"
 schedule: sync_orders
@@ -14,14 +14,7 @@ forEach: company
 action: sync_orders
 ```
 
-Each schedule is a folder `schedules/<folder>` with a `schedule.yaml`, listed in `extension.yaml` (or a module's `module.yaml`):
-
-```yaml title="extension.yaml"
-schedules:
-  - schedules/sync-orders
-```
-
-`opero-ext add schedule <name> --action <action>` writes the folder and the list entry; see [Command-line tool](/docs/en/extensions/reference/cli).
+Each schedule is a folder `schedules/<folder>` with a `schedule.yaml`, listed under `schedules` in `extension.yaml` or a module's `module.yaml`. `opero-ext add schedule <name> --action <action>` writes both.
 
 ## schedule.yaml
 
@@ -29,7 +22,7 @@ schedules:
   type={{
     schedule: {
       type: 'string',
-      description: 'The name: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the package.',
+      description: 'The name: a lower-case letter, then lower-case letters, digits and _, up to 41 characters. Unique in the package.',
       required: true,
     },
     label: {
@@ -43,23 +36,23 @@ schedules:
     },
     every: {
       type: '"15m" | "30m" | "1h" | "2h" | "6h" | "12h" | "24h"',
-      description: 'How often each subject runs.',
+      description: 'How often each subject runs. The administrator cannot change it, and there are no cron expressions.',
       required: true,
     },
     forEach: {
       type: '"installation" | "company" | "userConnection"',
-      description: 'What one run is for: see below.',
+      description: 'What one run is for. See What one run is for.',
       required: true,
     },
     action: {
       type: 'string',
-      description: 'The name of the action each run runs. An action of the package that is not exposed as a rule step.',
+      description: 'The action each run runs: an action of the package that is not exposed in any way.',
       required: true,
     },
   }}
 />
 
-The interval is fixed by the package: the administrator cannot change it, and there are no cron expressions. A package has at most 10 schedules.
+A package has at most 10 schedules.
 
 ## What one run is for
 
@@ -69,13 +62,11 @@ The interval is fixed by the package: the administrator cannot change it, and th
 | --- | --- | --- |
 | `installation` | One, for the whole installed extension. | None. |
 | `company` | Each active company of the organization. | That company. |
-| `userConnection` | Each member who connected their account through the package's [member connection](/docs/en/extensions/reference/member-connections). | The company the member chose in the connection's company field; none when the member connection has no company field. |
+| `userConnection` | Each member who connected their account through the package's [member connection](/docs/en/extensions/reference/member-connections). | The company the member chose; none when the member connection has no company field. |
 
-The company matters for what the run does: [data steps](/docs/en/extensions/reference/data-steps) work in it, and events raised by the run go to it. An event raised with no company starts only the organization's rules that are not limited to particular companies.
+[Data steps](/docs/en/extensions/reference/data-steps) work in the run's company, and events the run raises go to it. A new company or a newly connected member gets its first run within the first interval after Opero notices it, within a minute; one that becomes inactive, is deleted or disconnects has no more runs.
 
-A new company, or a newly connected member, gets its first run within the first interval after Opero notices it (within a minute). A company that becomes inactive or is deleted, and a member who disconnects, have no more runs.
-
-`forEach: userConnection` needs a member connection (`schedule.invalid` otherwise) and its action must be a member action, one that uses `{{ userConnection.<field> }}`. The other way round, a member action runs only from such a schedule or from a connection hook (`action.member_outside_member_run`).
+`forEach: userConnection` needs a member connection, and its action must be a member action, one that uses `{{ userConnection.<field> }}`.
 
 ## The input each run receives
 
@@ -125,11 +116,11 @@ firstRun: false
 | --- | --- |
 | `subject.kind` | The schedule's `forEach`. |
 | `subject.companyId` | The run's company, or `null`. |
-| `subject.userId`, `credentialId`, `config`, `meta` | For a member only: who it is, their connection, their config form and the public values `afterConnect` stored. Never their token. |
-| `lastSucceededAt` | When this subject's last successful run finished, or `null` before the first one. Use it to ask the service only for what changed since; ask with some overlap, for example an hour earlier, and let [dedupe](/docs/en/extensions/reference/raising-events#dedupe) leave out what was already raised. |
-| `firstRun` | `true` until this subject has had a successful run. Use it, for example, to read a longer period the first time. |
+| `subject.userId`, `credentialId`, `config`, `meta` | For a member only: who it is, their connection, their form and the public values `afterConnect` stored. Never their token. |
+| `lastSucceededAt` | When this subject's last successful run finished, or `null` before the first one. Ask the service for what changed since, with some overlap, and let [dedupe](/docs/en/extensions/reference/raising-events#dedupe) leave out what was already raised. |
+| `firstRun` | `true` until this subject has had a successful run, for example to read a longer period the first time. |
 
-The action's `input` must accept this. Either declare it as a field list:
+The action's `input` must accept this. Declare it as a field list, or give a JSON Schema file that leaves `subject` open:
 
 ```yaml title="actions/sync-orders/action.yaml (part)"
 input:
@@ -144,69 +135,45 @@ input:
   firstRun: { type: boolean, required: true }
 ```
 
-or give a JSON Schema file that leaves `subject` open:
-
-```yaml title="actions/sync-member/input.yaml"
-type: object
-properties:
-  subject: { type: object }
-  lastSucceededAt: { type: [string, "null"] }
-  firstRun: { type: boolean }
-required: [subject, firstRun]
-```
-
-A field list closes the object, so for `forEach: userConnection` it must also name `userId`, `credentialId`, `config` and `meta`; the open schema file is simpler there. The input is checked against what the schedule passes when the package is checked, and an input that refuses it is reported as `schedule.invalid` with the first difference.
+A field list closes the object, so for `forEach: userConnection` it must also name `userId`, `credentialId`, `config` and `meta`; an open schema file is simpler there.
 
 ## Who the run acts as
 
-A schedule run is a run of the action's installed rule, started by the extension itself. It acts as the extension, with the [data scopes](/docs/en/extensions/reference/data-permissions) the administrator agreed to, the extension's [settings](/docs/en/extensions/reference/settings) as `{{ trigger.settings.<field> }}` and its connection. A run over member connections also has that member's values as `{{ userConnection.<field> }}`, and only that member's. The run shows in the history of the action's rule.
+A schedule run is a run of the action's installed rule, started by the extension itself, and it shows in that rule's history. It acts as the extension, with the [data scopes](/docs/en/extensions/reference/data-permissions) the administrator agreed to, the extension's [settings](/docs/en/extensions/reference/settings) and its connection. A run over member connections also has that member's values, and only that member's.
 
 ## When it runs
 
-- Each subject runs once per interval. Its first run comes at some point within the first interval after install, spread so that subjects do not all start at the same minute.
-- A subject runs at most once at a time, also when Opero runs on several servers.
-- Each interval is counted from the end of the previous run, by its outcome:
+Each subject runs once per interval, at most once at a time, also when Opero runs on several servers. Its first run comes within the first interval after install, spread so that subjects do not all start at the same minute. The next run is counted from the end of the previous one:
 
 | How the run ended | Next run |
 | --- | --- |
 | Success | One interval later. |
-| Rate limit: a request was answered `429` | After the time the service asked for in `Retry-After`, or else `RateLimit-Reset`; 15 minutes when it gave none; never later than one interval. This is not counted as a failure. |
-| Failure: an HTTP error, an input or output that does not match, a failed step | After 15 minutes, then 30 minutes, 1 hour and so on, doubling, but never later than one interval. The subject counts as failing until a run succeeds. |
-| A member's token was refused (`401` to a request that carried it) | Not until the member connects again; see [Member connections](/docs/en/extensions/reference/member-connections#a-refused-token). |
+| Rate limit: a request was answered `429` | After the service's `Retry-After`, or else `RateLimit-Reset`; 15 minutes when it gave none; never later than one interval. Not counted as a failure. |
+| Failure: an HTTP error, an input or output that does not match, a failed step | After 15 minutes, then 30 minutes, 1 hour and so on, doubling, never later than one interval. |
+| A member's token was refused (`401` to a request that carried it) | Not until the member connects again; see [A refused token](/docs/en/extensions/reference/member-connections#a-refused-token). |
 
-Missed intervals are never made up: a subject that waited for several intervals runs once.
+Missed intervals are never made up: a subject that waited for several intervals runs once. A member is skipped, without a failure, while they have not chosen a company, the chosen company is no longer theirs, or their connection waits for them to connect again. While the extension does not run, its schedules run nothing; when it runs again, each due subject runs once.
 
-A member is skipped, without a failure, while their connection cannot be used: they have not chosen a company yet, the chosen company is no longer theirs, or their connection waits for them to connect again.
+## Upgrades
 
-## When the extension does not run
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A schedule is removed | It stops, and its run state is deleted. A warning. | `schedule.removed` |
+| A schedule's `every`, `forEach` or `action` changes | It follows the new schedule at once; a changed `forEach` drops the old subjects. A warning. | `schedule.changed` |
+| A schedule is added | It is shown as new in the review, for the administrator to agree to. | |
 
-While the extension is [not running](/docs/en/extensions/after-install#states), for any reason, its schedules run nothing. When it runs again, each subject that is due runs once, and the schedule continues from there.
-
-## Upgrades and uninstalling
-
-- An upgrade that removes a schedule, or changes its `forEach`, drops the subjects of the old one. A shortened interval applies at once.
-- The schedules appear in the [install plan](/docs/en/extensions/after-install#the-install-plan), so an upgrade that adds a schedule, or changes its interval, `forEach` or action, needs the administrator's consent like any other change in the plan.
-- Uninstalling stops every schedule.
-
-## What the administrator sees
-
-The install plan lists each schedule with its label, how often it runs and for what, and the action it runs. After install, the extension's page shows each schedule's status: how many subjects it has, how many are due, running, failing or waiting for a member, and when it last succeeded. See [After install](/docs/en/extensions/after-install#schedules-and-connected-members).
+Uninstalling stops every schedule. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change), and how they follow the runs in [Schedules](/docs/en/extensions/after-install#schedules).
 
 ## Translations
 
-```yaml title="locales/pl.yaml"
-schedules:
-  sync_orders:
-    label: Synchronizacja otwartych zamówień
-    description: Co godzinę odczytuje otwarte zamówienia każdej firmy.
-```
+The texts go under `schedules.<schedule>`: `label` and `description`. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
 
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `schedule.invalid` | An unknown key, an `every` that is not one of the seven intervals, a `forEach` that is not one of the three, `forEach: userConnection` without a member connection or with an action that is not a member action, an action input that does not accept what the schedule passes, or more than 10 schedules. |
-| `schedule.action_unknown` | `action` names no action of the package. |
-| `schedule.action_exposed` | The action is exposed as a rule step. |
-| `action.member_outside_member_run` | A member action is run by a schedule that is not `forEach: userConnection`. |
-| `name.duplicate` | Two schedules with the same name. |
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `schedule.invalid` | An unknown key, an `every` or `forEach` that is not one of the listed values, `forEach: userConnection` without a member connection or with an action that is not a member action, an action input that does not accept what the schedule passes (the message gives the first difference), or more than 10 schedules. | Fix the key, or the action's input. |
+| `schedule.action_unknown` | `action` names no action of the package. | Fix the name, or add the action. |
+| `schedule.action_exposed` | The action is exposed as a rule step, a block action or a record command. | Give the schedule its own action that nothing exposes. |
+| `action.member_outside_member_run` | A member action is run by a schedule that is not `forEach: userConnection`. | Use `forEach: userConnection`. |
+| `name.duplicate` | Two schedules with the same name. | Rename one. |

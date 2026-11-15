@@ -1,211 +1,156 @@
 ---
-title: Po instalacji
-description: "Działanie zainstalowanego rozszerzenia Opero: plan instalacji i aktualizacji, stany, ustawienia, zainstalowane dane, harmonogramy i połączeni członkowie, jego formularze, listy i strony, gdzie opisano jego bloki, polecenia i linki, co się dzieje, gdy krok się nie powiedzie, jak działają aktualizacje, co je blokuje oraz co odinstalowanie usuwa, a co zachowuje."
+title: Działanie zainstalowanego rozszerzenia
+description: "Sprawdź stan rozszerzenia, uzupełnij ustawienia i połączenie, śledź harmonogramy i uruchomienia i zdecyduj, z czego korzystają członkowie."
 ---
 
-Zainstalowane rozszerzenie działa, gdy każde wymagane ustawienie ma wartość, a jeśli ma połączenie, to połączenie jest skonfigurowane, zweryfikowane i włączone. Ta strona opisuje to, co widzi administrator: plan pokazywany przed instalacją lub aktualizacją, stany rozszerzenia, jego ustawienia, dane, harmonogramy i połączonych członków, błędy kroków, aktualizacje i odinstalowanie.
+Ta strona opisuje rozszerzenie od chwili instalacji: jego stan, trzy karty, to, co dostają członkowie, i to, co pozostaje tylko do odczytu. Instalację opisuje strona [Instalacja rozszerzenia](/docs/pl/extensions/install), a aktualizację i usunięcie strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall).
 
-## Plan instalacji [#the-install-plan]
+## Lista zainstalowanych rozszerzeń [#the-list-of-installed-extensions]
 
-**Zainstaluj**, **Uaktualnij** i **Spróbuj ponownie** (po poleceniu przerwanym w trakcie) otwierają to samo okno. Pokazuje ono plan, zanim cokolwiek się zmieni; nic nie zostanie zainstalowane, dopóki nie potwierdzisz.
+Ekran **Rozszerzenia** otwiera się na karcie **Zainstalowane**. Każdy wiersz pokazuje, co rozszerzenie dodaje, jego wersję i stan; strzałka obok wersji oznacza, że dostępna jest nowsza.
 
-| Sekcja | Co pokazuje |
-| --- | --- |
-| **Wykryte problemy** | Każdy problem z komunikatem, oznaczony jako **Blokujący** albo **Nieblokujący**. Dopóki któryś blokuje, przycisk potwierdzenia jest wyłączony, a okno mówi **Najpierw usuń problemy blokujące.** |
-| **Co się zmieni** | Każdy element, który polecenie utworzy, zmieni, zostawi albo usunie, oznaczony jako **Zostanie utworzone**, **Zostanie zmienione**, **Pozostaje bez zmian** albo **Zniknie**, z rodzajem: **Reguła**, **Filtr szablonu**, **Moduł**, **Obiekt**, **Słownik** albo **Zapisane zapytanie**. Zapisane zapytanie pokazuje też **Odczytuje dane** albo **Zmienia dane**, a **Pokaż SQL zapytania** rozwija jego SQL w postaci napisanej w paczce, z `{{object.<key>}}` w miejscu, w które trafi prawdziwa nazwa tabeli. |
-| **Co dodaje** | **Kroki reguł**, **Wyzwalacze reguł** i **Filtry szablonów** oraz uwagę, gdy rozszerzenie łączy się z usługą zewnętrzną. |
-| **Do czego pakiet będzie miał dostęp** | **Adresy, które mogą wywoływać jego reguły** i **Zakresy danych**, każdy z uzasadnieniem autora. Każdy zakres danych jest opisany stałym zdaniem (wymienionym w [Uprawnieniach do danych](/docs/pl/extensions/reference/data-permissions#the-scopes)), po zdaniu „Każda reguła, która używa kroków tego rozszerzenia, może wtedy robić to w firmie, w której działa, bez uprawnień swojego autora.”. Przy aktualizacji to, o co ta wersja prosi, a zainstalowana nie prosiła, jest oznaczone jako **Nowe w tej wersji**. |
-| **Wymagania** | Potrzebne uprawnienia, każde oznaczone jako **Masz je** albo **Brakuje**, oraz wymagane moduły, oznaczone jako **Moduł dostępny** albo **Niedostępny tutaj**. |
+![Zainstalowane rozszerzenia z ich stanem; trzy są nieaktywne](/docs/_assets/extensions/after-install/installed-list.webp)
 
-Gdy paczka ma [wyzwalacze](/docs/pl/extensions/reference/triggers), [harmonogramy](/docs/pl/extensions/reference/schedules) albo [połączenie członka](/docs/pl/extensions/reference/member-connections), plan pokazuje też je, każde w osobnej sekcji, żeby zgoda obejmowała to, co działa bez naciskania przycisku:
-
-- **Dodaje wyzwalacze, od których mogą zaczynać się Twoje reguły**: każdy wyzwalacz z etykietą, opisem i polami danych jego zdarzeń (**Dane zdarzenia**). Dane każdego zdarzenia trafiają do historii uruchomień reguł.
-- **Działa samodzielnie**: każdy harmonogram z etykietą, tym, jak często działa i dla czego (raz, dla każdej aktywnej firmy albo dla każdego połączonego członka), oraz akcją, którą uruchamia (**Wykonuje:**).
-- **Konta członków: `<label>`**, z etykietą połączenia członka: hosty, na których członkowie się logują, zakresy, o które są proszeni, to, co przynosi każde połączenie, oraz nazwy wartości, które zapisuje w postaci zaszyfrowanej i jako informacje jawne. Plan mówi, że dane każdego połączonego członka trafiają do reguł organizacji i do historii uruchomień reguł. Instalacja nie łączy żadnego członka: każdy decyduje sam.
-
-Gdy paczka ma [formularze, listy lub strony](/docs/pl/extensions/reference/screens), plan mówi też, co zobaczą członkowie (`screens` w planie, który zwracają API, narzędzia MCP i `opero-ext plan --json`): każdy formularz z obiektem, typami i domyślnymi miejscami, które zajmie, każdą listę i każdą stronę z jej slugiem. Mówi, że formularzy można używać wszędzie tam, gdzie udostępniony jest moduł rozszerzenia `x-<key>`, a strony po instalacji widzi każdy członek każdej firmy: zawęź je na stronie rozszerzenia i sam dodaj do menu, bo rozszerzenie żadnej strony w menu nie umieszcza.
-
-Te części obejmuje twoja zgoda, tak jak hosty i zakresy: wersja, która dodaje wyzwalacz albo harmonogram lub rozszerza połączenie członka, wymaga ponownej zgody. Nie wymagają właściciela organizacji; wymagają go tylko zakresy danych.
-
-Okno paczki z zakresami danych zaczyna się od uwagi „To rozszerzenie prosi o dostęp do danych. Dostęp do danych może mu przyznać tylko właściciel organizacji, więc tylko on może je zainstalować, zaktualizować lub naprawić.”. Dla każdego innego użytkownika przycisk potwierdzenia pozostaje wyłączony, a okno mówi **To rozszerzenie może zainstalować tylko właściciel organizacji.**
-
-Aktualizacja, która traci dane, dodaje sekcję **Ta aktualizacja usuwa dane**; zobacz [Aktualizacja](#upgrading).
-
-Jeśli plan zmieni się, gdy okno jest otwarte, na przykład dlatego, że jakaś reguła zaczęła używać kroku, potwierdzenie pokazuje „Plan zmienił się od chwili wyświetlenia. Przejrzyj zaktualizowany plan i potwierdź ponownie.” razem z nowym planem.
+**Wymaga uwagi** pokazuje tylko rozszerzenia, które nie działają, a **Aktualizacje** tylko te, dla których jest nowsza wersja. Otwórz rozszerzenie, żeby zobaczyć jego stronę.
 
 ## Stany [#states]
 
-Stan rozszerzenia jest pokazywany jako jeden z poniższych, a włączone rozszerzenie, które nie działa, dostaje też oznaczenie **Nie działa** z przyczyną.
+Stan obok nazwy rozszerzenia jest jednym z poniższych. Gdy rozszerzenie nie działa, baner na górze jego strony mówi dlaczego, a przycisk w nagłówku prowadzi do poprawki.
 
-| Wyświetlany jako | Znaczenie |
-| --- | --- |
-| **Włączony**, bez innego oznaczenia | Działa: wymagane moduły są dostępne, każde wymagane ustawienie jest uzupełnione, a połączenie, jeśli jest, jest włączone. Kroki i filtry są dostępne w edytorach. |
-| **Nie działa: niekompletne ustawienia** | Wymagane ustawienie nie ma wartości. Uzupełnij je na karcie **Ustawienia**; lista zainstalowanych rozszerzeń prowadzi do niej odnośnikiem **Uzupełnij ustawienia**. |
-| **Nie działa: połączenie nie jest włączone** | Normalne zaraz po instalacji paczki z połączeniem. Skonfiguruj i włącz połączenie. |
-| **Nie działa** | Wymagany moduł jest niedostępny albo cofnięto dostęp do paczki z katalogu. |
-| **Wyłączony** | Wyłączone przez administratora. Wszystko zostaje na miejscu i się zatrzymuje. |
-| **Przerwane** | Instalacja lub aktualizacja nie powiodła się w połowie. Uruchom to samo polecenie jeszcze raz; zostanie wznowione. |
-| **Instalowanie**, **Odinstalowywanie** | Trwa polecenie. Pozostałe przyciski czekają, aż się skończy. |
-
-Gdy ustawienia są niekompletne, a połączenie też nie jest włączone, najpierw pokazywane są ustawienia.
-
-Gdy rozszerzenie nie działa, jego kroków brakuje w edytorze reguł, a zapisana reguła, która do nich dotrze, kończy się błędem na tym kroku z kodem `extension_inactive`. Brakuje w nim też jego wyzwalaczy, a żadne ich zdarzenie nie uruchamia reguły, nawet zgłoszone przed zatrzymaniem. Jego harmonogramy czekają, a członkowie nie mogą korzystać ze swoich połączeń. Filtry działają, dopóki rozszerzenie nie zostanie wyłączone, bo niczego nie wywołują.
-
-## Zarządzane reguły i filtry [#managed-rules-and-filters]
-
-Reguły i skrypty instalowane przez rozszerzenie są zarządzane przez rozszerzenie: tylko do odczytu i ukryte na zwykłych listach. Karta **Szczegóły** rozszerzenia wymienia wszystko, czym ono zarządza, w sekcji **Zarządzane przez to rozszerzenie**, z odnośnikiem do każdej reguły, filtra, słownika i zapisanego zapytania.
-
-Zarządzana reguła otwarta stamtąd pokazuje uwagę „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” z odnośnikiem **Otwórz rozszerzenie** i nie ma przycisku **Uruchom**. Zainstalowana reguła działa tylko przez swój krok: ręczne uruchomienie, test czy ponowienie jej albo wywołanie jej z innej reguły jest odrzucane z komunikatem „Ta reguła należy do rozszerzenia `<key>` i działa tylko przez swój krok reguły, nie bezpośrednio.”. Zarządzane reguły i filtry zmieniają się tylko przy aktualizacji rozszerzenia.
-
-## Bloki, polecenia i linki [#blocks-commands-and-links]
-
-Paczka może też przynosić bloki na strony organizacji, akcje uruchamiane przez członków z tych bloków albo z rekordu, linki rekordów i własne uprawnienia firmowe. Co robią po instalacji, w tym co robią z nimi wyłączenie, aktualizacja i odinstalowanie, opisano przy każdej części: [Bloki](/docs/pl/extensions/reference/blocks#after-install), [Akcje bloków i polecenia rekordów](/docs/pl/extensions/reference/member-actions#who-may-use-them), [Linki rekordów](/docs/pl/extensions/reference/record-links#what-the-install-plan-shows) i [Uprawnienia paczki](/docs/pl/extensions/reference/package-permissions#install-disable-upgrade-uninstall).
-
-## Formularze, listy i strony [#forms-lists-and-pages]
-
-Paczka może przynieść formularze dla swoich obiektów, listy własne i strony obszaru roboczego. Po instalacji:
-
-- **Członkowie mogą ich używać od razu.** Strony są udostępnione każdej firmie i każdemu członkowi, a formularzy można używać wszędzie tam, gdzie udostępniony jest moduł `x-<key>`. To, kto widzi stronę (jej udostępnienie firmom i odbiorców), zawęzisz na stronie rozszerzenia.
-- **Nie powstaje żadna pozycja menu.** Strony dodaj do menu sam. Gdy odinstalowanie archiwizuje stronę, jej pozycje menu są ukrywane i zachowywane, a po ponownej instalacji rozszerzenia znów są widoczne.
-- **Są tylko do odczytu.** Ich zawartość zmienia się tylko przy aktualizacji. To, kto może używać każdego formularza, domyślne formularze obiektu, udostępnienie i odbiorcy strony oraz menu należą do ciebie, a aktualizacje nigdy ich nie zmieniają.
-- **Wyłączenie** rozszerzenia niczego w nich nie zmienia.
-
-Szczegóły, w tym to, co robi z nimi aktualizacja, są w sekcji [Formularze, listy i strony](/docs/pl/extensions/reference/screens#after-install).
-
-## Ustawienia [#settings]
-
-Gdy paczka ma ustawienia, strona rozszerzenia ma kartę **Ustawienia** zaraz po karcie **Szczegóły**. Pokazuje ona jedną sekcję na każdą grupę zadeklarowaną w paczce, każde pole z etykietą, pomocą i wartością domyślną, i oznacza pola wymagane.
-
-- **Kto może je zmieniać.** Odczyt ustawień wymaga `org.extensions.read`, a zapis `org.extensions.update`. Bez tego uprawnienia formularz jest tylko do odczytu; jest też tylko do odczytu, gdy dla rozszerzenia trwa instalacja, aktualizacja albo inne polecenie.
-- **Jedna wartość na zainstalowane rozszerzenie.** Wartości obowiązują w całej organizacji, dla każdej firmy.
-- **Wartości domyślne.** Pole, którego nigdy nie ustawiono, ma wartość domyślną. Wyczyść pole i zapisz, żeby wrócić do wartości domyślnej.
-- **Wymagane ustawienia.** Formularz da się zapisać z pustym polem wymaganym, ale dopóki wymagane ustawienie nie ma wartości, zapisanej ani domyślnej, rozszerzenie nie działa: karta pokazuje **Niekompletne ustawienia** z etykietami brakujących ustawień, a rozszerzenie pokazuje **Nie działa: niekompletne ustawienia**. Zaczyna działać od razu, gdy je uzupełnisz i zapiszesz.
-
-O tym, jakie ustawienia istnieją, decyduje autor paczki; zobacz [Ustawienia](/docs/pl/extensions/reference/settings).
-
-## Dane [#data]
-
-Paczka może przynieść własne [obiekty](/docs/pl/extensions/reference/objects), [słowniki](/docs/pl/extensions/reference/dictionaries) i [zapytania](/docs/pl/extensions/reference/queries). Po instalacji:
-
-- **Karta Zainstalowane dane.** Strona rozszerzenia dostaje kartę **Zainstalowane dane**, między kartami **Ustawienia** i **Połączenie**, jeśli te istnieją. Jest tylko do odczytu i ma trzy części:
-  - **Zainstalowane obiekty**: każdy obiekt z kluczem i liczbą rekordów oraz tabelą pól (klucz, nazwa, typ). Nazwa obiektu prowadzi do jego strony.
-  - **Zainstalowane słowniki**: każdy słownik z nazwą, zainstalowanym kluczem i liczbą pozycji.
-  - **Zainstalowane zapisane zapytania**: każde zapytanie z nazwą, zainstalowanym kluczem i liczbą list SQL, raportów i bloków niestandardowych organizacji, które go używają, a dalej **Odczytuje dane** albo **Zmienia dane** i **Pokaż SQL zapytania**, które rozwija zainstalowany SQL z prawdziwymi nazwami tabel.
-- **Ekrany zarządzania ich nie pokazują.** Ekrany **Moduły własne**, **Słowniki** i **Zapytania SQL** nie wymieniają modułu, obiektów, słowników ani zapytań rozszerzenia; zamiast tego widać je na stronie rozszerzenia.
-- **Wszędzie indziej są do wyboru.** Reguły, źródła list własnych, raporty, formularze, pola referencji i wyboru, listy SQL i bloki mogą ich używać tak jak własnych zasobów organizacji.
-- **Budowa należy do rozszerzenia, rekordy do ciebie.** Pól, pozycji i SQL nie da się zmienić, a modułu, obiektów, słowników i zapytań usunąć, chyba że przez aktualizację albo odinstalowanie. Rekordy dodaje się, zmienia i usuwa jak zwykle, a organizacja decyduje, które firmy widzą obiekty, i może budować na nich własne formularze i listy. Obiekt dostaje formularz tylko wtedy, gdy paczka go dostarcza ([formularze, listy i strony](/docs/pl/extensions/reference/screens)).
-- **Wyłączenie** rozszerzenia niczego nie zmienia w jego danych: obiekty, słowniki i zapytania pozostają w użyciu.
-
-Gdy moduł, obiekt, słownik albo zapytanie zostanie otwarte z odnośnika, jego strona zaczyna się od uwagi „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” z odnośnikiem **Otwórz rozszerzenie** i oferuje tylko to, co organizacja nadal może robić:
-
-| Otwarte | Niedostępne | Nadal dostępne |
+| Stan | Co oznacza | Co zrobić |
 | --- | --- | --- |
-| Moduł | **Edytuj**, **Szkice**, **Usuń**, nowe obiekty | To, które firmy go widzą |
-| Obiekt | Zmiany pól, pokazanych jako tabela tylko do odczytu; **Usuń obiekt** | Formularze, to, które firmy go widzą, dostęp do rekordów |
-| Słownik | Edycja słownika i jego pozycji, usunięcie; adres edycji prowadzi z powrotem do słownika | |
-| Zapisane zapytanie | Edycja i usunięcie | Uruchamianie |
+| **Działa** | Wszystko, czego potrzebuje, jest na miejscu. Jego kroki i filtry są dostępne w edytorach. | Nic. |
+| **Wymaga ustawień** | Wymagane ustawienie nie ma wartości. | Kliknij **Uzupełnij ustawienia** i wpisz wartość. |
+| **Nieaktywne** | Połączenie nie jest włączone. To normalne zaraz po instalacji paczki z połączeniem. | Kliknij **Połącz**, a potem sprawdź i aktywuj połączenie. |
+| **Nie działa** | Wymagany moduł jest niedostępny dla tej organizacji albo katalog już go jej nie udostępnia. | Włącz moduł albo zapytaj administratora instalacji. |
+| **Wyłączone** | Administrator je wyłączył. Wszystko zostaje na miejscu i się zatrzymuje. | Wybierz **Włączony** z menu stanu. |
+| **Przerwane** | Instalacja lub aktualizacja nie powiodła się w połowie. | Kliknij **Spróbuj ponownie**. Polecenie zostanie wznowione tam, gdzie się zatrzymało. |
+| **Instalowanie**, **Odinstalowywanie** | Trwa polecenie. | Poczekaj; pozostałe przyciski są wyłączone do jego końca. |
 
-Paczka z [zakresami danych](/docs/pl/extensions/reference/data-permissions) pozwala swoim krokom odczytywać i zapisywać własne obiekty, uruchamiać własne zapytania, aktualizować kontrahentów i wysyłać wiadomości w imieniu rozszerzenia, w firmie reguły, która używa kroku. Zainstalować ani zaktualizować ją może tylko właściciel organizacji.
+Gdy rozszerzenie nie działa, jego kroków i wyzwalaczy brakuje w edytorze reguł. Zapisana reguła, która dotrze do jego kroku, kończy się na nim błędem `extension_inactive`, a żadne zdarzenie jego wyzwalaczy nie uruchamia reguły. Jego harmonogramy czekają, a członkowie nie mogą korzystać ze swoich połączeń. Jego filtry szablonów działają, dopóki nie zostanie wyłączone.
 
-## Harmonogramy i połączeni członkowie [#schedules-and-connected-members]
+## Przegląd [#overview]
 
-Gdy paczka ma [harmonogramy](/docs/pl/extensions/reference/schedules), strona rozszerzenia ma kartę **Harmonogramy**. Każdy harmonogram pokazuje, jak często działa i dla czego, swoje podmioty (raz dla organizacji, po jednym na aktywną firmę albo po jednym na połączonego członka), ile z nich jest **Zaległe**, **Uruchomione teraz**, **Z błędem**, a w harmonogramie dla członków także **Czekają na ponowne połączenie**, oraz **Ostatnie powodzenie**. Jego stan to jeden z poniższych:
+Karta **Przegląd** pokazuje opis i sekcję **Co dodaje**: wszystko, co rozszerzenie zainstalowało, pogrupowane według przeznaczenia. Przy każdej pozycji widać, czy używają jej reguły.
 
-| Stan | Znaczenie |
+Wybierz pozycję, żeby zobaczyć jej szczegóły: co robi, gdzie jest używana, a w przypadku kroku reguły także kroki, które wykonuje.
+
+![Szczegóły kroku reguły: co robi, gdzie jest używany i jak działa](/docs/_assets/extensions/after-install/content-step.webp)
+
+Boczna kolumna pokazuje **Dostępna aktualizacja**, gdy jest nowsza wersja, **Do czego ma dostęp** i **Informacje** o paczce. **Szczegóły pakietu** rozwijają jego sumę kontrolną.
+
+## Konfiguracja [#configuration]
+
+Karta **Konfiguracja** zawiera ustawienia rozszerzenia, jego połączenie i to, do czego pozwolono mu sięgać. Ich zmiana wymaga `org.extensions.update`.
+
+![Karta Konfiguracja z sekcją ustawień i połączeniem](/docs/_assets/extensions/after-install/configuration.webp)
+
+| Sekcja | Co robisz |
 | --- | --- |
-| **Czeka na rozszerzenie** | Rozszerzenie nie działa, więc nic się nie uruchamia. Gdy znów zacznie działać, każdy zaległy podmiot uruchamia się raz; pominięte uruchomienia nie są nadrabiane. |
-| **Jeszcze nie uruchomiony** | Nie ma jeszcze podmiotów. Są dodawane w ciągu minuty od uruchomienia rozszerzenia. |
-| **Część uruchomień kończy się błędem** | Ostatnie uruchomienie któregoś podmiotu nie powiodło się. Jest ponawiane z coraz dłuższymi przerwami, nigdy dłuższymi niż odstęp, a podmiot przestaje być liczony jako błędny przy następnym sukcesie. Limit zapytań nie jest błędem. |
-| **Pierwsze uruchomienie oczekuje** | Nic jeszcze się nie powiodło ani nie zakończyło błędem. Każdy nowy podmiot ma pierwsze uruchomienie w ciągu swojego pierwszego odstępu. |
+| Ustawienia, po jednej sekcji na grupę | Wpisz wartości i kliknij **Zapisz zmiany**. Pole, którego nigdy nie ustawiono, ma wartość domyślną. Dopóki wymagane ustawienie nie ma wartości, rozszerzenie nie działa. |
+| **Połączenie** | Wpisz dane uwierzytelniające i zapisz, kliknij **Sprawdź połączenie**, a potem **Aktywuj**. Kroki rozszerzenia działają tylko wtedy, gdy połączenie jest aktywne. |
+| **Do czego ma dostęp** | Tylko do odczytu: hosty i dostęp do danych przyznane przy instalacji. |
+
+Ustawienia obowiązują w całej organizacji. Formularz jest tylko do odczytu, gdy dla rozszerzenia trwa polecenie, a połączenie, gdy rozszerzenie jest wyłączone.
+
+## Aktywność [#activity]
+
+Karta **Aktywność** pojawia się, gdy rozszerzenie ma reguły, harmonogramy albo połączenie członka.
+
+### Harmonogramy [#schedules]
+
+Każdy harmonogram pokazuje, jak często działa i dla czego, ile ma podmiotów (organizacja, każda aktywna firma albo każdy połączony członek) i ile z nich jest zaległych, uruchomionych, z błędem albo czeka na ponowne połączenie.
+
+![Karta Aktywność: harmonogram czekający na rozszerzenie i Ostatnie uruchomienia](/docs/_assets/extensions/after-install/activity-schedules.webp)
+
+| Stan | Co oznacza |
+| --- | --- |
 | **Zgodnie z harmonogramem** | Uruchomienia się powiodły i żadne nie kończy się błędem. |
+| **Pierwsze uruchomienie oczekuje** | Nic jeszcze się nie uruchomiło. Każdy nowy podmiot uruchomi się w ciągu swojego pierwszego odstępu. |
+| **Jeszcze nie uruchomiony** | Nie ma jeszcze podmiotów. Są dodawane w ciągu minuty od uruchomienia rozszerzenia. |
+| **Brak połączonych członków** | Harmonogram dla każdego członka, a żaden członek jeszcze się nie połączył. |
+| **Część uruchomień kończy się błędem** | Ostatnie uruchomienie któregoś podmiotu się nie powiodło. Jest ponawiane z coraz dłuższymi przerwami, nigdy dłuższymi niż odstęp. Limit zapytań nie jest błędem. |
+| **Czeka na rozszerzenie** | Rozszerzenie nie działa. Gdy znów zacznie działać, każdy oczekujący podmiot uruchomi się raz; pominięte uruchomienia nie są powtarzane. |
 
-Podmiot, który pozostaje zaległy dłużej niż kilka minut, gdy rozszerzenie działa, oznacza, że praca Opero w tle ma opóźnienie. Karta nie pokazuje danych żadnego uruchomienia: każde uruchomienie to uruchomienie zainstalowanej reguły akcji, w historii uruchomień tej reguły.
+Podmiot, który pozostaje zaległy dłużej niż kilka minut, gdy rozszerzenie działa, oznacza, że praca Opero w tle ma opóźnienie.
 
-Gdy paczka ma [połączenie członka](/docs/pl/extensions/reference/member-connections), strona ma też kartę **Połączeni członkowie**. Jej sekcja **Połączenie członków** pokazuje etykietę nadaną mu przez paczkę oraz ilu członków jest połączonych i czeka na ponowne połączenie. Niżej każdy połączony członek jest wymieniony z firmą (**Nie wybrano**, dopóki jej nie wybierze), datą połączenia, ostatnią udaną synchronizacją (kolumna **Ostatnia udana synchronizacja**, przed pierwszą **Pierwsza synchronizacja oczekuje**), stanem i ostatnim błędem. Stan to **Aktywny**, **Ostatnia synchronizacja nie powiodła się** albo **Czeka na ponowne połączenie przez członka**.
+### Połączeni członkowie [#connected-members]
 
-Członek czeka na siebie, gdy usługa odrzuciła jego token, gdy aktualizacja prosi go o więcej albo gdy jego połączenia nie da się użyć, na przykład dlatego, że wybrana firma nie jest już jego; ostatni błąd mówi, która to przyczyna. Członek, który nie wybrał jeszcze firmy, jest pomijany bez błędu. Na liście jest najwyżej 200 członków, z łączną liczbą.
+W paczce z [połączeniem członka](/docs/pl/extensions/reference/member-connections) sekcja **Połączeni członkowie** wymienia każdego członka, który połączył własne konto: jego firmę, **Ostatnia udana synchronizacja**, stan i **Ostatni błąd**.
 
-Członkowie łączą się na własnej stronie konta: **Połączone aplikacje** w ustawieniach konta otwiera **Połączone aplikacje i usługi**, gdzie połączenie członka rozszerzenia pojawia się dla każdej organizacji, która ma je zainstalowane i działające. Tam członek naciska **Połącz**, wypełnia swój formularz, widzi, kiedy jego dane były ostatnio synchronizowane, i otwiera połączenie, w którym jest przycisk **Odłącz**. Połączenie, które wymaga jego działania, jest w sekcji **Wymagają uwagi** z przyciskiem **Połącz konto ponownie**. Członek widzi tylko swoje połączenie.
+![Sekcja Połączeni członkowie rozszerzenia, z którym nie połączył się jeszcze żaden członek](/docs/_assets/extensions/after-install/activity-members.webp)
+
+Członek w stanie **Czeka na ponowne połączenie przez członka** musi połączyć się ponownie: usługa odrzuciła jego konto, aktualizacja prosi o więcej albo wybrana przez niego firma nie jest już jego. Członkowie łączą się na własnej stronie konta, w sekcji **Połączone aplikacje**.
+
+### Ostatnie uruchomienia [#recent-runs]
+
+**Ostatnie uruchomienia** wymienia najnowsze uruchomienia reguł rozszerzenia. Do ich przeglądania potrzebne jest uprawnienie do odczytu reguł.
+
+## Z czego mogą korzystać członkowie [#what-members-can-use]
+
+Gdy paczka oferuje przyciski w blokach, polecenia rekordów albo linki rekordów, karta **Przegląd** wymienia je w sekcji **Z czego mogą korzystać członkowie**.
+
+![Akcje i linki, z których mogą korzystać członkowie, każde z wymaganym uprawnieniem](/docs/_assets/extensions/after-install/member-actions.webp)
+
+Członek korzysta z nich tylko w firmie, której zostały udostępnione, tylko gdy należy do ich odbiorców i tylko z uprawnieniem, którego każde wymaga w jego roli w firmie. Po instalacji każde jest dostępne dla wszystkich firm i wszystkich ich członków; **Zarządzaj dostępem** to zawęża.
+
+## Co organizacja robi dalej [#what-the-organization-does-next]
+
+Paczka przynosi części, a organizacja decyduje, gdzie członkowie się z nimi spotkają.
+
+| Zadanie | Gdzie |
+| --- | --- |
+| Przypisz uprawnienia paczki rolom w firmach | **Role**. Instalacja nikomu ich nie nadaje, więc do tego czasu żaden członek nie może używać przycisków w blokach, poleceń ani linków. |
+| Umieść bloki paczki na stronach | Edytor stron, tak jak własne bloki. |
+| Dodaj strony paczki do menu | **Menu**. Rozszerzenie samo nie umieszcza ich w żadnym menu. |
+| Zawęź, które firmy i którzy członkowie widzą przycisk w bloku, polecenie albo link | **Zarządzaj dostępem** w sekcji **Z czego mogą korzystać członkowie**. |
+| Zawęź, które firmy i którzy członkowie widzą stronę | Szczegóły strony w sekcji **Co dodaje**. |
+| Zbuduj reguły na jego krokach i wyzwalaczach | **Reguły**. Jego kroki i wyzwalacze są na listach edytora reguł. |
+
+## Zasoby zarządzane [#managed-assets]
+
+Tym, co rozszerzenie instaluje, zarządza ono samo: regułami, filtrami, modułem, obiektami, słownikami, zapytaniami, blokami, formularzami, listami i stronami. Zmieniają się one tylko przy aktualizacji rozszerzenia.
+
+Zasób zarządzany otwarty z sekcji **Co dodaje** mówi o tym na górze i oferuje tylko to, co pozostaje twoje.
+
+![Reguła zainstalowana przez rozszerzenie, pokazana tylko do odczytu](/docs/_assets/extensions/after-install/managed-rule.webp)
+
+| Zasób | Tylko do odczytu | Nadal twoje |
+| --- | --- | --- |
+| Reguły i filtry szablonów | Wszystko. Zarządzana reguła działa tylko przez swój krok, nigdy ręcznie ani z innej reguły. | Nic. |
+| Moduł i jego obiekty | Pola, sam moduł, ich usuwanie. | Rekordy, to, które firmy je widzą, dostęp do rekordów, własne formularze i listy na nich. |
+| Słowniki | Pozycje, usunięcie słownika. | Używanie go we własnych polach. |
+| Zapisane zapytania | SQL, usunięcie zapytania. | Uruchamianie go, używanie w listach SQL, raportach i blokach. |
+| Bloki, formularze, listy i strony | Ich zawartość. | Kto może używać każdego formularza, domyślne formularze obiektu, udostępnienie i odbiorcy strony, menu, miejsca, w których umieszczono bloki. |
+
+Zarządzane reguły, skrypty, moduł, obiekty, słowniki i zapytania nie pojawiają się na swoich zwykłych listach zarządzania. Listy wyboru w regułach, listach, raportach, formularzach i blokach nadal je oferują.
+
+## Wyłączanie rozszerzenia [#disable-an-extension]
+
+Otwórz menu stanu obok nazwy, wybierz **Wyłączony** i potwierdź przyciskiem **Wyłącz rozszerzenie**. Okno wymienia aktywne reguły, które używają jego kroków lub wyzwalaczy: dopóki ponownie go nie włączysz, jego wyzwalacze niczego nie uruchamiają, a jego kroki kończą się błędem.
+
+Wszystko, co zainstalowało, zostaje na miejscu. Jego dane, formularze, listy i strony działają dalej, bloki pokazują komunikat zamiast treści, a połączenia członków są zachowane. Wybierz **Włączony**, żeby włączyć je z powrotem.
+
+## Plan instalacji [#the-install-plan]
+
+Przegląd pokazywany przed instalacją lub aktualizacją opisuje strona [Instalacja rozszerzenia](/docs/pl/extensions/install#the-install-review).
 
 ## Gdy krok się nie powiedzie [#when-a-step-fails]
 
-Krok zakończony błędem ma jeden z tych kodów. Podłącz wyjście błędu kroku, żeby obsłużyć je w regule.
-
-| Kod na kroku | Przyczyna |
-| --- | --- |
-| `EXTENSION_ACTION_FAILED` | Akcja się nie powiodła, zwykle dlatego, że usługa odpowiedziała błędem. Zawiera `httpStatus`. |
-| `EXTENSION_ACTION_RATE_LIMITED` | Usługa odpowiedziała `429`. Zawiera `retryAfterSeconds`, jeśli usługa go wysłała. |
-| `EXTENSION_ACTION_INPUT_INVALID` | Wejście kroku nie pasowało do pól wejściowych. |
-| `EXTENSION_ACTION_OUTPUT_INVALID` | Wynik nie pasował do pól wyjściowych. |
-
-Gdy krok danych rozszerzenia zostanie odrzucony w trakcie działania, własna reguła rozszerzenia pokazuje w swoim uruchomieniu `EXTENSION_SCOPE_DENIED`, a krok w twojej regule kończy się błędem `EXTENSION_ACTION_FAILED`.
-
-Komunikat nigdy nie cytuje tego, co odesłała usługa, bo treść błędu mogłaby powtórzyć sekret.
-
-<Callout type="idea" title="Ponawiaj przy limicie zapytań">
-`EXTENSION_ACTION_RATE_LIMITED` oznacza, że usługa jest zajęta, a nie że żądanie było błędne. Obsłuż go na wyjściu błędu osobno od innych błędów i użyj `retryAfterSeconds`, żeby zdecydować, kiedy spróbować ponownie.
-</Callout>
+Kody, które ma krok zakończony błędem, są wymienione w sekcji [Akcje](/docs/pl/extensions/reference/actions#when-a-step-fails).
 
 ## Aktualizacja [#upgrading]
 
-Prześlij paczkę z wyższą wersją. Zainstalowane rozszerzenie pokaże nowszą wersję; kliknij **Uaktualnij**, przejrzyj plan i potwierdź.
-
-- Wersja jest niezmienna po przesłaniu. Ponowne przesłanie tego samego pliku niczego nie zmienia; inny plik z tą samą wersją jest odrzucany.
-- Jeśli nowa wersja usuwa krok, którego używają reguły organizacji, aktualizacja jest zablokowana, dopóki te reguły go nie przestaną używać (`step.in_use`).
-- Jeśli usuwa filtr używany przez regułę, aktualizacja jest zablokowana (`filter.in_use`). Szablony w innych miejscach nie są sprawdzane, więc w każdym przypadku dostajesz ostrzeżenie.
-- Jeśli usuwa wyzwalacz, którego używa reguła organizacji, aktualizacja jest zablokowana, dopóki żadna reguła go nie używa (`trigger.in_use`). Jeśli usuwa pola danych wyzwalacza, którego używa reguła, plan ostrzega (`trigger.data_field_removed`).
-- Jeśli usuwa harmonogram albo zmienia to, dla czego działa, podmioty starego harmonogramu są usuwane; krótszy odstęp obowiązuje od razu.
-- Jeśli prosi członków o więcej (nowy zakres, inny host logowania lub tokenów, nową zapisywaną wartość), plan ostrzega (`member.reconsent_required`), a po aktualizacji każdy połączony członek musi połączyć się ponownie, zanim cokolwiek dla niego zadziała.
-- Jeśli zmienia pola danych uwierzytelniających, po aktualizacji połączenie jest wyłączone, dopóki nie zostanie ponownie zweryfikowane. Zmiany ustawień nigdy tego nie powodują.
-- Jeśli usuwa ustawienie, które ma zapisaną wartość, albo zmienia ustawienie tak, że zapisana wartość już do niego nie pasuje, wartość jest odrzucana (`settings.value_dropped`).
-- Jeśli dodaje wymagane ustawienie bez wartości domyślnej, rozszerzenie po aktualizacji nie działa, dopóki go nie uzupełnisz (`settings.incomplete_after_upgrade`). Żaden z tych problemów z ustawieniami nie blokuje aktualizacji.
-- Jeśli prosi o nowe hosty albo zakresy danych, plan pokazuje je wraz z uzasadnieniami jako **Nowe w tej wersji**.
-- Jeśli usuwa obiekt lub pole albo zmienia pole tak, że jego wartości trzeba wyczyścić, plan pokazuje sekcję **Ta aktualizacja usuwa dane** (poniżej).
-- Jeśli usuwa zapytanie, którego używa aktywna lista SQL, raport albo blok niestandardowy, aktualizacja jest zablokowana, dopóki one go nie przestaną używać (`query.in_use`).
-- Jeśli usuwa słownik, słownik jest usuwany albo, gdy coś jeszcze go używa, zostaje jako własny słownik organizacji (`dictionary.released`).
-- Jeśli usuwa formularz, formularz jest usuwany, a plan ostrzega, gdy wskazują go układy, listy albo bloki organizacji (`form.in_use`) albo gdy obiekt zostaje bez formularza danego typu (`object.formless`). Jeśli usuwa listę albo stronę, jest ona archiwizowana, a plan ostrzega, gdy listę osadzają układy organizacji (`list.in_use`) albo stronę otwierają jej menu (`page.in_use`). Żadne z nich nie blokuje.
-
-**Ta aktualizacja usuwa dane** wymienia każdą stratę z liczbą rekordów:
-
-- **Obiekt `<name>` zostanie usunięty razem z rekordami**
-- **Pole `<name>` zostanie usunięte razem z wartościami**
-- **Wartości pola `<name>` zostaną wyczyszczone**
-- **Tłumaczenia pola `<name>` zostaną usunięte**
-
-Przycisk **Uaktualnij** pozostaje wyłączony, dopóki nie zaznaczysz **Rozumiem, że te dane zostaną usunięte na zawsze.** Jeśli dane do utraty zmieniły się po wyświetleniu planu, aktualizacja jest odrzucana z komunikatem „Ta aktualizacja usuwa dane. Sprawdź, co zostanie utracone, i potwierdź to przed aktualizacją.”, plan jest odczytywany ponownie i pole trzeba zaznaczyć jeszcze raz.
-
-<Callout title="Nie zmieniaj nazw">
-Krok zachowuje tożsamość, dopóki nazwa akcji się nie zmienia, a krok w pliku reguły - dopóki nie zmienia się jego id. Nazwy folderów zmieniaj swobodnie; nazwy w `action` i id kroków zostaw bez zmian.
-</Callout>
+Zobacz [Aktualizacja rozszerzenia](/docs/pl/extensions/upgrade-and-uninstall#upgrade-an-extension).
 
 ## Odinstalowanie [#uninstalling]
 
-**Odinstaluj** otwiera okno **Odinstalować to rozszerzenie?**, które najpierw odczytuje, co odinstalowanie ze sobą zabierze. Zawsze usuwa zainstalowane reguły, filtry, zapisane ustawienia, harmonogramy oraz połączenie razem ze wszystkimi zapisanymi danymi uwierzytelniającymi; okno to mówi („Jego reguły, filtry szablonów i połączenie ze wszystkimi zapisanymi danymi uwierzytelniającymi są zawsze usuwane.”). Reguły organizacji nigdy go nie blokują.
+Zobacz [Odinstalowanie rozszerzenia](/docs/pl/extensions/upgrade-and-uninstall#uninstall-an-extension).
 
-Zawsze usuwa też [formularze, listy i strony](/docs/pl/extensions/reference/screens#uninstall) paczki: formularze są usuwane i nic nie jest generowane w ich miejsce, a listy i strony są archiwizowane jako usunięte przez rozszerzenie. To, co jest odczytywane wcześniej, wymienia każdy formularz z układami, listami i blokami organizacji, które go wskazują, oraz ustawionym na nim dostępem, który przepada; każdą listę z układami, które ją osadzają; każdą stronę z pozycjami menu, które ją otwierają; a na początku każdy obiekt, który zostanie bez formularza, z liczbą rekordów i tym, co zrobić dalej.
+## Dalej [#next]
 
-Następnie okno pokazuje:
-
-- Reguły organizacji, które używają kroków rozszerzenia albo uruchamiają się na jego wyzwalaczach. Aktywne są wymienione po zdaniu „N aktywnych reguł używa kroków lub wyzwalaczy tego rozszerzenia i zostanie zatrzymanych (objętych kwarantanną):”. Nieaktywne też są wymienione: zachowują kroki i wyzwalacze, ale nie da się ich włączyć, dopóki ich nie usuniesz.
-- **Zapisane zapytania.** Każde zapytanie rozszerzenia z tym, co się z nim stanie: **zostaje jako Twoje zapytanie**, gdy używa go lista SQL, raport albo blok niestandardowy (z liczbą użyć), w przeciwnym razie **zostanie usunięte: nic z niego nie korzysta**. Tak jest niezależnie od wyboru poniżej.
-- **Co stanie się z jego danymi**, w rozszerzeniu z obiektami lub słownikami: **Zachowaj dane** (wybrane na początku) albo **Usuń dane**.
-
-| Wybór | Obiekty z rekordami, moduł, słowniki |
-| --- | --- |
-| **Zachowaj dane** | Zostają jako własne zasoby organizacji: wracają na listy zarządzania i można je edytować. Ponowna instalacja rozszerzenia je przejmuje. |
-| **Usuń dane** | Usuwane na stałe, razem z formularzami, układami widoku i listami własnymi zbudowanymi na obiektach oraz własnymi polami referencyjnymi organizacji, które na nie wskazują; reguły organizacji, które wskazują obiekt, są zatrzymywane (kwarantanna). Słownik, którego używa coś innego, zostaje. |
-
-Po wybraniu **Usuń dane** okno wymienia dla każdego obiektu jego rekordy, to, co zostanie usunięte razem z nim, i reguły, które go wskazują, a potem każdy słownik z liczbą pozycji i informacją, czy zostaje. Potwierdzasz, wpisując klucz rozszerzenia w polu **Wpisz `<key>`, aby potwierdzić**. Przycisk brzmi **Odinstaluj i zachowaj dane** albo **Odinstaluj i usuń dane**.
-
-**Usuń dane** nie da się wybrać:
-
-- dopóki zachowywane zapisane zapytanie czyta tabelę, którą usunięcie by skasowało: okno pokazuje **Danych nie można jeszcze usunąć** z przyczynami. Najpierw przestań używać tego zapytania w tych listach, raportach albo blokach;
-- gdy brakuje ci uprawnienia, którego ten wybór wymaga: wybór je wymienia („Brakuje Ci: …”).
-
-Jeśli brakuje ci uprawnienia potrzebnego nawet do zachowania danych, okno wymienia je w sekcji **Brakuje Ci tych uprawnień** i odinstalowania nie da się potwierdzić. W obu przypadkach nic się nie zmienia, zanim sprawdzenie przejdzie.
-
-Gdy paczka ma połączenie członka, okno dodaje „Połączone konta członków zostaną odłączone.”: dla każdego członka uruchamiana jest akcja `beforeDisconnect` paczki, a potem połączenie każdego członka jest usuwane. Wyłączenie je zachowuje.
-
-<Callout type="warn" title="Reguły, które używają rozszerzenia, się zatrzymują">
-Reguły organizacji, które używają kroków rozszerzenia albo uruchamiają się na jego wyzwalaczach, są zatrzymywane i oznaczane jako objęte kwarantanną; okno je wymienia. Po ponownej instalacji rozszerzenia i włączeniu jego połączenia te reguły można znów zapisać i włączyć.
-</Callout>
+<Cards>
+  <Card title="Aktualizacja i odinstalowanie" href="/docs/pl/extensions/upgrade-and-uninstall">
+    Przejrzyj nową wersję albo usuń rozszerzenie.
+  </Card>
+</Cards>

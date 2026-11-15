@@ -1,9 +1,9 @@
 ---
 title: Package permissions
-description: "Reference for permissions.company in Opero extensions: company permissions a package declares for its block actions, record commands and links, granted in roles as company.x-<key>.<name>, and what install, disable, upgrade and uninstall do to them."
+description: Decide who may use the package's block actions, record commands and links with company permissions declared in permissions.company.
 ---
 
-A package decides who in the organization may use its block actions, record commands and record links by asking for its own **company permissions**. Each one becomes an ordinary company permission, `company.x-<key>.<name>`, that the organization grants in its [roles](/docs/en/opero/11-konto-i-dostep/role-i-uprawnienia) like any other.
+A package decides who may use its block actions, record commands and record links by asking for its own **company permissions**. Each one becomes an ordinary company permission, `company.x-<key>.<name>`, that the organization grants in its [roles](/docs/en/opero/11-konto-i-dostep/role-i-uprawnienia) like any other. The guide [A block, a button and a link](/docs/en/extensions/blocks-and-actions) declares two.
 
 ```yaml title="extension.yaml"
 permissions:
@@ -20,13 +20,13 @@ permissions:
 
 ## permissions.company
 
-A map from the permission's name to its texts. Up to 30 permissions.
+A map from the permission's name to its texts, with up to 30 permissions.
 
 <TypeTable
   type={{
     '<name>': {
       type: 'string',
-      description: 'A lower-case letter, then letters and digits, up to 41 characters: track, openTracking. No _ or -. The permission\'s key is company.x-<key>.<name>.',
+      description: 'A lower-case letter, then letters and digits, up to 41 characters: track, openTracking. No _ or -.',
       required: true,
     },
     label: {
@@ -40,26 +40,45 @@ A map from the permission's name to its texts. Up to 30 permissions.
     },
     reason: {
       type: 'string',
-      description: 'Why the package asks for it, shown in the install plan. Required (permissions.reason_required). Translatable.',
+      description: 'Why the package asks for it, shown in the install review. Translatable.',
       required: true,
     },
   }}
 />
 
-Each permission is named by at least one `expose.blockAction`, `expose.recordCommand` or link `permission`; one nothing names is refused with `permissions.unused_company_permission`. A name that is not declared is refused where it is used, with `action.permission_undeclared`.
+Each permission is named by at least one `expose.blockAction`, `expose.recordCommand` or link `permission`.
 
 ## In the organization
 
-- **Roles.** While the extension runs, the role editor lists its permissions in a group named after the package, after Opero's own groups, with your label and description in the member's language.
-- **Granted by the organization.** Installing adds a package permission to no role; the organization decides who gets each one. Only a role that grants every permission holds them from the start.
-- **Not for API tokens.** API tokens never receive package permissions, and block actions, record commands and links are not offered to them.
-- **One of four checks.** The permission is the last of the checks a member passes to use a block action, a record command or a link: see [Who may use them](/docs/en/extensions/reference/member-actions#who-may-use-them).
+While the extension runs, the role editor lists the permissions in a group named after the package, with your labels in the member's language:
 
-## Install, disable, upgrade, uninstall
+![A company role's permissions filtered by parcel, with Track parcels ticked](/docs/_assets/extensions/blocks-and-actions/role-permissions.webp)
 
-| When | What happens to the permissions |
+| Rule | Detail |
 | --- | --- |
-| Install | The plan lists each permission with its label, description and reason. A version that adds one has to be agreed to again. |
-| Disable | Roles keep their grants; the group leaves the role editor until the extension runs again. |
-| Upgrade | A permission the new version no longer declares is removed from every role. When a role grants it, the plan warns (`permission.grants_removed`) with how many roles. |
-| Uninstall | Every grant of the extension's permissions is removed. The uninstall lists how many roles grant each one. |
+| Granted by the organization | Installing adds a package permission to no role. Only a role that grants every permission holds them from the start. |
+| Not for API tokens | API tokens never receive package permissions, and block actions, record commands and links are not offered to them. |
+| The last of four checks | A member passes the other three first: see [Who may use them](/docs/en/extensions/reference/member-actions#who-may-use-them). |
+| While the extension is disabled | Roles keep their grants; the group leaves the role editor until the extension runs again. |
+
+## Upgrades
+
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A permission is added | It is shown as new in the review, for the administrator to agree to. | |
+| A permission is removed | It is removed from every role. When roles grant it, a warning says how many. | `permission.grants_removed` |
+
+An uninstall removes every grant of the extension's permissions. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
+## Translations
+
+The texts go under `permissions.company.<name>`: `label`, `description` and `reason`. See [Translations](/docs/en/extensions/reference/translations#translatable-keys).
+
+## Problems
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `permissions.reason_required` | A permission without a reason. | Add one sentence. |
+| `permissions.unused_company_permission` | A permission no block action, record command or link names. | Name it in an exposure, or remove it. |
+| `action.permission_undeclared` | An exposure or a link names a permission `permissions.company` does not declare. | Declare it, or fix the name. |
+| `manifest.invalid` | A name of the wrong form, a missing `label`, or more than 30 permissions. | Fix the entry the message names. |

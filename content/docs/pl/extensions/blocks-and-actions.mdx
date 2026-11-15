@@ -1,15 +1,11 @@
 ---
-title: "Przepis: blok, przycisk i link"
-description: "Zbuduj rozszerzenie Opero, którego członkowie używają na stronach rekordów: obiekt przesyłki, blok z kartą ze skryptem i plakietką, akcję, którą członkowie uruchamiają przyciskiem i jako polecenie rekordu, link do strony śledzenia u przewoźnika oraz uprawnienia paczki, które decydują, kto może ich używać."
+title: Blok, przycisk i link
+description: "Zbuduj rozszerzenie Opero, którego członkowie używają na stronach rekordów: blok z przyciskiem, polecenie rekordu, link i chroniące je uprawnienia."
 ---
 
-Ten przepis buduje paczkę dla **przesyłek**, której członkowie używają na stronie samej przesyłki. Przynosi:
+Ten przewodnik buduje paczkę **Przesyłki**, której członkowie używają na stronie samej przesyłki. Przynosi obiekt **Parcel** i blok **Karta przesyłki**, który pokazuje przesyłkę z **Plakietką statusu** i przyciskiem **Track now**. Przycisk uruchamia akcję **Śledź przesyłkę** (`x-parcels.track_parcel`), która pyta przewoźnika, gdzie jest przesyłka; ta sama akcja jest oferowana jako polecenie na każdej przesyłce. Link **Otwórz stronę śledzenia** otwiera przesyłkę u przewoźnika. Dwa uprawnienia paczki, **Śledzenie przesyłek** i **Otwieranie stron śledzenia**, decydują, kto może z nich korzystać.
 
-- obiekt **Parcel**;
-- blok **Karta przesyłki** (Parcel card), który pokazuje przesyłkę z **Plakietką statusu** (Status badge), innym blokiem paczki, i przyciskiem **Track now**;
-- akcję **Śledź przesyłkę** (Track parcel, `x-parcels.track_parcel`), która pyta przewoźnika, gdzie jest przesyłka, uruchamianą tym przyciskiem i oferowaną jako polecenie na każdej przesyłce;
-- link **Otwórz stronę śledzenia** (Open tracking page) do strony przesyłki u przewoźnika;
-- dwa uprawnienia paczki, **Śledzenie przesyłek** i **Otwieranie stron śledzenia**, które organizacja nadaje w swoich rolach.
+![Karta przesyłki na stronie przesyłki, z plakietką statusu i przyciskiem Track now](/docs/_assets/extensions/blocks-and-actions/parcel-card.webp)
 
 <Files>
   <Folder name="parcels" defaultOpen>
@@ -53,11 +49,11 @@ Ten przepis buduje paczkę dla **przesyłek**, której członkowie używają na 
   </Folder>
 </Files>
 
-Przewoźnik w tym przepisie zna każdą przesyłkę po identyfikatorze jej rekordu w Opero, który dostał przy jej rejestracji.
+Przewoźnik w tym przewodniku zna każdą przesyłkę po identyfikatorze jej rekordu w Opero, który dostał przy jej rejestracji.
 
 <Steps>
 <Step>
-### Napisz manifest
+### Napisz manifest [#write-the-manifest]
 
 ```yaml title="extension.yaml"
 manifestVersion: 2
@@ -104,7 +100,7 @@ Obok siebie stoją trzy rodzaje uprawnień: `network` to host, który wywołują
 </Step>
 
 <Step>
-### Dodaj obiekt
+### Dodaj obiekt [#add-the-object]
 
 ```yaml title="objects/parcels/object.yaml"
 object: parcels
@@ -118,7 +114,7 @@ fields:
 </Step>
 
 <Step>
-### Opisz akcję
+### Opisz akcję [#describe-the-action]
 
 ```yaml title="actions/track-parcel/action.yaml"
 action: track_parcel
@@ -147,7 +143,7 @@ Akcja nie ma danych wejściowych, więc polecenie uruchamia się, gdy tylko czł
 </Step>
 
 <Step>
-### Napisz regułę
+### Napisz regułę [#write-the-rule]
 
 ```yaml title="actions/track-parcel/rule.yaml"
 entryStepId: ask
@@ -185,7 +181,7 @@ export default function answer({ context }) {
 </Step>
 
 <Step>
-### Przetestuj akcję
+### Przetestuj akcję [#test-the-action]
 
 ```yaml title="actions/track-parcel/tests.yaml"
 - name: the carrier's status comes back
@@ -215,7 +211,7 @@ export default function answer({ context }) {
 </Step>
 
 <Step>
-### Dodaj plakietkę
+### Dodaj plakietkę [#add-the-badge]
 
 `opero-ext add block status_badge` zapisuje folder; zastąp jego pliki:
 
@@ -235,7 +231,7 @@ tests: tests.yaml
 ```
 
 ```css title="blocks/status-badge/block.css"
-.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--muted); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--muted); }
 .badge--delivered { background: var(--primary); color: var(--primary-foreground); }
 ```
 
@@ -249,7 +245,7 @@ tests: tests.yaml
 </Step>
 
 <Step>
-### Dodaj kartę
+### Dodaj kartę [#add-the-card]
 
 ```yaml title="blocks/parcel-card/block.yaml"
 block: parcel_card
@@ -274,8 +270,9 @@ tests: tests.yaml
 ```
 
 ```css title="blocks/parcel-card/block.css"
-.parcel { display: grid; gap: 8px; padding: 16px; border-radius: 8px; background: var(--muted); }
-.parcel__number { margin: 0; }
+.parcel { display: grid; justify-items: start; gap: 8px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; }
+.parcel__number { margin: 0; font-size: 16px; font-weight: 600; }
+.parcel button { padding: 6px 12px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground); }
 .parcel__answer:empty { display: none; }
 ```
 
@@ -309,7 +306,7 @@ Umieszczona na stronie przesyłki karta odczytuje przesyłkę jako `record` i re
 </Step>
 
 <Step>
-### Dodaj link
+### Dodaj link [#add-the-link]
 
 `opero-ext add link open_tracking` zapisuje folder; skieruj go do przewoźnika:
 
@@ -328,7 +325,7 @@ Link pojawia się na przesyłce tylko członkowi, którego formularz pokazuje po
 </Step>
 
 <Step>
-### Przetłumacz
+### Przetłumacz [#translate-it]
 
 ```yaml title="locales/pl.yaml"
 extension:
@@ -377,7 +374,7 @@ Tekst z przecinkiem wewnątrz `{ }` jest w cudzysłowie. HTML bloków nie jest t
 </Step>
 
 <Step>
-### Zwaliduj, przetestuj i spakuj
+### Zwaliduj, przetestuj i spakuj [#validate-test-and-pack]
 
 ```bash title="Terminal"
 opero-ext validate .
@@ -385,22 +382,60 @@ opero-ext test . --server https://opero.example.com/mcp
 opero-ext pack .
 ```
 
-```txt title="Output"
+```txt title="Wynik"
 parcels 0.1.0 is valid.
-```
+Result  Part                Test                                Name
+PASS    track_parcel        actions/track-parcel/tests.yaml#/0  the carrier's status comes back
+PASS    track_parcel        actions/track-parcel/tests.yaml#/1  a parcel the carrier does not know fails
+PASS    block parcel_card   blocks/parcel-card/tests.yaml#/0    shows the button to a member who may track
+PASS    block parcel_card   blocks/parcel-card/tests.yaml#/1    hides the button from everyone else
+PASS    block status_badge  blocks/status-badge/tests.yaml#/0   shows the status it is given
+PASS    block status_badge  blocks/status-badge/tests.yaml#/1   shows new when no status is given
 
-`validate` sprawdza pliki offline; `test` uruchamia na serwerze dwa przypadki akcji i cztery przypadki renderowania.
+6 of 6 tests passed.
+Wrote …/parcels-0.1.0.zip (6181 bytes)
+```
 </Step>
 </Steps>
 
 ## Po instalacji [#after-install]
 
-Administrator instaluje paczkę tak jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use), z uprawnieniami do tworzenia bloków własnych i zmiany własnego HTML. Przed potwierdzeniem plan instalacji pokazuje dwa bloki ze skryptem karty, akcję uruchamianą przez członków z uprawnieniem, którego wymaga, link z jego hostem `track.example.com` i polem **Numer przesyłki** oraz dwa uprawnienia paczki z uzasadnieniami.
+[Zainstaluj plik zip](/docs/pl/extensions/install) jak zwykle, jako administrator, który może też tworzyć bloki własne i zmieniać własny HTML. Przegląd wymienia bloki ze skryptem karty, to, z czego mogą korzystać członkowie, z uprawnieniem, którego wymaga każda pozycja, link z tym, co wysyła do `track.example.com`, oraz dwa uprawnienia paczki. Potem organizacja robi trzy rzeczy.
 
-Następnie:
+<Steps>
+<Step>
+### Nadaj uprawnienia paczki [#grant-the-package-permissions]
 
-- organizacja nadaje **Śledzenie przesyłek** i **Otwieranie stron śledzenia** rolom, które powinny je mieć; do tego czasu polecenie, przycisk i link widzą tylko członkowie, których rola nadaje wszystkie uprawnienia;
-- umieszcza **Kartę przesyłki** (`x_parcels_parcel_card`) na stronie rekordu przesyłek, tak jak umieszcza własne bloki;
-- członek ze **Śledzeniem przesyłek** naciska **Track now** na karcie albo uruchamia **Śledź przesyłkę** z akcji przesyłki i widzi odpowiedź przewoźnika; członek z **Otwieraniem stron śledzenia** otwiera przesyłkę u przewoźnika.
+W sekcji **Role** edytuj role firmowe, które mają śledzić przesyłki, i zaznacz **Śledzenie przesyłek** oraz **Otwieranie stron śledzenia**. Instalacja nie nadaje ich nikomu, więc do tego czasu przycisk, polecenie i link widzą tylko członkowie, których rola nadaje wszystkie uprawnienia.
 
-Po instalacji każde z nich jest udostępnione wszystkim firmom i wszystkim członkom; organizacja może zawęzić każde do części firm albo do odbiorców. Gdy rozszerzenie jest wyłączone, karta pokazuje komunikat zamiast przesyłki, a polecenie i link znikają. Gdy zostanie odinstalowane, karta zostaje zarchiwizowana tam, gdzie była umieszczona, i pokazuje, że rozszerzenie zostało usunięte; ponowna instalacja ją przywraca.
+![Uprawnienia roli firmowej przefiltrowane po słowie parcel, z zaznaczonym Track parcels](/docs/_assets/extensions/blocks-and-actions/role-permissions.webp)
+</Step>
+<Step>
+### Umieść kartę [#place-the-card]
+
+Obiekt nie przychodzi z formularzem, więc zbuduj formularz dla **Parcel** w sekcji **Moduły własne**, tak jak dla własnych obiektów organizacji. Przeciągnij na formularz **Blok**, wybierz **Karta przesyłki** (`x_parcels_parcel_card`) i opublikuj formularz.
+</Step>
+<Step>
+### Użyj jej na przesyłce [#use-it-on-a-parcel]
+
+Członek z uprawnieniem **Śledzenie przesyłek** klika **Track now** na karcie albo uruchamia **Śledź przesyłkę** z panelu szczegółów przesyłki i widzi odpowiedź przewoźnika. Członek z uprawnieniem **Otwieranie stron śledzenia** otwiera przesyłkę u przewoźnika z tego samego panelu.
+
+![Panel szczegółów przesyłki z poleceniem Track parcel i linkiem Open tracking page](/docs/_assets/extensions/blocks-and-actions/record-actions.webp)
+</Step>
+</Steps>
+
+Po instalacji każda akcja i każdy link są udostępnione wszystkim firmom i wszystkim członkom; **Zarządzaj dostępem** w sekcji [Z czego mogą korzystać członkowie](/docs/pl/extensions/after-install#what-members-can-use) to zawęża. Gdy rozszerzenie jest wyłączone, karta pokazuje komunikat zamiast przesyłki, a polecenie i link znikają.
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Bloki" href="/docs/pl/extensions/reference/blocks">
+    Wejścia, zapytania, odczyty rekordów, przyciski, skrypty i testy renderowania.
+  </Card>
+  <Card title="Akcje bloków i polecenia rekordów" href="/docs/pl/extensions/reference/member-actions">
+    Wszystkie klucze expose.blockAction i expose.recordCommand.
+  </Card>
+  <Card title="Linki rekordów" href="/docs/pl/extensions/reference/record-links">
+    Linki na obiektach paczki i na rekordach wbudowanych.
+  </Card>
+</Cards>

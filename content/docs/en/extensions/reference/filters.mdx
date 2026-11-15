@@ -1,9 +1,9 @@
 ---
 title: Template filters
-description: "Add template filters to Opero with an extension: filter.yaml, the filter function, its arguments and context, naming after install, and when to use a filter instead of a step."
+description: Add a template filter that every template of the organization can use, with filter.yaml and a small function that formats or converts a value.
 ---
 
-A template filter is a small JavaScript function that every template in the organization can use after install, for formatting or converting a value.
+A template filter is a small function that formats or converts one value. After install, every template of the organization can use it. [Part 2 of the tutorial](/docs/en/extensions/tutorial/call-a-service) adds one.
 
 ```yaml title="filters/shout/filter.yaml"
 filter: shout
@@ -16,8 +16,6 @@ script: filter.js
 const filter = (value) => String(value ?? '').toUpperCase() + '!';
 export default filter;
 ```
-
-In any template:
 
 ```txt title="Template"
 {{ "hi" | x_hello_ext_shout }}
@@ -33,25 +31,29 @@ HI!
   type={{
     filter: {
       type: 'string',
-      description: 'The name: lower-case letters and digits, starting with a letter, no _, up to 41 characters. Unique in the package.',
+      description: 'The name: a lower-case letter, then lower-case letters and digits, no _, up to 41 characters. Unique in the package.',
       required: true,
     },
     description: {
       type: 'string',
-      description: 'Shown where filters are listed. Translatable.',
+      description: 'Shown where filters are listed, up to 2,000 characters. Translatable.',
       required: true,
     },
     script: {
       type: 'string',
-      description: 'A .js or .ts module in the folder.',
+      description: 'A .js or .ts module in the filter\'s folder.',
       required: true,
     },
   }}
 />
 
+## The name in templates
+
+A filter is installed as `x_<key>_<filter>`, with the key's hyphens as underscores: `shout` of `hello-ext` is `x_hello_ext_shout`. The [glossary](/docs/en/extensions/reference/glossary#names-after-install) lists the names of everything an extension installs.
+
 ## The function
 
-The function receives the value piped into it, the filter's arguments and the template's context, and returns the filtered value at once.
+The function receives the value piped into it, the filter's arguments as an array, and the template's context. It returns the filtered value at once.
 
 ```js title="filters/trackingurl/filter.js"
 /** @type {import('../../.opero/types').Filter} */
@@ -63,30 +65,21 @@ const filter = (value, args) => {
 export default filter;
 ```
 
-Arguments follow a colon in the template, separated by commas, and arrive as the `args` array:
+Arguments follow a colon in the template, separated by commas:
 
 ```txt title="Template"
 {{ shipment.number | x_shipping_ext_trackingurl: "ups" }}
 ```
 
-<Callout type="warn" title="Filters must answer at once">
-A filter may not be `async` and may not wait on anything. An async filter is refused with `script.invalid`, and one that waits is refused in the install plan with `filter.not_sync`.
+<Callout type="warn" title="Filters answer at once">
+A filter may not be `async` and may not wait on anything. An `async` default export is refused at upload, and a filter that calls an asynchronous helper is refused in the install review.
 </Callout>
 
-## Naming after install
+## When filters work
 
-A filter is installed as `x_<key with _>_<filter>`. The hyphens of the key become underscores:
+A filter calls nothing, so it keeps working while the extension is not running, for example while its connection is not set up. It stops when the extension is disabled.
 
-| Key | Filter | Name in templates |
-| --- | --- | --- |
-| `hello-ext` | `shout` | `x_hello_ext_shout` |
-| `polar-eu` | `pace` | `x_polar_eu_pace` |
-
-## Rules
-
-- A rule file of the same package may not use the package's own filters (`rule.own_filter_unsupported`). Do the conversion in a script instead.
-- Filters keep working while the extension is not running, because they call nothing. They stop when the extension is disabled.
-- An upgrade that removes a filter a rule uses is blocked. Templates elsewhere are not checked, so you get a warning either way.
+The package's own rule files cannot use its filters: do the conversion in a script instead.
 
 ## A filter or a step?
 
@@ -95,3 +88,24 @@ A filter is installed as `x_<key with _>_<filter>`. The hyphens of the key becom
 | You convert or format one value. | You call a service or combine several values. |
 | The result is used inside templates. | The result feeds later steps of a rule. |
 | No credential is needed. | The work needs the connection. |
+
+## Upgrades
+
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A filter that rules of the organization use is removed | The upgrade is blocked until those rules stop using it. | `filter.in_use` |
+| A filter no rule uses is removed | A warning: templates are not checked, and one that still uses the filter fails on it. | `filter.in_use` |
+
+What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
+## Problems
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `filter.invalid` | An unknown key, or a name with `_`, upper-case letters or over 41 characters. | Use lower-case letters and digits. |
+| `filter.script_invalid` | `script` does not name a `.js` or `.ts` file. | Name the filter's script module. |
+| `script.invalid` | The script is not a module with one `export default`, or its default export is `async`. | See [Scripts](/docs/en/extensions/reference/scripts#problems). |
+| `name.duplicate` | Two filters with the same name. | Rename one. |
+| `rule.own_filter_unsupported` | A rule file of the package uses one of its own filters. | Do the conversion in a script. |
+| `filter.not_sync` | In the install review: the filter calls an asynchronous helper. | Make it answer at once. |
+| `filter.save_validation` | In the install review: the script does not validate, or another script of the organization has its name. | Fix the script, or rename the filter. |

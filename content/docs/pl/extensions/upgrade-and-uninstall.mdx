@@ -1,0 +1,141 @@
+---
+title: Aktualizacja i odinstalowanie
+description: "Przejrzyj i zainstaluj nową wersję rozszerzenia Opero, potwierdź aktualizację, która usuwa dane, i odinstaluj rozszerzenie z danymi albo bez nich."
+---
+
+Ta strona opisuje instalację nowej wersji rozszerzenia i jego usunięcie. Aktualizacja wymaga `org.extensions.update`, a odinstalowanie `org.extensions.delete`. Paczkę z zakresami danych aktualizuje tylko właściciel organizacji.
+
+## Aktualizacja rozszerzenia [#upgrade-an-extension]
+
+<Steps>
+<Step>
+### Zdobądź nową wersję [#get-the-new-version]
+
+Prześlij plik zip nowej wersji tak samo jak pierwszą; zobacz [Instalacja rozszerzenia](/docs/pl/extensions/install#install-a-package). Nowa wersja paczki z katalogu pojawia się sama, gdy administrator instalacji ją prześle.
+</Step>
+<Step>
+### Sprawdź kartę aktualizacji [#check-the-update-card]
+
+Strona rozszerzenia pokazuje w bocznej kolumnie **Dostępna aktualizacja** z nową wersją i informacją, czy coś ją blokuje. Przy wersji na liście zainstalowanych rozszerzeń pojawia się strzałka.
+
+![Dostępna jest aktualizacja i nic jej nie blokuje](/docs/_assets/extensions/upgrade/update-available.webp)
+</Step>
+<Step>
+### Przejrzyj aktualizację [#review-the-update]
+
+Kliknij **Przejrzyj aktualizację**. Gdy przesłano kilka nowszych wersji, **Wersja do instalacji** pozwala wybrać jedną. **Nowe w tej wersji** pokazuje listę zmian każdej wersji nowszej od zainstalowanej, jeśli paczka ma [listę zmian](/docs/pl/extensions/reference/listing#the-changelog).
+
+![Przegląd aktualizacji z listą zmian nowszych wersji](/docs/_assets/extensions/upgrade/review-changelog.webp)
+
+Reszta okna to [przegląd instalacji](/docs/pl/extensions/install#the-install-review). **Co dodaje** wymienia tylko to, co się zmienia: elementy oznaczone jako **Zmodyfikowane** albo **Usunięte** oraz liczbę elementów, które pozostają bez zmian.
+</Step>
+<Step>
+### Uaktualnij [#upgrade]
+
+Kliknij **Uaktualnij**. Potem zrób to, co wymienia sekcja **Po wykonaniu**, na przykład zweryfikuj ponownie połączenie.
+</Step>
+</Steps>
+
+Wersja nigdy się nie zmienia po przesłaniu. Ponowne przesłanie tego samego pliku niczego nie zmienia, a inny plik z tą samą wersją jest odrzucany. **Wycofaj tę wersję** na karcie dostępnej paczki sprawia, że nikt już tej wersji nie zainstaluje; instalacja, która jej używa, używa jej nadal.
+
+## Co może zmienić nowa wersja [#what-a-new-version-can-change]
+
+Reguły, które używają kroku, działają między wersjami, dopóki akcja tego kroku zachowuje nazwę. Przegląd ostrzega o wszystkim innym i blokuje to, co zepsułoby twoją konfigurację.
+
+| Nowa wersja | Co się dzieje | Kod |
+| --- | --- | --- |
+| Usuwa krok reguły, którego używają twoje reguły | Zablokowana, dopóki te reguły go używają. | `step.in_use` |
+| Usuwa filtr szablonu, którego używa reguła | Zablokowana. Szablony nie są sprawdzane, więc szablon, który nadal go używa, zgłosi błąd później. | `filter.in_use` |
+| Usuwa wyzwalacz, od którego zaczyna się reguła | Zablokowana, dopóki używa go jakakolwiek reguła. | `trigger.in_use` |
+| Usuwa pola danych wyzwalacza, którego używa reguła | Ostrzeżenie. Sprawdź reguły, które je odczytują. | `trigger.data_field_removed` |
+| Usuwa akcję, którą uruchamiają twoje własne bloki | Zablokowana, dopóki te bloki się nie zmienią. | `block_action.in_use` |
+| Usuwa zapytanie, którego używa aktywna lista SQL, raport albo blok | Zablokowana, dopóki one go używają. | `query.in_use` |
+| Usuwa obiekt lub pole albo czyści wartości pola | **Ta aktualizacja usuwa dane**; zobacz [niżej](#when-an-upgrade-deletes-data). | |
+| Usuwa słownik | Słownik jest usuwany albo, gdy coś go jeszcze używa, zostaje jako twój. | `dictionary.released` |
+| Usuwa formularz, listę albo stronę, których używa twoja konfiguracja | Formularz jest usuwany, a lista lub strona archiwizowana. Twoje strony pokazują komunikat, a pozycje menu prowadzące do strony są ukrywane. | `form.in_use`, `list.in_use`, `page.in_use` |
+| Usuwa jedyny formularz obiektu | Ostrzeżenie: członkowie nie otworzą ani nie utworzą jego rekordów, dopóki nie zbudujesz formularza. | `object.formless` |
+| Usuwa blok umieszczony na twoich stronach | Te strony pokazują w jego miejscu komunikat. | `block.removed_placed` |
+| Usuwa uprawnienie paczki nadawane w rolach | Przypisania są usuwane razem z nim. | `permission.grants_removed` |
+| Zmienia dane uwierzytelniające połączenia | Połączenie jest wyłączone, dopóki nie zweryfikujesz go ponownie. | `connection.reverify_required` |
+| Usuwa wartość ustawienia albo sprawia, że wartość już nie pasuje | Wartość jest odrzucana. | `settings.value_dropped` |
+| Dodaje wymagane ustawienie bez wartości domyślnej | Rozszerzenie zatrzymuje się, dopóki go nie uzupełnisz. | `settings.incomplete_after_upgrade` |
+| Wyłącza harmonogram albo zmienia, kiedy lub dla kogo działa | Stan uruchomień wyłączonego harmonogramu jest usuwany; zmieniony od razu działa według nowych zasad. | `schedule.removed`, `schedule.changed` |
+| Prosi członków o więcej | Każdy połączony członek musi połączyć się ponownie; do tego czasu nic dla niego nie działa. | `member.reconsent_required` |
+| Prosi o nowe hosty albo zakresy danych lub dodaje wyzwalacze albo harmonogramy | Pokazywane jako **Nowe w tej wersji**, do twojej akceptacji. | |
+
+## Gdy aktualizacja usuwa dane [#when-an-upgrade-deletes-data]
+
+Gdy nowa wersja usuwa obiekt lub pole albo zmienia pole tak, że trzeba wyczyścić jego wartości, przegląd zaczyna się od sekcji **Ta aktualizacja usuwa dane**. Każda strata jest wymieniona z liczbą rekordów.
+
+![Aktualizacja, która usuwa obiekt i pole; czeka na potwierdzenie](/docs/_assets/extensions/upgrade/data-loss.webp)
+
+**Uaktualnij** pozostaje wyłączone, dopóki nie zaznaczysz **Rozumiem, że te dane zostaną usunięte na zawsze.** Jeśli dane do utraty zmienią się przed potwierdzeniem, aktualizacja jest odrzucana, przegląd jest odczytywany ponownie i pole trzeba zaznaczyć jeszcze raz.
+
+<Callout type="warn" title="Usuniętych danych nie da się odzyskać">
+Rekordy usuniętego obiektu i wartości usuniętego lub wyczyszczonego pola przepadają po aktualizacji. Nie da się tego cofnąć.
+</Callout>
+
+## Odinstalowanie rozszerzenia [#uninstall-an-extension]
+
+<Steps>
+<Step>
+### Otwórz okno odinstalowania [#open-the-uninstall-dialog]
+
+Na stronie rozszerzenia otwórz **Więcej akcji** (trzy kropki w nagłówku) i wybierz **Odinstaluj**. Okno najpierw odczytuje, co odinstalowanie zabrałoby ze sobą.
+</Step>
+<Step>
+### Sprawdź, co się zatrzyma i co zniknie [#read-what-stops-and-what-goes]
+
+Najpierw wymienione są reguły twojej organizacji, które używają kroków lub wyzwalaczy rozszerzenia: aktywne zatrzymują się i trafiają do kwarantanny, a nieaktywnych nie da się włączyć, dopóki nie usuniesz z nich kroków rozszerzenia. **Zawsze usuwane** rozwija to, co znika w każdym przypadku.
+
+![Okno odinstalowania: zachowanie lub usunięcie danych i to, co jest zawsze usuwane](/docs/_assets/extensions/upgrade/uninstall-dialog.webp)
+</Step>
+<Step>
+### Wybierz, co stanie się z danymi [#choose-what-happens-to-the-data]
+
+W rozszerzeniu z obiektami lub słownikami wybierz **Zachowaj dane** albo **Usuń dane**; zobacz [Zachowanie lub usunięcie danych](#keep-or-delete-the-data).
+</Step>
+<Step>
+### Potwierdź [#confirm]
+
+Kliknij **Odinstaluj i zachowaj dane** albo **Odinstaluj i usuń dane**. Rozszerzenie bez danych ma jeden przycisk **Odinstaluj**.
+</Step>
+</Steps>
+
+### Co jest zawsze usuwane [#what-is-always-removed]
+
+| Część | Co się dzieje |
+| --- | --- |
+| Reguły, filtry szablonów, wyzwalacze i bloki | Usuwane. |
+| Harmonogramy | Zatrzymują się, a ich stan uruchomień jest usuwany. |
+| Połączenie | Usuwane razem ze wszystkimi zapisanymi danymi uwierzytelniającymi. |
+| Ustawienia | Usuwane. |
+| Zapisane zapytania | Usuwane, gdy nic ich nie używa; zostają jako twoje, gdy używa ich lista SQL, raport albo blok (**Zostaje jako Twoje**). |
+| Formularze | Usuwane, a w ich miejsce nic nie jest generowane. Okno wymienia obiekty, które zostaną bez formularza, oraz dostęp ustawiony na formularzach, który przepada. |
+| Listy i strony | Archiwizowane jako usunięte. Pozycje menu prowadzące do stron są ukrywane i wracają, gdy zainstalujesz rozszerzenie ponownie. |
+| Połączone konta członków | Odłączane. Najpierw dla każdego członka uruchamia się akcja odłączenia paczki. |
+| Uprawnienia paczki | Usuwane z ról, które je nadają. |
+
+### Zachowanie lub usunięcie danych [#keep-or-delete-the-data]
+
+| Wybór | Obiekty z rekordami, moduł i słowniki |
+| --- | --- |
+| **Zachowaj dane** (zalecany) | Zostają jako twoje: można je edytować i wracają na listy zarządzania. Ponowna instalacja rozszerzenia je przejmuje. |
+| **Usuń dane** | Usuwane na zawsze, razem z formularzami, układami widoku i listami własnymi zbudowanymi na obiektach oraz twoimi polami referencyjnymi, które na nie wskazują. Reguły, które wskazują obiekt, zatrzymują się (kwarantanna). Słownik, którego używa coś innego, zostaje. |
+
+**Usuń dane** nie da się wybrać, gdy brakuje ci uprawnienia, którego ten wybór wymaga; wybór je wymienia (**Brakuje Ci: …**). Usunięcie jest też odrzucane, dopóki zachowywane zapisane zapytanie czyta tabelę, którą usunięcie by skasowało: najpierw przestań używać tego zapytania w jego listach, raportach albo blokach. W obu przypadkach nic się nie zmienia.
+
+<Callout type="warn" title="Reguły, które używają rozszerzenia, się zatrzymują">
+Odinstalowania nie można cofnąć. Twoje reguły, które używają kroków rozszerzenia albo zaczynają się od jego wyzwalaczy, trafiają do kwarantanny. Po ponownej instalacji rozszerzenia i włączeniu jego połączenia można je znów zapisać i włączyć.
+</Callout>
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Kody błędów" href="/docs/pl/extensions/error-codes">
+    Wszystkie kody, które mogą pokazać przegląd i polecenia.
+  </Card>
+  <Card title="Tworzenie rozszerzeń" href="/docs/pl/extensions/before-you-start">
+    Napisz własną paczkę.
+  </Card>
+</Cards>

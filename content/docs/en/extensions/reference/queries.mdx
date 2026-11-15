@@ -1,9 +1,9 @@
 ---
 title: Queries
-description: "Reference for query.yaml in Opero extensions: a saved query and its SQL file, {{object.<key>}} for the package's own tables, FETCH and MUTATION, parameters, the installed key and running it from a rule."
+description: Bring saved SQL queries over the package's own tables with query.yaml and a .sql file, and run them from SQL lists, reports, blocks and rules.
 ---
 
-A query is a saved SQL query that the extension brings with it. It reads, or changes, the records of the package's own [objects](/docs/en/extensions/reference/objects). Once installed it is an ordinary saved query of the organization: its SQL lists, reports and blocks can use it, and the package's own rules can run it with the `RUN_QUERY` step.
+A query is a saved SQL query that the extension brings with it, reading or changing the records of the package's own [objects](/docs/en/extensions/reference/objects). Once installed it is a saved query of the organization: SQL lists, reports and blocks can use it, and the package's rules run it with the [`RUN_QUERY`](/docs/en/extensions/reference/data-steps#run-a-query) step.
 
 ```yaml title="queries/orders-by-day/query.yaml"
 query: orders_by_day
@@ -18,14 +18,7 @@ FROM {{object.orders}}
 GROUP BY f_ordered_on
 ```
 
-Each query has its own folder in `queries/` with its `query.yaml` and its SQL file, and is listed in `extension.yaml`. A package with queries lists the `queries` module in `requires.modules`:
-
-```yaml title="extension.yaml"
-requires:
-  modules: [rules, objects, queries]
-queries:
-  - queries/orders-by-day
-```
+Each query has its own folder in `queries/` with its `query.yaml` and its SQL file, listed under `queries` in `extension.yaml`. A package with queries lists `queries` in `requires.modules`.
 
 ## query.yaml
 
@@ -33,7 +26,7 @@ queries:
   type={{
     query: {
       type: 'string',
-      description: 'The name: lower-case letters, digits and _, starting with a letter, up to 41 characters. Unique in the package.',
+      description: 'The name: a lower-case letter, then lower-case letters, digits and _, up to 41 characters. Unique in the package.',
       required: true,
     },
     name: {
@@ -61,7 +54,7 @@ queries:
     },
     parameters: {
       type: 'parameter[]',
-      description: 'Up to 50 values the SQL takes, described below.',
+      description: 'Up to 50 values the SQL takes. See Parameters.',
     },
   }}
 />
@@ -70,9 +63,15 @@ queries:
 
 The file holds one SQL statement of up to 10,000 characters, in UTF-8.
 
-- **`{{object.<key>}}`** stands for the table of one of the package's objects, by its `object` key. Opero writes the real table name in its place when it installs the query. Spaces inside the braces are allowed. A query cannot name the tables of the organization's own objects.
-- **Columns** of an object's fields are `f_<field key>`. A select field holds the entry's key.
-- **Parameters** are written `:name` and declared under `parameters`.
+| Write | For |
+| --- | --- |
+| `{{object.<key>}}` | The table of one of the package's objects, by its `object` key. Opero writes the real table name in its place at install. Spaces inside the braces are allowed. |
+| `f_<field key>` | The column of a field. A select field holds the entry's key. |
+| `:name` | A parameter, declared under `parameters`. |
+
+A query cannot name the tables of the organization's own objects. The SQL itself is checked in the install review, the same way as a saved query an administrator writes; a query over a table the same install creates gets the full check when it is installed. It runs on the limited database roles saved queries use, in the company it runs for.
+
+## Parameters
 
 ```yaml title="queries/close-old-orders/query.yaml"
 query: close_old_orders
@@ -90,60 +89,53 @@ SET f_status = 'closed'
 WHERE f_ordered_on < :before
 ```
 
-Each parameter:
+<TypeTable
+  type={{
+    name: {
+      type: 'string',
+      description: 'The name the SQL uses after the colon: a letter or _, then letters, digits and _, up to 63 characters. Unique in the query.',
+      required: true,
+    },
+    type: {
+      type: '"string" | "number" | "date" | "uuid" | "boolean"',
+      description: 'The value\'s type.',
+      required: true,
+    },
+    required: {
+      type: 'boolean',
+      description: 'Whether the query needs a value for it.',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'Up to 500 characters.',
+    },
+  }}
+/>
 
-| Key | Meaning |
-| --- | --- |
-| `name` | The name the SQL uses after `:`. Letters, digits and `_`, not starting with a digit. Unique in the query. |
-| `type` | `string`, `number`, `date`, `uuid` or `boolean`. |
-| `required` | Whether the query needs a value for it. Required. |
-| `description` | Optional. |
+## The installed key
 
-The command-line tool checks the files and the placeholders. The SQL itself is checked by Opero when the package is planned for installation, the same way as a saved query an administrator writes: it must be a statement saved queries accept, and its `kind` must match it. A query over a table that the same install creates gets the full check when it is installed.
+A query is installed with the key `x_<key with _>_<name>`: `orders_by_day` of the extension `orders-ext` is `x_orders_ext_orders_by_day`. Rules and tests name it by that key. The organization cannot create or rename a saved query to a key that starts with `x_`.
 
-The query runs the way every saved query runs: on the limited database roles saved queries use, within the company it runs for.
+A package with a MUTATION query is installed only by someone who holds `org.savedQueries.executeMutation`.
 
-## The installed query
+## Upgrades
 
-The query is installed with the key `x_<key with _>_<name>`: `orders_by_day` of the extension `orders-ext` is `x_orders_ext_orders_by_day`. The organization cannot create a saved query whose key starts with `x_`, or rename one so that it does.
+| Change in a new version | What happens | Code |
+| --- | --- | --- |
+| A query's SQL changes | The install review shows the new SQL. | |
+| A query that an active SQL list, report or block uses is dropped | The upgrade is blocked until those stop using it. | `query.in_use` |
+| The install takes over a query a previous uninstall kept | It becomes the extension's again. A warning. | `query.adopts_existing` |
 
-A rule of the package runs it by that installed key, with the [data scope](/docs/en/extensions/reference/data-permissions) of its kind:
-
-```yaml title="actions/count-open/rule.yaml (part)"
-  - id: close
-    type: RUN_QUERY
-    name: Close old orders
-    contextKey: closed
-    config:
-      queryKey: x_shop_ext_close_old_orders
-      params: { before: "{{ trigger.data.before }}" }
-```
-
-See [Data steps](/docs/en/extensions/reference/data-steps#run-a-query).
-
-## Where the administrator sees them
-
-The install plan lists each query under **What will change**, marked **Reads data** (FETCH) or **Changes data** (MUTATION); **Show the query's SQL** unfolds the SQL as you wrote it, with the placeholders. The extension's **Installed data** tab lists the queries read-only under **Saved queries it installed**, with how many of the organization's SQL lists, reports and custom blocks use each one, and the SQL as installed, with the real table names. Queries are left out of the **SQL queries** management list and stay available wherever a saved query is picked.
-
-The SQL and the other parts of a query belong to the extension and change only with an upgrade. A query opened by a link starts with "Read-only: managed by the extension `<key>`." and a link **Open the extension**; it cannot be edited or deleted, but it can be run.
-
-A package with a MUTATION query can be installed only by someone who holds `org.savedQueries.executeMutation`, listed under **Requirements** in the plan.
-
-## Upgrades and uninstalling
-
-- A new version may change a query's SQL; the plan shows it.
-- A new version that drops a query an active SQL list, report or block still uses cannot be installed until those stop using it (`query.in_use`).
-- Uninstalling deletes the queries nothing uses. A query that something uses is kept as the organization's own. Deleting the extension's data is refused while such a query reads a table the deletion would drop.
+An uninstall deletes the queries nothing uses and keeps the others as the organization's own. What the administrator sees is in [Upgrade and uninstall](/docs/en/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
 
 ## Problems
 
-| Code | What is wrong |
-| --- | --- |
-| `query.invalid` | An unknown key, a missing `kind`, `mutationOperation` on a FETCH query, two parameters with the same name, an SQL file that is not `.sql`, not UTF-8, empty or over 10,000 characters, or more than 100 queries. |
-| `query.unknown_object` | `{{object.<key>}}` names no object of the package. The message gives the line in the SQL file. |
-| `manifest.missing_file` | The SQL file `sql` names is not there. |
-| `name.duplicate` | Two queries with the same name. |
-| `requires.module_undeclared` | The package has queries but `requires.modules` lacks `queries`. |
-| `query.save_validation` | In the install plan: the SQL would not save, or `kind` is not what the SQL does. Blocks the install. |
-| `query.adopts_existing` | In the install plan: a query kept by an earlier uninstall is taken over. A warning. |
-| `query.in_use` | In an upgrade's plan: the new version drops a query that is still used. Blocks the upgrade. |
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `query.invalid` | An unknown key, a missing `kind`, `mutationOperation` on a FETCH query, two parameters with the same name, an SQL file that is not `.sql`, not UTF-8, empty or over 10,000 characters, or more than 100 queries. | Fix the key or the file the message names. |
+| `query.unknown_object` | `{{object.<key>}}` names no object of the package. The message gives the line in the SQL file. | Fix the key, or add the object. |
+| `manifest.missing_file` | The SQL file `sql` names is not there. | Add the file, or fix the name. |
+| `name.duplicate` | Two queries with the same name. | Rename one. |
+| `requires.module_undeclared` | The package has queries but `requires.modules` lacks `queries`. | Add `queries`. |
+| `query.save_validation` | In the install review: the SQL would not save, or `kind` is not what the SQL does. Blocks the install. | Fix the SQL or the `kind`. |

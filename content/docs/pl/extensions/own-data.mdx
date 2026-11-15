@@ -1,13 +1,11 @@
 ---
-title: "Przepis: paczka z własnymi danymi"
-description: "Zbuduj rozszerzenie Opero, które przynosi obiekt z polem opartym na słowniku i zapisane zapytanie oraz krok, który pobiera własne rekordy, wywołuje usługę i zapisuje odpowiedź, przetestowany efektami."
+title: Paczka z własnymi danymi
+description: "Zbuduj rozszerzenie Opero z własnym obiektem, słownikiem i zapisanym zapytaniem oraz krokiem, który odczytuje i aktualizuje te rekordy."
 ---
 
-Ten przepis buduje paczkę, która przechowuje **zamówienia**. Przynosi:
+Ten przewodnik buduje paczkę **Zamówienia**, która przechowuje zamówienia we własnym obiekcie. Przynosi słownik **Priority**, obiekt **Order**, którego pole priorytetu z niego korzysta, oraz zapisane zapytanie **Orders by day** dla list i raportów organizacji. Jej krok **Synchronizuj zamówienie** (`x-orders-ext.sync_order`) pobiera pierwsze otwarte zamówienie, wysyła je do API przewoźnika i zapisuje status, który zwróci przewoźnik.
 
-- słownik **Priority** i obiekt **Order**, którego pole priorytetu z niego korzysta;
-- zapisane zapytanie **Orders by day** na zamówieniach, dla list i raportów organizacji;
-- krok **Sync order** (`x-orders-ext.sync_order`), który pobiera pierwsze otwarte zamówienie, wysyła je do API przewoźnika i zapisuje status zwrócony przez przewoźnika.
+![Obiekt Order z paczki wraz z polami, tylko do odczytu i zarządzany przez rozszerzenie](/docs/_assets/extensions/own-data/object-overlay.webp)
 
 <Files>
   <Folder name="orders-ext" defaultOpen>
@@ -41,11 +39,11 @@ Ten przepis buduje paczkę, która przechowuje **zamówienia**. Przynosi:
   </Folder>
 </Files>
 
-Nie ma polecenia `add` dla obiektów, słowników i zapytań: ich foldery i pliki utwórz ręcznie. Zacznij od `opero-ext init orders-ext` albo od pustego folderu.
-
 <Steps>
 <Step>
-### Napisz manifest
+### Napisz manifest [#write-the-manifest]
+
+Zacznij od `opero-ext init orders-ext` albo od pustego folderu. Dla obiektów, słowników i zapytań nie ma polecenia `add`, więc ich foldery tworzysz ręcznie.
 
 ```yaml title="extension.yaml"
 manifestVersion: 2
@@ -78,13 +76,11 @@ actions:
 locales: [pl]
 ```
 
-- `objects` i `queries` w `requires.modules` są potrzebne, bo paczka ma obiekty i zapytania.
-- Dwa [zakresy danych](/docs/pl/extensions/reference/data-permissions) to te, których potrzebuje krok: odczytuje zamówienia i zmienia jedno z nich. Zapytania nie uruchamia żadna reguła paczki, więc nie ma zadeklarowanego zakresu zapytań; zakres, którego nic nie używa, jest odrzucany.
-- Ze względu na zakresy danych tę paczkę może zainstalować tylko właściciel organizacji.
+Krok odczytuje zamówienia i zmienia jedno z nich, więc paczka prosi dokładnie o te dwa [zakresy danych](/docs/pl/extensions/reference/data-permissions); zakres, z którego nic nie korzysta, jest odrzucany. Ponieważ paczka prosi o dostęp do danych, zainstalować ją może tylko właściciel organizacji.
 </Step>
 
 <Step>
-### Dodaj słownik
+### Dodaj słownik [#add-the-dictionary]
 
 ```yaml title="dictionaries/priority/dictionary.yaml"
 dictionary: priority
@@ -94,11 +90,11 @@ entries:
   - { key: high, label: High, color: "#DC2626" }
 ```
 
-Jest instalowany jako `x-orders-ext-priority`. Zobacz [Słowniki](/docs/pl/extensions/reference/dictionaries).
+Zostaje zainstalowany jako `x-orders-ext-priority`. Zobacz [Słowniki](/docs/pl/extensions/reference/dictionaries).
 </Step>
 
 <Step>
-### Dodaj obiekt
+### Dodaj obiekt [#add-the-object]
 
 ```yaml title="objects/orders/object.yaml"
 object: orders
@@ -115,11 +111,11 @@ fields:
     options: { dictionary: priority }
 ```
 
-Obiekt jest instalowany w module `x-orders-ext`, bez formularza. `options: { dictionary: priority }` wskazuje własny słownik paczki jego nazwą. Zobacz [Obiekty](/docs/pl/extensions/reference/objects).
+`options: { dictionary: priority }` wskazuje własny słownik paczki. Obiekt zostaje zainstalowany w module `x-orders-ext`, bez formularza. Zobacz [Obiekty](/docs/pl/extensions/reference/objects).
 </Step>
 
 <Step>
-### Dodaj zapytanie
+### Dodaj zapytanie [#add-the-query]
 
 ```yaml title="queries/orders-by-day/query.yaml"
 query: orders_by_day
@@ -134,11 +130,11 @@ FROM {{object.orders}}
 GROUP BY f_ordered_on
 ```
 
-`{{object.orders}}` oznacza tabelę obiektu `orders`, a `f_ordered_on` to jego pole `ordered_on`. Zapytanie jest instalowane jako `x_orders_ext_orders_by_day`. Zobacz [Zapytania](/docs/pl/extensions/reference/queries).
+`{{object.orders}}` oznacza tabelę obiektu `orders`, a `f_ordered_on` to jego pole `ordered_on`. Zapytanie zostaje zainstalowane jako `x_orders_ext_orders_by_day`. Zobacz [Zapytania](/docs/pl/extensions/reference/queries).
 </Step>
 
 <Step>
-### Opisz akcję
+### Opisz akcję [#describe-the-action]
 
 ```yaml title="actions/sync-order/action.yaml"
 action: sync_order
@@ -157,9 +153,9 @@ expose:
 </Step>
 
 <Step>
-### Napisz regułę
+### Napisz regułę [#write-the-rule]
 
-Pobierz, wywołaj, zaktualizuj:
+Reguła pobiera, wywołuje i aktualizuje:
 
 ```yaml title="actions/sync-order/rule.yaml"
 entryStepId: fetch
@@ -198,17 +194,13 @@ edges:
   - { fromStepId: send, toStepId: mark }
 ```
 
-- Moduł i obiekt są wpisane wprost: `x-orders-ext` i `orders`. Szablon w tym miejscu jest odrzucany.
-- `UPDATE_RECORD` wskazuje rekord jego id, wziętym z pobranego wiersza.
-- Host jest w `permissions.network`, jak przy każdym kroku **Wywołaj webhook**.
-
-Zobacz [Kroki danych](/docs/pl/extensions/reference/data-steps).
+Moduł i obiekt są wpisane wprost jako `x-orders-ext` i `orders`, bo szablon w tym miejscu jest odrzucany. `UPDATE_RECORD` wskazuje rekord po identyfikatorze pobranego wiersza. Zobacz [Kroki danych](/docs/pl/extensions/reference/data-steps).
 </Step>
 
 <Step>
-### Przetestuj
+### Przetestuj [#test-it]
 
-Przypadek planuje wymianę HTTP w `http`, a dwa kroki danych w `effects`. Obie listy są niezależne, każda we własnej kolejności.
+Przypadek opisuje wymianę HTTP w `http`, a dwa kroki danych w `effects`. Każda z list jest dopasowywana we własnej kolejności.
 
 ```yaml title="actions/sync-order/tests.yaml"
 - name: the open order gets the status the carrier answers
@@ -232,11 +224,11 @@ Przypadek planuje wymianę HTTP w `http`, a dwa kroki danych w `effects`. Obie l
   succeeds: true
 ```
 
-Efekt pobrania daje krokowi wiersz, który by odczytał. Efekt aktualizacji sprawdza obiekt i nowy status i nie ma `response`, bo `UPDATE_RECORD` niczego nie zwraca. W trakcie testu żaden rekord nie jest odczytywany ani zapisywany. Zobacz [Testy](/docs/pl/extensions/reference/tests#data-and-messaging-steps).
+Efekt pobrania daje krokowi wiersz, który by odczytał. Efekt aktualizacji sprawdza obiekt i nowy status; nie ma `response`, bo `UPDATE_RECORD` niczego nie zwraca. Podczas testu żaden rekord nie jest odczytywany ani zapisywany. Zobacz [Testy](/docs/pl/extensions/reference/tests#data-and-messaging-steps).
 </Step>
 
 <Step>
-### Przetłumacz
+### Przetłumacz [#translate-it]
 
 ```yaml title="locales/pl.yaml"
 extension:
@@ -260,11 +252,11 @@ dictionaries:
       high: { label: Wysoki }
 ```
 
-Etykiety pozycji słownika można tłumaczyć; nazwy obiektu, jego pól, słownika i zapytania są tylko po angielsku.
+Etykiety pozycji słownika można tłumaczyć. Nazwy obiektu, jego pól, słownika i zapytania są tylko po angielsku.
 </Step>
 
 <Step>
-### Zwaliduj, przetestuj i spakuj
+### Zwaliduj, przetestuj i spakuj [#validate-test-and-pack]
 
 ```bash title="Terminal"
 opero-ext validate .
@@ -274,21 +266,22 @@ opero-ext pack .
 
 ```txt title="Wynik"
 orders-ext 0.1.0 is valid.
-```
+Result  Part        Test                              Name
+PASS    sync_order  actions/sync-order/tests.yaml#/0  the open order gets the status the carrier answers
 
-`validate` sprawdza pliki offline; `test` uruchamia przypadek testowy na serwerze.
+1 of 1 tests passed.
+Wrote …/orders-ext-0.1.0.zip (3082 bytes)
+```
 </Step>
 </Steps>
 
 ## Po instalacji [#after-install]
 
-Właściciel organizacji instaluje paczkę tak jak w [samouczku](/docs/pl/extensions/tutorial/install-and-use). Okno instalacji zaczyna się od uwagi, że rozszerzenie, które prosi o dostęp do danych, może zainstalować tylko właściciel. W sekcji **Co się zmieni** wymienia słownik, moduł, obiekt i zapytanie, które pokazuje **Odczytuje dane**, a pod **Pokaż SQL zapytania** SQL w postaci, w jakiej je napisałeś. W sekcji **Zakresy danych** pokazuje „Odczyt rekordów własnych obiektów tego rozszerzenia.” i „Tworzenie i zmiana rekordów własnych obiektów tego rozszerzenia.”, każde z twoim uzasadnieniem. Nie ma połączenia do skonfigurowania. Zobacz [Plan instalacji](/docs/pl/extensions/after-install#the-install-plan).
+Właściciel organizacji [instaluje](/docs/pl/extensions/install) plik zip; każdemu innemu przegląd mówi, że zainstalować go może tylko właściciel, z powodu [zakresów danych](/docs/pl/extensions/install#access-to-data). Nie ma połączenia do skonfigurowania. W sekcji **Co dodaje** strona rozszerzenia wymienia obiekt, słownik i zapytanie. Każde z nich otwiera się tylko do odczytu, a zapytanie pokazuje swój SQL z symbolem zastępczym zamienionym na zainstalowaną tabelę:
 
-Potem:
+![Zainstalowane zapytanie Orders by day z jego SQL, tylko do odczytu i zarządzane przez rozszerzenie](/docs/_assets/extensions/own-data/query-overlay.webp)
 
-- strona rozszerzenia ma kartę **Zainstalowane dane**, która wymienia obiekt z polami i liczbą rekordów, słownik z jego pozycjami i zapytanie z zainstalowanym SQL. Ekrany **Moduły własne**, **Słowniki** i **Zapytania SQL** ich nie pokazują;
-- organizacja dodaje zamówienia przez dowolny formularz albo listę, które zbuduje na obiekcie, i używa **Orders by day** w swoich listach SQL i raportach;
-- jej reguły dostają krok **Sync order**. W regule jest zapisywany tak:
+Organizacja buduje na obiekcie własne formularze i listy, a zapytania używa w swoich listach SQL i raportach. Jej reguły dostają krok **Synchronizuj zamówienie**, zapisywany tak:
 
 ```json title="Krok w jednej z reguł organizacji"
 {
@@ -299,3 +292,14 @@ Potem:
 ```
 
 Niezależnie od tego, kto napisze tę regułę, krok odczytuje i zapisuje tylko rekordy `orders`, w firmie, dla której reguła działa.
+
+## Dalej [#next]
+
+<Cards>
+  <Card title="Formularze, listy i strony" href="/docs/pl/extensions/workspace-screens">
+    Daj obiektom paczki ekrany, na których pracują członkowie.
+  </Card>
+  <Card title="Kroki danych" href="/docs/pl/extensions/reference/data-steps">
+    Wszystkie kroki danych i wiadomości, których może użyć reguła paczki.
+  </Card>
+</Cards>

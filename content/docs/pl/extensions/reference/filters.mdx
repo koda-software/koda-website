@@ -1,9 +1,9 @@
 ---
 title: Filtry szablonów
-description: "Dodaj filtry szablonów do Opero przez rozszerzenie: filter.yaml, funkcja filtra, jej argumenty i kontekst, nazwy po instalacji i kiedy wybrać filtr zamiast kroku."
+description: Dodaj filtr, którego może używać każdy szablon organizacji, za pomocą filter.yaml i małej funkcji, która formatuje albo przekształca wartość.
 ---
 
-Filtr szablonu to mała funkcja JavaScript, której po instalacji może używać każdy szablon w organizacji, żeby sformatować albo przekonwertować wartość.
+Filtr szablonów to mała funkcja, która formatuje albo przekształca jedną wartość. Po instalacji może jej używać każdy szablon organizacji. [Część 2 samouczka](/docs/pl/extensions/tutorial/call-a-service) dodaje taki filtr.
 
 ```yaml title="filters/shout/filter.yaml"
 filter: shout
@@ -17,41 +17,43 @@ const filter = (value) => String(value ?? '').toUpperCase() + '!';
 export default filter;
 ```
 
-W dowolnym szablonie:
-
 ```txt title="Szablon"
 {{ "hi" | x_hello_ext_shout }}
 ```
 
-```txt title="Rezultat"
+```txt title="Wynik"
 HI!
 ```
 
-## filter.yaml
+## filter.yaml [#filteryaml]
 
 <TypeTable
   type={{
     filter: {
       type: 'string',
-      description: 'Nazwa: małe litery i cyfry, zaczyna się od litery, bez _, do 41 znaków. Unikalna w paczce.',
+      description: 'Nazwa: mała litera, potem małe litery i cyfry, bez _, do 41 znaków. Unikalna w paczce.',
       required: true,
     },
     description: {
       type: 'string',
-      description: 'Widoczny tam, gdzie wyświetlana jest lista filtrów. Do przetłumaczenia.',
+      description: 'Widoczny tam, gdzie wymienione są filtry, do 2000 znaków. Do tłumaczenia.',
       required: true,
     },
     script: {
       type: 'string',
-      description: 'Moduł .js lub .ts w folderze.',
+      description: 'Moduł .js albo .ts w folderze filtra.',
       required: true,
     },
   }}
 />
 
-## Funkcja
+## Nazwa w szablonach [#the-name-in-templates]
 
-Funkcja otrzymuje przekazaną do niej wartość, argumenty filtra i kontekst szablonu, a przefiltrowaną wartość zwraca od razu.
+Filtr jest instalowany jako `x_<key>_<filter>`, a myślniki klucza zamieniają się w podkreślenia: `shout` z `hello-ext` to `x_hello_ext_shout`. [Słownik pojęć](/docs/pl/extensions/reference/glossary#names-after-install) wymienia nazwy wszystkiego, co instaluje rozszerzenie.
+
+## Funkcja [#the-function]
+
+Funkcja dostaje wartość przekazaną do filtra, argumenty filtra jako tablicę i kontekst szablonu. Zwraca przefiltrowaną wartość od razu.
 
 ```js title="filters/trackingurl/filter.js"
 /** @type {import('../../.opero/types').Filter} */
@@ -63,35 +65,47 @@ const filter = (value, args) => {
 export default filter;
 ```
 
-Argumenty wpisujesz w szablonie po dwukropku, oddzielone przecinkami, a trafiają do tablicy `args`:
+Argumenty podaje się w szablonie po dwukropku, oddzielone przecinkami:
 
 ```txt title="Szablon"
 {{ shipment.number | x_shipping_ext_trackingurl: "ups" }}
 ```
 
-<Callout type="warn" title="Filtry muszą odpowiadać od razu">
-Filtr nie może być `async` ani na nic czekać. Filtr asynchroniczny jest odrzucany z kodem `script.invalid`, a taki, który czeka, jest odrzucany w planie instalacji z kodem `filter.not_sync`.
+<Callout type="warn" title="Filtry odpowiadają od razu">
+Filtr nie może być `async` i nie może na nic czekać. Domyślny eksport `async` jest odrzucany przy przesłaniu, a filtr, który wywołuje asynchronicznego pomocnika, jest odrzucany w przeglądzie instalacji.
 </Callout>
 
-## Nazwy po instalacji
+## Kiedy filtry działają [#when-filters-work]
 
-Filtr jest instalowany jako `x_<key with _>_<filter>`. Myślniki w kluczu zamieniają się na podkreślenia:
+Filtr niczego nie wywołuje, więc działa także wtedy, gdy rozszerzenie nie jest uruchomione, np. gdy jego połączenie nie jest jeszcze skonfigurowane. Przestaje działać, gdy rozszerzenie zostanie wyłączone.
 
-| Klucz | Filtr | Nazwa w szablonach |
-| --- | --- | --- |
-| `hello-ext` | `shout` | `x_hello_ext_shout` |
-| `polar-eu` | `pace` | `x_polar_eu_pace` |
+Pliki reguł tej samej paczki nie mogą używać jej filtrów: wykonaj przekształcenie w skrypcie.
 
-## Zasady
-
-- Plik reguły z tej samej paczki nie może używać własnych filtrów paczki (`rule.own_filter_unsupported`). Zrób konwersję w skrypcie.
-- Filtry działają dalej, gdy rozszerzenie nie działa, bo niczego nie wywołują. Przestają działać, gdy rozszerzenie zostanie wyłączone.
-- Aktualizacja, która usuwa filtr używany przez regułę, jest blokowana. Szablony w innych miejscach nie są sprawdzane, więc w każdym przypadku dostajesz ostrzeżenie.
-
-## Filtr czy krok?
+## Filtr czy krok? [#a-filter-or-a-step]
 
 | Użyj filtra, gdy | Użyj kroku, gdy |
 | --- | --- |
-| Konwertujesz lub formatujesz jedną wartość. | Wywołujesz usługę albo łączysz kilka wartości. |
-| Wynik jest używany w szablonach. | Wynik trafia do kolejnych kroków reguły. |
-| Nie potrzebujesz danych uwierzytelniających. | Praca wymaga połączenia. |
+| Przekształcasz lub formatujesz jedną wartość. | Wywołujesz usługę albo łączysz kilka wartości. |
+| Wynik jest używany w szablonach. | Wynik zasila kolejne kroki reguły. |
+| Nie potrzeba danych uwierzytelniających. | Praca wymaga połączenia. |
+
+## Aktualizacje [#upgrades]
+
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Usunięto filtr, którego używają reguły organizacji | Aktualizacja jest zablokowana, dopóki te reguły go używają. | `filter.in_use` |
+| Usunięto filtr, którego nie używa żadna reguła | Ostrzeżenie: szablony nie są sprawdzane, a szablon, który nadal używa filtra, kończy się na nim błędem. | `filter.in_use` |
+
+Co widzi administrator, opisuje strona [Aktualizacja i odinstalowanie](/docs/pl/extensions/upgrade-and-uninstall#what-a-new-version-can-change).
+
+## Problemy [#problems]
+
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `filter.invalid` | Nieznany klucz albo nazwa z `_`, wielkimi literami lub dłuższa niż 41 znaków. | Użyj małych liter i cyfr. |
+| `filter.script_invalid` | `script` nie wskazuje pliku `.js` ani `.ts`. | Wskaż moduł skryptu filtra. |
+| `script.invalid` | Skrypt nie jest modułem z jednym `export default` albo jego domyślny eksport jest `async`. | Zobacz [Skrypty](/docs/pl/extensions/reference/scripts#problems). |
+| `name.duplicate` | Dwa filtry o tej samej nazwie. | Zmień jedną z nazw. |
+| `rule.own_filter_unsupported` | Plik reguły paczki używa jednego z jej filtrów. | Wykonaj przekształcenie w skrypcie. |
+| `filter.not_sync` | W przeglądzie instalacji: filtr wywołuje asynchronicznego pomocnika. | Spraw, żeby odpowiadał od razu. |
+| `filter.save_validation` | W przeglądzie instalacji: skrypt nie przechodzi walidacji albo inny skrypt organizacji ma jego nazwę. | Popraw skrypt albo zmień nazwę filtra. |

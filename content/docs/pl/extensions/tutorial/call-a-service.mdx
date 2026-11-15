@@ -1,15 +1,15 @@
 ---
 title: "Część 2: Wywołaj usługę"
-description: "Dodaj do rozszerzenia Hello połączenie z tokenem, ustawienie języka, akcję weryfikującą, krok reguły wywołujący httpbin.org z sekretem, filtr szablonu i polskie tłumaczenie."
+description: "Dodaj do rozszerzenia Hello połączenie z tokenem, ustawienie języka, sprawdzenie połączenia, krok wywołujący httpbin.org, filtr i polskie tłumaczenie."
 ---
 
-W tej części paczka dostaje połączenie z tokenem API, ustawienie języka powitania, sprawdzenie, czy token działa, krok `greet`, który wywołuje httpbin.org, filtr `shout` i polskie tłumaczenie.
+W tej części paczka uczy się wywoływać httpbin.org z sekretnym tokenem. Na końcu ma połączenie, ustawienie, sprawdzenie tokenu, krok `greet`, filtr `shout` i polskie tłumaczenie.
 
 <Steps>
 <Step>
-### Dodaj dwie akcje i filtr
+### Dodaj dwie akcje i filtr [#add-two-actions-and-a-filter]
 
-Z wnętrza folderu paczki:
+Uruchom te polecenia w folderze paczki. Każde zapisuje działający przykład i dopisuje jego wiersz do `extension.yaml`; `--rule` tworzy akcję z pliku reguły.
 
 ```bash title="Terminal"
 cd hello-ext
@@ -27,15 +27,13 @@ opero-ext add filter shout
 Wrote 5 files in …/hello-ext.
 ```
 
-Każde polecenie zapisuje działający przykład w nowym folderze i dopisuje jego wiersz na końcu listy w `extension.yaml`, zachowując twoje komentarze. `--rule` tworzy akcję z pliku reguły z krokiem skryptu zamiast samego skryptu.
-
-W kolejnych krokach zastąpisz te przykłady. Usuń oba pliki `step.js`, bo reguły poniżej ich nie używają.
+W kolejnych krokach zastąpisz te przykłady. Usuń `actions/verify/step.js` i `actions/greet/step.js`, bo reguły poniżej ich nie używają.
 </Step>
 
 <Step>
-### Opisz połączenie
+### Opisz połączenie [#describe-the-connection]
 
-Połączenie mieszka w folderze `connection` na najwyższym poziomie paczki. Utwórz go z jednym plikiem:
+Połączenie to formularz, w którym administrator wpisuje dane uwierzytelniające usługi. Utwórz `connection/connection.yaml`:
 
 ```yaml title="connection/connection.yaml"
 methods:
@@ -47,28 +45,13 @@ methods:
 verify: verify
 ```
 
-- `methods` to sposoby logowania; tutaj jeden, token API. `fields` to lista pól z sekretnymi wartościami, które wpisuje administrator. Każde pole metody jest sekretem. `hint: true` pozwala Opero pokazać ostatnie cztery znaki zapisanego tokenu, żeby administrator wiedział, który jest zapisany; bez tego wartość widać tylko jako `***`.
-- `verify` wskazuje akcję, którą Opero uruchamia, gdy administrator naciśnie **Sprawdź połączenie**. Napiszesz ją za chwilę.
-
-Następnie zadeklaruj w `extension.yaml` host, który wywołuje paczka, powód i połączenie:
-
-```yaml title="extension.yaml"
-requires:
-  modules: [rules]
-permissions: # [!code ++]
-  network: # [!code ++]
-    - host: httpbin.org # [!code ++]
-      reason: Checks the token and sends greetings to the httpbin.org test service. # [!code ++]
-connection: connection # [!code ++]
-```
-
-Przed instalacją administrator widzi każdy host wraz z powodem, a wywołanie innego hosta jest odrzucane. Uprawnienie bez powodu też jest odrzucane.
+Każde pole metody jest sekretem; `hint: true` pozwala Opero pokazać ostatnie cztery znaki zapisanego tokenu. `verify` wskazuje akcję, którą uruchamia **Sprawdź połączenie**. Zobacz [Połączenie i sekrety](/docs/pl/extensions/reference/connection-and-secrets).
 </Step>
 
 <Step>
-### Dodaj ustawienie
+### Dodaj ustawienie [#add-a-setting]
 
-Powitanie można wysłać po angielsku albo po polsku. Ten wybór nie jest sekretem, więc jest ustawieniem, a nie częścią połączenia. Ustawienia mieszkają w jednym pliku na najwyższym poziomie paczki:
+Język powitania nie jest sekretem, więc jest ustawieniem, a nie częścią połączenia. Utwórz `settings.yaml`:
 
 ```yaml title="settings.yaml"
 groups:
@@ -79,23 +62,13 @@ groups:
       language: { type: select, label: Language, options: [en, pl], default: en }
 ```
 
-- `groups` to sekcje formularza ustawień, które widzi administrator; tutaj jedna. `fields` to lista pól, taka jak wejście akcji.
-- `default: en` obowiązuje, dopóki administrator nie wybierze czegoś innego. Wymagane ustawienie bez wartości domyślnej nie pozwoliłoby rozszerzeniu działać, dopóki nie zostanie uzupełnione.
-
-Wskaż plik w `extension.yaml`:
-
-```yaml title="extension.yaml"
-connection: connection
-settings: settings.yaml # [!code ++]
-```
-
-Wszystkie klucze opisuje strona [Ustawienia](/docs/pl/extensions/reference/settings).
+Każda grupa to sekcja formularza ustawień. Dzięki `default: en` rozszerzenie działa, zanim ktokolwiek otworzy formularz; zobacz [Ustawienia](/docs/pl/extensions/reference/settings).
 </Step>
 
 <Step>
-### Napisz sprawdzenie
+### Napisz sprawdzenie [#write-the-check]
 
-Sprawdzenie to zwykła akcja, której nic nie publikuje. Nie przyjmuje wejścia i zwraca to, co odpowie usługa, więc jej deskryptor nie ma ani `input`, ani `output`:
+Sprawdzenie to akcja, której nic nie publikuje jako kroku. Nie przyjmuje wejścia i zwraca to, co odpowie usługa.
 
 ```yaml title="actions/verify/action.yaml"
 # The connection check: connection.yaml names it. It exposes nothing.
@@ -107,7 +80,7 @@ run: rule.yaml
 tests: tests.yaml
 ```
 
-Jej logika to [plik reguły](/docs/pl/extensions/reference/rule-files). Plik reguły zawiera to, co zapisuje edytor reguł (`entryStepId`, `steps`, `edges`), z krótkimi identyfikatorami kroków, które wybierasz sam. Nazwa reguły i jej wyzwalacz pochodzą z `action.yaml`.
+Jej logika to [plik reguły](/docs/pl/extensions/reference/rule-files): kroki i krawędzie, które zapisuje edytor reguł, z identyfikatorami kroków wybranymi przez ciebie.
 
 ```yaml title="actions/verify/rule.yaml"
 # The rule-save graph; the reader supplies its name and MANUAL trigger.
@@ -124,12 +97,13 @@ steps:
 edges: []
 ```
 
-Dwie rzeczy są tu sercem każdego rozszerzenia:
+`{{ connection.token }}` to sekret: Opero wstawia prawdziwą wartość dopiero podczas wysyłania żądania. To, co reguła zostawi pod `output`, jest wynikiem akcji, a status błędu kończy sprawdzenie niepowodzeniem.
+</Step>
 
-- `{{ connection.token }}` to sekret. Wskazuje pole `token` połączenia. Opero wstawia prawdziwą wartość dopiero podczas wysyłania żądania, więc nigdy nie trafia ona do logu, historii uruchomień ani skryptu.
-- `contextKey: output` publikuje wynik kroku pod nazwą `output`. To, co reguła zostawi pod `output`, jest wynikiem akcji. Wynik kroku **Wywołaj webhook** to `{ status, headers, body }`.
+<Step>
+### Przetestuj sprawdzenie [#test-the-check]
 
-Jeśli usługa odpowie statusem błędu, reguła kończy się błędem, a razem z nią weryfikacja. Testy pokazują oba przypadki:
+Przypadek testowy wymienia żądania, które wysyła akcja, odpowiedź na każde z nich i to, jak przypadek się kończy. Opero uruchamia wszystkie przypadki przy przesłaniu, nie wysyłając niczego.
 
 ```yaml title="actions/verify/tests.yaml"
 - name: a valid token is accepted
@@ -150,15 +124,13 @@ Jeśli usługa odpowie statusem błędu, reguła kończy się błędem, a razem 
   fails: { status: 401 }
 ```
 
-Przypadek testowy wymienia po kolei żądania, które akcja powinna wysłać, z odpowiedzią na każde, i określa, jak się kończy: `succeeds`, `fails`, `rateLimited` albo `returns` z dokładnym wyjściem. Opero uruchamia wszystkie przypadki przy przesłaniu, nie wysyłając niczego przez sieć.
-
-`connection` podaje wartości danych uwierzytelniających do testu. Porównywane są tylko nagłówki żądania, które wymienisz; ich nazwy pisz małymi literami. Zobacz [Testy](/docs/pl/extensions/reference/tests).
+`connection` podaje wartości danych uwierzytelniających przypadku. Porównywane są tylko nagłówki, które wymienisz, pisane małymi literami; zobacz [Testy](/docs/pl/extensions/reference/tests).
 </Step>
 
 <Step>
-### Napisz krok greet
+### Napisz krok greet [#write-the-greet-step]
 
-Tej operacji będą używać autorzy reguł. Przyjmuje imię i wysyła powitanie:
+Tego kroku będą używać autorzy reguł. Przyjmuje imię i wysyła powitanie.
 
 ```yaml title="actions/greet/action.yaml"
 action: greet
@@ -175,10 +147,8 @@ run: rule.yaml
 tests: tests.yaml
 
 expose:
-  ruleStep: { category: integration }
+  ruleStep: { category: integrations }
 ```
-
-Wyjście opisuje wynik webhooka: status i odpowiedź z otwartą listą pól (`fields: {}`). Lista wyjściowa przyjmuje pola, których nie wymienia, więc `headers` też przechodzi.
 
 ```yaml title="actions/greet/rule.yaml"
 # The rule-save graph; the reader supplies its name and MANUAL trigger.
@@ -196,15 +166,17 @@ steps:
 edges: []
 ```
 
-W pliku reguły dostępne są trzy rodzaje wartości:
-
 | Napisz | Aby dostać |
 | --- | --- |
 | `{{ trigger.data.name }}` | Pole wejścia akcji. |
-| `{{ trigger.settings.language }}` | Ustawienie, z zastosowaną wartością domyślną. Nie jest sekretem; można go używać wszędzie. |
+| `{{ trigger.settings.language }}` | Ustawienie, z zastosowaną wartością domyślną. |
 | `{{ connection.token }}` | Pole sekretne. Tylko w wartości nagłówka albo w wartości parametru zapytania w URL kroku **Wywołaj webhook**. |
+</Step>
 
-Testy dowodzą, że reguła buduje właściwe żądanie (ustawienie języka w URL, token w nagłówku, imię w treści) i że `429` jest zgłaszane jako przekroczenie limitu, więc wywołująca reguła może poczekać i ponowić próbę:
+<Step>
+### Przetestuj krok greet [#test-the-greet-step]
+
+Pierwszy przypadek dowodzi, że żądanie niesie ustawienie, token i imię. Drugi dowodzi, że `429` jest zgłaszane jako przekroczenie limitu, więc wywołująca reguła może poczekać i ponowić próbę.
 
 ```yaml title="actions/greet/tests.yaml"
 - name: the greeting is sent
@@ -235,13 +207,13 @@ Testy dowodzą, że reguła buduje właściwe żądanie (ustawienie języka w UR
   rateLimited: { status: 429 }
 ```
 
-`settings` podaje ustawienia przypadku. Drugi przypadek nie podaje żadnych, więc językiem jest wartość domyślna, `en`.
+Drugi przypadek nie podaje `settings`, więc językiem jest wartość domyślna, `en`.
 </Step>
 
 <Step>
-### Napisz filtr
+### Napisz filtr [#write-the-filter]
 
-Filtr to także moduł. Jego funkcja dostaje wartość przekazaną do filtra, argumenty filtra i kontekst szablonu, a wynik zwraca od razu: nie może być `async`.
+Funkcja filtra dostaje wartość przekazaną do filtra i od razu zwraca wynik; nie może być `async`.
 
 ```yaml title="filters/shout/filter.yaml"
 filter: shout
@@ -255,17 +227,13 @@ const filter = (value) => String(value ?? '').toUpperCase() + '!';
 export default filter;
 ```
 
-Po instalacji każdy szablon w organizacji może zawierać `{{ "hi" | x_hello_ext_shout }}` i dostać `HI!`. Nazwa filtra składa się tylko z liter i cyfr, bez podkreślnika.
+Po instalacji każdy szablon może zawierać `{{ "hi" | x_hello_ext_shout }}` i dostać `HI!`. Zobacz [Filtry szablonów](/docs/pl/extensions/reference/filters).
 </Step>
 
 <Step>
-### Przetłumacz
+### Przetłumacz [#translate]
 
-Wersję angielską zapisujesz w deskryptorach. Każdy inny język to jeden plik, który odwzorowuje paczkę; pomiń to, czego nie tłumaczysz, a zostanie wyświetlone po angielsku. Dodaj język do `extension.yaml`:
-
-```yaml title="extension.yaml"
-locales: [pl] # [!code ++]
-```
+Wersję angielską zapisujesz w deskryptorach, a każdy inny język to jeden plik. Pomiń to, czego nie tłumaczysz, a zostanie wyświetlone po angielsku.
 
 ```yaml title="locales/pl.yaml"
 extension:
@@ -302,12 +270,11 @@ filters:
 
 Klucz, który nie wskazuje niczego w paczce, jest odrzucany, więc literówka się nie ukryje. Zobacz [Tłumaczenia](/docs/pl/extensions/reference/translations).
 </Step>
-</Steps>
 
-## Gotowa paczka
+<Step>
+### Wpisz nowe części do extension.yaml [#list-the-new-parts-in-extensionyaml]
 
-<Accordions type="single">
-<Accordion title="Gotowy extension.yaml">
+Polecenia `add` wpisały już akcje i filtr. Dodaj host, który wywołuje paczka, z powodem, a także połączenie, ustawienia i język:
 
 ```yaml title="extension.yaml"
 # The package's contents: every feature it installs is listed here.
@@ -318,15 +285,13 @@ name: Hello
 description: A starter extension with a greeting, a call to httpbin.org and a filter.
 publisher: Your company
 requires:
-  opero: ">=2026.1.0"
   modules: [rules]
-permissions:
-  network:
-    - host: httpbin.org
-      reason: Checks the token and sends greetings to the httpbin.org test service.
-
-connection: connection
-settings: settings.yaml
+permissions: # [!code ++]
+  network: # [!code ++]
+    - host: httpbin.org # [!code ++]
+      reason: Checks the token and sends greetings to the httpbin.org test service. # [!code ++]
+connection: connection # [!code ++]
+settings: settings.yaml # [!code ++]
 
 actions:
   - actions/hello
@@ -335,10 +300,23 @@ actions:
 filters:
   - filters/shout
 
-locales: [pl]
+locales: [pl] # [!code ++]
+
+# What the catalog shows is under listing/: icon.png, description.md and
+# changelog.md. Screenshots are listed here, in order, with their captions:
+# listing:
+#   screenshots:
+#     - file: listing/screenshots/main.png
+#       caption: The main screen
 ```
 
-</Accordion>
+Przed instalacją administrator widzi każdy host wraz z powodem. Wywołanie innego hosta jest odrzucane, podobnie jak uprawnienie bez powodu.
+</Step>
+</Steps>
+
+## Gotowa paczka [#the-finished-package]
+
+<Accordions type="single">
 <Accordion title="Gotowy folder">
 
 <Files>
@@ -374,6 +352,11 @@ locales: [pl]
     <Folder name="locales" defaultOpen>
       <File name="pl.yaml" />
     </Folder>
+    <Folder name="listing" defaultOpen>
+      <File name="description.md" />
+      <File name="changelog.md" />
+      <File name="icon.png" />
+    </Folder>
     <File name="README.md" />
     <File name=".gitignore" />
     <File name="jsconfig.json" />
@@ -385,6 +368,10 @@ locales: [pl]
 </Accordion>
 </Accordions>
 
-## Dalej
+## Dalej [#next]
 
-Przejdź do [części 3: Sprawdź i spakuj](/docs/pl/extensions/tutorial/check-and-pack).
+<Cards>
+  <Card title="Część 3: Sprawdź i spakuj" href="/docs/pl/extensions/tutorial/check-and-pack">
+    Zwaliduj folder, spakuj plik zip i uruchom testy w Opero.
+  </Card>
+</Cards>

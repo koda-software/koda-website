@@ -1,15 +1,11 @@
 ---
-title: "Recipe: a block, a button and a link"
-description: "Build an Opero extension that members use on record pages: a parcel object, a block with a scripted card and a badge, an action members run from a button and as a record command, a link to the carrier's tracking page, and the package permissions that decide who may use them."
+title: A block, a button and a link
+description: "Build an Opero extension that members use on record pages: a block with a button, a record command, a link, and the permissions that guard them."
 ---
 
-This recipe builds a package for **parcels** that members use on the parcel's own page. It brings:
+This guide builds **Parcels**, a package that members use on a parcel's own page. It brings an object **Parcel** and a block **Parcel card** that shows the parcel with a **Status badge** and a **Track now** button. The button runs the action **Track parcel** (`x-parcels.track_parcel`), which asks the carrier where the parcel is; the same action is offered as a command on every parcel. A link **Open tracking page** opens the parcel at the carrier. Two package permissions, **Track parcels** and **Open tracking pages**, decide who may use them.
 
-- an object **Parcel**;
-- a block **Parcel card** that shows the parcel with a **Status badge**, another block of the package, and a **Track now** button;
-- an action **Track parcel** (`x-parcels.track_parcel`) that asks the carrier where the parcel is, run by that button and offered as a command on every parcel;
-- a link **Open tracking page** to the parcel's page at the carrier;
-- two package permissions, **Track parcels** and **Open tracking pages**, that the organization grants in its roles.
+![The Parcel card on a parcel's page, with the status badge and the Track now button](/docs/_assets/extensions/blocks-and-actions/parcel-card.webp)
 
 <Files>
   <Folder name="parcels" defaultOpen>
@@ -53,7 +49,7 @@ This recipe builds a package for **parcels** that members use on the parcel's ow
   </Folder>
 </Files>
 
-The carrier in this recipe knows each parcel by its Opero record id, which it was given when the parcel was registered.
+The carrier in this guide knows each parcel by its Opero record id, which it was given when the parcel was registered.
 
 <Steps>
 <Step>
@@ -235,7 +231,7 @@ tests: tests.yaml
 ```
 
 ```css title="blocks/status-badge/block.css"
-.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--muted); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--muted); }
 .badge--delivered { background: var(--primary); color: var(--primary-foreground); }
 ```
 
@@ -274,8 +270,9 @@ tests: tests.yaml
 ```
 
 ```css title="blocks/parcel-card/block.css"
-.parcel { display: grid; gap: 8px; padding: 16px; border-radius: 8px; background: var(--muted); }
-.parcel__number { margin: 0; }
+.parcel { display: grid; justify-items: start; gap: 8px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; }
+.parcel__number { margin: 0; font-size: 16px; font-weight: 600; }
+.parcel button { padding: 6px 12px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground); }
 .parcel__answer:empty { display: none; }
 ```
 
@@ -387,20 +384,58 @@ opero-ext pack .
 
 ```txt title="Output"
 parcels 0.1.0 is valid.
-```
+Result  Part                Test                                Name
+PASS    track_parcel        actions/track-parcel/tests.yaml#/0  the carrier's status comes back
+PASS    track_parcel        actions/track-parcel/tests.yaml#/1  a parcel the carrier does not know fails
+PASS    block parcel_card   blocks/parcel-card/tests.yaml#/0    shows the button to a member who may track
+PASS    block parcel_card   blocks/parcel-card/tests.yaml#/1    hides the button from everyone else
+PASS    block status_badge  blocks/status-badge/tests.yaml#/0   shows the status it is given
+PASS    block status_badge  blocks/status-badge/tests.yaml#/1   shows new when no status is given
 
-`validate` checks the files offline; `test` runs the two action cases and the four render cases on the server.
+6 of 6 tests passed.
+Wrote …/parcels-0.1.0.zip (6181 bytes)
+```
 </Step>
 </Steps>
 
 ## After install
 
-An administrator installs the package as in the [tutorial](/docs/en/extensions/tutorial/install-and-use), with the permissions to create Custom Blocks and change custom HTML. Before confirming, the install plan shows the two blocks with the card's script, the action members run with the permission it needs, the link with its host `track.example.com` and its field **Parcel number**, and the two package permissions with their reasons.
+[Install the zip](/docs/en/extensions/install) as usual, as an administrator who may also create Custom Blocks and change custom HTML. The review lists the blocks with the card's script, what members can use with the permission each needs, the link with what it sends to `track.example.com`, and the two package permissions. Then the organization does three things.
 
-Then:
+<Steps>
+<Step>
+### Grant the package permissions
 
-- the organization grants **Track parcels** and **Open tracking pages** to the roles that should have them; until then only members whose role grants every permission see the command, the button and the link;
-- it places **Parcel card** (`x_parcels_parcel_card`) on the parcels' record page, as it places its own blocks;
-- a member with **Track parcels** presses **Track now** on the card, or runs **Track parcel** from the parcel's actions, and sees the carrier's answer; a member with **Open tracking pages** opens the parcel at the carrier.
+In **Roles**, edit the company roles that should track parcels and tick **Track parcels** and **Open tracking pages**. Installing grants them to no one, so until then only members whose role grants every permission see the button, the command and the link.
 
-Every one of these is exposed to all companies and all members after install; the organization can narrow each one to some companies or to an audience. If the extension is disabled, the card shows a notice instead of the parcel, and the command and the link disappear. If it is uninstalled, the card stays archived where it was placed and shows that the extension was removed; installing it again brings it back.
+![A company role's permissions filtered by parcel, with Track parcels ticked](/docs/_assets/extensions/blocks-and-actions/role-permissions.webp)
+</Step>
+<Step>
+### Place the card
+
+An object comes with no form, so build one for **Parcel** in **Custom Modules**, as for the organization's own objects. Drag a **Block** onto the form and choose **Parcel card** (`x_parcels_parcel_card`), then publish the form.
+</Step>
+<Step>
+### Use it on a parcel
+
+A member with **Track parcels** presses **Track now** on the card, or runs **Track parcel** from the parcel's details panel, and sees the carrier's answer. A member with **Open tracking pages** opens the parcel at the carrier from the same panel.
+
+![A parcel's details panel with the Track parcel command and the Open tracking page link](/docs/_assets/extensions/blocks-and-actions/record-actions.webp)
+</Step>
+</Steps>
+
+Each action and link is offered to every company and every member after install; **Manage access** under [What members can use](/docs/en/extensions/after-install#what-members-can-use) narrows that. While the extension is disabled, the card shows a notice instead of the parcel, and the command and the link disappear.
+
+## Next
+
+<Cards>
+  <Card title="Blocks" href="/docs/en/extensions/reference/blocks">
+    Inputs, queries, record reads, buttons, scripts and render tests.
+  </Card>
+  <Card title="Block actions and record commands" href="/docs/en/extensions/reference/member-actions">
+    Every key of expose.blockAction and expose.recordCommand.
+  </Card>
+  <Card title="Record links" href="/docs/en/extensions/reference/record-links">
+    Links on the package's objects and on built-in records.
+  </Card>
+</Cards>

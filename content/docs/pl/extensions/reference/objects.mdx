@@ -1,9 +1,9 @@
 ---
 title: Obiekty
-description: "Opis object.yaml w rozszerzeniach Opero: klucze i pola obiektu, odwołania do własnych obiektów i słowników paczki, moduł x-<key>, brak formularza, aktualizacje i to, gdzie administrator je widzi."
+description: Dodaj własne tabele rekordów przez object.yaml, z polami, odwołaniami do obiektów i słowników tej samej paczki oraz modułem x-<key>.
 ---
 
-Obiekt to tabela rekordów, którą rozszerzenie przynosi ze sobą, na przykład zamówienia albo przesyłki. Przy instalacji paczki Opero tworzy prawdziwą tabelę dla każdego obiektu, w jednym module nazwanym od rozszerzenia: `x-<key>`. Organizacja pracuje potem z rekordami jak z każdym innym obiektem, a własne reguły paczki mogą je odczytywać i zapisywać [krokami danych](/docs/pl/extensions/reference/data-steps).
+Obiekt to tabela rekordów, którą rozszerzenie przynosi ze sobą, na przykład zamówienia albo przesyłki. Przy instalacji Opero tworzy prawdziwą tabelę dla każdego obiektu, w jednym module nazwanym od rozszerzenia, `x-<key>`; reguły paczki docierają do rekordów [krokami danych](/docs/pl/extensions/reference/data-steps). Dwa obiekty buduje przewodnik [Paczka z własnymi danymi](/docs/pl/extensions/own-data).
 
 ```yaml title="objects/orders/object.yaml"
 object: orders
@@ -23,17 +23,9 @@ fields:
     options: { toObject: order-notes }
 ```
 
-Każdy obiekt ma własny folder w `objects/`, wymieniony w `extension.yaml`. Paczka z obiektami wymienia moduł `objects` w `requires.modules`:
+Każdy obiekt ma własny folder w `objects/`, wymieniony w `objects` w `extension.yaml`, a paczka z obiektami wymienia `objects` w `requires.modules`.
 
-```yaml title="extension.yaml"
-requires:
-  modules: [rules, objects]
-objects:
-  - objects/orders
-  - objects/order-notes
-```
-
-## object.yaml
+## object.yaml [#objectyaml]
 
 <TypeTable
   type={{
@@ -68,9 +60,7 @@ objects:
   }}
 />
 
-Przyjmowane są też pozostałe klucze, które kreator schematu przyjmuje dla nowego obiektu: `isActive`, `isHidden`, `isSingleton`, `isTimeTrackable`, `kind`, `displayLabel`, `recordVisibility`, `recordTenancy`, `recordOwnerField`, `recordLinkedOwnerField`, `recordLinkedOwnerTargetField`, `documentContentFieldKey`, `documentTitleFieldKey` i `contentSourceLanguage`. Opero sprawdza ich wartości, gdy planuje instalację paczki, tak samo jak przy obiekcie tworzonym przez administratora.
-
-`id`, `clientId` i `key` nie należą do `object.yaml`: kluczem obiektu jest `object`.
+Przyjmowane są też pozostałe klucze, które kreator schematu przyjmuje dla nowego obiektu: `isActive`, `isHidden`, `isSingleton`, `isTimeTrackable`, `kind`, `displayLabel`, `recordVisibility`, `recordTenancy`, `recordOwnerField`, `recordLinkedOwnerField`, `recordLinkedOwnerTargetField`, `documentContentFieldKey`, `documentTitleFieldKey` i `contentSourceLanguage`. Ich wartości są sprawdzane w przeglądzie instalacji, tak jak dla obiektu tworzonego przez administratora.
 
 ## Pola [#fields]
 
@@ -78,7 +68,7 @@ Przyjmowane są też pozostałe klucze, które kreator schematu przyjmuje dla no
   type={{
     key: {
       type: 'string',
-      description: 'Mała litera, potem małe litery, cyfry i _, do 50 znaków. Unikalny w obiekcie.',
+      description: 'Mała litera, potem małe litery, cyfry i _, do 50 znaków. Unikalny w obiekcie. W zapytaniu to kolumna f_<key>.',
       required: true,
     },
     name: {
@@ -88,12 +78,12 @@ Przyjmowane są też pozostałe klucze, które kreator schematu przyjmuje dla no
     },
     type: {
       type: 'string',
-      description: 'Typ pola, wielkimi literami, np. TEXT, NUMBER, DATE, SELECT albo REFERENCE.',
+      description: 'Typ pola z kreatora schematu, wielkimi literami: TEXT, NUMBER, DATE, SELECT, REFERENCE i pozostałe, które oferuje.',
       required: true,
     },
     options: {
       type: 'object',
-      description: 'Opcje typu pola, tak jak przyjmuje je kreator schematu, z dwoma przenośnymi odwołaniami opisanymi niżej.',
+      description: 'Opcje typu pola, tak jak przyjmuje je kreator schematu, z odwołaniami opisanymi niżej.',
     },
     isIndexed: {
       type: 'boolean',
@@ -109,73 +99,49 @@ Przyjmowane są też pozostałe klucze, które kreator schematu przyjmuje dla no
     },
     position: {
       type: 'integer',
-      description: 'Miejsce pola w kolejności pól.',
+      description: 'Miejsce pola w kolejności pól, od 0.',
     },
   }}
 />
 
-Typy pól są takie jak w kreatorze schematu: `TEXT`, `TEXTAREA`, `RICH_TEXT`, `NUMBER`, `DECIMAL`, `CURRENCY`, `BOOLEAN`, `DATE`, `DATETIME`, `SELECT`, `MULTI_SELECT`, `REFERENCE`, `EMAIL`, `PHONE`, `URL` i pozostałe, które oferuje. Narzędzie wiersza poleceń sprawdza, czy typ jest zapisany wielkimi literami; to, czy typ istnieje, czy jego opcje są poprawne i czy jego moduł jest dostępny, sprawdza plan instalacji.
-
-W [zapytaniu](/docs/pl/extensions/reference/queries) pole jest kolumną `f_<key>`: pole `ordered_on` to `f_ordered_on`.
+`opero-ext validate` sprawdza, czy typ jest zapisany wielkimi literami. Czy typ istnieje, czy ma dobre opcje i czy jego moduł jest dostępny, sprawdza przegląd instalacji.
 
 ## Odwołania wewnątrz paczki [#references-inside-the-package]
 
-Pole może wskazywać słownik albo inny obiekt, ale tylko z tej samej paczki. Wpisz nazwę celu, nie id:
+Pole wskazuje słownik albo inny obiekt tej samej paczki nazwą, nigdy identyfikatorem. Opero wpisuje w to miejsce identyfikatory z instalacji.
 
 | Opcja | W polu typu | Wskazuje |
 | --- | --- | --- |
-| `dictionary: <name>` | `SELECT`, `MULTI_SELECT` | [Słownik](/docs/pl/extensions/reference/dictionaries) paczki, po nazwie z jego `dictionary.yaml`. |
-| `toObject: <object>` | `REFERENCE`, `SUBORDINATE_OBJECT_REFERENCE` | Obiekt paczki, po jego kluczu `object`. Dwa obiekty mogą wskazywać na siebie nawzajem, a obiekt na samego siebie. |
+| `dictionary: <name>` | `SELECT`, `MULTI_SELECT` | [Słownik](/docs/pl/extensions/reference/dictionaries) paczki. |
+| `toObject: <object>` | `REFERENCE`, `SUBORDINATE_OBJECT_REFERENCE` | Obiekt paczki, według jego klucza `object`. Dwa obiekty mogą wskazywać na siebie nawzajem, a obiekt na samego siebie. |
 
-```yaml title="objects/order-notes/object.yaml"
-object: order-notes
-name: Order note
-namePlural: Order notes
-fields:
-  - { key: text, name: Text, type: TEXT }
-  - key: order
-    name: Order
-    type: REFERENCE
-    options: { toObject: orders }
-```
+Pole nie może zawierać `dictionaryId`, `toObjectId`, `toObjectClientId`, `toModuleKey` ani `toObjectKey`: paczka nie może wskazywać własnych słowników ani obiektów organizacji.
 
-Przy instalacji paczki Opero zamienia te nazwy na id zainstalowanych zasobów. Pole nie może zawierać `dictionaryId`, `toObjectId`, `toObjectClientId`, `toModuleKey` ani `toObjectKey`: paczka nie może wskazywać własnych słowników ani obiektów organizacji.
+## Obiekt nie ma formularza [#no-form-comes-with-an-object]
 
-## Obiekt nie przychodzi z formularzem [#no-form-comes-with-an-object]
+Instalacja obiektu tworzy tylko jego tabelę i pola, bez formularza, listy, strony i pozycji menu, dlatego `createDefaultForm` jest odrzucane. Ekrany dostarcz jako [formularze, listy i strony](/docs/pl/extensions/reference/screens).
 
-Instalacja obiektu tworzy tylko jego tabelę i pola. Nie powstaje dla niego żaden formularz, lista, strona ani pozycja menu, a `createDefaultForm` w `object.yaml` jest odrzucane.
+## Moduł [#the-module]
 
-Żeby obiekt miał swoje ekrany, dostarcz je w paczce: [formularze, listy i strony](/docs/pl/extensions/reference/screens). Organizacja może też zbudować na obiekcie własne formularze, listy własne i strony, jak na każdym innym obiekcie.
+Wszystkie obiekty paczki należą do modułu `x-<key>`. Organizacja nie może utworzyć modułu, którego klucz zaczyna się od `x-`, więc ten moduł może należeć tylko do tego rozszerzenia. Kształtem obiektu zarządza rozszerzenie, a jego rekordy pozostają własnością organizacji; zobacz [Zasoby zarządzane](/docs/pl/extensions/after-install#managed-assets).
 
-## Gdzie widzi je administrator [#where-the-administrator-sees-them]
+## Aktualizacje [#upgrades]
 
-- **Plan instalacji.** W sekcji **Co się zmieni** moduł i każdy obiekt są wymienione razem z tym, co zrobi z nimi instalacja (**Zostanie utworzone**, **Zostanie zmienione** i tak dalej).
-- **Strona rozszerzenia.** Karta **Zainstalowane dane** wymienia w sekcji **Zainstalowane obiekty** każdy obiekt tylko do odczytu, z kluczem, liczbą rekordów i tabelą pól (klucz, nazwa, typ). Nazwa obiektu prowadzi do jego strony.
-- **Ekran Moduły własne.** Moduł rozszerzenia jest pominięty na liście zarządzania **Moduły własne**.
-- **Własna strona obiektu**, otwarta z odnośnika, zaczyna się od „Tylko do odczytu: zarządza tym rozszerzenie `<key>`.” i odnośnika **Otwórz rozszerzenie**. Jego pola są tabelą tylko do odczytu, a **Usuń obiekt** nie jest dostępne; formularze, udostępnienie firmom i dostęp do rekordów można nadal zmieniać. Strona modułu nie oferuje **Edytuj**, **Szkice**, **Usuń** ani nowych obiektów.
-- **Wszędzie, gdzie wybiera się obiekt.** Reguły, źródła list własnych, raporty, formularze i pola referencji oferują te obiekty jak każde inne.
+| Zmiana w nowej wersji | Co się dzieje | Kod |
+| --- | --- | --- |
+| Dodano obiekt albo pole | Zostaje utworzone. | |
+| Usunięto pole albo obiekt | Jego wartości albo rekordy są usuwane, gdy administrator potwierdzi utratę. | |
+| Pole zmieniło się tak, że jego zapisane wartości trzeba wyczyścić | To samo. | |
+| Instalacja przejmuje obiekt zachowany przy wcześniejszym odinstalowaniu | Obiekt znów należy do rozszerzenia. Ostrzeżenie. | `object.adopts_existing` |
 
-Budowa obiektu należy do rozszerzenia: jego pól nie da się dodać, zmienić ani usunąć, a obiektu i modułu nie da się usunąć, chyba że przez aktualizację albo odinstalowanie. Cała reszta należy do organizacji: rekordy, to, które firmy widzą obiekt, kto widzi wszystkie rekordy, zbudowane na nim formularze, dostęp z portalu i profil zewnętrznego API.
-
-Organizacja nie może utworzyć modułu, którego klucz zaczyna się od `x-`, więc moduł `x-<key>` może należeć tylko do tego rozszerzenia.
-
-## Aktualizacje i odinstalowanie [#upgrades-and-uninstalling]
-
-| Nowa wersja | Co się dzieje |
-| --- | --- |
-| Dodaje obiekt albo pole | Zostaje utworzone. |
-| Usuwa pole albo obiekt | Plan wymienia, co zostanie utracone, z liczbą rekordów. Administrator musi to potwierdzić, zanim aktualizacja się wykona. |
-| Zmienia pole tak, że jego zapisane wartości trzeba wyczyścić | Wymienione i potwierdzane w ten sam sposób. |
-
-Odinstalowanie domyślnie zachowuje moduł, obiekty i ich rekordy; stają się one własnymi zasobami organizacji. Ponowna instalacja rozszerzenia je przejmuje. Administrator może też zdecydować, że zostaną usunięte razem z rozszerzeniem. Zobacz [Po instalacji](/docs/pl/extensions/after-install#data).
+Odinstalowanie domyślnie zachowuje obiekty i ich rekordy jako własność organizacji. Co widzi administrator, opisują sekcje [Gdy aktualizacja usuwa dane](/docs/pl/extensions/upgrade-and-uninstall#when-an-upgrade-deletes-data) i [Zachowanie lub usunięcie danych](/docs/pl/extensions/upgrade-and-uninstall#keep-or-delete-the-data).
 
 ## Problemy [#problems]
 
-| Kod | Co jest nie tak |
-| --- | --- |
-| `object.invalid` | Nieznany klucz, klucz albo pole o złej postaci, `createDefaultForm`, opcja wskazująca id albo inny moduł, `dictionary` w polu, które nie jest polem wyboru, `toObject` w polu, które nie jest referencją, albo więcej niż 50 obiektów. |
-| `object.unknown_reference` | `dictionary` albo `toObject` nie wskazuje niczego w paczce. |
-| `name.duplicate` | Dwa obiekty o tym samym kluczu `object`. |
-| `requires.module_undeclared` | Paczka ma obiekty, ale w `requires.modules` brakuje `objects`. |
-| `object.save_validation` | W planie instalacji: obiektu albo pola nie da się zapisać, np. przez nieznany typ pola albo złe opcje. Blokuje instalację. |
-| `object.adopts_existing` | W planie instalacji: przejmowany jest obiekt zachowany przy wcześniejszym odinstalowaniu. Ostrzeżenie. |
+| Kod | Przyczyna | Rozwiązanie |
+| --- | --- | --- |
+| `object.invalid` | Nieznany klucz, klucz albo pole o złej strukturze, `createDefaultForm`, opcja wskazująca identyfikator albo inny moduł, `dictionary` w polu, które nie jest wyborem, `toObject` w polu, które nie jest odwołaniem, albo więcej niż 50 obiektów. | Popraw klucz wskazany w komunikacie. |
+| `object.unknown_reference` | `dictionary` albo `toObject` nie wskazuje niczego w paczce. | Popraw nazwę albo dodaj słownik lub obiekt. |
+| `name.duplicate` | Dwa obiekty o tym samym kluczu `object`. | Zmień nazwę jednego z nich. |
+| `requires.module_undeclared` | Paczka ma obiekty, ale w `requires.modules` brakuje `objects`. | Dodaj `objects`. |
+| `object.save_validation` | W przeglądzie instalacji: obiektu albo pola nie da się zapisać, na przykład przez nieznany typ pola albo złe opcje. Blokuje instalację. | Popraw pole zgodnie z komunikatem. |

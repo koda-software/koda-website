@@ -1,9 +1,9 @@
 ---
 title: Scripts
-description: "Write Opero extension scripts in JavaScript or TypeScript: the module shape, the argument a run script receives, filter functions, block scripts, generated types, the sandbox and errors."
+description: Write the scripts of an extension package in JavaScript or TypeScript, with the module shape, the argument each kind receives and the generated types.
 ---
 
-Every script is a module with exactly one `export default` function, no `import` and no other export. Each runs on its own in a sandbox, without network or database access.
+A script is a JavaScript or TypeScript module with exactly one `export default` function, no `import` and no other export. It runs on its own in a sandbox, without network or database access. Actions, rule file steps, template filters and blocks use scripts; [A step that only calculates](/docs/en/extensions/calculating-step) is built on one.
 
 <Tabs items={['JavaScript', 'TypeScript']}>
 <Tab value="JavaScript">
@@ -45,14 +45,16 @@ Write `export default function name(…)`, or a constant followed by `export def
 
 ## Kinds of script
 
-| Script | Receives | Returns |
-| --- | --- | --- |
-| `run: run.js` in `action.yaml` | One argument: `{ input, settings, company, user, record, context }` | The action's output. May be `async`. |
-| `code: { $file: step.js }` in a rule file | The same argument | The step's result, under its `contextKey`. |
-| A filter's `script` | `(value, args, context)` | The filtered value, at once: not `async`. |
-| A block's `script` | `ctx`, the block's context, in the viewer's browser. See [Blocks](/docs/en/extensions/reference/blocks#the-script). | Nothing, or a function that cleans up before the block's next run. |
+| Script | Named by | Receives | Returns |
+| --- | --- | --- | --- |
+| Action script | `run: run.js` in `action.yaml` | The argument below | The action's output. May be `async`. |
+| Step script | `code: { $file: step.js }` in a rule file | The argument below | The step's result, under its `contextKey`. May be `async`. |
+| Filter script | `script` in `filter.yaml` | `(value, args, context)` | The filtered value, at once: not `async`. See [Template filters](/docs/en/extensions/reference/filters#the-function). |
+| Block script | `script` in `block.yaml` | `ctx`, in the viewer's browser. See [Blocks](/docs/en/extensions/reference/blocks#the-script). | Nothing, or a function that cleans up before the block's next run. |
 
 ## The argument
+
+An action script and a step script receive one object:
 
 <TypeTable
   type={{
@@ -62,7 +64,7 @@ Write `export default function name(…)`, or a constant followed by `export def
     },
     settings: {
       type: 'object',
-      description: 'The extension\'s settings, with the defaults applied. {} in a package without settings.yaml. Never a secret.',
+      description: 'The extension\'s settings, with the defaults applied; {} in a package without settings.yaml. Never a secret.',
     },
     company: {
       type: '{ id } | undefined',
@@ -70,15 +72,15 @@ Write `export default function name(…)`, or a constant followed by `export def
     },
     user: {
       type: '{ id, email, firstName, lastName }',
-      description: 'The user the run acts for.',
+      description: 'The user the run acts for. A system run has the system user.',
     },
     record: {
       type: '{ type, id, moduleKey?, objectKey? } | null',
-      description: 'The record a block action or a record command runs for, by reference. null otherwise. See Block actions and record commands.',
+      description: 'The record a block action or record command runs for, by reference; null otherwise.',
     },
     context: {
       type: 'object',
-      description: 'The whole rule context, as a Run script step sees it.',
+      description: 'The whole rule context, as a Run Script step sees it.',
     },
   }}
 />
@@ -97,24 +99,25 @@ if (!Number.isFinite(price)) {
 }
 ```
 
-Line numbers stay true: a problem the checks find on line 3 of your script is reported at line 3.
+A problem found when the package is read is reported at its line in your script: Opero keeps every line where you wrote it.
 
 <Callout type="warn">
-When a script throws while it runs, the step currently reports "Script execution failed" without a line number. Line numbers exist only for problems found when the package is read or built, so cover your error paths with [tests](/docs/en/extensions/reference/tests).
+When a script throws while it runs, the step reports "Script execution failed" without a line number. Cover your error paths with [tests](/docs/en/extensions/reference/tests).
 </Callout>
 
 ## Generated types
 
-`.opero/types/index.d.ts` is generated from the descriptors by `types`, and by `validate`, `pack`, `add` and `init` when the package is valid. It declares:
+`opero-ext types` writes `.opero/types/index.d.ts` from the descriptors. `init` and `add` write it too, and `validate` and `pack` refresh it when the package is valid and already has a `.opero/` folder.
 
 | Type | For |
 | --- | --- |
-| `Action<'name'>` | A `run` script. |
-| `StepScript<'name'>` | A `$file` script in a rule file. |
+| `Action<'name'>` | An action script. |
+| `StepScript<'name'>` | A step script of that action's rule file. |
 | `Filter` | A filter script. |
+| `Block` | A [block](/docs/en/extensions/reference/blocks#the-script)'s script, a function of `ctx`. Only in a package with blocks. |
 | `Settings` | The extension's settings, from `settings.yaml`. A field with a default is not optional. |
 | `ScriptArgument<'name'>` | The argument of an action's scripts. |
-| `Block` | A [block](/docs/en/extensions/reference/blocks#the-script)'s script, a function of `ctx`. |
+| `Triggers` | The data of each trigger's events. |
 
 In JavaScript, apply one with the JSDoc line the scaffold writes, and check the scripts with:
 
@@ -122,9 +125,11 @@ In JavaScript, apply one with the JSDoc line the scaffold writes, and check the 
 npx tsc -p jsconfig.json
 ```
 
+A field from a [schema file](/docs/en/extensions/reference/actions#schema-files) is not typed.
+
 ## TypeScript
 
-A descriptor may name a `.ts` file. The tool strips the types and packs a `.js` with the same lines.
+A descriptor may name a `.ts` file. `opero-ext` strips the types and packs a `.js` with the same lines beside it.
 
 Only TypeScript that becomes JavaScript by removing types is accepted:
 
@@ -132,8 +137,18 @@ Only TypeScript that becomes JavaScript by removing types is accepted:
 - `import type` lines are removed with the types; any other `import` is refused;
 - a `.js` you keep beside a `.ts` is not used.
 
-A module problem found in a `.ts` script, such as a missing default export, is reported at the `.js` the tool built. What the type stripping refuses is reported at the `.ts`.
+A module problem, such as a missing default export, is reported at the `.js` the tool built. What the type stripping refuses is reported at the `.ts`.
 
 <Callout type="warn" title="The module check reads lines">
 A line inside a template literal or a block comment that starts with `export` or `import` at the first column is read as a module statement, and refused. Indent such lines.
 </Callout>
+
+## Problems
+
+| Code | Cause | Fix |
+| --- | --- | --- |
+| `script.invalid` | No line or more than one line starts with `export default`, a line imports or exports something else, the file is empty, a filter's default export is `async`, or TypeScript that cannot be stripped. | Keep one `export default` function and no other `import` or `export`. |
+| `script.not_built` | A zip names a `.ts` script without the `.js` beside it. | Pack with `opero-ext pack`. |
+| `script.missing_file` | A `$file` script that is not in the package. | Add the file, or fix the name. |
+| `script.invalid_path` | A `$file` value that is not a `.js` or `.ts` file of the action's folder. | Name a script file in that folder, relative to it. |
+| `manifest.missing_file` | `run` or a filter's `script` names a `.js` file that is not in the package. | Add the file, or fix the name. |
