@@ -93,7 +93,7 @@ export const whiteListLabels: WhiteListLabels = {
   privacyNote: "The request goes straight to the Ministry of Finance. Nothing is stored.",
   errors: {
     nip: "That is not a valid NIP. Check that it has 10 digits and no typo.",
-    account: "That is not a valid account number. A Polish account number has 26 digits.",
+    account: "That is not a valid account number. Check that it has 26 digits and no typo.",
     date: "Choose today or an earlier date.",
     network: "Could not reach the Ministry of Finance register. Try again shortly, or",
     limit: "The daily request limit for the register from this address is used up. Try tomorrow, or",

@@ -8,7 +8,9 @@
  * does not know, so a new schema revision degrades instead of failing.
  */
 
-export type XmlNode = { name: string; attrs: Record<string, string>; children: XmlNode[]; text: string };
+import { KSEF_NUMBER_IN_TEXT, child, children, local, text, type XmlNode } from "./xml";
+
+export type { XmlNode };
 
 export type Party = {
   name: string;
@@ -84,13 +86,6 @@ export type ParseResult = { kind: "ok"; invoice: Invoice } | { kind: "error"; re
 
 /* ---------- tree helpers ---------- */
 
-const local = (name: string) => name.slice(name.indexOf(":") + 1);
-const child = (node: XmlNode | null | undefined, name: string) => node?.children.find((item) => local(item.name) === name) ?? null;
-const children = (node: XmlNode | null | undefined, name: string) => node?.children.filter((item) => local(item.name) === name) ?? [];
-const text = (node: XmlNode | null | undefined, name: string) => {
-  const value = child(node, name)?.text.trim();
-  return value ? value : null;
-};
 const isSet = (node: XmlNode | null | undefined, name: string) => text(node, name) === "1";
 
 /* ---------- parties ---------- */
@@ -274,9 +269,12 @@ function checkInvoice(invoice: Invoice): Invoice["warnings"] {
   return warnings;
 }
 
-/** A KSeF number as it appears in downloaded file names: NIP-YYYYMMDD-XXXXXXXXXXXX-XX. */
+/**
+ * A KSeF number as it appears in downloaded file names, matched with the official
+ * pattern: NIP (or "M" + 9 digits, or 3 letters + 7 digits)-YYYYMMDD-hex-hex-XX.
+ */
 export function ksefNumberFromFileName(fileName: string): string | null {
-  return fileName.match(/\d{10}-\d{8}-[0-9A-F]{12}-[0-9A-F]{2}/i)?.[0].toUpperCase() ?? null;
+  return fileName.match(KSEF_NUMBER_IN_TEXT)?.[1].toUpperCase() ?? null;
 }
 
 /** Largest file the viewer reads. KSeF invoices are far smaller; this only stops a wrong file freezing the tab. */

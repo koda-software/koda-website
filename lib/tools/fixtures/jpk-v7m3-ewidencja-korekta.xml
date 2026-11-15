@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JPK xmlns="http://crd.gov.pl/wzor/2025/12/19/14090/" xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="JPK_V7M (3)" wersjaSchemy="1-0E">JPK_VAT</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaJPK>2026-05-04T08:15:00Z</DataWytworzeniaJPK>
+    <NazwaSystemu>Test</NazwaSystemu>
+    <CelZlozenia poz="P_7">2</CelZlozenia>
+    <KodUrzedu>1471</KodUrzedu>
+    <Rok>2026</Rok>
+    <Miesiac>3</Miesiac>
+  </Naglowek>
+  <Podmiot1 rola="Podatnik">
+    <OsobaNiefizyczna>
+      <NIP>9876543210</NIP>
+      <PelnaNazwa>Przykładowa Spółka z o.o.</PelnaNazwa>
+      <Email>jpk@example.com</Email>
+    </OsobaNiefizyczna>
+  </Podmiot1>
+  <Ewidencja>
+    <SprzedazWiersz>
+      <LpSprzedazy>1</LpSprzedazy>
+      <NrKontrahenta>1112223332</NrKontrahenta>
+      <NazwaKontrahenta>Klient Alfa sp. z o.o.</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2026/03/001</DowodSprzedazy>
+      <DataWystawienia>2026-03-02</DataWystawienia>
+      <NrKSeF>9876543210-20260302-0A1B2C3D4E5F-7B</NrKSeF>
+      <GTU_12>1</GTU_12>
+      <K_19>10000.00</K_19>
+      <K_20>2300.00</K_20>
+    </SprzedazWiersz>
+    <SprzedazCtrl>
+      <LiczbaWierszySprzedazy>1</LiczbaWierszySprzedazy>
+      <PodatekNalezny>2300.00</PodatekNalezny>
+    </SprzedazCtrl>
+    <ZakupCtrl>
+      <LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>
+      <PodatekNaliczony>0.00</PodatekNaliczony>
+    </ZakupCtrl>
+  </Ewidencja>
+</JPK>

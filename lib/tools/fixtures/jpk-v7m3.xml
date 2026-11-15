@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JPK xmlns="http://crd.gov.pl/wzor/2025/12/19/14090/" xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2022/09/13/eD/DefinicjeTypy/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="JPK_V7M (3)" wersjaSchemy="1-0E">JPK_VAT</KodFormularza>
+    <WariantFormularza>3</WariantFormularza>
+    <DataWytworzeniaJPK>2026-04-20T12:02:00Z</DataWytworzeniaJPK>
+    <NazwaSystemu>Test</NazwaSystemu>
+    <CelZlozenia poz="P_7">1</CelZlozenia>
+    <KodUrzedu>1471</KodUrzedu>
+    <Rok>2026</Rok>
+    <Miesiac>3</Miesiac>
+  </Naglowek>
+  <Podmiot1 rola="Podatnik">
+    <OsobaNiefizyczna>
+      <NIP>9876543210</NIP>
+      <PelnaNazwa>Przykładowa Spółka z o.o.</PelnaNazwa>
+      <Email>jpk@example.com</Email>
+    </OsobaNiefizyczna>
+  </Podmiot1>
+  <Deklaracja>
+    <Naglowek>
+      <KodFormularzaDekl kodSystemowy="VAT-7 (23)" kodPodatku="VAT" rodzajZobowiazania="Z" wersjaSchemy="1-0E">VAT-7</KodFormularzaDekl>
+      <WariantFormularzaDekl>23</WariantFormularzaDekl>
+    </Naglowek>
+    <PozycjeSzczegolowe>
+      <P_17>1000</P_17>
+      <P_18>80</P_18>
+      <P_19>10500</P_19>
+      <P_20>2415</P_20>
+      <P_21>4000</P_21>
+      <P_37>15500</P_37>
+      <P_38>2495</P_38>
+      <P_39>150</P_39>
+      <P_40>8000</P_40>
+      <P_41>1840</P_41>
+      <P_42>2300</P_42>
+      <P_43>529</P_43>
+      <P_48>2519</P_48>
+      <P_51>0</P_51>
+      <P_53>24</P_53>
+      <P_62>24</P_62>
+    </PozycjeSzczegolowe>
+    <Pouczenia>1</Pouczenia>
+  </Deklaracja>
+  <Ewidencja>
+    <SprzedazWiersz>
+      <LpSprzedazy>1</LpSprzedazy>
+      <NrKontrahenta>1112223332</NrKontrahenta>
+      <NazwaKontrahenta>Klient Alfa sp. z o.o.</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2026/03/001</DowodSprzedazy>
+      <DataWystawienia>2026-03-02</DataWystawienia>
+      <NrKSeF>9876543210-20260302-0A1B2C3D4E5F-7B</NrKSeF>
+      <GTU_12>1</GTU_12>
+      <K_19>10000.00</K_19>
+      <K_20>2300.00</K_20>
+    </SprzedazWiersz>
+    <SprzedazWiersz>
+      <LpSprzedazy>2</LpSprzedazy>
+      <NrKontrahenta>5213000009</NrKontrahenta>
+      <NazwaKontrahenta>Beta S.A.</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2026/03/002</DowodSprzedazy>
+      <DataWystawienia>2026-03-10</DataWystawienia>
+      <NrKSeF>9876543210-20260310-1F2E3D4C5B6A-0C</NrKSeF>
+      <TP>1</TP>
+      <K_17>1000.00</K_17>
+      <K_18>80.00</K_18>
+    </SprzedazWiersz>
+    <SprzedazWiersz>
+      <LpSprzedazy>3</LpSprzedazy>
+      <NrKontrahenta>BRAK</NrKontrahenta>
+      <NazwaKontrahenta>BRAK</NazwaKontrahenta>
+      <DowodSprzedazy>RO/2026/03</DowodSprzedazy>
+      <DataWystawienia>2026-03-31</DataWystawienia>
+      <DI>1</DI>
+      <TypDokumentu>RO</TypDokumentu>
+      <K_19>500.00</K_19>
+      <K_20>115.00</K_20>
+    </SprzedazWiersz>
+    <SprzedazWiersz>
+      <LpSprzedazy>4</LpSprzedazy>
+      <NrKontrahenta>1112223332</NrKontrahenta>
+      <NazwaKontrahenta>Klient Alfa sp. z o.o.</NazwaKontrahenta>
+      <DowodSprzedazy>FP/2026/03/001</DowodSprzedazy>
+      <DataWystawienia>2026-03-15</DataWystawienia>
+      <NrKSeF>9876543210-20260315-AAAAAA-BBBBBB-01</NrKSeF>
+      <TypDokumentu>FP</TypDokumentu>
+      <K_19>100.00</K_19>
+      <K_20>23.00</K_20>
+    </SprzedazWiersz>
+    <SprzedazWiersz>
+      <LpSprzedazy>5</LpSprzedazy>
+      <KodKrajuNadaniaTIN>DE</KodKrajuNadaniaTIN>
+      <NrKontrahenta>123456789</NrKontrahenta>
+      <NazwaKontrahenta>Gamma GmbH &amp; Co. KG</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2026/03/003</DowodSprzedazy>
+      <DataWystawienia>2026-03-20</DataWystawienia>
+      <NrKSeF>9876543210-20260320-ABCDEF012345-AA</NrKSeF>
+      <K_21>4000.00</K_21>
+    </SprzedazWiersz>
+    <SprzedazCtrl>
+      <LiczbaWierszySprzedazy>5</LiczbaWierszySprzedazy>
+      <PodatekNalezny>2495.00</PodatekNalezny>
+    </SprzedazCtrl>
+    <ZakupWiersz>
+      <LpZakupu>1</LpZakupu>
+      <NrDostawcy>7770001111</NrDostawcy>
+      <NazwaDostawcy>Dostawca Delta sp. z o.o.</NazwaDostawcy>
+      <DowodZakupu>FZ/123/2026</DowodZakupu>
+      <DataZakupu>2026-03-05</DataZakupu>
+      <DataWplywu>2026-03-06</DataWplywu>
+      <NrKSeF>7770001111-20260305-AB12CD34EF56-9D</NrKSeF>
+      <K_42>2000.00</K_42>
+      <K_43>460.00</K_43>
+    </ZakupWiersz>
+    <ZakupWiersz>
+      <LpZakupu>2</LpZakupu>
+      <NrDostawcy>5213000009</NrDostawcy>
+      <NazwaDostawcy>Beta S.A.</NazwaDostawcy>
+      <DowodZakupu>FZ/77/2026</DowodZakupu>
+      <DataZakupu>2026-03-12</DataZakupu>
+      <BFK>1</BFK>
+      <K_40>8000.00</K_40>
+      <K_41>1840.00</K_41>
+    </ZakupWiersz>
+    <ZakupWiersz>
+      <LpZakupu>3</LpZakupu>
+      <NrDostawcy>7770001111</NrDostawcy>
+      <NazwaDostawcy>Dostawca Delta sp. z o.o.</NazwaDostawcy>
+      <DowodZakupu>FZ/124/2026</DowodZakupu>
+      <DataZakupu>2026-03-25</DataZakupu>
+      <OFF>1</OFF>
+      <K_42>300.00</K_42>
+      <K_43>69.00</K_43>
+    </ZakupWiersz>
+    <ZakupCtrl>
+      <LiczbaWierszyZakupow>3</LiczbaWierszyZakupow>
+      <PodatekNaliczony>2369.00</PodatekNaliczony>
+    </ZakupCtrl>
+  </Ewidencja>
+</JPK>

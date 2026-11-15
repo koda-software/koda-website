@@ -1,5 +1,7 @@
 import type { FeatureKey } from "@/lib/i18n/features";
 import type { PageKey } from "@/lib/i18n/routes";
+import type { JpkCheckId, KsefKind, VatRateKey } from "@/lib/tools/jpk";
+import type { JpkCsvLabels } from "@/lib/tools/jpk-csv";
 
 export type NavSubItem = {
   feature: FeatureKey;
@@ -1437,4 +1439,333 @@ export type KsefViewerLabels = {
   warningsTitle: string;
   warnings: Record<"totals" | "lines" | "seller" | "number", string>;
   warningsNote: string;
+};
+
+/** Exactly the copy the VAT calculator needs. Templates use {placeholders}. */
+export type VatCalculatorLabels = {
+  modeLabel: string;
+  modes: { quick: string; invoice: string };
+  rateLegend: string;
+  rates: Record<"23" | "8" | "5" | "0" | "zw" | "np", string>;
+  net: string;
+  vat: string;
+  gross: string;
+  notApplicable: string;
+  hint: string;
+  wordsLabel: string;
+  copyAmounts: string;
+  copySummary: string;
+  copied: string;
+  /** "{rate}" */
+  formula: string;
+  formulaNoVat: string;
+  /** "{rate}", "{gross}", "{belowNet}", "{belowGross}", "{aboveNet}", "{aboveGross}" */
+  nearest: string;
+  errors: { invalid: string; noVat: string };
+  largePayment: { before: string; link: string; after: string };
+  priceBasisLabel: string;
+  priceBasis: { net: string; gross: string };
+  columns: { name: string; quantity: string; priceNet: string; priceGross: string; rate: string; net: string; vat: string; gross: string };
+  /** "{column}", "{n}" */
+  cellLabel: string;
+  removeRow: string;
+  addRow: string;
+  methodLabel: string;
+  methods: { sumNet: string; sumGross: string; line: string };
+  summaryCaption: string;
+  /** "{net}", "{vat}" */
+  totals: string;
+  amountDue: string;
+  /** "{other}", "{vat}", "{diff}", "{direction}" */
+  difference: string;
+  otherMethod: { sum: string; line: string };
+  more: string;
+  less: string;
+  privacyNote: string;
+  currency: string;
+  decimalSeparator: "," | ".";
+  copyText: { rate: string; total: string };
+  /** Prefilled so the page shows a worked example on arrival. */
+  defaultAmount: string;
+  defaultRows: Array<{ name: string; price: string }>;
+};
+
+/** Exactly the copy the NBP exchange-rate tool needs. Templates use {placeholders}. */
+export type NbpRateLabels = {
+  currencyLabel: string;
+  tableGroups: { A: string; B: string };
+  dateLabel: string;
+  dateHint: string;
+  loading: string;
+  /** "{date}", "{weekday}" */
+  dateWithWeekday: string;
+  /** "{date}", "{no}" */
+  source: string;
+  /** "{date}" */
+  reasonIntro: string;
+  /** "{days}", "{reason}" */
+  dayOff: string;
+  /** Names of the days without a table: weekends and Polish public holidays. */
+  dayOffNames: Record<
+    | "saturday"
+    | "sunday"
+    | "weekend"
+    | "newYear"
+    | "epiphany"
+    | "easter"
+    | "easterMonday"
+    | "labourDay"
+    | "constitutionDay"
+    | "pentecost"
+    | "corpusChristi"
+    | "assumption"
+    | "allSaints"
+    | "independenceDay"
+    | "christmasEve"
+    | "christmas"
+    | "boxingDay",
+    string
+  >;
+  tableBNote: string;
+  /** "{date}" */
+  pending: { A: string; B: string };
+  pendingLatest: string;
+  noteLabel: string;
+  copyNote: string;
+  copied: string;
+  amountTitle: string;
+  /** "{code}" */
+  amountLabel: string;
+  basisLabel: string;
+  basis: { net: string; gross: string };
+  rateLegend: string;
+  rates: Record<"23" | "8" | "5" | "0" | "zw" | "np", string>;
+  columns: { item: string; foreign: string; pln: string };
+  net: string;
+  vat: string;
+  gross: string;
+  vatNote: string;
+  copyAmounts: string;
+  vatLink: { before: string; link: string; after: string };
+  errors: { date: string; amount: string; network: string; none: string };
+  privacyNote: string;
+  /** "zł" on the Polish page, "PLN" on the English one. */
+  pln: string;
+  decimalSeparator: "," | ".";
+  defaultAmount: string;
+};
+
+/** The B2B vs employment page: the shared parts plus a server-rendered table of break-even invoices. */
+export type B2bVsEmploymentPageContent = ToolPageContent & {
+  breakEvenTable: {
+    title: string;
+    intro: string;
+    /** Gross salary, take-home on the contract, then one column per tax form. */
+    columns: string[];
+    /** Gross monthly salaries in whole złoty. */
+    salaries: number[];
+    note: string;
+  };
+};
+
+/** Exactly the copy the B2B vs employment calculator needs. Templates use {placeholders}. */
+export type B2bVsEmploymentLabels = {
+  grossLabel: string;
+  invoiceLabel: string;
+  breakEvenButton: string;
+  employerCostButton: string;
+  employmentTitle: string;
+  b2bTitle: string;
+  kupLegend: string;
+  kup: { standard: string; commuter: string };
+  pit2: string;
+  under26: string;
+  ppk: string;
+  formLegend: string;
+  forms: { skala: string; liniowy: string; ryczalt: string };
+  ryczaltRateLabel: string;
+  /** One option per rate in the config, keyed by basis points ("1200"). */
+  ryczaltRates: Record<string, string>;
+  zusLegend: string;
+  zus: { full: string; preferential: string; start: string };
+  sickness: string;
+  costsLabel: string;
+  daysOffLabel: string;
+  daysOffHint: string;
+  formerEmployer: string;
+  formerEmployerNote: string;
+  unavailable: { formerEmployer: string; revenueLimit: string };
+  periodLabel: string;
+  period: { month: string; year: string };
+  resultCaption: string;
+  rows: { net: string; social: string; health: string; pit: string; ppk: string; costs: string; companyCost: string };
+  /** "{year}", "{month}" */
+  difference: { more: string; less: string; equal: string };
+  /** "{form}", "{amount}" */
+  breakEven: string;
+  breakEvenNone: string;
+  /** "{edge}", "{health}" */
+  tierEdge: string;
+  insert: string;
+  formsTitle: string;
+  formsColumns: { form: string; netMonth: string; netYear: string; health: string; tax: string };
+  monthsTitle: string;
+  monthsColumns: { month: string; social: string; health: string; advance: string; ppk: string; net: string; cost: string; note: string };
+  monthNames: string[];
+  notes: { cap: string; bracket: string; youth: string };
+  copySummary: string;
+  copied: string;
+  /** "{gross}", "{month}", "{year}" */
+  copyEmployment: string;
+  /** "{invoice}", "{options}", "{month}", "{year}" */
+  copyB2b: string;
+  errors: { amount: string; days: string };
+  disclaimer: string;
+  privacyNote: string;
+  /** "{amount}": "{amount} zł" on the Polish page, "PLN {amount}" on the English one. */
+  money: string;
+  decimalSeparator: "," | ".";
+  defaultGross: string;
+  defaultInvoice: string;
+};
+
+/** The JPK viewer page: the shared parts plus a server-rendered section on the markers a JPK_V7 row carries. */
+export type JpkViewerPageContent = ToolPageContent & {
+  markers: {
+    title: string;
+    intro: string;
+    tables: Array<{ caption: string; columns: [string, string]; rows: Array<[string, string]> }>;
+  };
+};
+
+/** Copy for one check, by status. Templates use {file}, {computed}, {diff}, {field}, {fieldLabel}, {register}, {rows}, {names}, {version}, {period}. */
+export type JpkCheckCopy = { ok?: string; warn?: string; info?: string };
+
+/** Exactly the copy the JPK viewer needs. Templates use {placeholders}. */
+export type JpkViewerLabels = {
+  dropTitle: string;
+  dropHint: string;
+  privacyNote: string;
+  /** "{percent}" */
+  reading: string;
+  errors: {
+    xml: string;
+    notJpk: string;
+    tooLarge: string;
+    read: string;
+    /** "{structure}" */
+    unsupported: string;
+  };
+  loadAnother: string;
+  print: string;
+  purposes: Record<"1" | "2", string>;
+  /** "{code}" */
+  taxOffice: string;
+  /** "{date}" */
+  createdAt: string;
+  months: string[];
+  quarters: string[];
+  taxId: string;
+  email: string;
+  phone: string;
+  keyNumbers: {
+    outputTax: string;
+    inputTax: string;
+    payable: string;
+    refund: string;
+    carried: string;
+    registerDifference: string;
+    /** "{sales}", "{purchases}" */
+    rows: string;
+    noRegister: string;
+  };
+  tabs: { summary: string; declaration: string; sales: string; purchases: string };
+  checksTitle: { warn: string; info: string; ok: string };
+  checksNote: string;
+  checks: Record<JpkCheckId, JpkCheckCopy>;
+  fpHint: string;
+  registerNames: Record<"sales" | "purchases", string>;
+  /** "{list}" */
+  rowsList: string;
+  /** "{count}" */
+  moreRows: string;
+  summary: {
+    vatTitle: string;
+    vatColumns: { rate: string; base: string; tax: string };
+    vatRates: Record<VatRateKey, string>;
+    ksefTitle: string;
+    ksefColumns: { kind: string; sales: string; purchases: string };
+    ksefKinds: Record<KsefKind, string>;
+    ksefNotApplicable: string;
+    gtuTitle: string;
+    proceduresTitle: string;
+    docTypesTitle: string;
+    codeColumns: { code: string; description: string; rows: string; base: string; sales: string; purchases: string };
+    customersTitle: string;
+    suppliersTitle: string;
+    contractorColumns: { name: string; rows: string; base: string; tax: string };
+    none: string;
+  };
+  declaration: {
+    groups: { output: string; input: string; settlement: string; extra: string; other: string };
+    columns: { code: string; label: string; declared: string; register: string; diff: string };
+    yes: string;
+    none: string;
+    v7kNote: string;
+    form: string;
+    quarter: string;
+  };
+  /** Short labels for declaration positions, by code ("P_19"); register fields reuse them ("K_19"). */
+  fields: Record<string, string>;
+  gtu: Record<string, string>;
+  procedures: Record<string, string>;
+  docTypes: Record<string, string>;
+  table: {
+    search: string;
+    searchPlaceholder: string;
+    ksefFilter: string;
+    gtuFilter: string;
+    procedureFilter: string;
+    docTypeFilter: string;
+    all: string;
+    onlyIssues: string;
+    export: string;
+    columns: {
+      lp: string;
+      customer: string;
+      supplier: string;
+      document: string;
+      issueDate: string;
+      receivedDate: string;
+      ksef: string;
+      base: string;
+      net: string;
+      tax: string;
+      marks: string;
+    };
+    sortBy: string;
+    totals: string;
+    totalsWithoutFp: string;
+    /** "{from}", "{to}", "{total}" */
+    range: string;
+    previous: string;
+    next: string;
+    page: string;
+    noRows: string;
+    showDetails: string;
+    copy: string;
+    copied: string;
+    invalidKsef: string;
+    badDebt: string;
+    imported: string;
+    detail: {
+      country: string;
+      saleDate: string;
+      dueDate: string;
+      paidDate: string;
+      marginGross: string;
+      marginPurchase: string;
+    };
+  };
+  csv: JpkCsvLabels & { salesFile: string; purchasesFile: string };
 };

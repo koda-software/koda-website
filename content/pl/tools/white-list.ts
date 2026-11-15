@@ -93,7 +93,7 @@ export const whiteListLabels: WhiteListLabels = {
   privacyNote: "Zapytanie idzie prosto do Ministerstwa Finansów. Nic nie zapisujemy.",
   errors: {
     nip: "To nie jest poprawny NIP. Sprawdź, czy ma 10 cyfr i nie ma literówki.",
-    account: "To nie jest poprawny numer rachunku. Polski numer ma 26 cyfr.",
+    account: "To nie jest poprawny numer rachunku. Sprawdź, czy ma 26 cyfr i nie ma literówki.",
     date: "Wybierz dzisiejszą lub wcześniejszą datę.",
     network: "Nie udało się połączyć z wykazem Ministerstwa Finansów. Spróbuj za chwilę albo",
     limit: "Wykorzystano dzienny limit zapytań do wykazu z tego adresu. Spróbuj jutro albo",

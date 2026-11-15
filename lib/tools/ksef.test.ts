@@ -1,30 +1,11 @@
 import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { XMLParser } from "fast-xml-parser";
-import { ksefNumberFromFileName, parseInvoiceTree, type Invoice, type XmlNode } from "./ksef";
-
-/* Node has no DOMParser, so the tests build the same minimal tree with fast-xml-parser. */
-type Ordered = Record<string, unknown> & { ":@"?: Record<string, string> };
-
-const parser = new XMLParser({ preserveOrder: true, ignoreAttributes: false, attributeNamePrefix: "", trimValues: false, parseTagValue: false });
-
-function toTree(item: Ordered): XmlNode {
-  const name = Object.keys(item).find((key) => key !== ":@")!;
-  const body = (item[name] as Ordered[]) ?? [];
-  const children = body.filter((child) => !("#text" in child)).map(toTree);
-  const text = body
-    .filter((child) => "#text" in child)
-    .map((child) => String(child["#text"]))
-    .join("");
-  const attrs = Object.fromEntries(Object.entries(item[":@"] ?? {}).map(([key, value]) => [key.slice(key.indexOf(":") + 1), value]));
-  return { name: name.slice(name.indexOf(":") + 1), attrs, children, text };
-}
+import { ksefNumberFromFileName, parseInvoiceTree, type Invoice } from "./ksef";
+import { xmlTree } from "./test-xml";
 
 function load(file: string): Invoice {
-  const doc = parser.parse(readFileSync(new URL(`./fixtures/${file}`, import.meta.url), "utf8")) as Ordered[];
-  const root = doc.find((node) => !Object.keys(node).some((key) => key.startsWith("?")))!;
-  const result = parseInvoiceTree(toTree(root));
+  const result = parseInvoiceTree(xmlTree(readFileSync(new URL(`./fixtures/${file}`, import.meta.url), "utf8")));
   if (result.kind !== "ok") throw new Error(`${file} did not parse: ${result.reason}`);
   return result.invoice;
 }
@@ -113,4 +94,26 @@ test("rejects XML that is not an invoice", () => {
 test("finds the KSeF number in a downloaded file name", () => {
   assert.equal(ksefNumberFromFileName("5556667776-20260430-0a1b2c3d4e5f-ab.xml"), "5556667776-20260430-0A1B2C3D4E5F-AB");
   assert.equal(ksefNumberFromFileName("faktura.xml"), null);
+  assert.equal(ksefNumberFromFileName("9876543210-20260302-0A1B2C3D4E5F-7B.xml"), "9876543210-20260302-0A1B2C3D4E5F-7B");
+  assert.equal(ksefNumberFromFileName("M123456789-20260302-0A1B2C-3D4E5F-7B.xml"), "M123456789-20260302-0A1B2C-3D4E5F-7B");
+  assert.equal(ksefNumberFromFileName("faktura_ABC1234567-20260302-0A1B2C3D4E5F-7B.xml"), "ABC1234567-20260302-0A1B2C3D4E5F-7B");
+  /* A NIP cannot start with 0, and the date must be a real month. */
+  assert.equal(ksefNumberFromFileName("0123456789-20260302-0A1B2C3D4E5F-7B.xml"), null);
+  assert.equal(ksefNumberFromFileName("9876543210-20261302-0A1B2C3D4E5F-7B.xml"), null);
+});
+
+test("reads an invoice issued in the KSeF test environment", () => {
+  const invoice = load("fa3-ksef-test.xml");
+
+  assert.equal(invoice.number, "TEST/2026/11/1");
+  assert.equal(invoice.seller?.taxId, "5666413321");
+  assert.equal(invoice.buyer?.taxId, "1112223332");
+  assert.deepEqual(
+    invoice.lines.map((line) => [line.name, line.quantity, line.unit, line.unitNet, line.net, line.vatRate]),
+    [["Usługa testowa", "2", "szt.", "1234.56", "2469.12", "23"]],
+  );
+  assert.equal(invoice.total, "3037.02");
+  assert.deepEqual(invoice.payment?.dueDates, ["2026-11-29"]);
+  assert.deepEqual(invoice.annotations, []);
+  assert.deepEqual(invoice.warnings, []);
 });

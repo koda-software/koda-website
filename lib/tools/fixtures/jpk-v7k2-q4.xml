@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JPK xmlns="http://crd.gov.pl/wzor/2021/12/27/11149/" xmlns:etd="http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/">
+  <Naglowek>
+    <KodFormularza kodSystemowy="JPK_V7K (2)" wersjaSchemy="1-0E">JPK_VAT</KodFormularza>
+    <WariantFormularza>2</WariantFormularza>
+    <DataWytworzeniaJPK>2026-01-20T09:00:00Z</DataWytworzeniaJPK>
+    <NazwaSystemu>Test</NazwaSystemu>
+    <CelZlozenia poz="P_7">1</CelZlozenia>
+    <KodUrzedu>1471</KodUrzedu>
+    <Rok>2025</Rok>
+    <Miesiac>12</Miesiac>
+  </Naglowek>
+  <Podmiot1 rola="Podatnik">
+    <OsobaFizyczna>
+      <etd:NIP>1112223332</etd:NIP>
+      <etd:ImiePierwsze>Jan</etd:ImiePierwsze>
+      <etd:Nazwisko>Kowalski</etd:Nazwisko>
+      <etd:DataUrodzenia>1980-01-01</etd:DataUrodzenia>
+      <Email>jan.kowalski@example.com</Email>
+      <Telefon>600100200</Telefon>
+    </OsobaFizyczna>
+  </Podmiot1>
+  <Deklaracja>
+    <Naglowek>
+      <KodFormularzaDekl kodSystemowy="VAT-7K (16)" kodPodatku="VAT" rodzajZobowiazania="Z" wersjaSchemy="1-0E">VAT-7K</KodFormularzaDekl>
+      <WariantFormularzaDekl>16</WariantFormularzaDekl>
+      <Kwartal>4</Kwartal>
+    </Naglowek>
+    <PozycjeSzczegolowe>
+      <P_17>1500</P_17>
+      <P_18>120</P_18>
+      <P_19>6000</P_19>
+      <P_20>1380</P_20>
+      <P_37>7500</P_37>
+      <P_38>1500</P_38>
+      <P_42>3000</P_42>
+      <P_43>690</P_43>
+      <P_48>690</P_48>
+      <P_51>810</P_51>
+    </PozycjeSzczegolowe>
+    <Pouczenia>1</Pouczenia>
+  </Deklaracja>
+  <Ewidencja>
+    <SprzedazWiersz>
+      <LpSprzedazy>1</LpSprzedazy>
+      <NrKontrahenta>5213000009</NrKontrahenta>
+      <NazwaKontrahenta>Beta S.A.</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2025/12/01</DowodSprzedazy>
+      <DataWystawienia>2025-12-05</DataWystawienia>
+      <K_19>2000.00</K_19>
+      <K_20>460.00</K_20>
+    </SprzedazWiersz>
+    <SprzedazWiersz>
+      <LpSprzedazy>2</LpSprzedazy>
+      <NrKontrahenta>7770001111</NrKontrahenta>
+      <NazwaKontrahenta>Dostawca Delta sp. z o.o.</NazwaKontrahenta>
+      <DowodSprzedazy>FV/2025/12/02</DowodSprzedazy>
+      <DataWystawienia>2025-12-18</DataWystawienia>
+      <DataSprzedazy>2025-12-17</DataSprzedazy>
+      <K_17>500.00</K_17>
+      <K_18>40.00</K_18>
+    </SprzedazWiersz>
+    <SprzedazCtrl>
+      <LiczbaWierszySprzedazy>2</LiczbaWierszySprzedazy>
+      <PodatekNalezny>500.00</PodatekNalezny>
+    </SprzedazCtrl>
+    <ZakupWiersz>
+      <LpZakupu>1</LpZakupu>
+      <NrDostawcy>9876543210</NrDostawcy>
+      <NazwaDostawcy>Przykładowa Spółka z o.o.</NazwaDostawcy>
+      <DowodZakupu>FZ/9/2025</DowodZakupu>
+      <DataZakupu>2025-12-10</DataZakupu>
+      <DataWplywu>2025-12-11</DataWplywu>
+      <K_42>1000.00</K_42>
+      <K_43>230.00</K_43>
+    </ZakupWiersz>
+    <ZakupCtrl>
+      <LiczbaWierszyZakupow>1</LiczbaWierszyZakupow>
+      <PodatekNaliczony>230.00</PodatekNaliczony>
+    </ZakupCtrl>
+  </Ewidencja>
+</JPK>

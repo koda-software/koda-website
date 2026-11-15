@@ -1,4 +1,5 @@
-import { parseInvoiceTree, type ParseResult, type XmlNode } from "./ksef";
+import { parseInvoiceTree, type ParseResult } from "./ksef";
+import type { XmlNode } from "./xml";
 
 /** Browser only: parses the XML with the built-in DOMParser, so no XML library ships to the page. */
 export function parseInvoiceXml(xml: string): ParseResult {

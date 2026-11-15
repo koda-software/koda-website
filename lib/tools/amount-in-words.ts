@@ -278,3 +278,14 @@ export function toEnglishWords(amount: Extract<ParsedAmount, { kind: "ok" }>, cu
 function finish(text: string, capitalize: boolean) {
   return capitalize ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 }
+
+/** A PLN amount in grosze, written out in Polish: what invoices and transfers carry. */
+export function centsToPolishWords(cents: number, options: WordOptions = { sayOne: false, capitalize: false }): string {
+  const whole = Math.floor(Math.abs(cents) / 100);
+  const minor = Math.abs(cents) % 100;
+  return toPolishWords(
+    { kind: "ok", whole, minor, wholeDigits: String(whole), minorDigits: String(minor).padStart(2, "0") },
+    "PLN",
+    options,
+  );
+}

@@ -316,7 +316,7 @@ function InvoiceView({ entry, labels, locale }: { entry: Entry; labels: KsefView
                       {line.code ? <span className="block text-[0.82rem] text-[var(--color-muted)]">{line.code}</span> : null}
                       {line.before ? <span className="block text-[0.82rem]">{l.lines.before}</span> : null}
                     </td>
-                    <td className={`${tdClass} whitespace-nowrap text-right`}>{[number(line.quantity, locale), line.unit].filter(Boolean).join(" ")}</td>
+                    <td className={`${tdClass} whitespace-nowrap text-right`}>{[number(line.quantity, locale, 0), line.unit].filter(Boolean).join(" ")}</td>
                     <td className={`${tdClass} whitespace-nowrap text-right`}>{number(line.unitNet, locale)}</td>
                     {showUnitGross ? <td className={`${tdClass} whitespace-nowrap text-right`}>{number(line.unitGross, locale)}</td> : null}
                     {showDiscount ? <td className={`${tdClass} whitespace-nowrap text-right`}>{number(line.discount, locale)}</td> : null}
@@ -367,7 +367,7 @@ function InvoiceView({ entry, labels, locale }: { entry: Entry; labels: KsefView
           <p className="m-0 font-display text-[clamp(1.6rem,3vw,2.2rem)] font-medium tracking-[-0.02em]">{money(invoice.total, cur, locale)}</p>
           {invoice.exchangeRate ? (
             <p className="m-0 text-[0.9rem] text-[var(--color-muted)]">
-              {l.exchangeRate}: {invoice.exchangeRate}
+              {l.exchangeRate}: {number(invoice.exchangeRate, locale, 0)}
             </p>
           ) : null}
         </div>
@@ -489,11 +489,12 @@ function Pair({ label, value }: { label: string; value: string | null | undefine
   );
 }
 
-function number(value: string | null, locale: "pl" | "en") {
+/** Amounts get at least two decimals; quantities (`minDecimals` 0) keep the decimals they were written with. */
+function number(value: string | null, locale: "pl" | "en", minDecimals = 2) {
   if (value === null || value === "") return null;
   const parsed = Number(value);
   if (Number.isNaN(parsed)) return value;
-  const decimals = Math.min(Math.max((value.split(".")[1] ?? "").length, 2), 8);
+  const decimals = Math.min(Math.max((value.split(".")[1] ?? "").length, minDecimals), 8);
   return new Intl.NumberFormat(locale === "pl" ? "pl-PL" : "en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(parsed);
 }
 

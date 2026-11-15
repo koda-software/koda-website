@@ -3,13 +3,17 @@ import { localizePath } from "@/lib/i18n/routes";
 import { localizeToolPath, toolKeys, type ToolKey } from "@/lib/i18n/tools";
 import type { ToolPageContent, ToolsIndexContent } from "@/content/types";
 import { amountInWordsPage } from "./amount-in-words";
+import { b2bVsEmploymentPage } from "./b2b-vs-employment";
+import { jpkViewerPage } from "./jpk-viewer";
 import { ksefViewerPage } from "./ksef-viewer";
+import { nbpRatePage } from "./nbp-rate";
+import { vatCalculatorPage } from "./vat-calculator";
 import { whiteListPage } from "./white-list";
 
 export const toolsIndexContent: ToolsIndexContent = {
   seo: {
     title: "Darmowe narzędzia dla firm i księgowości",
-    description: "Darmowe narzędzia online dla firm i biur rachunkowych: kwota słownie i kolejne. Bez rejestracji, dane zostają w przeglądarce.",
+    description: "Darmowe narzędzia dla firm i biur rachunkowych: kalkulator VAT i B2B vs UoP, kurs NBP, kwota słownie, biała lista VAT, podgląd faktury KSeF i pliku JPK.",
   },
   navLabel: "Narzędzia",
   breadcrumbLabel: "Ścieżka nawigacji",
@@ -20,16 +24,24 @@ export const toolsIndexContent: ToolsIndexContent = {
 };
 
 export const toolPages: Record<ToolKey, ToolPageContent> = {
+  vatCalculator: vatCalculatorPage,
+  nbpRate: nbpRatePage,
+  b2bVsEmployment: b2bVsEmploymentPage,
   amountInWords: amountInWordsPage,
   whiteList: whiteListPage,
   ksefViewer: ksefViewerPage,
+  jpkViewer: jpkViewerPage,
 };
 
 /** Where each tool's Opero link points: the feature that does the same job inside Opero. */
 const toolFeature = {
+  vatCalculator: "documents",
+  nbpRate: "documents",
+  b2bVsEmployment: "processes",
   amountInWords: "documents",
   whiteList: "integrations",
   ksefViewer: "integrations",
+  jpkViewer: "integrations",
 } as const satisfies Record<ToolKey, Parameters<typeof localizeFeaturePath>[1]>;
 
 export function toolCtas(tool: ToolKey) {

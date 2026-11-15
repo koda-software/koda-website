@@ -45,9 +45,7 @@ export function formatAccount(account: string): string {
 }
 
 /** Today in Poland, as YYYY-MM-DD: the date the White List is read for by default. */
-export function todayInPoland(now = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(now);
-}
+export { todayInPoland } from "./business-days";
 
 export type WhiteListPerson = {
   companyName?: string | null;
