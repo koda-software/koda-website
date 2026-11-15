@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "fetchedAt": "2026-10-02T00:24:28.244Z",
   "sourceRevision": "fed9eaca844d44382bc0602ad73c5ef1c8683d28",
-  "contentHash": "59a3f71eb3a4e2e5f43db04cc8a8e41c578a229aaba743325d5d9695faf64c24",
+  "contentHash": "ca33770e5b4e1df3976a8f8c45cb428da01b87ef2b29e477e9dc0bff49d2938a",
   "counts": {
     "en": {
       "pages": 245,
@@ -1117,7 +1117,7 @@
       "owner": "manual"
     },
     "content/docs/en/extensions/error-codes.mdx": {
-      "sha256": "35771a32d29f8d3a1e25ac6166cdb5321b0b291e8a812f9247fca831ca9bd926",
+      "sha256": "74ef3ce15cf6a08584de0fd004b4351577f2c5f4150f376db8e7a1c11a66bbce",
       "owner": "manual"
     },
     "content/docs/en/extensions/index.mdx": {
@@ -1141,7 +1141,7 @@
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/actions.mdx": {
-      "sha256": "0ce3350d1ddc0369fd81cdcf3ed24a55acdaf2d931908493ddab1fc28af843ac",
+      "sha256": "61b314dd0f5be1e72d565763ce378966df7468dc0c421793f4f9dcdc7ebae152",
       "owner": "manual"
     },
     "content/docs/en/extensions/reference/blocks.mdx": {
@@ -2221,7 +2221,7 @@
       "owner": "manual"
     },
     "content/docs/pl/extensions/error-codes.mdx": {
-      "sha256": "fd26e7aa691300e8c12f68b2109eaf7ffadbb04f0d3e125d7e5ea22a6507f038",
+      "sha256": "4c46d658fadb498056886719ff9b5a46c126f1c7ed8a5940d863d73f83650eb5",
       "owner": "manual"
     },
     "content/docs/pl/extensions/index.mdx": {
@@ -2245,7 +2245,7 @@
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/actions.mdx": {
-      "sha256": "1589b077482a8dfacde56f1426afd52d86405b483c1843f63fd09459aaaa0b07",
+      "sha256": "8c991b01ac60b38267330f8d38a129821c26332311d18ec28eb45ce337371cc6",
       "owner": "manual"
     },
     "content/docs/pl/extensions/reference/blocks.mdx": {

@@ -69,7 +69,7 @@ Every code Opero and `opero-ext` report for extensions, grouped by where you mee
 | [`action.missing_test`](/docs/en/extensions/reference/actions#problems) | An action without a test case. |
 | [`field.invalid`](/docs/en/extensions/reference/actions#problems) | A field list with an unknown type or key, or a key that the list it is in does not allow. |
 | [`step.invalid`](/docs/en/extensions/reference/actions#problems) | A wrong `expose.ruleStep`, for example a branch named `error` or written twice. |
-| [`step.unknown_category`](/docs/en/extensions/reference/actions#problems) | Only at upload: `expose.ruleStep.category` is not one of the rule builder's categories. |
+| [`step.unknown_category`](/docs/en/extensions/reference/actions#problems) | `expose.ruleStep.category` is not one of the rule builder's categories. |
 | [`rule.invalid`](/docs/en/extensions/reference/rule-files#problems) | A rule file says `name` or `trigger`, or has an unknown key. |
 | [`rule.invalid_step_id`](/docs/en/extensions/reference/rule-files#problems) | A step id is a UUID or has odd characters. |
 | [`rule.duplicate_step_id`](/docs/en/extensions/reference/rule-files#problems) | Two steps with the same id. |

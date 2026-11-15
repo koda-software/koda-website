@@ -257,7 +257,7 @@ When a data step of the extension is refused while it runs, the extension's own 
 | `action.member_outside_member_run` | A member action is exposed, is the verify action, or is run by a schedule that is not over members. | Run it from a member connection hook or a schedule over members. |
 | `field.invalid` | A field list with an unknown type or key, a field key of the wrong form, a container without `options`, `items` or `fields`, an invalid default, or a key used where its list does not allow it. | Check the field against the table above. |
 | `step.invalid` | A branch named `error`, written twice, or not a lower-case name. | Use unique branch names other than `error`. |
-| `step.unknown_category` | At upload: `category` is not one of the six. | Use `data`, `logic`, `notifications`, `integrations`, `files` or `flow`. |
+| `step.unknown_category` | `category` is not one of the six. | Use `data`, `logic`, `notifications`, `integrations`, `files` or `flow`. |
 | `name.duplicate` | Two actions with the same name. | Rename one. |
 | `EXTENSION_MANAGED_RULE_RUN` | Someone ran, tested or replayed the extension's rule directly, or called it with **Call Rule**. | Use the step in a rule. |
 
