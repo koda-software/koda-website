@@ -17,6 +17,8 @@ import {
   type WhiteListAccountCheck,
   type WhiteListSearch,
 } from "@/lib/tools/white-list";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -182,7 +184,7 @@ export function WhiteListCheck({ labels, locale }: { labels: WhiteListLabels; lo
           <button className="action action-ink cursor-pointer border-0 disabled:cursor-wait disabled:opacity-70" disabled={loading} type="submit">
             {loading ? labels.checking : labels.submit}
           </button>
-          <span className="text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</span>
+          <PrivacyNote className="flex-[1_1_20rem]">{labels.privacyNote}</PrivacyNote>
         </div>
       </form>
 
@@ -291,13 +293,12 @@ export function WhiteListCheck({ labels, locale }: { labels: WhiteListLabels; lo
               <button className="action action-ink cursor-pointer border-0" onClick={() => window.print()} type="button">
                 {r.print}
               </button>
-              <button
-                className="action cursor-pointer border border-[rgba(11,17,22,0.2)] bg-transparent text-[var(--color-ink)] hover:border-[rgba(11,17,22,0.4)]"
+              <CopyButton
+                copied={copied === "id"}
+                copiedLabel={r.copied}
+                label={r.copyId}
                 onClick={() => copy("id", [outcome.search.requestId, outcome.account?.requestId].filter(Boolean).join(", "))}
-                type="button"
-              >
-                {copied === "id" ? r.copied : r.copyId}
-              </button>
+              />
             </div>
           </div>
         ) : null}

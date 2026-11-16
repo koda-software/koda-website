@@ -1362,6 +1362,86 @@ export type WhiteListLabels = {
   };
 };
 
+/** The e-Delivery search page: the shared parts plus a server-rendered table of well-known institutions. */
+export type EDeliveryPageContent = ToolPageContent & {
+  popular: {
+    title: string;
+    /** "{date}" is replaced with the list date. */
+    intro: string;
+    columns: [string, string, string];
+    /** Read from the gov.pl list at build time by REGON; a REGON missing from the list drops its row. */
+    institutions: Array<{ regon: string; label: string }>;
+  };
+};
+
+/** Exactly the copy the e-Delivery search needs. Templates use {placeholders}. */
+export type EDeliveryLabels = {
+  queryLabel: string;
+  placeholder: string;
+  submit: string;
+  searching: string;
+  /** The muted line under the field, by what the input looks like. */
+  hints: { empty: string; text: string; nip: string; krs: string; regon: string };
+  privacyNote: string;
+  errors: {
+    nip: string;
+    regon: string;
+    krs: string;
+    number: string;
+    short: string;
+    /** Followed by a link labelled `krsSearch`. */
+    krsNetwork: string;
+    krsSearch: string;
+    whiteListLimit: string;
+    whiteListNetwork: string;
+    searchUnavailable: string;
+    ceidgLimit: string;
+    ceidgUnavailable: string;
+  };
+  result: {
+    copy: string;
+    copied: string;
+    regonLabel: string;
+    krsLabel: string;
+    nipLabel: string;
+    legalFormLabel: string;
+    seatLabel: string;
+    townLabel: string;
+    statusLabel: string;
+    /** "{date}" */
+    sourceGov: string;
+    /** "{register}", "{state}", "{extracted}" */
+    sourceKrs: string;
+    registers: { P: string; S: string };
+    foreignBranch: string;
+    sourceCeidg: string;
+    officialGov: string;
+    /** "{krs}" */
+    officialKrs: string;
+    officialCeidg: string;
+    noAdeTitle: string;
+    noAdeBody: string;
+    noAdeDutyP: string;
+    noAdeNoDutyS: string;
+    noAdeCeidg: string;
+    eDeliveryApp: string;
+    /** "{date}" */
+    listDate: string;
+    stale: string;
+    showMore: string;
+    /** "{shown}", "{total}" */
+    shownOf: string;
+    noInstitution: string;
+    companyHint: string;
+    nipNotFound: string;
+    nipNotFoundHint: string;
+    krsNotFound: string;
+    regonNotFound: string;
+    /** Display names for CEIDG statuses; unknown ones are shown as they come. */
+    ceidgStatuses: Record<string, string>;
+  };
+};
+
 /** Exactly the copy the KSeF viewer needs. */
 export type KsefViewerLabels = {
   dropTitle: string;

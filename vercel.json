@@ -14,5 +14,11 @@
       "destination": "/pl",
       "permanent": false
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/e-delivery-sync",
+      "schedule": "15 5 * * *"
+    }
   ]
 }

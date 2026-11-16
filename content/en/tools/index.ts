@@ -4,6 +4,7 @@ import { localizeToolPath, toolKeys, type ToolKey } from "@/lib/i18n/tools";
 import type { ToolPageContent, ToolsIndexContent } from "@/content/types";
 import { amountInWordsPage } from "./amount-in-words";
 import { b2bVsEmploymentPage } from "./b2b-vs-employment";
+import { eDeliveryPage } from "./e-delivery";
 import { jpkViewerPage } from "./jpk-viewer";
 import { ksefViewerPage } from "./ksef-viewer";
 import { nbpRatePage } from "./nbp-rate";
@@ -13,13 +14,13 @@ import { whiteListPage } from "./white-list";
 export const toolsIndexContent: ToolsIndexContent = {
   seo: {
     title: "Free tools for business and accounting in Poland",
-    description: "Free tools for companies and accountants in Poland: VAT and B2B vs employment calculators, NBP rate, amount in words, White List, KSeF and JPK viewers.",
+    description: "Free tools for companies in Poland: VAT and B2B vs employment calculators, NBP rate, amount in words, White List, e-Delivery address, KSeF and JPK viewers.",
   },
   navLabel: "Tools",
   breadcrumbLabel: "Breadcrumb",
   hero: {
     title: "Free tools for business in Poland",
-    description: "Simple tools for everyday business and accounting work in Poland. No sign-up, and what you type stays in your browser.",
+    description: "Simple tools for everyday business and accounting work in Poland. No sign-up, and nothing you type is stored.",
   },
 };
 
@@ -29,6 +30,7 @@ export const toolPages: Record<ToolKey, ToolPageContent> = {
   b2bVsEmployment: b2bVsEmploymentPage,
   amountInWords: amountInWordsPage,
   whiteList: whiteListPage,
+  eDelivery: eDeliveryPage,
   ksefViewer: ksefViewerPage,
   jpkViewer: jpkViewerPage,
 };
@@ -40,6 +42,7 @@ const toolFeature = {
   b2bVsEmployment: "processes",
   amountInWords: "documents",
   whiteList: "integrations",
+  eDelivery: "documents",
   ksefViewer: "integrations",
   jpkViewer: "integrations",
 } as const satisfies Record<ToolKey, Parameters<typeof localizeFeaturePath>[1]>;

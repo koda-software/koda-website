@@ -8,6 +8,7 @@ import { JpkDeclarationPanel } from "./jpk/JpkDeclaration";
 import { JpkRowsTable } from "./jpk/JpkRowsTable";
 import { JpkSummaryPanel } from "./jpk/JpkSummary";
 import { count, fill, formatDateTime, money, period, quietButton, trackToolEvent, zloty, type Locale } from "./jpk/format";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
 
 type Tab = "summary" | "declaration" | "sales" | "purchases";
 type Loaded = { fileName: string; analysis: JpkAnalysis };
@@ -146,7 +147,7 @@ export function JpkViewer({ labels, locale }: { labels: JpkViewerLabels; locale:
           />
         </label>
 
-        <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+        <PrivacyNote>{labels.privacyNote}</PrivacyNote>
 
         {reading ? (
           <div className="grid gap-2" role="status">

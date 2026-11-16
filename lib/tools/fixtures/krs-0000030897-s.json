@@ -1,0 +1,35 @@
+{
+  "odpis": {
+    "rodzaj": "Aktualny",
+    "naglowekA": {
+      "rejestr": "RejS",
+      "numerKRS": "0000030897",
+      "dataCzasOdpisu": "16.11.2026 00:21:00",
+      "stanZDnia": "20.11.2025",
+      "dataRejestracjiWKRS": "25.07.2001",
+      "numerOstatniegoWpisu": 31,
+      "dataOstatniegoWpisu": "03.04.2025"
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": "FUNDACJA",
+          "identyfikatory": {
+            "nip": "5213003700"
+          },
+          "nazwa": "FUNDACJA WIELKA ORKIESTRA ŚWIĄTECZNEJ POMOCY"
+        },
+        "siedzibaIAdres": {
+          "siedziba": {
+            "kraj": "POLSKA",
+            "wojewodztwo": "MAZOWIECKIE",
+            "powiat": "WARSZAWSKI",
+            "gmina": "WARSZAWA-CENTRUM",
+            "miejscowosc": "WARSZAWA"
+          },
+          "adresDoDoreczenElektronicznychWpisanyDoBAE": "AE:PL-28547-16383-UFHUH-23"
+        }
+      }
+    }
+  }
+}

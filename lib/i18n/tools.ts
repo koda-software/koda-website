@@ -9,9 +9,9 @@ import { localizePath } from "./routes";
  * Add a key here only when its page exists: the index, the sitemap and the
  * "other tools" links all read this list.
  */
-export type ToolKey = "vatCalculator" | "nbpRate" | "b2bVsEmployment" | "amountInWords" | "whiteList" | "ksefViewer" | "jpkViewer";
+export type ToolKey = "vatCalculator" | "nbpRate" | "b2bVsEmployment" | "amountInWords" | "whiteList" | "eDelivery" | "ksefViewer" | "jpkViewer";
 
-export const toolKeys: ToolKey[] = ["vatCalculator", "nbpRate", "b2bVsEmployment", "amountInWords", "whiteList", "ksefViewer", "jpkViewer"];
+export const toolKeys: ToolKey[] = ["vatCalculator", "nbpRate", "b2bVsEmployment", "amountInWords", "whiteList", "eDelivery", "ksefViewer", "jpkViewer"];
 
 export const toolSlugs: Record<ToolKey, Record<Locale, string>> = {
   vatCalculator: { en: "polish-vat-calculator", pl: "kalkulator-vat" },
@@ -19,6 +19,7 @@ export const toolSlugs: Record<ToolKey, Record<Locale, string>> = {
   b2bVsEmployment: { en: "b2b-vs-employment-poland", pl: "kalkulator-b2b-uop" },
   amountInWords: { en: "amount-in-words", pl: "kwota-slownie" },
   whiteList: { en: "polish-vat-whitelist-check", pl: "biala-lista-vat" },
+  eDelivery: { en: "polish-e-delivery-address-search", pl: "wyszukiwarka-adresow-e-doreczen" },
   ksefViewer: { en: "ksef-invoice-viewer", pl: "podglad-faktury-ksef" },
   jpkViewer: { en: "jpk-file-viewer", pl: "podglad-pliku-jpk" },
 };

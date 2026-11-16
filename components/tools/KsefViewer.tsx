@@ -4,6 +4,7 @@ import { useId, useRef, useState, type DragEvent, type ReactNode } from "react";
 import type { KsefViewerLabels } from "@/content/types";
 import { MAX_KSEF_FILE_BYTES, ksefNumberFromFileName, type Invoice, type Party } from "@/lib/tools/ksef";
 import { parseInvoiceXml } from "@/lib/tools/ksef-dom";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -141,7 +142,7 @@ export function KsefViewer({ labels, locale }: { labels: KsefViewerLabels; local
           </div>
         </details>
 
-        <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+        <PrivacyNote>{labels.privacyNote}</PrivacyNote>
 
         {errors.length ? (
           <ul className="m-0 grid list-none gap-1 p-0 text-[1rem] text-[#a3360f]" role="alert">

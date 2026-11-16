@@ -5,6 +5,7 @@ import { commonContent, navItems } from "@/content/en/common";
 import { toolCtas, toolLinks, toolPages, toolsIndexContent } from "@/content/en/tools";
 import { amountInWordsLabels, amountInWordsPage } from "@/content/en/tools/amount-in-words";
 import { b2bVsEmploymentLabels, b2bVsEmploymentPage } from "@/content/en/tools/b2b-vs-employment";
+import { eDeliveryLabels, eDeliveryPage } from "@/content/en/tools/e-delivery";
 import { jpkViewerLabels, jpkViewerPage } from "@/content/en/tools/jpk-viewer";
 import { ksefViewerLabels } from "@/content/en/tools/ksef-viewer";
 import { nbpRateLabels } from "@/content/en/tools/nbp-rate";
@@ -16,6 +17,8 @@ import { AmountExamples } from "@/components/tools/AmountExamples";
 import { AmountInWords } from "@/components/tools/AmountInWords";
 import { B2bBreakEvenTable } from "@/components/tools/B2bBreakEvenTable";
 import { B2bVsEmployment } from "@/components/tools/B2bVsEmployment";
+import { EDeliveryPopular, loadPopularInstitutions } from "@/components/tools/EDeliveryPopular";
+import { EDeliverySearch } from "@/components/tools/EDeliverySearch";
 import { JpkMarkers } from "@/components/tools/JpkMarkers";
 import { JpkViewer } from "@/components/tools/JpkViewer";
 import { KsefViewer } from "@/components/tools/KsefViewer";
@@ -77,7 +80,7 @@ export default async function EnToolPage({ params }: PageProps<"/en/tools/[slug]
         <ToolPage
           content={content}
           ctas={toolCtas(tool)}
-          extra={toolExtra(tool)}
+          extra={await toolExtra(tool)}
           index={{ href: localizePath("en", "tools"), label: toolsIndexContent.navLabel, breadcrumbLabel: toolsIndexContent.breadcrumbLabel }}
           locale="en"
           otherTools={toolLinks.filter((link) => link.tool !== tool)}
@@ -102,6 +105,8 @@ function toolWidget(tool: ToolKey): ReactNode {
       return <AmountInWords labels={amountInWordsLabels} />;
     case "whiteList":
       return <WhiteListCheck labels={whiteListLabels} locale="en" />;
+    case "eDelivery":
+      return <EDeliverySearch labels={eDeliveryLabels} locale="en" />;
     case "ksefViewer":
       return <KsefViewer labels={ksefViewerLabels} locale="en" />;
     case "jpkViewer":
@@ -110,7 +115,7 @@ function toolWidget(tool: ToolKey): ReactNode {
 }
 
 /** A server-rendered section after the explainer, for the tools that have one. */
-function toolExtra(tool: ToolKey): ReactNode {
+async function toolExtra(tool: ToolKey): Promise<ReactNode> {
   switch (tool) {
     case "amountInWords":
       return <AmountExamples content={amountInWordsPage.examples} english={true} />;
@@ -118,6 +123,11 @@ function toolExtra(tool: ToolKey): ReactNode {
       return <JpkMarkers content={jpkViewerPage.markers} />;
     case "b2bVsEmployment":
       return <B2bBreakEvenTable content={b2bVsEmploymentPage.breakEvenTable} english={true} />;
+    case "eDelivery": {
+      // Read from the gov.pl list when the page is built; left out when no list is available.
+      const popular = await loadPopularInstitutions(eDeliveryPage.popular);
+      return popular ? <EDeliveryPopular content={eDeliveryPage.popular} data={popular} english={true} /> : undefined;
+    }
     default:
       return undefined;
   }

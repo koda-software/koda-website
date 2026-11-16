@@ -21,6 +21,8 @@ import {
   type ZusKey,
 } from "@/lib/tools/b2b-vs-employment";
 import { rates2026 } from "@/lib/tools/payroll-rates";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -572,20 +574,14 @@ export function B2bVsEmployment({ labels }: { labels: B2bVsEmploymentLabels }) {
           ) : null}
 
           <div>
-            <button className="action action-ink cursor-pointer border-0" onClick={copy} type="button">
-              <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
-                <rect height="12" rx="2" width="12" x="9" y="9" />
-                <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-              </svg>
-              <span>{copied ? labels.copied : labels.copySummary}</span>
-            </button>
+            <CopyButton copied={copied} copiedLabel={labels.copied} label={labels.copySummary} onClick={copy} />
           </div>
         </div>
       ) : null}
 
       <div className="grid gap-1.5">
         <p className="m-0 max-w-[47rem] text-[0.92rem] text-[var(--color-muted)]">{labels.disclaimer}</p>
-        <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+        <PrivacyNote>{labels.privacyNote}</PrivacyNote>
       </div>
     </div>
   );

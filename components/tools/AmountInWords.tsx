@@ -10,6 +10,8 @@ import {
   type CurrencyCode,
   type WordOptions,
 } from "@/lib/tools/amount-in-words";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -147,18 +149,11 @@ export function AmountInWords({ labels }: { labels: AmountInWordsLabels }) {
                   {result.text}
                 </p>
                 <div>
-                  <button className="action action-ink cursor-pointer border-0" onClick={() => copy(result.key, result.text)} type="button">
-                    <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
-                      <rect height="12" rx="2" width="12" x="9" y="9" />
-                      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-                    </svg>
-                    <span>{copied === result.key ? labels.copied : labels.copy}</span>
-                    {results.length > 1 ? <span className="sr-only">{result.heading}</span> : null}
-                  </button>
+                  <CopyButton copied={copied === result.key} copiedLabel={labels.copied} label={labels.copy} onClick={() => copy(result.key, result.text)}>{results.length > 1 ? <span className="sr-only">{result.heading}</span> : null}</CopyButton>
                 </div>
               </div>
             ))}
-            <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+            <PrivacyNote>{labels.privacyNote}</PrivacyNote>
           </>
         ) : parsed.kind === "error" ? (
           <p className="m-0 text-[1.05rem] text-[#a3360f]" role="alert">

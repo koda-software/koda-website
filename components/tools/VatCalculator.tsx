@@ -18,6 +18,8 @@ import {
   type RateKey,
   type VatMethod,
 } from "@/lib/tools/vat";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -102,12 +104,6 @@ export function VatCalculator({ labels, whiteListHref }: { labels: VatCalculator
     </p>
   );
 
-  const copyIcon = (
-    <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
-      <rect height="12" rx="2" width="12" x="9" y="9" />
-      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-    </svg>
-  );
 
   return (
     <div className="grid gap-10">
@@ -220,19 +216,12 @@ export function VatCalculator({ labels, whiteListHref }: { labels: VatCalculator
                   </p>
                 ) : null}
                 <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-3">
-                  <button
-                    className="action action-ink cursor-pointer border-0"
-                    onClick={() =>
+                  <CopyButton copied={copied === "quick"} copiedLabel={labels.copied} label={labels.copyAmounts} onClick={() =>
                       copy(
                         "quick",
                         `${labels.net} ${money(quick.net)} ${labels.currency}, ${labels.vat} ${noVat ? labels.notApplicable : `${money(quick.vat)} ${labels.currency}`}, ${labels.gross} ${money(quick.gross)} ${labels.currency}`,
                       )
-                    }
-                    type="button"
-                  >
-                    {copyIcon}
-                    <span>{copied === "quick" ? labels.copied : labels.copyAmounts}</span>
-                  </button>
+                    } />
                   <span className="text-[0.92rem] text-[var(--color-muted)]">{noVat ? labels.formulaNoVat : fill(labels.formula, { rate: labels.rates[rate] })}</span>
                 </div>
                 {quick.gross > LARGE_PAYMENT_CENTS ? largePayment : null}
@@ -412,9 +401,7 @@ export function VatCalculator({ labels, whiteListHref }: { labels: VatCalculator
                   {labels.wordsLabel}: {centsToPolishWords(invoice.total.gross)}
                 </p>
                 <div className="mt-3.5">
-                  <button
-                    className="action action-ink cursor-pointer border-0"
-                    onClick={() =>
+                  <CopyButton copied={copied === "invoice"} copiedLabel={labels.copied} label={labels.copySummary} onClick={() =>
                       copy(
                         "invoice",
                         [
@@ -423,12 +410,7 @@ export function VatCalculator({ labels, whiteListHref }: { labels: VatCalculator
                           [labels.copyText.total, money(invoice.total.net), money(invoice.total.vat), money(invoice.total.gross)].join("\t"),
                         ].join("\n"),
                       )
-                    }
-                    type="button"
-                  >
-                    {copyIcon}
-                    <span>{copied === "invoice" ? labels.copied : labels.copySummary}</span>
-                  </button>
+                    } />
                 </div>
               </div>
               {invoice.total.gross > LARGE_PAYMENT_CENTS ? <div className="basis-full">{largePayment}</div> : null}
@@ -437,7 +419,7 @@ export function VatCalculator({ labels, whiteListHref }: { labels: VatCalculator
         </div>
       )}
 
-      <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+      <PrivacyNote>{labels.privacyNote}</PrivacyNote>
     </div>
   );
 }

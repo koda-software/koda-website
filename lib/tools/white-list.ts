@@ -121,6 +121,11 @@ export function searchByNip(nip: string, date: string, signal?: AbortSignal) {
   return call<WhiteListSearch>(`/search/nip/${nip}?date=${date}`, signal);
 }
 
+/** A 9-digit REGON only: the API rejects 14-digit ones (WL-107). */
+export function searchByRegon(regon: string, date: string, signal?: AbortSignal) {
+  return call<WhiteListSearch>(`/search/regon/${regon}?date=${date}`, signal);
+}
+
 /** Checks one account against one NIP, including virtual accounts, which the search does not list. */
 export function checkAccount(nip: string, account: string, date: string, signal?: AbortSignal) {
   return call<WhiteListAccountCheck>(`/check/nip/${nip}/bank-account/${account}?date=${date}`, signal);

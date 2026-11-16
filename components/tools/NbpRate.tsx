@@ -17,6 +17,8 @@ import {
   type NbpSeries,
 } from "@/lib/tools/nbp";
 import { formatCents, hasNoVat, parseCents, rateKeys, type RateKey } from "@/lib/tools/vat";
+import { PrivacyNote } from "@/components/tools/PrivacyNote";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -153,12 +155,6 @@ export function NbpRate({
     }
   };
 
-  const copyIcon = (
-    <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
-      <rect height="12" rx="2" width="12" x="9" y="9" />
-      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-    </svg>
-  );
 
   const ok = lookup?.kind === "ok" ? lookup : null;
   const note = ok ? invoiceNote(locale, code, ok.rate) : "";
@@ -266,10 +262,7 @@ export function NbpRate({
                 <p className="m-0 min-w-0 flex-[1_1_24rem] rounded-[12px] border border-[var(--color-border-light)] bg-[var(--color-paper)] px-4 py-3 text-[1rem] text-[var(--color-ink)]">
                   {note}
                 </p>
-                <button className="action action-ink cursor-pointer border-0" onClick={() => copy("note", note)} type="button">
-                  {copyIcon}
-                  <span>{copied === "note" ? labels.copied : labels.copyNote}</span>
-                </button>
+                <CopyButton copied={copied === "note"} copiedLabel={labels.copied} label={labels.copyNote} onClick={() => copy("note", note)} />
               </div>
             </div>
           </>
@@ -397,9 +390,7 @@ export function NbpRate({
             </table>
             {noVat ? null : <p className="m-0 max-w-[47rem] text-[0.92rem] text-[var(--color-muted)]">{labels.vatNote}</p>}
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-              <button
-                className="action action-ink cursor-pointer border-0"
-                onClick={() =>
+              <CopyButton copied={copied === "amounts"} copiedLabel={labels.copied} label={labels.copyAmounts} onClick={() =>
                   copy(
                     "amounts",
                     [
@@ -409,12 +400,7 @@ export function NbpRate({
                       note,
                     ].join("\n"),
                   )
-                }
-                type="button"
-              >
-                {copyIcon}
-                <span>{copied === "amounts" ? labels.copied : labels.copyAmounts}</span>
-              </button>
+                } />
               <span className="text-[0.92rem] text-[var(--color-muted)]">
                 {labels.vatLink.before}{" "}
                 <Link className="text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={vatCalculatorHref}>
@@ -427,7 +413,7 @@ export function NbpRate({
         ) : null}
       </div>
 
-      <p className="m-0 text-[0.92rem] text-[var(--color-muted)]">{labels.privacyNote}</p>
+      <PrivacyNote>{labels.privacyNote}</PrivacyNote>
     </div>
   );
 }

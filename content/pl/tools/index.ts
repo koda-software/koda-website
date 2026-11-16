@@ -4,6 +4,7 @@ import { localizeToolPath, toolKeys, type ToolKey } from "@/lib/i18n/tools";
 import type { ToolPageContent, ToolsIndexContent } from "@/content/types";
 import { amountInWordsPage } from "./amount-in-words";
 import { b2bVsEmploymentPage } from "./b2b-vs-employment";
+import { eDeliveryPage } from "./e-delivery";
 import { jpkViewerPage } from "./jpk-viewer";
 import { ksefViewerPage } from "./ksef-viewer";
 import { nbpRatePage } from "./nbp-rate";
@@ -13,13 +14,13 @@ import { whiteListPage } from "./white-list";
 export const toolsIndexContent: ToolsIndexContent = {
   seo: {
     title: "Darmowe narzędzia dla firm i księgowości",
-    description: "Darmowe narzędzia dla firm i biur rachunkowych: kalkulator VAT i B2B vs UoP, kurs NBP, kwota słownie, biała lista VAT, podgląd faktury KSeF i pliku JPK.",
+    description: "Darmowe narzędzia dla firm: kalkulator VAT i B2B vs UoP, kurs NBP, kwota słownie, biała lista VAT, adres do e-Doręczeń, podgląd KSeF i JPK.",
   },
   navLabel: "Narzędzia",
   breadcrumbLabel: "Ścieżka nawigacji",
   hero: {
     title: "Darmowe narzędzia dla firm",
-    description: "Proste narzędzia do codziennej pracy w firmie i księgowości. Bez rejestracji, a to, co wpisujesz, zostaje w Twojej przeglądarce.",
+    description: "Proste narzędzia do codziennej pracy w firmie i księgowości. Bez rejestracji i bez zapisywania tego, co wpisujesz.",
   },
 };
 
@@ -29,6 +30,7 @@ export const toolPages: Record<ToolKey, ToolPageContent> = {
   b2bVsEmployment: b2bVsEmploymentPage,
   amountInWords: amountInWordsPage,
   whiteList: whiteListPage,
+  eDelivery: eDeliveryPage,
   ksefViewer: ksefViewerPage,
   jpkViewer: jpkViewerPage,
 };
@@ -40,6 +42,7 @@ const toolFeature = {
   b2bVsEmployment: "processes",
   amountInWords: "documents",
   whiteList: "integrations",
+  eDelivery: "documents",
   ksefViewer: "integrations",
   jpkViewer: "integrations",
 } as const satisfies Record<ToolKey, Parameters<typeof localizeFeaturePath>[1]>;
