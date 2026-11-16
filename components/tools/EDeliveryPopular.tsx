@@ -1,21 +1,25 @@
 import type { EDeliveryPageContent } from "@/content/types";
 import type { RegisterRow } from "@/lib/tools/e-delivery-register";
+import popularSnapshot from "@/lib/tools/e-delivery-popular.json";
 import { institutionsByRegon } from "@/lib/tools/e-delivery-store";
 
 /**
- * The e-Delivery addresses of well-known offices, read from the gov.pl list when the page
- * is built. People search for "adres do e-doręczeń ZUS", and this answers in the page
- * text. Without a list at build time the section is left out rather than filled with old values.
+ * The e-Delivery addresses of well-known offices, for the page text: people search for
+ * "adres do e-doręczeń ZUS". The build reads the gov.pl list when it can; Vercel's build
+ * servers cannot reach www.gov.pl, so it falls back to lib/tools/e-delivery-popular.json
+ * (refreshed by scripts/tools/update-e-delivery-popular.mts). The table shows the list date either way.
  */
 export async function loadPopularInstitutions(content: EDeliveryPageContent["popular"]) {
-  const found = await institutionsByRegon(content.institutions.map((institution) => institution.regon));
-  if (!found) return null;
+  const live = await institutionsByRegon(content.institutions.map((institution) => institution.regon), 8_000);
+  const snapshot = popularSnapshot as { listDate: string; rows: Record<string, RegisterRow | undefined> };
+  const useLive = live !== null && live.listDate >= snapshot.listDate;
+  const listDate = useLive ? live.listDate : snapshot.listDate;
 
   const rows = content.institutions.flatMap((institution) => {
-    const row = found.rows.get(institution.regon);
+    const row = useLive ? live.rows.get(institution.regon) : snapshot.rows[institution.regon];
     return row ? [{ ...institution, row }] : [];
   });
-  return rows.length ? { listDate: found.listDate, rows } : null;
+  return rows.length ? { listDate, rows } : null;
 }
 
 type PopularRows = NonNullable<Awaited<ReturnType<typeof loadPopularInstitutions>>>;

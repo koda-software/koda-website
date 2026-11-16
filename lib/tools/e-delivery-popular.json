@@ -1,0 +1,110 @@
+{
+  "listDate": "2026-11-13",
+  "rows": {
+    "350508747": {
+      "name": "URZĄD MIASTA KRAKOWA",
+      "town": "KRAKÓW-ŚRÓDMIEŚCIE",
+      "voivodeship": "MAŁOPOLSKIE",
+      "regon": "350508747",
+      "ade": "AE:PL-44247-71066-ISSHB-24"
+    },
+    "366063511": {
+      "name": "KRAJOWA INFORMACJA SKARBOWA",
+      "town": "BIELSKO-BIAŁA",
+      "voivodeship": "ŚLĄSKIE",
+      "regon": "366063511",
+      "ade": "AE:PL-95202-60557-SAHRJ-25"
+    },
+    "000017756": {
+      "name": "ZAKŁAD UBEZPIECZEŃ SPOŁECZNYCH CENTRALA",
+      "town": "WARSZAWA",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "000017756",
+      "ade": "AE:PL-92659-41628-BJDEF-20"
+    },
+    "012513262": {
+      "name": "KASA ROLNICZEGO UBEZPIECZENIA SPOŁECZNEGO CENTRALA",
+      "town": "WARSZAWA-ŚRÓDMIEŚCIE",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "012513262",
+      "ade": "AE:PL-39002-90118-WITVG-28"
+    },
+    "015817985": {
+      "name": "NARODOWY FUNDUSZ ZDROWIA",
+      "town": "WARSZAWA - MOKOTÓW",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "015817985",
+      "ade": "AE:PL-98754-99859-GJBJA-29"
+    },
+    "000002217": {
+      "name": "MINISTERSTWO FINANSÓW",
+      "town": "WARSZAWA",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "000002217",
+      "ade": "AE:PL-83190-36017-RFBJU-21"
+    },
+    "000331501": {
+      "name": "GŁÓWNY URZĄD STATYSTYCZNY",
+      "town": "WARSZAWA",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "000331501",
+      "ade": "AE:PL-77834-60292-CETTI-31"
+    },
+    "006212789": {
+      "name": "URZĄD OCHRONY KONKURENCJI I KONSUMENTÓW",
+      "town": "WARSZAWA - ŚRÓDMIEŚCIE",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "006212789",
+      "ade": "AE:PL-85353-79447-CAVBF-25"
+    },
+    "017315012": {
+      "name": "URZĄD DO SPRAW CUDZOZIEMCÓW",
+      "town": "WARSZAWA - ŚRÓDMIEŚCIE",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "017315012",
+      "ade": "AE:PL-63297-42869-TJTIE-23"
+    },
+    "000332251": {
+      "name": "URZĄD PATENTOWY RZECZYPOSPOLITEJ POLSKIEJ",
+      "town": "WARSZAWA",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "000332251",
+      "ade": "AE:PL-11923-74059-JJWGE-26"
+    },
+    "015259663": {
+      "name": "URZĄD M.ST. WARSZAWY",
+      "town": "WARSZAWA",
+      "voivodeship": "MAZOWIECKIE",
+      "regon": "015259663",
+      "ade": "AE:PL-79408-50689-FDSVF-21"
+    },
+    "000514182": {
+      "name": "URZĄD MIASTA ŁODZI",
+      "town": "ŁÓDŹ",
+      "voivodeship": "ŁÓDZKIE",
+      "regon": "000514182",
+      "ade": "AE:PL-43653-25073-RDRVC-22"
+    },
+    "001094670": {
+      "name": "URZĄD MIEJSKI WROCŁAWIA",
+      "town": "WROCŁAW",
+      "voivodeship": "DOLNOŚLĄSKIE",
+      "regon": "001094670",
+      "ade": "AE:PL-95179-82549-VVTFT-27"
+    },
+    "000514199": {
+      "name": "URZĄD MIASTA POZNANIA",
+      "town": "POZNAŃ",
+      "voivodeship": "WIELKOPOLSKIE",
+      "regon": "000514199",
+      "ade": "AE:PL-46081-20925-AEABE-27"
+    },
+    "000598463": {
+      "name": "URZĄD MIEJSKI W GDAŃSKU",
+      "town": "GDAŃSK",
+      "voivodeship": "POMORSKIE",
+      "regon": "000598463",
+      "ade": "AE:PL-69589-14466-DIDGS-28"
+    }
+  }
+}

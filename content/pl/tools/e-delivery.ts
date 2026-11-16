@@ -129,8 +129,8 @@ export const eDeliveryLabels: EDeliveryLabels = {
   submit: "Szukaj",
   searching: "Szukam…",
   hints: {
-    empty: "Nazwy urzędów szukamy od razu. Numer zatwierdź klawiszem Enter.",
-    text: "Szukam w liście urzędów z gov.pl.",
+    empty: "Wpisz nazwę lub numer i naciśnij Enter.",
+    text: "Szukam w liście urzędów z gov.pl. Naciśnij Enter.",
     nip: "Szukam po NIP. Naciśnij Enter.",
     krs: "Szukam po numerze KRS. Naciśnij Enter.",
     regon: "Szukam po numerze REGON. Naciśnij Enter.",

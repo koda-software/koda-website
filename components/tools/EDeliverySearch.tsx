@@ -16,6 +16,7 @@ import {
   type KrsEntity,
   type QueryKind,
 } from "@/lib/tools/e-delivery";
+import { highlightParts } from "@/lib/tools/e-delivery-search";
 import { WhiteListError, searchByNip, searchByRegon as whiteListByRegon, type WhiteListSearch } from "@/lib/tools/white-list";
 import { PrivacyNote } from "@/components/tools/PrivacyNote";
 import { CopyButton } from "@/components/tools/CopyButton";
@@ -109,8 +110,11 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
-  const debounce = useRef<number | undefined>(undefined);
   const lastTracked = useRef(0);
+  const [suggestions, setSuggestions] = useState<{ query: string; listDate: string; items: Institution[] } | null>(null);
+  const [active, setActive] = useState(-1);
+  const suggestTimer = useRef<number | undefined>(undefined);
+  const suggestController = useRef<AbortController | null>(null);
   const r = labels.result;
   const e = labels.errors;
 
@@ -242,22 +246,87 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
     return () => {
       window.clearTimeout(start);
       controller.current?.abort();
-      window.clearTimeout(debounce.current);
+      window.clearTimeout(suggestTimer.current);
+      suggestController.current?.abort();
     };
   }, [run]);
 
+  const closeSuggestions = () => {
+    window.clearTimeout(suggestTimer.current);
+    suggestController.current?.abort();
+    setSuggestions(null);
+    setActive(-1);
+  };
+
+  /* Suggestions for office names: a short list, once typing pauses, never the full search. */
+  const suggest = (value: string) => {
+    window.clearTimeout(suggestTimer.current);
+    suggestController.current?.abort();
+    const kind = detectQuery(value);
+    if (kind.kind !== "text" || value.trim().length < 3) {
+      setSuggestions(null);
+      setActive(-1);
+      return;
+    }
+    suggestTimer.current = window.setTimeout(async () => {
+      const current = new AbortController();
+      suggestController.current = current;
+      try {
+        const page = await getJson<InstitutionPage>(`${SEARCH_ROUTE}?q=${encodeURIComponent(value.trim())}&limit=6`, current.signal);
+        setSuggestions(page.items.length ? { query: value.trim(), listDate: page.listDate, items: page.items } : null);
+        setActive(-1);
+      } catch {
+        /* Suggestions are optional: Enter still runs the full search. */
+      }
+    }, 300);
+  };
+
+  const pick = (item: Institution, listDate: string) => {
+    closeSuggestions();
+    controller.current?.abort();
+    setQuery(item.name);
+    setFieldError(null);
+    setLoading(false);
+    setOutcome({
+      institutions: { listDate, total: 1, items: [item], params: `regon=${item.regon}` },
+      companies: [],
+      firms: [],
+      notices: [],
+      empty: null,
+    });
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", item.name);
+    window.history.replaceState(window.history.state, "", url);
+    if (Date.now() - lastTracked.current > 10_000) {
+      lastTracked.current = Date.now();
+      trackToolEvent("tool_used");
+    }
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!suggestions) return;
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const count = suggestions.items.length;
+      setActive((index) => (event.key === "ArrowDown" ? (index + 1) % count : index <= 0 ? count - 1 : index - 1));
+    } else if (event.key === "Enter" && active >= 0) {
+      event.preventDefault();
+      pick(suggestions.items[active], suggestions.listDate);
+    } else if (event.key === "Escape") {
+      closeSuggestions();
+    }
+  };
+
   const onChange = (value: string) => {
     setQuery(value);
+    // Full searches run on Enter or the button only; typing a name only asks for suggestions.
     setFieldError(null);
-    window.clearTimeout(debounce.current);
-    const kind = detectQuery(value);
-    // Names search as you type; numbers wait for Enter, so a half-typed KRS number never goes out.
-    if (kind.kind === "text") debounce.current = window.setTimeout(() => void run(kind, value), 250);
+    suggest(value);
   };
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    window.clearTimeout(debounce.current);
+    closeSuggestions();
     void run(detectQuery(query), query);
   };
 
@@ -302,20 +371,64 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
           {labels.queryLabel}
         </label>
         <div className="flex flex-wrap items-start gap-3">
-          <input
-            aria-describedby={`${id}-hint${fieldError ? ` ${id}-error` : ""}`}
-            aria-invalid={Boolean(fieldError)}
-            autoComplete="off"
-            className={`${fieldClass} min-w-0 flex-[1_1_22rem]`}
-            id={`${id}-q`}
-            inputMode="text"
-            maxLength={100}
-            onChange={(event) => onChange(event.target.value)}
-            placeholder={labels.placeholder}
-            spellCheck={false}
-            type="search"
-            value={query}
-          />
+          <div className="relative min-w-0 flex-[1_1_22rem]">
+            <input
+              aria-activedescendant={suggestions && active >= 0 ? `${id}-option-${active}` : undefined}
+              aria-autocomplete="list"
+              aria-controls={`${id}-suggestions`}
+              aria-describedby={`${id}-hint${fieldError ? ` ${id}-error` : ""}`}
+              aria-expanded={Boolean(suggestions)}
+              aria-invalid={Boolean(fieldError)}
+              autoComplete="off"
+              className={`${fieldClass} min-w-0`}
+              id={`${id}-q`}
+              inputMode="text"
+              maxLength={100}
+              onBlur={() => window.setTimeout(closeSuggestions, 120)}
+              onChange={(event) => onChange(event.target.value)}
+              onKeyDown={onKeyDown}
+              placeholder={labels.placeholder}
+              role="combobox"
+              spellCheck={false}
+              type="search"
+              value={query}
+            />
+            {suggestions ? (
+              <ul
+                aria-label={labels.queryLabel}
+                className="absolute inset-x-0 top-[calc(100%+6px)] z-20 m-0 list-none overflow-hidden rounded-[12px] border border-[rgba(11,17,22,0.16)] bg-[var(--color-paper)] p-1 shadow-[0_12px_32px_rgba(11,17,22,0.12)]"
+                id={`${id}-suggestions`}
+                role="listbox"
+              >
+                {suggestions.items.map((item, index) => (
+                  <li
+                    aria-selected={index === active}
+                    className={`cursor-pointer rounded-[8px] px-3 py-2.5 ${index === active ? "bg-[var(--color-mist)]" : "hover:bg-[var(--color-mist)]"}`}
+                    id={`${id}-option-${index}`}
+                    key={item.ade}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => pick(item, suggestions.listDate)}
+                    role="option"
+                  >
+                    <span className="block text-[1rem] leading-[1.4] text-[var(--color-muted)] [overflow-wrap:anywhere]">
+                      {highlightParts(item.name, suggestions.query).map((part, partIndex) =>
+                        part.match ? (
+                          <strong className="font-semibold text-[var(--color-ink)]" key={partIndex}>
+                            {part.text}
+                          </strong>
+                        ) : (
+                          <span key={partIndex}>{part.text}</span>
+                        ),
+                      )}
+                    </span>
+                    <span className="block text-[0.86rem] text-[var(--color-muted)]">
+                      {[titleCase(item.town), item.voivodeship.toLocaleLowerCase("pl-PL")].filter(Boolean).join(", ")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
           <button className="action action-ink h-14 cursor-pointer border-0 disabled:cursor-wait disabled:opacity-70" disabled={loading} type="submit">
             {loading ? labels.searching : labels.submit}
           </button>

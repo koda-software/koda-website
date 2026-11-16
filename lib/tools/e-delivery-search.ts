@@ -183,3 +183,34 @@ export function searchByRegon(index: SearchIndex, regon: string): RegisterRow[] 
   const byName = (a: number, b: number) => index.rows[a].name.localeCompare(index.rows[b].name, "pl");
   return [...[...exact].sort(byName), ...children.sort(byName)].map((rowIndex) => index.rows[rowIndex]);
 }
+
+export type HighlightPart = { text: string; match: boolean };
+
+/**
+ * Splits `text` into parts for display, marking the start of every word that a query word
+ * begins, the way the search matches: "gdyn" marks "GDYN" in "W GDYNI". Polish letters
+ * match either way ("lodz" marks "ŁÓDŹ"): each of them normalises to one letter, so the
+ * positions line up.
+ */
+export function highlightParts(text: string, query: string): HighlightPart[] {
+  const tokens = normalizeForSearch(query)
+    .filter((token) => !STOPWORDS.has(token))
+    .sort((a, b) => b.length - a.length);
+  const parts: HighlightPart[] = [];
+  const push = (chunk: string, match: boolean) => {
+    if (!chunk) return;
+    const last = parts.at(-1);
+    if (last && last.match === match) last.text += chunk;
+    else parts.push({ text: chunk, match });
+  };
+
+  for (const piece of text.split(/([\p{L}\p{N}]+)/u)) {
+    const word = normalizeForSearch(piece)[0];
+    const token = word && word.length === piece.length ? tokens.find((candidate) => word.startsWith(candidate)) : undefined;
+    if (token) {
+      push(piece.slice(0, token.length), true);
+      push(piece.slice(token.length), false);
+    } else push(piece, false);
+  }
+  return parts;
+}

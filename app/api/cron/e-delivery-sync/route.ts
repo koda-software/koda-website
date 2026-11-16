@@ -3,6 +3,9 @@ import { blobConfigured, syncSnapshot } from "@/lib/tools/e-delivery-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// www.gov.pl drops connections from Vercel's default US region (connect ETIMEDOUT), so the
+// routes that read the gov.pl list run in Frankfurt.
+export const preferredRegion = "fra1";
 export const maxDuration = 60;
 
 function secretMatches(provided: string, expected: string) {

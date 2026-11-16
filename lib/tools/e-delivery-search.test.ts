@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { extractRegisterData, validateRegister } from "./e-delivery-register";
-import { buildIndex, normalizeForSearch, searchByRegon, searchByText } from "./e-delivery-search";
+import { buildIndex, normalizeForSearch, searchByRegon, searchByText, highlightParts } from "./e-delivery-search";
 
 /* 300 real rows of the gov.pl list of 13.11.2026. */
 const html = readFileSync(new URL("./fixtures/e-delivery-register-sample.html", import.meta.url), "utf8");
@@ -72,4 +72,15 @@ test("finds rows by REGON, with the 14-digit local units of a 9-digit REGON", ()
 
 test("returns nothing for nonsense", () => {
   assert.equal(searchByText(index, "xyzxyz").total, 0);
+});
+
+test("highlights the start of every word a query word begins, whatever the Polish letters", () => {
+  const marked = (text: string, query: string) =>
+    highlightParts(text, query)
+      .map((part) => (part.match ? `[${part.text}]` : part.text))
+      .join("");
+  assert.equal(marked("PIERWSZY URZĄD SKARBOWY W GDYNI", "urzad skarb gdyn"), "PIERWSZY [URZĄD] [SKARB]OWY W [GDYN]I");
+  assert.equal(marked("Urząd Miasta Łodzi", "łódź miast w"), "Urząd [Miast]a [Łodz]i");
+  assert.equal(marked("ZAKŁAD UBEZPIECZEŃ SPOŁECZNYCH", "xyz"), "ZAKŁAD UBEZPIECZEŃ SPOŁECZNYCH");
+  assert.equal(marked("GOPS-TYRAWA", "tyr"), "GOPS-[TYR]AWA");
 });

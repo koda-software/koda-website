@@ -4,6 +4,9 @@ import { loadIndex } from "@/lib/tools/e-delivery-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// www.gov.pl drops connections from Vercel's default US region (connect ETIMEDOUT), so the
+// routes that read the gov.pl list run in Frankfurt.
+export const preferredRegion = "fra1";
 
 const PAGE_SIZE = 10;
 const MAX_OFFSET = 50;
@@ -19,6 +22,8 @@ export async function GET(request: Request) {
   const q = params.get("q")?.trim() ?? "";
   const regon = params.get("regon")?.trim() ?? "";
   const offset = Math.min(Math.max(Number.parseInt(params.get("offset") ?? "0", 10) || 0, 0), MAX_OFFSET);
+  // Suggestions while typing ask for fewer rows.
+  const limit = Math.min(Math.max(Number.parseInt(params.get("limit") ?? `${PAGE_SIZE}`, 10) || PAGE_SIZE, 1), PAGE_SIZE);
 
   if (regon ? !isValidRegon(regon) : q.length < 2 || q.length > 100) {
     return Response.json({ error: "query" }, { status: 400, headers: { "Cache-Control": "no-store" } });
@@ -33,7 +38,7 @@ export async function GET(request: Request) {
     return Response.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 
-  const found = regon ? paged(searchByRegon(loaded.index, regon), offset) : searchByText(loaded.index, q, offset, PAGE_SIZE);
+  const found = regon ? paged(searchByRegon(loaded.index, regon), offset, limit) : searchByText(loaded.index, q, offset, limit);
 
   return Response.json(
     {
@@ -46,6 +51,6 @@ export async function GET(request: Request) {
   );
 }
 
-function paged<T>(rows: T[], offset: number) {
-  return { total: rows.length, items: rows.slice(offset, offset + PAGE_SIZE) };
+function paged<T>(rows: T[], offset: number, limit: number) {
+  return { total: rows.length, items: rows.slice(offset, offset + limit) };
 }
