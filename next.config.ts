@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
     staticGenerationMaxConcurrency: 4,
     staticGenerationRetryCount: 2,
   },
+  webpack(config, { dev }) {
+    // Vercel restores webpack's filesystem cache from the previous deploy. webpack cannot
+    // track fumadocs-mdx's build dependencies ("Build dependencies behind this expression
+    // are ignored"), so after a dependency change the stale cache crashed the compile
+    // ("Cannot read properties of undefined (reading 'length')", aada5b8 and 77ab403).
+    // Production builds on Vercel compile from scratch instead (about 25 s); local and
+    // dev builds keep the cache.
+    if (!dev && process.env.VERCEL) config.cache = false;
+    return config;
+  },
   async redirects() {
     return [
       {
