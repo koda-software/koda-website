@@ -1,0 +1,166 @@
+{
+  "odpis": {
+    "rodzaj": "Aktualny",
+    "naglowekA": {
+      "rejestr": "RejP",
+      "numerKRS": "0000413997",
+      "dataCzasOdpisu": "16.11.2026 02:13:12",
+      "stanZDnia": "10.07.2026",
+      "dataRejestracjiWKRS": "14.03.2012",
+      "numerOstatniegoWpisu": 147,
+      "dataOstatniegoWpisu": "10.07.2026",
+      "sygnaturaAktSprawyDotyczacejOstatniegoWpisu": "RDF/870275/26/767",
+      "oznaczenieSaduDokonujacegoOstatniegoWpisu": "SYSTEM",
+      "stanPozycji": 1
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": "SPÓŁKA AKCYJNA",
+          "identyfikatory": {
+            "regon": "02182998900000",
+            "nip": "8992733884"
+          },
+          "nazwa": "CAPITEA SPÓŁKA AKCYJNA",
+          "daneOWczesniejszejRejestracji": {},
+          "czyProwadziDzialalnoscZInnymiPodmiotami": false,
+          "czyPosiadaStatusOPP": false
+        },
+        "siedzibaIAdres": {
+          "siedziba": {
+            "kraj": "POLSKA",
+            "wojewodztwo": "DOLNOŚLĄSKIE",
+            "powiat": "WROCŁAW",
+            "gmina": "WROCŁAW",
+            "miejscowosc": "WROCŁAW"
+          },
+          "adres": {
+            "ulica": "UL. LEGNICKA",
+            "nrDomu": "48G",
+            "miejscowosc": "WROCŁAW",
+            "kodPocztowy": "54-202",
+            "poczta": "WROCŁAW",
+            "kraj": "POLSKA"
+          },
+          "adresDoDoreczenElektronicznychWpisanyDoBAE": "AE:PL-96559-15067-SSEEC-15"
+        },
+        "kapital": {
+          "wysokoscKapitaluZakladowego": {
+            "wartosc": "5000000,00",
+            "waluta": "PLN"
+          }
+        }
+      },
+      "dzial2": {
+        "reprezentacja": {
+          "nazwaOrganu": "ZARZĄD",
+          "sposobReprezentacji": "W PRZYPADKU ZARZĄDU WIELOOSOBOWEGO, DO SKŁADANIA OŚWIADCZEŃ WOLI W IMIENIU SPÓŁKI WYMAGANE JEST WSPÓŁDZIAŁANIE DWÓCH CZŁONKÓW ZARZĄDU ALBO JEDNEGO CZŁONKA ZARZĄDU ŁĄCZNIE Z PROKURENTEM."
+        }
+      },
+      "dzial3": {
+        "przedmiotDzialalnosci": {
+          "przedmiotPrzewazajacejDzialalnosci": [
+            {
+              "opis": "POZOSTAŁA FINANSOWA DZIAŁALNOŚĆ USŁUGOWA, GDZIE INDZIEJ NIESKLASYFIKOWANA, Z WYŁĄCZENIEM UBEZPIECZEŃ I FUNDUSZÓW EMERYTALNYCH",
+              "kodDzial": "64",
+              "kodKlasa": "99",
+              "kodPodklasa": "Z"
+            }
+          ]
+        },
+        "wzmiankiOZlozonychDokumentach": {
+          "wzmiankaOZlozeniuRocznegoSprawozdaniaFinansowego": [
+            {
+              "dataZlozenia": "24.05.2013",
+              "zaOkresOdDo": "14.03.2012 R. - 31.12.2012 R."
+            },
+            {
+              "dataZlozenia": "25.06.2014",
+              "zaOkresOdDo": "OD 01.01.2013 DO 31.12.2013"
+            },
+            {
+              "dataZlozenia": "11.05.2015",
+              "zaOkresOdDo": "OD 01.01.2014 DO 31.12.2014"
+            },
+            {
+              "dataZlozenia": "18.03.2016",
+              "zaOkresOdDo": "OD 01.01.2015 DO 31.12.2015"
+            },
+            {
+              "dataZlozenia": "05.06.2017",
+              "zaOkresOdDo": "OD 01.01.2016 DO 31.12.2016"
+            },
+            {
+              "dataZlozenia": "17.07.2018",
+              "zaOkresOdDo": "OD 01.01.2017 DO 31.12.2017"
+            },
+            {
+              "dataZlozenia": "17.07.2018",
+              "zaOkresOdDo": "OD 01.01.2017 DO 31.12.2017"
+            },
+            {
+              "dataZlozenia": "17.07.2018",
+              "zaOkresOdDo": "OD 01.01.2017 DO 31.12.2017"
+            },
+            {
+              "dataZlozenia": "14.11.2019",
+              "zaOkresOdDo": "OD 01.01.2018 DO 31.12.2018"
+            },
+            {
+              "dataZlozenia": "19.02.2021",
+              "zaOkresOdDo": "OD 01.01.2019 DO 31.12.2019"
+            },
+            {
+              "dataZlozenia": "20.09.2021",
+              "zaOkresOdDo": "OD 01.01.2020 DO 31.12.2020"
+            },
+            {
+              "dataZlozenia": "11.07.2022",
+              "zaOkresOdDo": "OD 01.01.2021 DO 31.12.2021"
+            },
+            {
+              "dataZlozenia": "12.06.2023",
+              "zaOkresOdDo": "OD 01.01.2022 DO 31.12.2022"
+            },
+            {
+              "dataZlozenia": "09.07.2024",
+              "zaOkresOdDo": "OD 01.01.2023 DO 31.12.2023"
+            },
+            {
+              "dataZlozenia": "01.07.2025",
+              "zaOkresOdDo": "OD 01.01.2024 DO 31.12.2024"
+            },
+            {
+              "dataZlozenia": "10.07.2026",
+              "zaOkresOdDo": "OD 01.01.2025 DO 31.12.2025"
+            }
+          ]
+        }
+      },
+      "dzial4": {},
+      "dzial5": {},
+      "dzial6": {
+        "postepowanieRestrukturyzacyjneNaprawczePrzymusowaRestrukturyzacjaUporzadkowanaLikwidacja": [
+          {
+            "otwarciePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {
+              "organWydajacy": "SĄD REJONOWY DLA WROCŁAWIA-FABRYCZNEJ VIII WYDZIAŁ GOSPODARCZY DLA SPRAW UPADŁOŚCIOWYCH I RESTRUKTURYZACYJNYCH, OTWARCIE PRZYSPIESZONEGO POSTĘPOWANIA UKŁADOWEGO",
+              "sygnatura": "SYGN. AKT VIII GR 13/18",
+              "dataNadaniaKlauzuliWykonalnosci": "09.05.2018",
+              "rodzajPostepowania": "POSTĘPOWANIE RESTRUKTURYZACYJNE"
+            },
+            "zakonczeniePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {},
+            "uchylenieUkladu": {}
+          },
+          {
+            "otwarciePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {},
+            "zakonczeniePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {
+              "data": "06.06.2019",
+              "opis": "ZAKOŃCZENIE PRZEZ ZATWIERDZENIE UKŁADU"
+            },
+            "uchylenieUkladu": {}
+          }
+        ]
+      }
+    }
+  }
+}

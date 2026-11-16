@@ -2,6 +2,7 @@ import type { FeatureKey } from "@/lib/i18n/features";
 import type { PageKey } from "@/lib/i18n/routes";
 import type { JpkCheckId, KsefKind, VatRateKey } from "@/lib/tools/jpk";
 import type { JpkCsvLabels } from "@/lib/tools/jpk-csv";
+import type { DailyNorm, PluralForms, WorkingTimeSummaryLabels } from "@/lib/tools/working-time";
 
 export type NavSubItem = {
   feature: FeatureKey;
@@ -1445,6 +1446,143 @@ export type EDeliveryLabels = {
   };
 };
 
+/** Exactly the copy the counterparty check needs. Templates use {placeholders}. */
+export type CounterpartyLabels = {
+  queryLabel: string;
+  placeholder: string;
+  submit: string;
+  checking: string;
+  /** The muted line under the field, by what the input looks like. No request is made while typing. */
+  hints: { empty: string; nip: string; krs: string; regon: string; vat: string; name: string };
+  privacyNote: string;
+  errors: { nip: string; regon: string; krs: string; vat: string; number: string; short: string };
+  /** For a name: followed by links labelled `krsSearch` and `ceidgSearch`. */
+  nameHint: string;
+  krsSearch: string;
+  ceidgSearch: string;
+  /** The one-line summary; also the status row of each source. */
+  summary: import("@/lib/tools/counterparty").CounterpartySummaryLabels;
+  notFound: { nipTitle: string; nipHint: string; regonTitle: string; regonHint: string; krsTitle: string; krsHint: string };
+  loading: string;
+  registerPending: string;
+  sources: { krs: string; ceidg: string; whiteList: string; vies: string };
+  rows: {
+    status: string;
+    legalForm: string;
+    krs: string;
+    nip: string;
+    regon: string;
+    address: string;
+    town: string;
+    registeredOn: string;
+    capital: string;
+    pkd: string;
+    representation: string;
+    statement: string;
+    opp: string;
+    ade: string;
+    proceeding: string;
+    startedOn: string;
+    suspendedOn: string;
+    resumedOn: string;
+    endedOn: string;
+    deletedOn: string;
+    vatRegisteredOn: string;
+    accounts: string;
+    vatRemoved: string;
+    vatRestored: string;
+    vatDenied: string;
+    vatNumber: string;
+    viesResult: string;
+    name: string;
+  };
+  values: {
+    registers: { P: string; S: string };
+    /** "{period}", "{date}" */
+    statement: string;
+    /** "{period}" */
+    statementNoDate: string;
+    /** "{period}": a muted note when the last statement is more than 19 months old. */
+    statementOld: string;
+    noStatement: string;
+    oppYes: string;
+    /** "{type}", "{date}"; the signature and authority follow on a muted line. */
+    proceedingOpen: string;
+    /** "{type}", "{from}", "{to}" */
+    proceedingEnded: string;
+    proceedingEndedNoDate: string;
+    /** "{entry}", "{final}" */
+    deregistered: string;
+    /** Account counts by plural category ("{count}"). */
+    accounts: { one: string; few?: string; many?: string; other: string };
+    noAccounts: string;
+    virtualAccounts: string;
+    vatStatuses: Record<string, string>;
+    viesValid: string;
+    viesInvalid: string;
+    /** "{country}" */
+    viesUnavailable: string;
+    viesBusy: string;
+    viesInput: string;
+    viesNoName: string;
+    northernIreland: string;
+    partnershipOnlyHint: string;
+    noNip: string;
+  };
+  source: {
+    /** "{state}", "{extracted}" */
+    krs: string;
+    /** "{extracted}" */
+    krsFull: string;
+    /** "{time}" */
+    ceidg: string;
+    /** "{id}", "{time}" */
+    whiteList: string;
+    /** "{time}" */
+    vies: string;
+    openKrs: string;
+    openCeidg: string;
+    openWhiteList: string;
+    openVies: string;
+  };
+  sourceErrors: {
+    krsNetwork: string;
+    krsLimit: string;
+    krsFormat: string;
+    ceidgLimit: string;
+    ceidgUnavailable: string;
+    whiteListLimit: string;
+    whiteListNetwork: string;
+    viesLimit: string;
+    viesUnavailable: string;
+    retry: string;
+  };
+  checkAccount: string;
+  eDeliveryLink: string;
+  copy: string;
+  copied: string;
+  /** "{full}", "{krz}", "{rdf}" are replaced by links. */
+  links: { full: string; krz: string; rdf: string; line: string };
+  print: {
+    button: string;
+    copyIds: string;
+    title: string;
+    /** "{query}" */
+    query: string;
+    /** "{time}" */
+    printedAt: string;
+    krs: string;
+    ceidg: string;
+    whiteList: string;
+    vies: string;
+    requestId: string;
+    checkedAt: string;
+    stateOn: string;
+    extractedAt: string;
+    footer: string;
+  };
+};
+
 /** Exactly the copy the KSeF viewer needs. */
 export type KsefViewerLabels = {
   dropTitle: string;
@@ -1712,6 +1850,219 @@ export type B2bVsEmploymentLabels = {
   defaultInvoice: string;
 };
 
+/** The salary calculator page: the shared parts plus a server-rendered table of take-home pay for common amounts. */
+export type SalaryCalculatorPageContent = ToolPageContent & {
+  examples: {
+    title: string;
+    intro: string;
+    /** Gross, take-home on UoP, zlecenie and dzieło, then the UoP employer cost. */
+    columns: string[];
+    /** Gross monthly amounts in whole złoty. */
+    amounts: number[];
+    note: string;
+  };
+};
+
+/** Exactly the copy the salary calculator needs. Templates use {placeholders}. */
+export type SalaryCalculatorLabels = {
+  contractLegend: string;
+  contracts: { employment: string; mandate: string; work: string; compare: string };
+  directionLegend: string;
+  direction: { grossToNet: string; netToGross: string };
+  yearLabel: string;
+  /** Shown under the year switch while the year's PIT scale is still a bill. */
+  scaleBill: string;
+  grossLabel: string;
+  netLabel: string;
+  netToGrossHint: string;
+  kupLegend: string;
+  kup: { standard: string; commuter: string };
+  civilKupLegend: string;
+  civilKup: { standard: string; author: string };
+  statusLabel: string;
+  status: { only: string; student: string; secondJob: string; ownEmployer: string };
+  workOwnEmployer: string;
+  sickness: string;
+  pit2: string;
+  pit2Hint: string;
+  reliefLabel: string;
+  reliefs: { none: string; under26: string; returnee: string; family4: string; senior: string };
+  reliefUnavailable: string;
+  ppk: string;
+  moreOptions: string;
+  accidentLabel: string;
+  accidentHint: string;
+  /** One sentence on why rows are missing, per situation. "{limit}", "{minimum}" */
+  situationNotes: { student: string; secondJob: string; ownEmployer: string; work: string; workOwnEmployer: string; relief: string };
+  /** "{amount}" */
+  headline: string;
+  /** "{amount}" */
+  headlineAverage: string;
+  /** "{amount}" */
+  grossResult: string;
+  /** "{target}", "{net}" */
+  inexactNet: string;
+  noGross: string;
+  /** "{minimum}" */
+  belowMinimum: string;
+  flatTaxNote: string;
+  /** "{threshold}", "{amount}" */
+  yearlyNote: string;
+  employeeTitle: string;
+  employerTitle: string;
+  rows: {
+    gross: string;
+    pension: string;
+    disability: string;
+    sickness: string;
+    health: string;
+    kup: string;
+    taxBase: string;
+    advance: string;
+    flatTax: string;
+    ppk: string;
+    net: string;
+    accident: string;
+    labourFund: string;
+    fgsp: string;
+    employerCost: string;
+  };
+  /** The muted "where this comes from" line under each row. */
+  how: {
+    /** "{rate}", "{base}" */
+    rateOf: string;
+    /** "{rate}", "{base}" */
+    health: string;
+    /** "{rate}", "{base}" */
+    civilKup: string;
+    fixedKup: string;
+    /** "{revenue}", "{social}", "{kup}" */
+    taxBase: string;
+    /** "{rate}", "{base}" */
+    advance: string;
+    /** "{amount}" */
+    reduction: string;
+    advanceScale: string;
+    /** "{limit}" */
+    exempt: string;
+    /** "{rate}" */
+    flatTax: string;
+    /** "{cap}" */
+    capped: string;
+    /** "{minimum}" */
+    noLabourFund: string;
+    net: string;
+    employerCost: string;
+    noEmployerContributions: string;
+  };
+  monthsTitle: string;
+  monthsColumns: { month: string; social: string; health: string; advance: string; net: string; cost: string; note: string };
+  monthNames: string[];
+  yearRow: string;
+  notes: { cap: string; bracket: string; bracketCivil: string; relief: string; authorCap: string };
+  compareCaption: string;
+  compareRows: { netMonth: string; netYear: string; costMonth: string; costYear: string };
+  compareNote: string;
+  compareB2b: { before: string; link: string; after: string };
+  copyBreakdown: string;
+  copySummary: string;
+  copied: string;
+  /** "{contract}", "{gross}", "{net}", "{cost}", "{year}" */
+  summary: string;
+  errors: { amount: string; accident: string };
+  disclaimer: string;
+  privacyNote: string;
+  /** "{amount}": "{amount} zł" on the Polish page, "PLN {amount}" on the English one. */
+  money: string;
+  decimalSeparator: "," | ".";
+  defaultGross: string;
+};
+
+/** The working-time page: the shared parts plus server-rendered year tables (one per year in `workingTimeYears`). */
+export type WorkingTimePageContent = ToolPageContent & {
+  years: {
+    /** "{year}" */
+    title: string;
+    /** The wrapper's anchor: "rok-{year}". */
+    anchor: string;
+    /** "{year}", "{hours}", "{days}" */
+    intro: string;
+    /** "{businessDays}", "{saturdays}": the second sentence, by the number of Saturday holidays. */
+    businessNone: string;
+    businessOne: string;
+    businessMany: string;
+    hours: PluralForms;
+    days: PluralForms;
+    /** Nominative month names. */
+    months: string[];
+    /** Month, hours, days in the norm, Mon–Fri working days, days off, holidays. */
+    columns: string[];
+    /** "{year}" */
+    caption: string;
+    totalLabel: string;
+    /** "{quarters}", "{thirds}", "{halves}": hours joined with " · ". */
+    totals: string;
+    /** "{half}", "{threeQuarters}", "{healthcare}" */
+    variants: string;
+    /** "{year}" */
+    holidaysTitle: string;
+    /** Added after a Saturday holiday in the list. */
+    saturdayNote: string;
+    /** Added after a Sunday holiday in the list. */
+    sundayNote: string;
+    /** Between holiday dates: " i ", " and ". */
+    and: string;
+  };
+};
+
+/** Exactly the copy the working-time widget needs. Templates use {placeholders}. */
+export type WorkingTimeLabels = {
+  modeLabel: string;
+  modes: { period: string; range: string };
+  yearLabel: string;
+  startMonthLabel: string;
+  lengthLabel: string;
+  /** "{n}": "{n} mies." */
+  lengthOption: string;
+  fromLabel: string;
+  toLabel: string;
+  fractionLabel: string;
+  fullTimeOption: string;
+  otherFraction: string;
+  customFractionLabel: string;
+  customFractionPlaceholder: string;
+  dailyNormLabel: string;
+  dailyNormOptions: Record<DailyNorm, string>;
+  /** Plural forms with "{n}". */
+  normDays: PluralForms;
+  /** "{hours}" */
+  fullTimeNorm: string;
+  rows: { businessDays: string; daysOff: string; calendarDays: string; period: string };
+  /** "{dates}": why the days in the norm are fewer than the working days. */
+  gapOne: string;
+  gapMany: string;
+  gapPartTime: string;
+  holidaysTitle: string;
+  noHolidays: string;
+  /** "{date}", "{weekday}", "{name}", "{effect}" */
+  holidayLine: string;
+  /** "{hours}" */
+  effects: { lowers: string; saturday: string; saturdayPartTime: string; sunday: string };
+  breakdownCaption: string;
+  breakdownColumns: { month: string; norm: string; normDays: string; businessDays: string };
+  nominalNote: string;
+  roundingNote: string;
+  futureNote: string;
+  longRangeNote: string;
+  /** Joins two dates in a sentence: " i ". */
+  and: string;
+  copy: string;
+  copied: string;
+  privacyNote: string;
+  errors: { fraction: string; dates: string; range: string };
+  summary: WorkingTimeSummaryLabels;
+};
+
 /** The JPK viewer page: the shared parts plus a server-rendered section on the markers a JPK_V7 row carries. */
 export type JpkViewerPageContent = ToolPageContent & {
   markers: {
@@ -1851,4 +2202,89 @@ export type JpkViewerLabels = {
     };
   };
   csv: JpkCsvLabels & { salesFile: string; purchasesFile: string };
+};
+
+/** The late payment interest page: the shared parts plus the server-rendered rate tables. */
+export type LateInterestPageContent = ToolPageContent & {
+  rateTable: {
+    title: string;
+    intro: string;
+    /** Period, standard debtor, public healthcare debtor, announcement. */
+    columns: string[];
+    /** "{year}" */
+    halves: { first: string; second: string };
+    /** Shown in both rate columns before 2020, when one rate applied to every debtor. */
+    oneRateNote: string;
+    civilTitle: string;
+    civilIntro: string;
+    /** From, rate, announcement. */
+    civilColumns: string[];
+    /** For a rate derived from the NBP reference rate, with no announcement found. */
+    derived: string;
+  };
+};
+
+/** Exactly the copy the late payment interest calculator needs. Templates use {placeholders}. */
+export type LateInterestLabels = {
+  modeLabel: string;
+  modes: { commercial: string; civil: string };
+  healthcareLabel: string;
+  compensationLabel: string;
+  columns: { label: string; amount: string; due: string; paid: string };
+  labelPlaceholder: string;
+  amountHint: string;
+  paidHint: string;
+  unpaidLabel: string;
+  /** "{n}" */
+  invoiceName: string;
+  /** "{column}", "{n}" */
+  cellLabel: string;
+  removeRow: string;
+  addRow: string;
+  /** "{max}" */
+  maxRows: string;
+  untilLabel: string;
+  untilHint: string;
+  total: string;
+  /** "{interest}", "{compensation}" */
+  totalBreakdown: string;
+  resultColumns: { period: string; days: string; rate: string; interest: string };
+  /** "{amount}", "{due}", "{end}", "{days}" */
+  invoiceSummary: string;
+  /** "{date}" */
+  paidOn: string;
+  /** "{date}" */
+  unpaidUntil: string;
+  days: { one: string; many: string };
+  interest: string;
+  /** "{eur}", "{mid}", "{no}", "{date}", "{pln}" */
+  compensation: string;
+  /** "{eur}" */
+  compensationEur: string;
+  compensationLoading: string;
+  compensationFailed: string;
+  retry: string;
+  /** "{month}", "{mid}", "{no}" */
+  compensationPending: string;
+  flatCompensationNote: string;
+  /** "{days}", "{reason}" */
+  dayOff: string;
+  /** "{list}", "{date}" */
+  shifted: string;
+  dayOffNames: NbpRateLabels["dayOffNames"];
+  forecastMark: string;
+  /** "{date}" */
+  forecastNote: string;
+  errors: { amount: string; due: string; beforeFirst: string; paid: string; notLate: string; until: string };
+  /** The heading of the copy text and the print view, per mode. */
+  titles: { commercial: string; civil: string };
+  copyNote: string;
+  copied: string;
+  print: string;
+  privacyNote: string;
+  /** "zł" on the Polish page, "PLN" on the English one. */
+  pln: string;
+  decimalSeparator: "," | ".";
+  defaultAmount: string;
+  defaultLabel: string;
 };

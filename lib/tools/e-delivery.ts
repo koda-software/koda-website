@@ -355,13 +355,19 @@ function parseCeidgFirm(firm: Json): CeidgEntry | null {
 }
 
 /**
- * The firms in a CEIDG v3 response: `{ firma: [...] }` from `/firma?nip=`, or one firm
- * object from a detail endpoint. Throws EDeliveryError("format") for anything else.
+ * The raw firm records in a CEIDG v3 response: `{ firma: [...] }` from `/firma?nip=`, or
+ * one firm object from a detail endpoint. Throws EDeliveryError("format") for anything else.
+ * Server code only: the records still hold the owner's and address fields.
  */
-export function parseCeidgResponse(json: unknown): CeidgEntry[] {
+export function ceidgRecords(json: unknown): Json[] {
   const list = isObject(json) && Array.isArray(json.firma) ? json.firma : isObject(json) && isObject(json.firma) ? [json.firma] : isObject(json) && text(json.nazwa) ? [json] : null;
   if (!list) throw new EDeliveryError("format");
-  return list.filter(isObject).map(parseCeidgFirm).filter((firm): firm is CeidgEntry => firm !== null);
+  return list.filter(isObject);
+}
+
+/** The firms in a CEIDG v3 response, reduced to `CeidgEntry`. */
+export function parseCeidgResponse(json: unknown): CeidgEntry[] {
+  return ceidgRecords(json).map(parseCeidgFirm).filter((firm): firm is CeidgEntry => firm !== null);
 }
 
 const CEIDG_STATUS_ORDER = ["AKTYWNY", "ZAWIESZONY", "OCZEKUJE_NA_ROZPOCZECIE_DZIALANOSCI", "WYLACZNIE_W_FORMIE_SPOLKI"];

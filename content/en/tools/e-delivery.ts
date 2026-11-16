@@ -187,7 +187,7 @@ export const eDeliveryLabels: EDeliveryLabels = {
     nipNotFoundHint: "If it is a company, type its KRS number. If it is a public office, type its name.",
     krsNotFound: "This number is in neither the KRS business register nor the associations register.",
     krsRemoved: "The entity with KRS number {krs} has been struck off the register.",
-    krsRemovedHint: "A struck-off entity has no current extract, so there is no e-Delivery address in it. The entry's history is in the KRS search.",
+    krsRemovedHint: "A struck-off entity has no current extract, so there is no e-Delivery address in it.",
     regonNotFound: "This REGON is not in the list of public entities or the company registers we check.",
     ceidgStatuses: {
       AKTYWNY: "active",

@@ -1,0 +1,144 @@
+{
+  "odpis": {
+    "rodzaj": "Pełny",
+    "naglowekP": {
+      "rejestr": "RejP",
+      "numerKRS": "0000211826",
+      "dataCzasOdpisu": "16.11.2026 02:13:13",
+      "stanZDnia": "06.11.2026",
+      "wpis": [
+        {
+          "numerWpisu": 1,
+          "opis": "REJESTRACJA W KRAJOWYM REJESTRZE SĄDOWYM",
+          "dataWpisu": "21.07.2004"
+        },
+        {
+          "numerWpisu": 2,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "27.03.2008"
+        },
+        {
+          "numerWpisu": 3,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "24.11.2010"
+        },
+        {
+          "numerWpisu": 4,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "28.03.2018"
+        },
+        {
+          "numerWpisu": 5,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "12.09.2018"
+        },
+        {
+          "numerWpisu": 6,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "22.04.2020"
+        },
+        {
+          "numerWpisu": 7,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "13.05.2026"
+        },
+        {
+          "numerWpisu": 8,
+          "opis": "ZMIANA DANYCH W REJESTRZE",
+          "dataWpisu": "15.06.2026"
+        },
+        {
+          "numerWpisu": 9,
+          "opis": "WYKREŚLENIE Z KRAJOWEGO REJESTRU SĄDOWEGO",
+          "dataWpisu": "06.10.2026",
+          "dataUprawomocnienia": "05.11.2026"
+        }
+      ],
+      "stanPozycji": 2
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": [
+            {
+              "formaPrawna": "SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ],
+          "identyfikatory": [
+            {
+              "identyfikatory": {
+                "regon": "93031009000000"
+              },
+              "nrWpisuWykr": "6",
+              "nrWpisuWprow": "1"
+            },
+            {
+              "identyfikatory": {
+                "regon": "93031009000000",
+                "nip": "8990024669"
+              },
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "6"
+            }
+          ],
+          "nazwa": [
+            {
+              "nazwa": "\"KLON\" SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ],
+          "daneOWczesniejszejRejestracji": [
+            {
+              "nazwaPoprzedniegoRejestru": "RHB",
+              "numerWPoprzednimRejestrze": "4527",
+              "sadProwadzacyRejestr": "SĄD REJONOWY DLA WROCŁAWIA FABRYCZNEJ IV WYDZIAŁ GOSPODARCZY",
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ],
+          "czyProwadziDzialalnoscZInnymiPodmiotami": [
+            {
+              "czyProwadziDzialalnoscZInnymiPodmiotami": false,
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ],
+          "czyPosiadaStatusOPP": [
+            {
+              "czyPosiadaStatusOPP": false,
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ]
+        },
+        "siedzibaIAdres": {
+          "siedziba": [
+            {
+              "kraj": "POLSKA",
+              "wojewodztwo": "DOLNOŚLĄSKIE",
+              "powiat": "M. WROCŁAW",
+              "gmina": "M. WROCŁAW",
+              "miejscowosc": "WROCŁAW",
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "1"
+            }
+          ]
+        }
+      },
+      "dzial6": {
+        "rozwiazanieUniewaznienie": {
+          "okreslenieOkolicznosci": [
+            {
+              "okreslenieOkolicznosci": "ROZWIĄZANIE BEZ PRZEPROWADZENIA LIKWIDACJI",
+              "nrWpisuWykr": "9",
+              "nrWpisuWprow": "7"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -13,43 +13,12 @@
  * The rules come from `payroll-rates.ts`; nothing here hard-codes a rate or a threshold.
  */
 import { rates2026, type PayrollRates } from "./payroll-rates";
+import { payrollYear, round, scaleTaxOnSlice, pct, zl, type KupKey } from "./payroll";
 
 export { formatCents, parseCents } from "./vat";
-
-/** Round half away from zero, as the statutes and the reference script do. */
-function round(value: number): number {
-  const abs = Math.abs(value);
-  const rounded = Math.round(abs + Number.EPSILON * abs);
-  return value < 0 ? -rounded : rounded;
-}
-
-/** `amount × bp / 10 000`, rounded to the grosz. */
-function pct(amount: number, bp: number): number {
-  return round((amount * bp) / 10_000);
-}
-
-/** Rounded to whole złoty, still in grosze. */
-function zl(amount: number): number {
-  return round(amount / 100) * 100;
-}
-
-/** Tax on the scale for the slice of income from `from` to `from + amount`, unrounded. */
-function scaleTaxOnSlice(from: number, amount: number, rates: PayrollRates): number {
-  let tax = 0;
-  let lower = 0;
-  for (const bracket of rates.pit.brackets) {
-    const upper = bracket.upTo ?? Infinity;
-    const start = Math.max(from, lower);
-    const end = Math.min(from + amount, upper);
-    if (end > start) tax += ((end - start) * bracket.bp) / 10_000;
-    lower = upper;
-  }
-  return tax;
-}
+export type { KupKey } from "./payroll";
 
 /* ---------------------------------------------------------------- employment */
-
-export type KupKey = "standard" | "commuter";
 
 export type EmploymentInput = {
   /** Gross monthly salary, the same in every month. */
@@ -93,90 +62,46 @@ export type EmploymentYear = {
   employerCost: number;
 };
 
-const sum = (items: number[]) => items.reduce((all, item) => all + item, 0);
-
+/** The employment contract through the shared payroll engine (`payroll.ts`), in this tool's shape. */
 export function employmentYear(input: EmploymentInput, rates: PayrollRates = rates2026): EmploymentYear {
-  const { gross } = input;
-  const ee = rates.employee;
-  const er = rates.employer;
-  const kupMonthly = rates.pit.kupMonthly[input.kup];
-  const reducing = input.pit2 ? round(rates.pit.reducingAmountYear / 12) : 0;
-  const bracketEdges = rates.pit.brackets.map((bracket) => bracket.upTo).filter((upTo): upTo is number => upTo !== null);
-
-  let cumGross = 0;
-  let cumIncome = 0;
-  let cumRevenue = 0;
-  let capSeen = false;
-  let youthSeen = false;
-  const months: EmploymentMonth[] = [];
-
-  for (let month = 1; month <= 12; month += 1) {
-    const pensionBase = Math.min(gross, Math.max(0, rates.pensionCapYear - cumGross));
-    cumGross += gross;
-
-    const pension = pct(pensionBase, ee.pensionBp);
-    const disability = pct(pensionBase, ee.disabilityBp);
-    const sickness = pct(gross, ee.sicknessBp);
-    const social = pension + disability + sickness;
-    const health = pct(gross - social, ee.healthBp);
-    const ppkEmployer = input.ppk ? pct(gross, er.ppkBp) : 0;
-    const ppkEmployee = input.ppk ? pct(gross, ee.ppkBp) : 0;
-
-    /* The employer's PPK payment is the employee's taxable revenue. */
-    const revenue = gross + ppkEmployer;
-    const exempt = input.under26 ? Math.min(revenue, Math.max(0, rates.pit.youthExemptRevenue - cumRevenue)) : 0;
-    cumRevenue += revenue;
-    const taxable = revenue - exempt;
-
-    let advance = 0;
-    let income = 0;
-    if (taxable > 0) {
-      /* Only the contributions on the taxable part are deducted; costs only up to the taxable revenue (art. 22 ust. 3b). */
-      const socialDeducted = round((social * taxable) / revenue);
-      const kup = Math.min(kupMonthly, taxable);
-      income = Math.max(0, zl(taxable - socialDeducted - kup));
-      const tax = scaleTaxOnSlice(cumIncome, income, rates);
-      advance = Math.max(0, zl(tax - reducing));
-    }
-
-    const bracketStarts = bracketEdges.some((edge) => cumIncome <= edge && cumIncome + income > edge);
-    cumIncome += income;
-
-    const capStarts: boolean = !capSeen && pensionBase < gross;
-    capSeen ||= capStarts;
-    const youthLimitEnds: boolean = input.under26 && !youthSeen && exempt < revenue;
-    youthSeen ||= youthLimitEnds;
-
-    const labourFund = gross >= rates.minimumWage ? pct(gross, er.labourFundBp) : 0;
-    const employerCost =
-      gross + pct(pensionBase, er.pensionBp) + pct(pensionBase, er.disabilityBp) + pct(gross, er.accidentBp) + labourFund + pct(gross, er.fgspBp) + ppkEmployer;
-
-    months.push({
-      month,
-      pension,
-      disability,
-      sickness,
-      social,
-      health,
-      advance,
-      ppkEmployee,
-      ppkEmployer,
-      net: gross - social - health - advance - ppkEmployee,
-      employerCost,
-      capStarts,
-      bracketStarts,
-      youthLimitEnds,
-    });
-  }
+  const year = payrollYear(
+    {
+      contract: "employment",
+      gross: input.gross,
+      kup: input.kup,
+      civilKup: "standard",
+      status: "only",
+      sickness: true,
+      pit2: input.pit2,
+      relief: input.under26 ? "under26" : "none",
+      ppk: input.ppk,
+    },
+    rates,
+  );
 
   return {
-    months,
-    social: sum(months.map((row) => row.social)),
-    health: sum(months.map((row) => row.health)),
-    pit: sum(months.map((row) => row.advance)),
-    ppkEmployee: sum(months.map((row) => row.ppkEmployee)),
-    net: sum(months.map((row) => row.net)),
-    employerCost: sum(months.map((row) => row.employerCost)),
+    months: year.months.map((row) => ({
+      month: row.month,
+      pension: row.pension,
+      disability: row.disability,
+      sickness: row.sickness,
+      social: row.social,
+      health: row.health,
+      advance: row.advance,
+      ppkEmployee: row.ppkEmployee,
+      ppkEmployer: row.ppkEmployer,
+      net: row.net,
+      employerCost: row.employerCost,
+      capStarts: row.capStarts,
+      bracketStarts: row.bracketStarts,
+      youthLimitEnds: row.reliefEnds,
+    })),
+    social: year.social,
+    health: year.health,
+    pit: year.pit,
+    ppkEmployee: year.ppkEmployee,
+    net: year.net,
+    employerCost: year.employerCost,
   };
 }
 

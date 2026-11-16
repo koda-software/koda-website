@@ -1,0 +1,47 @@
+{
+  "firma": [
+    {
+      "id": "00000000-0000-4000-8000-000000000000",
+      "nazwa": "PRZYKŁADOWA PRACOWNIA TESTOWA JAN PRZYKŁADOWY",
+      "adresDzialalnosci": {
+        "ulica": "ul. Testowa",
+        "budynek": "1",
+        "miasto": "Gdynia",
+        "wojewodztwo": "POMORSKIE",
+        "powiat": "Gdynia",
+        "gmina": "Gdynia",
+        "kraj": "PL",
+        "kod": "81-000",
+        "terc": "2262011",
+        "simc": "0000000",
+        "ulic": "00000"
+      },
+      "adresKorespondencyjny": {
+        "ulica": "ul. Przykładowa",
+        "budynek": "2",
+        "miasto": "Gdynia",
+        "wojewodztwo": "POMORSKIE",
+        "powiat": "Gdynia",
+        "gmina": "Gdynia",
+        "kraj": "PL",
+        "kod": "81-001",
+        "adresat": "JAN PRZYKŁADOWY",
+        "terc": "2262011",
+        "simc": "0000000",
+        "ulic": "00000"
+      },
+      "wlasciciel": { "imie": "JAN", "nazwisko": "PRZYKŁADOWY", "nip": "1234563218", "regon": "123456785" },
+      "obywatelstwa": [{ "symbol": "PL", "kraj": "Polska" }],
+      "rokPkd": "2025",
+      "pkd": [{ "kod": "6920A", "nazwa": "Działalność rachunkowo-księgowa" }],
+      "pkdGlowny": { "kod": "6920A", "nazwa": "Działalność rachunkowo-księgowa" },
+      "dataRozpoczecia": "2020-03-01",
+      "dataZawieszenia": "2026-10-01",
+      "status": "ZAWIESZONY",
+      "numerStatusu": 2,
+      "email": "kontakt@example.com",
+      "adresDoreczenElektronicznych": "AE:PL-12345-67890-ABCDE-12",
+      "link": "https://dane.biznes.gov.pl/api/ceidg/v3/firma/00000000-0000-4000-8000-000000000000"
+    }
+  ]
+}

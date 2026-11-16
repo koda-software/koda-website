@@ -5,26 +5,39 @@ import { commonContent, navItems } from "@/content/en/common";
 import { toolCtas, toolLinks, toolPages, toolsIndexContent } from "@/content/en/tools";
 import { amountInWordsLabels, amountInWordsPage } from "@/content/en/tools/amount-in-words";
 import { b2bVsEmploymentLabels, b2bVsEmploymentPage } from "@/content/en/tools/b2b-vs-employment";
+import { counterpartyLabels } from "@/content/en/tools/counterparty";
 import { eDeliveryLabels, eDeliveryPage } from "@/content/en/tools/e-delivery";
 import { jpkViewerLabels, jpkViewerPage } from "@/content/en/tools/jpk-viewer";
 import { ksefViewerLabels } from "@/content/en/tools/ksef-viewer";
+import { lateInterestLabels, lateInterestPage } from "@/content/en/tools/late-interest";
 import { nbpRateLabels } from "@/content/en/tools/nbp-rate";
+import { salaryCalculatorLabels, salaryCalculatorPage } from "@/content/en/tools/salary-calculator";
 import { vatCalculatorLabels } from "@/content/en/tools/vat-calculator";
 import { whiteListLabels } from "@/content/en/tools/white-list";
+import { workingTimeLabels, workingTimePage } from "@/content/en/tools/working-time";
 import { PageShell } from "@/components/layout/PageShell";
 import { ToolPage } from "@/components/layout/ToolPage";
 import { AmountExamples } from "@/components/tools/AmountExamples";
 import { AmountInWords } from "@/components/tools/AmountInWords";
 import { B2bBreakEvenTable } from "@/components/tools/B2bBreakEvenTable";
 import { B2bVsEmployment } from "@/components/tools/B2bVsEmployment";
+import { CounterpartyCheck } from "@/components/tools/CounterpartyCheck";
 import { EDeliveryPopular, loadPopularInstitutions } from "@/components/tools/EDeliveryPopular";
 import { EDeliverySearch } from "@/components/tools/EDeliverySearch";
 import { JpkMarkers } from "@/components/tools/JpkMarkers";
 import { JpkViewer } from "@/components/tools/JpkViewer";
 import { KsefViewer } from "@/components/tools/KsefViewer";
+import { LateInterest } from "@/components/tools/LateInterest";
+import { LateInterestRateTable } from "@/components/tools/LateInterestRateTable";
 import { NbpRate } from "@/components/tools/NbpRate";
+import { SalaryCalculator } from "@/components/tools/SalaryCalculator";
+import { SalaryExamples } from "@/components/tools/SalaryExamples";
 import { VatCalculator } from "@/components/tools/VatCalculator";
 import { WhiteListCheck } from "@/components/tools/WhiteListCheck";
+import { WorkingTime } from "@/components/tools/WorkingTime";
+import { WorkingTimeYears } from "@/components/tools/WorkingTimeYears";
+import { todayInPoland } from "@/lib/tools/business-days";
+import { workingTimeYears } from "@/lib/tools/working-time";
 import { BreadcrumbJsonLd, FaqJsonLd, ToolJsonLd } from "@/lib/seo/json-ld";
 import { createToolPageMetadata } from "@/lib/seo/metadata";
 import { localizePath } from "@/lib/i18n/routes";
@@ -99,12 +112,28 @@ function toolWidget(tool: ToolKey): ReactNode {
       return <VatCalculator labels={vatCalculatorLabels} whiteListHref={localizeToolPath("en", "whiteList")} />;
     case "nbpRate":
       return <NbpRate currencies={nbpCurrencyOptions("en")} labels={nbpRateLabels} locale="en" vatCalculatorHref={localizeToolPath("en", "vatCalculator")} />;
+    case "lateInterest":
+      return <LateInterest labels={lateInterestLabels} locale="en" />;
     case "b2bVsEmployment":
       return <B2bVsEmployment labels={b2bVsEmploymentLabels} />;
+    case "salaryCalculator":
+      return <SalaryCalculator b2bHref={localizeToolPath("en", "b2bVsEmployment")} labels={salaryCalculatorLabels} />;
+    case "workingTime":
+      // The month the page is built in; the widget moves to the visitor's month on load.
+      return <WorkingTime defaultMonth={todayInPoland().slice(0, 7)} labels={workingTimeLabels} locale="en" />;
     case "amountInWords":
       return <AmountInWords labels={amountInWordsLabels} />;
     case "whiteList":
       return <WhiteListCheck labels={whiteListLabels} locale="en" />;
+    case "counterpartyCheck":
+      return (
+        <CounterpartyCheck
+          eDeliveryHref={localizeToolPath("en", "eDelivery")}
+          labels={counterpartyLabels}
+          locale="en"
+          whiteListHref={localizeToolPath("en", "whiteList")}
+        />
+      );
     case "eDelivery":
       return <EDeliverySearch labels={eDeliveryLabels} locale="en" />;
     case "ksefViewer":
@@ -123,6 +152,12 @@ async function toolExtra(tool: ToolKey): Promise<ReactNode> {
       return <JpkMarkers content={jpkViewerPage.markers} />;
     case "b2bVsEmployment":
       return <B2bBreakEvenTable content={b2bVsEmploymentPage.breakEvenTable} english={true} />;
+    case "salaryCalculator":
+      return <SalaryExamples content={salaryCalculatorPage.examples} english={true} />;
+    case "lateInterest":
+      return <LateInterestRateTable content={lateInterestPage.rateTable} english={true} />;
+    case "workingTime":
+      return <WorkingTimeYears content={workingTimePage.years} english={true} years={workingTimeYears} />;
     case "eDelivery": {
       // Read from the gov.pl list when the page is built; left out when no list is available.
       const popular = await loadPopularInstitutions(eDeliveryPage.popular);

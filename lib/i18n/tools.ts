@@ -9,16 +9,20 @@ import { localizePath } from "./routes";
  * Add a key here only when its page exists: the index, the sitemap and the
  * "other tools" links all read this list.
  */
-export type ToolKey = "vatCalculator" | "nbpRate" | "b2bVsEmployment" | "amountInWords" | "whiteList" | "eDelivery" | "ksefViewer" | "jpkViewer";
+export type ToolKey = "vatCalculator" | "nbpRate" | "lateInterest" | "b2bVsEmployment" | "salaryCalculator" | "workingTime" | "amountInWords" | "whiteList" | "counterpartyCheck" | "eDelivery" | "ksefViewer" | "jpkViewer";
 
-export const toolKeys: ToolKey[] = ["vatCalculator", "nbpRate", "b2bVsEmployment", "amountInWords", "whiteList", "eDelivery", "ksefViewer", "jpkViewer"];
+export const toolKeys: ToolKey[] = ["vatCalculator", "nbpRate", "lateInterest", "b2bVsEmployment", "salaryCalculator", "workingTime", "amountInWords", "whiteList", "counterpartyCheck", "eDelivery", "ksefViewer", "jpkViewer"];
 
 export const toolSlugs: Record<ToolKey, Record<Locale, string>> = {
   vatCalculator: { en: "polish-vat-calculator", pl: "kalkulator-vat" },
   nbpRate: { en: "nbp-exchange-rate", pl: "kurs-nbp-do-faktury" },
+  lateInterest: { en: "late-payment-interest-calculator", pl: "kalkulator-odsetek-za-opoznienie" },
   b2bVsEmployment: { en: "b2b-vs-employment-poland", pl: "kalkulator-b2b-uop" },
+  salaryCalculator: { en: "polish-salary-calculator", pl: "kalkulator-wynagrodzen" },
+  workingTime: { en: "working-days-poland", pl: "wymiar-czasu-pracy" },
   amountInWords: { en: "amount-in-words", pl: "kwota-slownie" },
   whiteList: { en: "polish-vat-whitelist-check", pl: "biala-lista-vat" },
+  counterpartyCheck: { en: "polish-company-check", pl: "sprawdz-kontrahenta" },
   eDelivery: { en: "polish-e-delivery-address-search", pl: "wyszukiwarka-adresow-e-doreczen" },
   ksefViewer: { en: "ksef-invoice-viewer", pl: "podglad-faktury-ksef" },
   jpkViewer: { en: "jpk-file-viewer", pl: "podglad-pliku-jpk" },

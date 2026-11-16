@@ -1,4 +1,5 @@
-import { CEIDG_API, EDeliveryError, isCeidgDeleted, isValidRegon, parseCeidgResponse, preferCurrentFirms, trimRegon, type CeidgEntry, type CeidgFirm } from "@/lib/tools/e-delivery";
+import { EDeliveryError, isValidRegon, preferCurrentFirms, trimRegon, type CeidgEntry, type CeidgFirm } from "@/lib/tools/e-delivery";
+import { ceidgQueryUrl, ceidgToken, fetchCeidgEntries, withAdeDetails } from "@/lib/tools/ceidg-server";
 import { isValidNip } from "@/lib/tools/white-list";
 
 export const runtime = "nodejs";
@@ -20,49 +21,18 @@ export async function GET(request: Request) {
 
   if (nip ? !isValidNip(nip) : !isValidRegon(regon)) return Response.json({ error: "query" }, { status: 400, headers: noStore });
 
-  const token = process.env.CEIDG_API_TOKEN;
+  const token = ceidgToken();
   if (!token) return Response.json({ error: "unavailable" }, { status: 503, headers: noStore });
 
   try {
-    const entries = await ceidg(`${CEIDG_API}/firma?${nip ? `nip=${nip}` : `regon=${regon}`}`, token);
-    const firms = await Promise.all(preferCurrentFirms(entries).map((entry) => withDetails(entry, token)));
+    const entries = await fetchCeidgEntries(ceidgQueryUrl(nip ? { nip } : { regon }), token);
+    const firms = await Promise.all(preferCurrentFirms(entries).map((entry) => withAdeDetails(entry, token)));
 
     return Response.json({ items: firms.map(publicFields) }, { headers: { "Cache-Control": "public, s-maxage=3600" } });
   } catch (error) {
     const reason = error instanceof EDeliveryError ? error.reason : "unavailable";
     const status = reason === "limit" ? 429 : 502;
     return Response.json({ error: reason === "limit" ? "limit" : "unavailable" }, { status, headers: noStore });
-  }
-}
-
-async function ceidg(url: string, token: string): Promise<CeidgEntry[]> {
-  let response: Response;
-  try {
-    response = await fetch(url, { cache: "no-store", headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }, signal: AbortSignal.timeout(10_000) });
-  } catch {
-    throw new EDeliveryError("network");
-  }
-
-  // CEIDG answers 204 or 404 when nothing matches.
-  if (response.status === 204 || response.status === 404) return [];
-  if (response.status === 429) throw new EDeliveryError("limit");
-  if (!response.ok) throw new EDeliveryError("unavailable");
-
-  const body = await response.json().catch(() => null);
-  return parseCeidgResponse(body);
-}
-
-/**
- * `/firma?nip=` already returns full records, so this only matters for summary entries:
- * one without an ADE gets one look at its detail record. Deleted entries are not followed.
- */
-async function withDetails(entry: CeidgEntry, token: string): Promise<CeidgEntry> {
-  if (entry.ade || !entry.detailUrl || isCeidgDeleted(entry)) return entry;
-  try {
-    const [detail] = await ceidg(entry.detailUrl, token);
-    return detail ? { ...entry, ade: detail.ade, publicUrl: entry.publicUrl ?? detail.publicUrl } : entry;
-  } catch {
-    return entry;
   }
 }
 

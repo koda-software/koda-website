@@ -1,0 +1,162 @@
+{
+  "odpis": {
+    "rodzaj": "Aktualny",
+    "naglowekA": {
+      "rejestr": "RejP",
+      "numerKRS": "0000304735",
+      "dataCzasOdpisu": "16.11.2026 02:13:12",
+      "stanZDnia": "02.06.2026",
+      "dataRejestracjiWKRS": "25.04.2008",
+      "numerOstatniegoWpisu": 120,
+      "dataOstatniegoWpisu": "02.06.2026",
+      "sygnaturaAktSprawyDotyczacejOstatniegoWpisu": "WA.XIII NS-REJ.KRS/29839/26/53",
+      "oznaczenieSaduDokonujacegoOstatniegoWpisu": "SĄD REJONOWY DLA M.ST. WARSZAWY W WARSZAWIE, XIII WYDZIAŁ GOSPODARCZY KRAJOWEGO REJESTRU SĄDOWEGO",
+      "stanPozycji": 1
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": "SPÓŁKA AKCYJNA",
+          "identyfikatory": {
+            "regon": "14133403900000",
+            "nip": "1080004850"
+          },
+          "nazwa": "GETIN NOBLE BANK SPÓŁKA AKCYJNA W UPADŁOŚCI",
+          "daneOWczesniejszejRejestracji": {},
+          "czyProwadziDzialalnoscZInnymiPodmiotami": false,
+          "czyPosiadaStatusOPP": false
+        },
+        "siedzibaIAdres": {
+          "siedziba": {
+            "kraj": "POLSKA",
+            "wojewodztwo": "MAZOWIECKIE",
+            "powiat": "WARSZAWA",
+            "gmina": "WARSZAWA",
+            "miejscowosc": "WARSZAWA"
+          },
+          "adres": {
+            "ulica": "RONDO IGNACEGO DASZYŃSKIEGO",
+            "nrDomu": "2C",
+            "miejscowosc": "WARSZAWA",
+            "kodPocztowy": "00-843",
+            "poczta": "WARSZAWA",
+            "kraj": "POLSKA"
+          },
+          "adresDoDoreczenElektronicznychWpisanyDoBAE": "AE:PL-46771-63615-WWTVA-33"
+        },
+        "kapital": {
+          "wysokoscKapitaluZakladowego": {
+            "wartosc": "2851630418,91",
+            "waluta": "PLN"
+          }
+        }
+      },
+      "dzial2": {
+        "reprezentacja": {
+          "nazwaOrganu": "ZARZĄD",
+          "sposobReprezentacji": "DWÓCH CZŁONKÓW ZARZĄDU DZIAŁAJĄCYCH ŁĄCZNIE LUB JEDEN CZŁONEK ZARZĄDU DZIAŁAJĄCY ŁĄCZNIE Z PROKURENTEM"
+        }
+      },
+      "dzial3": {
+        "przedmiotDzialalnosci": {
+          "przedmiotPrzewazajacejDzialalnosci": [
+            {
+              "opis": "POZOSTAŁE POŚREDNICTWO PIENIĘŻNE",
+              "kodDzial": "64",
+              "kodKlasa": "19",
+              "kodPodklasa": "Z"
+            }
+          ]
+        },
+        "wzmiankiOZlozonychDokumentach": {
+          "wzmiankaOZlozeniuRocznegoSprawozdaniaFinansowego": [
+            {
+              "dataZlozenia": "23.06.2009",
+              "zaOkresOdDo": "05.03.2008 - 31.12.2008"
+            },
+            {
+              "dataZlozenia": "26.05.2010",
+              "zaOkresOdDo": "01.01.2009 - 31.12.2009"
+            },
+            {
+              "dataZlozenia": "14.06.2011",
+              "zaOkresOdDo": "01.01.2010 - 31.12.2010"
+            },
+            {
+              "dataZlozenia": "06.04.2012",
+              "zaOkresOdDo": "01.01.2011 - 31.12.2011"
+            },
+            {
+              "dataZlozenia": "18.06.2013",
+              "zaOkresOdDo": "2012"
+            },
+            {
+              "dataZlozenia": "30.04.2014",
+              "zaOkresOdDo": "OD 01.01.2013 DO 31.12.2013"
+            },
+            {
+              "dataZlozenia": "19.05.2015",
+              "zaOkresOdDo": "OD 01.01.2014 DO 31.12.2014"
+            },
+            {
+              "dataZlozenia": "22.04.2016",
+              "zaOkresOdDo": "OD 01.01.2015 DO 31.12.2015"
+            },
+            {
+              "dataZlozenia": "12.05.2017",
+              "zaOkresOdDo": "OD 01.01.2016 DO 31.12.2016"
+            },
+            {
+              "dataZlozenia": "21.06.2018",
+              "zaOkresOdDo": "OD 01.01.2017 DO 31.12.2017"
+            },
+            {
+              "dataZlozenia": "26.06.2019",
+              "zaOkresOdDo": "OD 01.01.2018 DO 31.12.2018"
+            },
+            {
+              "dataZlozenia": "05.06.2020",
+              "zaOkresOdDo": "OD 01.01.2019 DO 31.12.2019"
+            },
+            {
+              "dataZlozenia": "21.04.2021",
+              "zaOkresOdDo": "OD 01.01.2020 DO 31.12.2020"
+            },
+            {
+              "dataZlozenia": "08.06.2022",
+              "zaOkresOdDo": "OD 01.01.2021 DO 31.12.2021"
+            }
+          ]
+        }
+      },
+      "dzial4": {},
+      "dzial5": {},
+      "dzial6": {
+        "postepowanieUpadlosciowe": [
+          {
+            "informacjaOOgloszeniuUpadlosci": {
+              "organWydajacy": "SĄD REJONOWY DLA M. ST. WARSZAWY W WARSZAWIE XVIII WYDZIAŁ GOSPODARCZY DLA SPRAW UPADŁOŚCIOWYCH I RESTRUKTURYZACYJNYCH",
+              "sygnatura": "WA1M/GU/188/2023",
+              "data": "20.07.2023"
+            },
+            "opisZakonczeniaProcesuUpadlosci": {},
+            "sposobProwadzeniaPostepowania": "UPADŁOŚĆ",
+            "informacjaOUchyleniuUkladu": {}
+          }
+        ],
+        "postepowanieRestrukturyzacyjneNaprawczePrzymusowaRestrukturyzacjaUporzadkowanaLikwidacja": [
+          {
+            "otwarciePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {
+              "organWydajacy": "BANKOWY FUNDUSZ GWARANCYJNY",
+              "sygnatura": "NR 346/DPR/2022",
+              "dataNadaniaKlauzuliWykonalnosci": "29.09.2022",
+              "rodzajPostepowania": "PRZYMUSOWA RESTRUKTURYZACJA"
+            },
+            "zakonczeniePostepowaniaRestrukturyzacyjnegoNaprawczegoPrzymusowejRestrukturyzacjiUporzadkowanejLikwidacji": {},
+            "uchylenieUkladu": {}
+          }
+        ]
+      }
+    }
+  }
+}

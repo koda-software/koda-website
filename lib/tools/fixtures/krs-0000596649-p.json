@@ -1,0 +1,121 @@
+{
+  "odpis": {
+    "rodzaj": "Aktualny",
+    "naglowekA": {
+      "rejestr": "RejP",
+      "numerKRS": "0000596649",
+      "dataCzasOdpisu": "16.11.2026 02:13:12",
+      "stanZDnia": "06.07.2026",
+      "dataRejestracjiWKRS": "14.01.2016",
+      "numerOstatniegoWpisu": 22,
+      "dataOstatniegoWpisu": "06.07.2026",
+      "sygnaturaAktSprawyDotyczacejOstatniegoWpisu": "KR.XI NS-REJ.KRS/25202/26/393",
+      "oznaczenieSaduDokonujacegoOstatniegoWpisu": "SĄD REJONOWY DLA KRAKOWA ŚRÓDMIEŚCIA W KRAKOWIE, XI WYDZIAŁ GOSPODARCZY KRAJOWEGO REJESTRU SĄDOWEGO",
+      "stanPozycji": 1
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": "SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+          "identyfikatory": {
+            "regon": "36350695900000",
+            "nip": "6783158015"
+          },
+          "nazwa": "KAJA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ W LIKWIDACJI",
+          "daneOWczesniejszejRejestracji": {},
+          "czyProwadziDzialalnoscZInnymiPodmiotami": false,
+          "czyPosiadaStatusOPP": false
+        },
+        "siedzibaIAdres": {
+          "siedziba": {
+            "kraj": "POLSKA",
+            "wojewodztwo": "MAŁOPOLSKIE",
+            "powiat": "KRAKÓW",
+            "gmina": "KRAKÓW",
+            "miejscowosc": "KRAKÓW"
+          },
+          "adres": {
+            "ulica": "UL. BRZESKA",
+            "nrDomu": "18F",
+            "miejscowosc": "KRAKÓW",
+            "kodPocztowy": "31-998",
+            "poczta": "KRAKÓW",
+            "kraj": "POLSKA"
+          }
+        },
+        "kapital": {
+          "wysokoscKapitaluZakladowego": {
+            "wartosc": "5000,00",
+            "waluta": "PLN"
+          }
+        }
+      },
+      "dzial2": {},
+      "dzial3": {
+        "przedmiotDzialalnosci": {
+          "przedmiotPrzewazajacejDzialalnosci": [
+            {
+              "opis": "SPRZEDAŻ DETALICZNA POZOSTAŁYCH WYROBÓW PROWADZONA NA STRAGANACH I TARGOWISKACH",
+              "kodDzial": "47",
+              "kodKlasa": "89",
+              "kodPodklasa": "Z"
+            }
+          ]
+        },
+        "wzmiankiOZlozonychDokumentach": {
+          "wzmiankaOZlozeniuRocznegoSprawozdaniaFinansowego": [
+            {
+              "dataZlozenia": "22.11.2017",
+              "zaOkresOdDo": "OD 12.01.2016 DO 31.12.2016"
+            },
+            {
+              "dataZlozenia": "10.09.2020",
+              "zaOkresOdDo": "OD 01.01.2017 DO 31.12.2017"
+            },
+            {
+              "dataZlozenia": "22.09.2020",
+              "zaOkresOdDo": "OD 01.01.2018 DO 31.12.2018"
+            },
+            {
+              "dataZlozenia": "26.05.2021",
+              "zaOkresOdDo": "OD 01.01.2019 DO 31.12.2019"
+            },
+            {
+              "dataZlozenia": "02.10.2023",
+              "zaOkresOdDo": "OD 01.01.2020 DO 31.12.2020"
+            },
+            {
+              "dataZlozenia": "03.10.2023",
+              "zaOkresOdDo": "OD 01.01.2021 DO 31.12.2021"
+            },
+            {
+              "dataZlozenia": "03.10.2023",
+              "zaOkresOdDo": "OD 01.01.2022 DO 31.12.2022"
+            },
+            {
+              "dataZlozenia": "20.02.2025",
+              "zaOkresOdDo": "OD 01.01.2023 DO 31.12.2023"
+            },
+            {
+              "dataZlozenia": "20.02.2025",
+              "zaOkresOdDo": "OD 01.01.2024 DO 31.12.2024"
+            }
+          ]
+        }
+      },
+      "dzial4": {},
+      "dzial5": {},
+      "dzial6": {
+        "likwidacja": [
+          {
+            "otwarcieLikwidacji": "UCHWAŁA WSPÓLNIKÓW (TEKST SKRÓCONY W FIXTURE), 26.05.2026",
+            "sposobReprezentacjiPodmiotuPrzezLikwidatorow": "LIKWIDATOR UPRAWNIONY JEST DO SAMODZIELNEJ REPREZENTACJI SPÓŁKI"
+          }
+        ],
+        "rozwiazanieUniewaznienie": {
+          "okreslenieOkolicznosci": "ROZWIĄZANIE"
+        }
+      }
+    }
+  }
+}

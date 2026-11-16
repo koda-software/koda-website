@@ -126,3 +126,45 @@ export function previousBusinessDay(iso: string): string {
   while (!isBusinessDay(day)) day = addDays(day, -1);
   return day;
 }
+
+/** The holiday names in both languages, for tables and lists (the working-time tool). */
+export const holidayNames: Record<HolidayKey, { pl: string; en: string }> = {
+  newYear: { pl: "Nowy Rok", en: "New Year's Day" },
+  epiphany: { pl: "Święto Trzech Króli", en: "Epiphany" },
+  easter: { pl: "Wielkanoc", en: "Easter Sunday" },
+  easterMonday: { pl: "Poniedziałek Wielkanocny", en: "Easter Monday" },
+  labourDay: { pl: "Święto Pracy", en: "Labour Day" },
+  constitutionDay: { pl: "Święto Konstytucji 3 Maja", en: "Constitution Day" },
+  pentecost: { pl: "Zielone Świątki", en: "Pentecost Sunday" },
+  corpusChristi: { pl: "Boże Ciało", en: "Corpus Christi" },
+  assumption: { pl: "Wniebowzięcie NMP", en: "Assumption Day" },
+  allSaints: { pl: "Wszystkich Świętych", en: "All Saints' Day" },
+  independenceDay: { pl: "Narodowe Święto Niepodległości", en: "Independence Day" },
+  christmasEve: { pl: "Wigilia", en: "Christmas Eve" },
+  christmas: { pl: "Boże Narodzenie (pierwszy dzień)", en: "Christmas Day" },
+  boxingDay: { pl: "Boże Narodzenie (drugi dzień)", en: "Second Day of Christmas" },
+};
+
+/** One public holiday with its weekday (0 is Sunday, 6 is Saturday). */
+export type Holiday = { date: string; key: HolidayKey; weekday: number };
+
+/** The year's holidays in date order, Sundays included. */
+export function holidaysOfYear(year: number): Holiday[] {
+  return [...polishHolidays(year)].map(([date, key]) => ({ date, key, weekday: weekday(date) }));
+}
+
+/** The last day of a month (1–12), as YYYY-MM-DD. */
+export function lastDayOfMonth(year: number, month: number): string {
+  const day = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+/** How many days from `start` to `end`, both included, pass `test`. Throws when `start` is after `end`. */
+export function countDays(start: string, end: string, test: (iso: string) => boolean): number {
+  if (start > end) throw new RangeError(`countDays: ${start} is after ${end}`);
+  let count = 0;
+  for (let day = start; day <= end; day = addDays(day, 1)) {
+    if (test(day)) count += 1;
+  }
+  return count;
+}

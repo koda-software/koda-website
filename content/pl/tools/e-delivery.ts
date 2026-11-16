@@ -187,7 +187,7 @@ export const eDeliveryLabels: EDeliveryLabels = {
     nipNotFoundHint: "Jeśli to spółka, wpisz jej numer KRS. Jeśli to urząd, wpisz jego nazwę.",
     krsNotFound: "Nie ma takiego numeru w KRS, ani w rejestrze przedsiębiorców, ani w rejestrze stowarzyszeń.",
     krsRemoved: "Podmiot z numerem KRS {krs} został wykreślony z rejestru.",
-    krsRemovedHint: "Wykreślony podmiot nie ma aktualnego odpisu, więc nie ma w nim adresu do e-Doręczeń. Historię wpisu znajdziesz w wyszukiwarce KRS.",
+    krsRemovedHint: "Wykreślony podmiot nie ma aktualnego odpisu, więc nie ma w nim adresu do e-Doręczeń.",
     regonNotFound: "Nie znaleźliśmy tego numeru REGON w liście urzędów ani w rejestrach firm, które sprawdzamy.",
     ceidgStatuses: {
       AKTYWNY: "aktywna",

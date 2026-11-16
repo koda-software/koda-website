@@ -4,17 +4,21 @@ import { localizeToolPath, toolKeys, type ToolKey } from "@/lib/i18n/tools";
 import type { ToolPageContent, ToolsIndexContent } from "@/content/types";
 import { amountInWordsPage } from "./amount-in-words";
 import { b2bVsEmploymentPage } from "./b2b-vs-employment";
+import { counterpartyPage } from "./counterparty";
 import { eDeliveryPage } from "./e-delivery";
 import { jpkViewerPage } from "./jpk-viewer";
 import { ksefViewerPage } from "./ksef-viewer";
+import { lateInterestPage } from "./late-interest";
 import { nbpRatePage } from "./nbp-rate";
+import { salaryCalculatorPage } from "./salary-calculator";
 import { vatCalculatorPage } from "./vat-calculator";
 import { whiteListPage } from "./white-list";
+import { workingTimePage } from "./working-time";
 
 export const toolsIndexContent: ToolsIndexContent = {
   seo: {
     title: "Free tools for business and accounting in Poland",
-    description: "Free tools for companies in Poland: VAT and B2B vs employment calculators, NBP rate, amount in words, White List, e-Delivery address, KSeF and JPK viewers.",
+    description: "Free tools for companies in Poland: salary, VAT and late interest calculators, working days, company check, NBP rate, e-Delivery, KSeF and JPK viewers.",
   },
   navLabel: "Tools",
   breadcrumbLabel: "Breadcrumb",
@@ -27,9 +31,13 @@ export const toolsIndexContent: ToolsIndexContent = {
 export const toolPages: Record<ToolKey, ToolPageContent> = {
   vatCalculator: vatCalculatorPage,
   nbpRate: nbpRatePage,
+  lateInterest: lateInterestPage,
   b2bVsEmployment: b2bVsEmploymentPage,
+  salaryCalculator: salaryCalculatorPage,
+  workingTime: workingTimePage,
   amountInWords: amountInWordsPage,
   whiteList: whiteListPage,
+  counterpartyCheck: counterpartyPage,
   eDelivery: eDeliveryPage,
   ksefViewer: ksefViewerPage,
   jpkViewer: jpkViewerPage,
@@ -39,9 +47,13 @@ export const toolPages: Record<ToolKey, ToolPageContent> = {
 const toolFeature = {
   vatCalculator: "documents",
   nbpRate: "documents",
+  lateInterest: "ai",
   b2bVsEmployment: "processes",
+  salaryCalculator: "processes",
+  workingTime: "lowCode",
   amountInWords: "documents",
   whiteList: "integrations",
+  counterpartyCheck: "integrations",
   eDelivery: "documents",
   ksefViewer: "integrations",
   jpkViewer: "integrations",

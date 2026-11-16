@@ -149,29 +149,29 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
         </div>
       </section>
 
-      <section aria-labelledby="tool-opero" className={`${sectionClass} ${ruleClass} flex flex-wrap items-center gap-x-16 gap-y-7`}>
-        <div className="min-w-0 flex-[1_1_30rem]">
-          <h2 className={sectionTitleClass} id="tool-opero">
-            {opero.title}
-          </h2>
-          <p className={`${bodyClass} mt-4 max-w-[39rem]`}>{opero.body}</p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link className="action action-ink" href={ctas.primary}>
-            {opero.primaryCta}
-          </Link>
-          <Link
-            className="action border border-[rgba(11,17,22,0.2)] text-[var(--color-ink)] hover:border-[rgba(11,17,22,0.4)]"
-            href={ctas.secondary}
-          >
-            {opero.secondaryCta}
-            <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
-          </Link>
+      {/* The one dark band on the page: full width, the text kept in the page column. */}
+      <section aria-labelledby="tool-opero" className="isolate border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white">
+        <div className={`${sectionClass} flex flex-wrap items-center gap-x-16 gap-y-7`}>
+          <div className="min-w-0 flex-[1_1_30rem]">
+            <h2 className="m-0 text-[clamp(1.6rem,2.6vw,2rem)] leading-[1.15] tracking-[-0.03em] text-white" id="tool-opero">
+              {opero.title}
+            </h2>
+            <p className="m-0 mt-4 max-w-[39rem] text-[1.04rem] leading-[1.7] text-[var(--color-muted-light)]">{opero.body}</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link className="action action-mist" href={ctas.primary}>
+              {opero.primaryCta}
+            </Link>
+            <Link className="action action-line-dark" href={ctas.secondary}>
+              {opero.secondaryCta}
+              <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
       {otherTools.length ? (
-        <section aria-labelledby="tool-more" className={`${sectionClass} ${ruleClass} pb-[clamp(4rem,8vw,6rem)]`}>
+        <section aria-labelledby="tool-more" className={`${sectionClass} pb-[clamp(4rem,8vw,6rem)]`}>
           <h2 className="m-0 mb-6 text-[1.5rem] tracking-[-0.02em] text-[var(--color-ink)]" id="tool-more">
             {content.otherToolsTitle}
           </h2>

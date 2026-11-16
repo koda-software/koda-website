@@ -80,7 +80,7 @@ export const b2bVsEmploymentPage: B2bVsEmploymentPageContent = {
       {
         question: "Ile B2B to etat? Jaki jest przelicznik UoP na B2B?",
         answer:
-          "Nie ma jednego mnożnika. Zależy od formy podatku, wariantu ZUS, kosztów i dni bez faktury. Kalkulator wylicza stawkę B2B, przy której zostaje Ci tyle samo, co na etacie. Pracodawcę etat kosztuje około 1,2048 × brutto (bez PPK).",
+          "Nie ma jednego mnożnika. Zależy od formy podatku, wariantu ZUS, kosztów i dni bez faktury. Kalkulator wylicza stawkę B2B, przy której zostaje Ci tyle samo, co na etacie. Pracodawcę etat kosztuje około 1,2048 × brutto (bez PPK). Samą pensję, zlecenie albo dzieło przeliczysz w kalkulatorze wynagrodzeń.",
       },
       {
         question: "Ile wynosi ZUS na B2B w 2026 roku?",

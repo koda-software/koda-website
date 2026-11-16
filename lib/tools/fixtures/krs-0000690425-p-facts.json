@@ -1,0 +1,114 @@
+{
+  "odpis": {
+    "rodzaj": "Aktualny",
+    "naglowekA": {
+      "rejestr": "RejP",
+      "numerKRS": "0000690425",
+      "dataCzasOdpisu": "16.11.2026 02:13:12",
+      "stanZDnia": "12.07.2026",
+      "dataRejestracjiWKRS": "17.08.2017",
+      "numerOstatniegoWpisu": 40,
+      "dataOstatniegoWpisu": "12.07.2026",
+      "sygnaturaAktSprawyDotyczacejOstatniegoWpisu": "RDF/872573/26/753",
+      "oznaczenieSaduDokonujacegoOstatniegoWpisu": "SYSTEM",
+      "stanPozycji": 1
+    },
+    "dane": {
+      "dzial1": {
+        "danePodmiotu": {
+          "formaPrawna": "SPÓŁKA AKCYJNA",
+          "identyfikatory": {
+            "regon": "36802377000000",
+            "nip": "5862321443"
+          },
+          "nazwa": "NECTO SPÓŁKA AKCYJNA",
+          "daneOWczesniejszejRejestracji": {},
+          "czyProwadziDzialalnoscZInnymiPodmiotami": false,
+          "czyPosiadaStatusOPP": false
+        },
+        "siedzibaIAdres": {
+          "siedziba": {
+            "kraj": "POLSKA",
+            "wojewodztwo": "POMORSKIE",
+            "powiat": "GDYNIA",
+            "gmina": "GDYNIA",
+            "miejscowosc": "GDYNIA"
+          },
+          "adres": {
+            "ulica": "PL. KASZUBSKI",
+            "nrDomu": "8",
+            "nrLokalu": "311",
+            "miejscowosc": "GDYNIA",
+            "kodPocztowy": "81-350",
+            "poczta": "GDYNIA",
+            "kraj": "POLSKA"
+          },
+          "adresDoDoreczenElektronicznychWpisanyDoBAE": "AE:PL-12236-59999-IBJFI-32"
+        },
+        "kapital": {
+          "wysokoscKapitaluZakladowego": {
+            "wartosc": "100000,00",
+            "waluta": "PLN"
+          }
+        }
+      },
+      "dzial2": {
+        "reprezentacja": {
+          "nazwaOrganu": "ZARZĄD",
+          "sposobReprezentacji": "DO SKŁADANIA OŚWIADCZEŃ W IMIENIU SPÓŁKI UPRAWNIONY JEST KAŻDY CZŁONEK ZARZĄDU SAMODZIELNIE."
+        }
+      },
+      "dzial3": {
+        "przedmiotDzialalnosci": {
+          "przedmiotPrzewazajacejDzialalnosci": [
+            {
+              "opis": "DZIAŁALNOŚĆ ZWIĄZANA Z OPROGRAMOWANIEM",
+              "kodDzial": "62",
+              "kodKlasa": "01",
+              "kodPodklasa": "Z"
+            }
+          ]
+        },
+        "wzmiankiOZlozonychDokumentach": {
+          "wzmiankaOZlozeniuRocznegoSprawozdaniaFinansowego": [
+            {
+              "dataZlozenia": "20.05.2020",
+              "zaOkresOdDo": "OD 17.08.2017 DO 31.12.2018"
+            },
+            {
+              "dataZlozenia": "15.10.2020",
+              "zaOkresOdDo": "OD 01.01.2019 DO 31.12.2019"
+            },
+            {
+              "dataZlozenia": "31.12.2021",
+              "zaOkresOdDo": "OD 01.01.2020 DO 31.12.2020"
+            },
+            {
+              "dataZlozenia": "10.08.2022",
+              "zaOkresOdDo": "OD 01.01.2021 DO 31.12.2021"
+            },
+            {
+              "dataZlozenia": "19.09.2023",
+              "zaOkresOdDo": "OD 01.01.2022 DO 31.12.2022"
+            },
+            {
+              "dataZlozenia": "06.08.2024",
+              "zaOkresOdDo": "OD 01.01.2023 DO 31.12.2023"
+            },
+            {
+              "dataZlozenia": "08.07.2025",
+              "zaOkresOdDo": "OD 01.01.2024 DO 31.12.2024"
+            },
+            {
+              "dataZlozenia": "13.04.2026",
+              "zaOkresOdDo": "OD 01.01.2025 DO 31.12.2025"
+            }
+          ]
+        }
+      },
+      "dzial4": {},
+      "dzial5": {},
+      "dzial6": {}
+    }
+  }
+}

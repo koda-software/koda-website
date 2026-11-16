@@ -50,6 +50,13 @@ export function WhiteListCheck({ labels, locale }: { labels: WhiteListLabels; lo
 
   useEffect(() => () => controller.current?.abort(), []);
 
+  /* A link with ?nip= (from the counterparty check) only fills the field: no search runs, so no quota is spent on a click. */
+  useEffect(() => {
+    const shared = normalizeNip(new URLSearchParams(window.location.search).get("nip") ?? "");
+    const fillIn = isValidNip(shared) ? window.setTimeout(() => setNip(shared), 0) : undefined;
+    return () => window.clearTimeout(fillIn);
+  }, []);
+
   const day = (iso: string) => new Intl.DateTimeFormat(locale === "pl" ? "pl-PL" : "en-GB", { dateStyle: "long" }).format(new Date(`${iso}T12:00:00`));
 
   const submit = async (event: FormEvent) => {

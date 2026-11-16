@@ -4,7 +4,7 @@ export const whiteListPage: ToolPageContent = {
   seo: {
     title: "Biała lista VAT - sprawdź NIP i rachunek",
     description:
-      "Sprawdź kontrahenta na białej liście VAT po NIP: status VAT, dane firmy i rachunki z wykazu. Zweryfikuj konto przed przelewem i wydrukuj potwierdzenie.",
+      "Sprawdź NIP i rachunek na białej liście VAT: status VAT, dane firmy i rachunki z wykazu. Zweryfikuj konto przed przelewem i wydrukuj potwierdzenie.",
   },
   navLabel: "Biała lista VAT",
   navDescription: "Sprawdź kontrahenta i jego rachunek bankowy po NIP, zanim zlecisz przelew.",
@@ -63,6 +63,11 @@ export const whiteListPage: ToolPageContent = {
       {
         question: "Czy mogę sprawdzić stan wykazu z przeszłości?",
         answer: "Tak. Zmień datę, a zobaczysz stan wykazu z wybranego dnia, na przykład z dnia zlecenia przelewu.",
+      },
+      {
+        question: "Czy biała lista pokazuje, że firma jest w upadłości albo likwidacji?",
+        answer:
+          "Nie. Spółka w upadłości może nadal być czynnym podatnikiem VAT. Status w KRS albo CEIDG i numer VAT UE w VIES sprawdzisz w naszym narzędziu Sprawdź kontrahenta, po tym samym NIP.",
       },
       {
         question: "Czy KodaSoft widzi NIP i numer konta, które wpisuję?",

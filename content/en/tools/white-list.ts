@@ -4,7 +4,7 @@ export const whiteListPage: ToolPageContent = {
   seo: {
     title: "Polish VAT White List check by NIP",
     description:
-      "Check a Polish company on the VAT White List by NIP: VAT status, company details and bank accounts. Verify an account before paying and print proof.",
+      "Check a NIP and bank account on the Polish VAT White List: VAT status, company details and accounts. Verify an account before paying and print proof.",
   },
   navLabel: "VAT White List check",
   navDescription: "Check a Polish company and its bank account by NIP before you pay.",
@@ -63,6 +63,11 @@ export const whiteListPage: ToolPageContent = {
       {
         question: "Can I check the register for a past date?",
         answer: "Yes. Change the date to see the register as it was on that day, such as the day a transfer was ordered.",
+      },
+      {
+        question: "Does the White List show whether a company is bankrupt or in liquidation?",
+        answer:
+          "No. A company in bankruptcy can still be an active VAT payer. To see its KRS or CEIDG status and check its EU VAT number in VIES, use our Company check tool with the same NIP.",
       },
       {
         question: "Does KodaSoft see the NIP and account I enter?",

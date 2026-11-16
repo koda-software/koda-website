@@ -80,7 +80,7 @@ export const b2bVsEmploymentPage: B2bVsEmploymentPageContent = {
       {
         question: "What B2B rate equals my salary?",
         answer:
-          "There is no single multiplier. It depends on the tax form, the ZUS option, costs and the days you do not invoice. The calculator finds the B2B rate that leaves you as much as the contract. A contract costs the employer about 1.2048 × the gross salary (without PPK).",
+          "There is no single multiplier. It depends on the tax form, the ZUS option, costs and the days you do not invoice. The calculator finds the B2B rate that leaves you as much as the contract. A contract costs the employer about 1.2048 × the gross salary (without PPK). For a salary, zlecenie or dzieło on its own, use the salary calculator.",
       },
       {
         question: "How much is ZUS on B2B in 2026?",

@@ -1,6 +1,7 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { addDays, dayOffReason, easterSunday, isBusinessDay, isIsoDate, polishHolidays, previousBusinessDay, todayInPoland } from "./business-days";
+import { countDays, holidayNames, holidaysOfYear, lastDayOfMonth } from "./business-days";
 
 /** Weekdays without an NBP table, read from the API (tables A for 2024, 2025 and 2026 up to 15 November). */
 const NBP_DAYS_WITHOUT_TABLE: Record<number, string[]> = {
@@ -84,4 +85,48 @@ test("does date arithmetic on plain dates", () => {
 test("reads today in Polish time", () => {
   assert.equal(todayInPoland(new Date("2026-12-31T23:30:00Z")), "2027-01-01");
   assert.equal(todayInPoland(new Date("2026-07-01T21:59:00Z")), "2026-07-01");
+});
+
+const datesOn = (year: number, day: number) => holidaysOfYear(year).filter((holiday) => holiday.weekday === day).map((holiday) => holiday.date);
+
+test("lists the year's holidays with their weekdays", () => {
+  const holidays2026 = holidaysOfYear(2026);
+  assert.equal(holidays2026.length, 14);
+  assert.deepEqual(datesOn(2026, 6), ["2026-08-15", "2026-12-26"]);
+  assert.deepEqual(datesOn(2026, 0), ["2026-04-05", "2026-05-03", "2026-05-24", "2026-11-01"]);
+  assert.deepEqual(
+    holidays2026.map((holiday) => holiday.date),
+    [...holidays2026.map((holiday) => holiday.date)].sort(),
+  );
+
+  assert.deepEqual(datesOn(2027, 6), ["2027-05-01", "2027-12-25"]);
+  assert.deepEqual(datesOn(2027, 0), ["2027-03-28", "2027-05-16", "2027-08-15", "2027-12-26"]);
+  const holidays2027 = holidaysOfYear(2027);
+  assert.equal(holidays2027.find((holiday) => holiday.key === "easterMonday")?.date, "2027-03-29");
+  assert.equal(holidays2027.find((holiday) => holiday.key === "corpusChristi")?.date, "2027-05-27");
+
+  assert.deepEqual(datesOn(2028, 6), ["2028-01-01", "2028-11-11"]);
+  assert.equal(holidaysOfYear(2024).length, 13);
+});
+
+test("finds the last day of a month", () => {
+  assert.equal(lastDayOfMonth(2028, 2), "2028-02-29");
+  assert.equal(lastDayOfMonth(2027, 2), "2027-02-28");
+  assert.equal(lastDayOfMonth(2026, 12), "2026-12-31");
+  assert.equal(lastDayOfMonth(2026, 4), "2026-04-30");
+});
+
+test("counts days in an inclusive range", () => {
+  assert.equal(countDays("2026-08-01", "2026-08-31", isBusinessDay), 21);
+  assert.equal(countDays("2026-11-01", "2026-11-01", () => true), 1);
+  assert.equal(countDays("2026-12-21", "2027-01-08", () => true), 19);
+  assert.throws(() => countDays("2026-08-02", "2026-08-01", () => true), RangeError);
+});
+
+test("names every holiday in both languages", () => {
+  for (const key of new Set([...holidaysOfYear(2026), ...holidaysOfYear(2027)].map((holiday) => holiday.key))) {
+    assert.ok(holidayNames[key].pl.length > 0, key);
+    assert.ok(holidayNames[key].en.length > 0, key);
+  }
+  assert.equal(Object.keys(holidayNames).length, 14);
 });
