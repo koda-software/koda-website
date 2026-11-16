@@ -110,7 +110,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
       {
         question: "Can KodaSoft see what I search for?",
         answer:
-          "Your browser checks a NIP, KRS or REGON directly with the Ministry of Finance and KRS. When a company is not in KRS, we ask CEIDG through our server, because its API needs a key. Office names are searched on our server in a copy of the gov.pl list. We do not store queries.",
+          "Your browser checks a NIP, KRS or REGON directly with the Ministry of Finance and KRS. When a company is not in KRS, we ask CEIDG through our server, because its API needs a key. Your browser downloads the list of offices from gov.pl and searches it itself. Only when gov.pl does not respond do we search a copy on our server. We do not store queries.",
       },
     ],
   },
@@ -136,7 +136,7 @@ export const eDeliveryLabels: EDeliveryLabels = {
     regon: "Searching by REGON. Press Enter.",
   },
   privacyNote:
-    "Your browser checks NIP, KRS and REGON numbers with the Ministry of Finance and KRS; CEIDG is asked through our server. Office names are searched on our server in a copy of the gov.pl list. We do not store queries.",
+    "Your browser checks NIP, KRS and REGON numbers with the Ministry of Finance and KRS; CEIDG is asked through our server. Your browser searches office names in the list it downloads from gov.pl. We do not store queries.",
   errors: {
     nip: "This is not a valid NIP. Type a KRS number with its leading zeros, e.g. 0000690425.",
     regon: "This is not a valid REGON. Check that it has 9 or 14 digits and no typo.",
@@ -186,6 +186,8 @@ export const eDeliveryLabels: EDeliveryLabels = {
     nipNotFound: "We found no company with this NIP in the registers we check.",
     nipNotFoundHint: "If it is a company, type its KRS number. If it is a public office, type its name.",
     krsNotFound: "This number is in neither the KRS business register nor the associations register.",
+    krsRemoved: "The entity with KRS number {krs} has been struck off the register.",
+    krsRemovedHint: "A struck-off entity has no current extract, so there is no e-Delivery address in it. The entry's history is in the KRS search.",
     regonNotFound: "This REGON is not in the list of public entities or the company registers we check.",
     ceidgStatuses: {
       AKTYWNY: "active",

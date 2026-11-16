@@ -201,11 +201,26 @@ export function krsUrl(krs: string, register: KrsRegister): string {
   return `${KRS_API}/${padKrs(krs)}?rejestr=${register}&format=json`;
 }
 
+/** A number KRS knows but whose entity has been struck off: no current odpis, so no ADE to show. */
+export type KrsRemoved = { removed: true; register: KrsRegister; krs: string };
+
+/**
+ * What one KRS register answers for a number: 200 with the odpis, 204 with no body for an
+ * entity struck off the register (seen 2026-11-16 for 0000211826 and 0000018507), and 404
+ * when the register never had it.
+ */
+export function krsResponseKind(status: number): "odpis" | "removed" | "absent" | "limit" | "unavailable" {
+  if (status === 204) return "removed";
+  if (status === 404) return "absent";
+  if (status === 429) return "limit";
+  return status >= 200 && status < 300 ? "odpis" : "unavailable";
+}
+
 /**
  * The current KRS odpis: the business register (P) first, then associations and
  * foundations (S) on a 404. Null when neither has the number.
  */
-export async function fetchKrsEntity(krs: string, signal?: AbortSignal): Promise<KrsEntity | null> {
+export async function fetchKrsEntity(krs: string, signal?: AbortSignal): Promise<KrsEntity | KrsRemoved | null> {
   for (const register of ["P", "S"] as const) {
     let response: Response;
 
@@ -217,9 +232,11 @@ export async function fetchKrsEntity(krs: string, signal?: AbortSignal): Promise
       throw new EDeliveryError("network");
     }
 
-    if (response.status === 404) continue;
-    if (response.status === 429) throw new EDeliveryError("limit");
-    if (!response.ok) throw new EDeliveryError("unavailable");
+    const kind = krsResponseKind(response.status);
+    if (kind === "absent") continue;
+    if (kind === "removed") return { removed: true, register, krs: padKrs(krs) };
+    if (kind === "limit") throw new EDeliveryError("limit");
+    if (kind === "unavailable") throw new EDeliveryError("unavailable");
 
     const body = await response.json().catch(() => {
       throw new EDeliveryError("format");

@@ -14,9 +14,11 @@ import {
   isListStale,
   type CeidgFirm,
   type KrsEntity,
+  type KrsRemoved,
   type QueryKind,
 } from "@/lib/tools/e-delivery";
-import { highlightParts } from "@/lib/tools/e-delivery-search";
+import { loadListInBrowser } from "@/lib/tools/e-delivery-browser";
+import { highlightParts, searchByRegon, searchByText } from "@/lib/tools/e-delivery-search";
 import { WhiteListError, searchByNip, searchByRegon as whiteListByRegon, type WhiteListSearch } from "@/lib/tools/white-list";
 import { PrivacyNote } from "@/components/tools/PrivacyNote";
 import { CopyButton } from "@/components/tools/CopyButton";
@@ -41,7 +43,7 @@ type Outcome = {
   firms: CeidgFirm[];
   notices: Notice[];
   /** Shown when nothing at all was found. */
-  empty: { title: string; hint?: string } | null;
+  empty: { title: string; hint?: string; link?: { href: string; label: string } } | null;
 };
 
 const SEARCH_ROUTE = "/api/tools/e-delivery/search";
@@ -60,8 +62,31 @@ async function getJson<T>(url: string, signal: AbortSignal): Promise<T> {
   return (await response.json()) as T;
 }
 
-function institutions(params: string, signal: AbortSignal) {
-  return getJson<InstitutionPage>(`${SEARCH_ROUTE}?${params}`, signal).then((page) => ({ ...page, params }));
+/**
+ * Office search. The browser reads the gov.pl list itself (gov.pl refuses Vercel's servers);
+ * the server route, with its own copy, is only the fallback when that fails.
+ */
+async function institutions(params: string, signal: AbortSignal): Promise<InstitutionList> {
+  const search = new URLSearchParams(params);
+  const offset = Number(search.get("offset") ?? 0) || 0;
+  const limit = Number(search.get("limit") ?? 10) || 10;
+  const regon = search.get("regon");
+  try {
+    const list = await loadListInBrowser();
+    signal.throwIfAborted();
+    const found = regon
+      ? (() => {
+          const rows = searchByRegon(list.index, regon);
+          return { total: rows.length, items: rows.slice(offset, offset + limit) };
+        })()
+      : searchByText(list.index, search.get("q") ?? "", offset, limit);
+    const items = found.items.map(({ name, town, voivodeship, regon: rowRegon, ade }) => ({ name, town, voivodeship, regon: rowRegon, ade }));
+    return { listDate: list.listDate, total: found.total, items, params };
+  } catch (error) {
+    if ((error as Error).name === "AbortError" && signal.aborted) throw error;
+    const page = await getJson<InstitutionPage>(`${SEARCH_ROUTE}?${params}`, signal);
+    return { ...page, params };
+  }
 }
 
 /** CEIDG is optional: without KodaSoft's token the route answers 503 and the tool simply skips it. */
@@ -151,12 +176,21 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
           result.notices.push({ message: e.searchUnavailable, link: govLink });
           return null;
         });
+      let removed: KrsRemoved | null = null;
       const readKrs = (krs: string) =>
-        fetchKrsEntity(krs, signal).catch((error: Error) => {
-          if (error.name === "AbortError") throw error;
-          result.notices.push({ message: e.krsNetwork, link: krsLink });
-          return null;
-        });
+        fetchKrsEntity(krs, signal)
+          .then((found) => {
+            if (found && "removed" in found) {
+              removed = found;
+              return null;
+            }
+            return found;
+          })
+          .catch((error: Error) => {
+            if (error.name === "AbortError") throw error;
+            result.notices.push({ message: e.krsNetwork, link: krsLink });
+            return null;
+          });
       const readCeidg = (params: string) =>
         ceidg(params, signal).catch((error: Error) => {
           if (error.name === "AbortError") throw error;
@@ -180,7 +214,7 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
         if (kind.kind === "krs") {
           const entity = await readKrs(kind.krs);
           if (entity) result.companies.push(entity);
-          else if (!result.notices.length) result.empty = { title: r.krsNotFound };
+          else if (!result.notices.length && !removed) result.empty = { title: r.krsNotFound };
         }
 
         if (kind.kind === "nip") {
@@ -212,7 +246,10 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
         }
 
         const found = (result.institutions?.total ?? 0) + result.companies.length + result.firms.length;
-        if (!found && !result.empty && !result.notices.length && (kind.kind === "nip" || kind.kind === "regon")) {
+        const struckOff = removed as KrsRemoved | null;
+        if (!found && struckOff && !result.notices.length) {
+          result.empty = { title: r.krsRemoved.replace("{krs}", struckOff.krs), hint: r.krsRemovedHint, link: { href: KRS_SEARCH_PAGE, label: r.officialKrs.replace("{krs}", struckOff.krs) } };
+        } else if (!found && !result.empty && !result.notices.length && (kind.kind === "nip" || kind.kind === "regon")) {
           result.empty = kind.kind === "nip" ? { title: r.nipNotFound, hint: r.nipNotFoundHint } : { title: r.regonNotFound, hint: r.nipNotFoundHint };
         }
 
@@ -272,7 +309,7 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
       const current = new AbortController();
       suggestController.current = current;
       try {
-        const page = await getJson<InstitutionPage>(`${SEARCH_ROUTE}?q=${encodeURIComponent(value.trim())}&limit=6`, current.signal);
+        const page = await institutions(`q=${encodeURIComponent(value.trim())}&limit=6`, current.signal);
         setSuggestions(page.items.length ? { query: value.trim(), listDate: page.listDate, items: page.items } : null);
         setActive(-1);
       } catch {
@@ -321,6 +358,8 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
     setQuery(value);
     // Full searches run on Enter or the button only; typing a name only asks for suggestions.
     setFieldError(null);
+    // Office names are searched in the gov.pl list, so start downloading it while the name is typed.
+    if (detectQuery(value).kind === "text") void loadListInBrowser().catch(() => undefined);
     suggest(value);
   };
 
@@ -559,7 +598,19 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
             {outcome.empty ? (
               <div className="grid gap-2 border-t border-[var(--color-border-light)] pt-7">
                 <p className="m-0 font-display text-[1.4rem] font-medium text-[var(--color-ink)]">{outcome.empty.title}</p>
-                {outcome.empty.hint ? <p className="m-0 max-w-[46rem] text-[var(--color-muted)]">{outcome.empty.hint}</p> : null}
+                {outcome.empty.hint ? (
+                  <p className="m-0 max-w-[46rem] text-[var(--color-muted)]">
+                    {outcome.empty.hint}
+                    {outcome.empty.link ? (
+                      <>
+                        {" "}
+                        <a className={linkClass} href={outcome.empty.link.href} rel="noopener noreferrer" target="_blank">
+                          {outcome.empty.link.label}
+                        </a>
+                      </>
+                    ) : null}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>

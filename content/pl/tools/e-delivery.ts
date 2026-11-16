@@ -110,7 +110,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
       {
         question: "Czy KodaSoft widzi, czego szukam?",
         answer:
-          "NIP, KRS i REGON sprawdza Twoja przeglądarka bezpośrednio w wykazie Ministerstwa Finansów i w KRS. Gdy firmy nie ma w KRS, pytamy CEIDG przez nasz serwer, bo jego API wymaga klucza. Nazwy urzędów wyszukujemy na naszym serwerze w kopii listy z gov.pl. Zapytań nie zapisujemy.",
+          "NIP, KRS i REGON sprawdza Twoja przeglądarka bezpośrednio w wykazie Ministerstwa Finansów i w KRS. Gdy firmy nie ma w KRS, pytamy CEIDG przez nasz serwer, bo jego API wymaga klucza. Listę urzędów Twoja przeglądarka pobiera z gov.pl i sama ją przeszukuje. Tylko gdy gov.pl nie odpowiada, szukamy w jej kopii na naszym serwerze. Zapytań nie zapisujemy.",
       },
     ],
   },
@@ -136,7 +136,7 @@ export const eDeliveryLabels: EDeliveryLabels = {
     regon: "Szukam po numerze REGON. Naciśnij Enter.",
   },
   privacyNote:
-    "Numery NIP, KRS i REGON sprawdzamy z Twojej przeglądarki w wykazie MF i w KRS, a CEIDG przez nasz serwer. Nazwy urzędów wyszukujemy na naszym serwerze w kopii listy z gov.pl. Zapytań nie zapisujemy.",
+    "Numery NIP, KRS i REGON sprawdzamy z Twojej przeglądarki w wykazie MF i w KRS, a CEIDG przez nasz serwer. Nazwy urzędów wyszukuje Twoja przeglądarka w liście pobranej z gov.pl. Zapytań nie zapisujemy.",
   errors: {
     nip: "To nie jest poprawny NIP. Numer KRS wpisz z zerami na początku, np. 0000690425.",
     regon: "To nie jest poprawny numer REGON. Sprawdź, czy ma 9 albo 14 cyfr i nie ma literówki.",
@@ -186,6 +186,8 @@ export const eDeliveryLabels: EDeliveryLabels = {
     nipNotFound: "Nie znaleźliśmy firmy z tym NIP-em w rejestrach, które sprawdzamy.",
     nipNotFoundHint: "Jeśli to spółka, wpisz jej numer KRS. Jeśli to urząd, wpisz jego nazwę.",
     krsNotFound: "Nie ma takiego numeru w KRS, ani w rejestrze przedsiębiorców, ani w rejestrze stowarzyszeń.",
+    krsRemoved: "Podmiot z numerem KRS {krs} został wykreślony z rejestru.",
+    krsRemovedHint: "Wykreślony podmiot nie ma aktualnego odpisu, więc nie ma w nim adresu do e-Doręczeń. Historię wpisu znajdziesz w wyszukiwarce KRS.",
     regonNotFound: "Nie znaleźliśmy tego numeru REGON w liście urzędów ani w rejestrach firm, które sprawdzamy.",
     ceidgStatuses: {
       AKTYWNY: "aktywna",

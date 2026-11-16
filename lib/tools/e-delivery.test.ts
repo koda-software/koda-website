@@ -1,7 +1,7 @@
 import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { EDeliveryError, detectQuery, findAde, isListStale, isValidRegon, krsUrl, padKrs, parseCeidgResponse, parseKrsOdpis, preferCurrentFirms, trimRegon } from "./e-delivery";
+import { EDeliveryError, detectQuery, findAde, isListStale, isValidRegon, krsResponseKind, krsUrl, padKrs, parseCeidgResponse, parseKrsOdpis, preferCurrentFirms, trimRegon } from "./e-delivery";
 
 /* Real odpisy from api-krs.ms.gov.pl (2026-11-16), trimmed to naglowekA and the name, identifiers, seat and ADE of dział 1. */
 const fixture = (name: string) => JSON.parse(readFileSync(new URL(`./fixtures/${name}`, import.meta.url), "utf8")) as unknown;
@@ -175,4 +175,12 @@ test("parses a synthetic CEIDG detail response and refuses foreign detail links"
   assert.equal(firm.ade, null);
   assert.deepEqual(parseCeidgResponse({ firma: [] }), []);
   assert.throws(() => parseCeidgResponse({ error: "x" }), EDeliveryError);
+});
+
+test("reads a struck-off KRS entity from a 204", () => {
+  assert.equal(krsResponseKind(200), "odpis");
+  assert.equal(krsResponseKind(204), "removed");
+  assert.equal(krsResponseKind(404), "absent");
+  assert.equal(krsResponseKind(429), "limit");
+  assert.equal(krsResponseKind(500), "unavailable");
 });

@@ -1436,6 +1436,9 @@ export type EDeliveryLabels = {
     nipNotFound: string;
     nipNotFoundHint: string;
     krsNotFound: string;
+    /** "{krs}"; an entity struck off KRS has no current odpis. */
+    krsRemoved: string;
+    krsRemovedHint: string;
     regonNotFound: string;
     /** Display names for CEIDG statuses; unknown ones are shown as they come. */
     ceidgStatuses: Record<string, string>;
