@@ -27,7 +27,9 @@ export async function GET(request: Request) {
   let loaded;
   try {
     loaded = await loadIndex();
-  } catch {
+  } catch (error) {
+    // Only the reason the list could not load, never the query.
+    console.error(`e-delivery list unavailable: ${error instanceof Error ? error.message : String(error)}`);
     return Response.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 
