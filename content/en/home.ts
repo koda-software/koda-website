@@ -74,24 +74,15 @@ export const homeContent: HomeContent = {
       },
     },
   },
-  problem: {
-    title: "The work your system cannot see is the work that costs most.",
+  video: {
+    title: "See Opero at work.",
     description:
-      "A spreadsheet beside the ERP, an approval in email, a file on someone's drive. Small workarounds become a second, undocumented flow: uncounted, invisible, and hard to reconstruct when a case stalls.",
-    comparison: {
-      title: "Customer requests",
-      ariaLabel: "Compare a spreadsheet tracker and Opero",
-      beforeLabel: "Spreadsheet",
-      beforeAlt: "Spreadsheet tracker of customer requests, with statuses and notes typed by hand",
-      afterLabel: "Opero",
-      afterAlt: "Opero board with customer requests in columns by stage, each card showing its priority, customer, category, channel and owner",
-    },
-    points: [
-      "Changing a process takes a development project, so the team routes around the system with a spreadsheet.",
-      "The same record lives in three places and is authoritative in none of them.",
-      "An invoice waits a week in an inbox because nobody knew it was their step.",
-      "The board report is assembled by hand and is already out of date the day it is sent.",
-    ],
+      "A clinic, a logistics company, a law firm, a beauty salon and a property developer, all on the same Monday morning. Then a car repair shop describes how it works, and an agent builds it in Opero.",
+    ariaLabel: "Opero explainer film",
+    soundOn: "Turn sound on",
+    soundOff: "Turn sound off",
+    play: "Play the film",
+    src: "/video/opero-explainer-en",
   },
   solution: {
     title: "Opero adapts to the way your company works.",

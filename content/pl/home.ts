@@ -74,24 +74,15 @@ export const homeContent: HomeContent = {
       },
     },
   },
-  problem: {
-    title: "Najwięcej kosztuje praca, której nie widać w systemie.",
+  video: {
+    title: "Zobacz Opero w działaniu.",
     description:
-      "Arkusz obok ERP, akceptacja w mailu, plik na dysku. Drobne obejścia tworzą drugi obieg firmy: nieopisany, niewidoczny i trudny do odtworzenia, gdy sprawa staje.",
-    comparison: {
-      title: "Zgłoszenia klientów",
-      ariaLabel: "Porównaj arkusz i Opero",
-      beforeLabel: "Arkusz",
-      beforeAlt: "Arkusz ze zgłoszeniami klientów, ze statusami i notatkami wpisywanymi ręcznie",
-      afterLabel: "Opero",
-      afterAlt: "Tablica Opero ze zgłoszeniami klientów w kolumnach według etapów, na każdej karcie priorytet, klient, kategoria, kanał i osoba odpowiedzialna",
-    },
-    points: [
-      "Zmiana procesu wymaga projektu wdrożeniowego, więc zespół omija system arkuszem.",
-      "Ten sam rekord żyje w trzech miejscach i w żadnym nie jest pewny.",
-      "Faktura czeka tydzień w skrzynce, bo nikt nie wiedział, że to jego krok.",
-      "Raport na zarząd powstaje ręcznie i jest nieaktualny w dniu wysłania.",
-    ],
+      "Przychodnia, firma logistyczna, kancelaria, salon urody i deweloper, wszystkie w ten sam poniedziałkowy poranek. A potem warsztat samochodowy opisuje, jak pracuje, a agent buduje to w Opero.",
+    ariaLabel: "Film o Opero",
+    soundOn: "Włącz dźwięk",
+    soundOff: "Wyłącz dźwięk",
+    play: "Odtwórz film",
+    src: "/video/opero-explainer-pl",
   },
   solution: {
     title: "Opero dopasowuje się do sposobu pracy firmy.",

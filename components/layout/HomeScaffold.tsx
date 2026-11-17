@@ -4,8 +4,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { HomeContent } from "@/content/types";
 import { ArrivingSection } from "@/components/landing/ArrivingSection";
-import { NumberedPointGrid } from "@/components/landing/LandingCards";
-import { ComparisonSlider } from "@/components/landing/ComparisonSlider";
+import { ExplainerVideo } from "@/components/landing/ExplainerVideo";
 import { IntegrationsCarousel } from "@/components/landing/IntegrationsCarousel";
 import { PillarSections } from "@/components/landing/PillarSections";
 import {
@@ -55,31 +54,26 @@ export function HomeScaffold({
         <HeroEdgeVisual centered />
       </LandingHero>
 
-      <ArrivingSection className="bg-[var(--color-mist)]" cut="card" id="problem">
+      <ArrivingSection className="bg-[var(--color-mist)]" cut="card" id="film">
         <div className={`${landingShellClass} px-[var(--page-gutter)] py-[var(--section-y)]`}>
           <Reveal>
             <div className="mx-auto max-w-[900px] text-center">
-              <h2 className={sectionTitleClass}><TwoTone text={content.problem.title} /></h2>
+              <h2 className={sectionTitleClass}><TwoTone text={content.video.title} /></h2>
               <p className={`${sectionDescriptionClass} mx-auto max-w-[760px]`}>
-                {content.problem.description}
+                {content.video.description}
               </p>
             </div>
           </Reveal>
           <Reveal className="mt-[clamp(2rem,4vw,3.2rem)]">
-            <div className="mx-auto w-full max-w-[82rem] px-[clamp(0.75rem,2.5vw,2.25rem)]">
-              <ComparisonSlider
-                afterAlt={content.problem.comparison.afterAlt}
-                afterLabel={content.problem.comparison.afterLabel}
-                afterSrc="/hero/requests-board-comparison.webp"
-                ariaLabel={content.problem.comparison.ariaLabel}
-                beforeAlt={content.problem.comparison.beforeAlt}
-                beforeLabel={content.problem.comparison.beforeLabel}
-                beforeSrc="/hero/requests-tracker-comparison.webp"
-                title={content.problem.comparison.title}
-              />
-            </div>
+            <ExplainerVideo
+              ariaLabel={content.video.ariaLabel}
+              className="mx-auto w-full max-w-[72rem]"
+              play={content.video.play}
+              soundOff={content.video.soundOff}
+              soundOn={content.video.soundOn}
+              src={content.video.src}
+            />
           </Reveal>
-          <NumberedPointGrid points={content.problem.points} showSeparator={false} />
         </div>
       </ArrivingSection>
 

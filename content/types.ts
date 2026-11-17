@@ -242,15 +242,18 @@ export type HomeContent = {
     };
     recordDemo: RecordDemoContent;
   };
-  problem: HomePointGroup & {
-    comparison: {
-      title: string;
-      ariaLabel: string;
-      beforeLabel: string;
-      beforeAlt: string;
-      afterLabel: string;
-      afterAlt: string;
-    };
+  /** The explainer film that follows the hero: its own copy, and the files of its language under /video. */
+  video: {
+    title: string;
+    description: string;
+    ariaLabel: string;
+    /** Labels of the icon button that turns the film's sound on and off. */
+    soundOn: string;
+    soundOff: string;
+    /** Label of the play button shown when the browser will not start the film with sound. */
+    play: string;
+    /** Base path of the film; `.webm`, `.mp4` and `-poster.webp` sit beside it. */
+    src: string;
   };
   solution: HomePointGroup & {
     cta: string;
