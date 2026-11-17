@@ -99,8 +99,14 @@ export const homeContent: HomeContent = {
     title: "A low-code foundation for processes that keep changing.",
     description:
       "Opero works as your company's operating layer: the data model, processes, document workflow, automation, reports and permissions stay connected instead of becoming more separate tools.",
+    stage: {
+      tryLabel: "Your turn",
+      replayLabel: "Play again",
+      chaptersLabel: "What Opero does",
+    },
     items: [
       {
+        navLabel: "Builder",
         title: "Design without code",
         description:
           "No-code configuration: you assemble custom objects, fields, forms, layouts and menus visually, shaping them around how the company actually works.",
@@ -115,21 +121,27 @@ export const homeContent: HomeContent = {
           href: localizeFeaturePath("en", "noCode"),
         },
         animation: {
-          tryLabel: "Try it!",
           dashboard: {
+            paletteLabel: "Blocks",
+            pageTitle: "Sales dashboard",
+            draftLabel: "Draft",
+            publishedLabel: "Published",
+            dropHint: "Drop a block",
             blocks: ["Counter", "Report", "Table"],
             metrics: ["Open value", "Weighted", "Deals"],
             chartTitle: "Pipeline health",
+            bars: ["Jan", "Feb", "Mar", "Apr", "May"],
             tableTitle: "Deals by stage",
-          },
-          form: {
-            blocks: ["Text field", "Select", "Rich text"],
-            fields: ["Task title", "Priority", "Description"],
-            actionLabel: "Create task",
+            rows: [
+              ["Office furniture", "12", "Proposal"],
+              ["CAD licences", "4", "Negotiation"],
+              ["Fleet service", "8", "Won"],
+            ],
           },
         },
       },
       {
+        navLabel: "Views",
         title: "Same data, different angles",
         description:
           "Everyone works from the same records, but each role needs a different lens. Shape tables, boards and timelines around the workflow instead of forcing one view on every team.",
@@ -143,8 +155,25 @@ export const homeContent: HomeContent = {
           label: "Learn about views",
           href: localizeFeaturePath("en", "reports"),
         },
+        viewsAnimation: {
+          title: "Cases",
+          modes: ["List", "Kanban", "Calendar"],
+          columns: ["Case", "Owner", "Status", "Due"],
+          statuses: ["New", "In progress", "Done"],
+          weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+          monthLabel: "November",
+          duePattern: "Nov {day}",
+          records: [
+            { title: "Invoice INV/1042", owner: "Marta", status: 0, day: 3 },
+            { title: "Onboarding kit", owner: "Tomek", status: 1, day: 12 },
+            { title: "Supplier NDA", owner: "Piotr", status: 1, day: 18 },
+            { title: "Marketing budget", owner: "Ania", status: 2, day: 21 },
+            { title: "Fleet review", owner: "Kasia", status: 0, day: 27 },
+          ],
+        },
       },
       {
+        navLabel: "Automations",
         title: "Automate anything",
         description:
           "Build rules around the way your company actually works: approvals, notifications, integrations and edge-case logic. Opero handles simple handoffs and complex exceptions in one governed system.",
@@ -178,11 +207,10 @@ export const homeContent: HomeContent = {
             meta: "Over limit",
             outcome: "Needs attention",
           },
-          positiveLabel: "Approve",
-          negativeLabel: "Escalate",
         },
       },
       {
+        navLabel: "Permissions",
         title: "Stay in control",
         description:
           "Permissions reach down to a single field, and integrations keep regulatory compliance inside the same system.",
@@ -198,6 +226,7 @@ export const homeContent: HomeContent = {
         },
         permissionAnimation: {
           title: "Employee profile",
+          subtitle: "Sales team · since 2021",
           viewAsLabel: "View as:",
           employeeRoleLabel: "Employee",
           hrRoleLabel: "HR",
@@ -207,8 +236,6 @@ export const homeContent: HomeContent = {
             { label: "Contract type", value: "Full time" },
           ],
           lockedLabel: "Field hidden",
-          roleBeforeLabel: "Role: Finance",
-          roleAfterLabel: "Role: Employee",
         },
       },
     ],

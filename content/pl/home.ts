@@ -99,8 +99,14 @@ export const homeContent: HomeContent = {
     title: "Fundament low-code dla procesów, które się zmieniają.",
     description:
       "Opero działa jak warstwa operacyjna firmy: model danych, procesy, obieg dokumentów, automatyzacje, raporty i uprawnienia pozostają połączone, zamiast tworzyć kolejne odseparowane narzędzia.",
+    stage: {
+      tryLabel: "Twoja kolej",
+      replayLabel: "Odtwórz ponownie",
+      chaptersLabel: "Możliwości Opero",
+    },
     items: [
       {
+        navLabel: "Kreator",
         title: "Projektuj bez kodu",
         description:
           "Konfiguracja no-code: obiekty własne, pola, formularze, układy i menu składasz wizualnie, dopasowując je do tego, jak naprawdę pracuje firma.",
@@ -115,21 +121,27 @@ export const homeContent: HomeContent = {
           href: localizeFeaturePath("pl", "noCode"),
         },
         animation: {
-          tryLabel: "Spróbuj!",
           dashboard: {
+            paletteLabel: "Bloki",
+            pageTitle: "Pulpit sprzedaży",
+            draftLabel: "Szkic",
+            publishedLabel: "Opublikowano",
+            dropHint: "Upuść blok",
             blocks: ["Licznik", "Raport", "Tabela"],
             metrics: ["Otwarta wartość", "Ważona", "Sprawy"],
             chartTitle: "Zdrowie pipeline'u",
+            bars: ["Sty", "Lut", "Mar", "Kwi", "Maj"],
             tableTitle: "Sprawy wg etapu",
-          },
-          form: {
-            blocks: ["Pole tekstowe", "Wybór", "Tekst długi"],
-            fields: ["Tytuł zadania", "Priorytet", "Opis"],
-            actionLabel: "Utwórz zadanie",
+            rows: [
+              ["Meble biurowe", "12", "Oferta"],
+              ["Licencje CAD", "4", "Negocjacje"],
+              ["Serwis floty", "8", "Wygrana"],
+            ],
           },
         },
       },
       {
+        navLabel: "Widoki",
         title: "Te same dane, różne perspektywy",
         description:
           "Wszyscy pracują na tych samych rekordach, ale każda rola potrzebuje innego widoku. Układaj tabele, tablice i harmonogramy pod przebieg pracy, zamiast narzucać jeden sposób patrzenia całemu zespołowi.",
@@ -143,8 +155,25 @@ export const homeContent: HomeContent = {
           label: "Więcej o widokach",
           href: localizeFeaturePath("pl", "reports"),
         },
+        viewsAnimation: {
+          title: "Sprawy",
+          modes: ["Lista", "Kanban", "Kalendarz"],
+          columns: ["Sprawa", "Osoba", "Status", "Termin"],
+          statuses: ["Nowe", "W toku", "Gotowe"],
+          weekdays: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"],
+          monthLabel: "Listopad",
+          duePattern: "{day} lis",
+          records: [
+            { title: "Faktura FV/1042", owner: "Marta", status: 0, day: 3 },
+            { title: "Zestaw onboardingowy", owner: "Tomek", status: 1, day: 12 },
+            { title: "Umowa NDA z dostawcą", owner: "Piotr", status: 1, day: 18 },
+            { title: "Budżet marketingu", owner: "Ania", status: 2, day: 21 },
+            { title: "Przegląd floty", owner: "Kasia", status: 0, day: 27 },
+          ],
+        },
       },
       {
+        navLabel: "Automatyzacje",
         title: "Automatyzuj wszystko",
         description:
           "Twórz reguły wokół tego, jak naprawdę działa firma: akceptacje, powiadomienia, integracje i logikę wyjątków. Opero obsługuje proste przekazania i złożone przypadki w jednym kontrolowanym systemie.",
@@ -178,11 +207,10 @@ export const homeContent: HomeContent = {
             meta: "Powyżej limitu",
             outcome: "Wymaga uwagi",
           },
-          positiveLabel: "Akceptuj",
-          negativeLabel: "Eskaluj",
         },
       },
       {
+        navLabel: "Uprawnienia",
         title: "Zachowaj kontrolę",
         description:
           "Uprawnienia sięgają pojedynczego pola, a integracje z KSeF i e-Doręczeniami trzymają zgodność w jednym systemie.",
@@ -198,6 +226,7 @@ export const homeContent: HomeContent = {
         },
         permissionAnimation: {
           title: "Profil pracownika",
+          subtitle: "Dział sprzedaży · od 2021",
           viewAsLabel: "Widok jako:",
           employeeRoleLabel: "Pracownik",
           hrRoleLabel: "HR",
@@ -207,8 +236,6 @@ export const homeContent: HomeContent = {
             { label: "Typ umowy", value: "Pełny etat" },
           ],
           lockedLabel: "Pole ukryte",
-          roleBeforeLabel: "Rola: Finance",
-          roleAfterLabel: "Rola: Pracownik",
         },
       },
     ],

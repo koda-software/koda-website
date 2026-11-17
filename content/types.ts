@@ -91,23 +91,43 @@ export type ShellContent = {
 };
 
 export type FeaturePillar = {
+  /** The module's name in the app window's header while this pillar is on screen. */
+  navLabel?: string;
   title: string;
   description: string;
   capabilities: string[];
   link?: CtaContent;
   animation?: {
-    tryLabel: string;
     dashboard: {
+      paletteLabel: string;
+      pageTitle: string;
+      draftLabel: string;
+      publishedLabel: string;
+      /** Written in each empty slot, so an unbuilt page reads as one waiting for blocks. */
+      dropHint: string;
       blocks: [string, string, string];
       metrics: [string, string, string];
       chartTitle: string;
+      /** Five short labels under the report's bars. */
+      bars: [string, string, string, string, string];
       tableTitle: string;
+      rows: [
+        [string, string, string],
+        [string, string, string],
+        [string, string, string],
+      ];
     };
-    form: {
-      blocks: [string, string, string];
-      fields: [string, string, string];
-      actionLabel: string;
-    };
+  };
+  viewsAnimation?: {
+    title: string;
+    modes: [string, string, string];
+    columns: [string, string, string, string];
+    statuses: [string, string, string];
+    weekdays: [string, string, string, string, string, string, string];
+    monthLabel: string;
+    /** How a due date reads, with `{day}` standing for the day of the month. */
+    duePattern: string;
+    records: Array<{ title: string; owner: string; status: 0 | 1 | 2; day: number }>;
   };
   ruleAnimation?: {
     actionLabel: string;
@@ -115,11 +135,10 @@ export type FeaturePillar = {
     condition: { title: string; meta: string };
     positive: { title: string; meta: string; outcome: string };
     negative: { title: string; meta: string; outcome: string };
-    positiveLabel: string;
-    negativeLabel: string;
   };
   permissionAnimation?: {
     title: string;
+    subtitle: string;
     viewAsLabel: string;
     employeeRoleLabel: string;
     hrRoleLabel: string;
@@ -129,8 +148,6 @@ export type FeaturePillar = {
       { label: string; value: string },
     ];
     lockedLabel: string;
-    roleBeforeLabel: string;
-    roleAfterLabel: string;
   };
 };
 
@@ -261,6 +278,13 @@ export type HomeContent = {
   pillars: {
     title: string;
     description: string;
+    /** Words on the app window the demos play in, shared by all four. */
+    stage: {
+      /** The bubble that hands a demo over to the reader once it has played itself. */
+      tryLabel: string;
+      replayLabel: string;
+      chaptersLabel: string;
+    };
     items: FeaturePillar[];
   };
   workflow: {

@@ -6,7 +6,7 @@ import type { HomeContent } from "@/content/types";
 import { ArrivingSection } from "@/components/landing/ArrivingSection";
 import { ExplainerVideo } from "@/components/landing/ExplainerVideo";
 import { IntegrationsCarousel } from "@/components/landing/IntegrationsCarousel";
-import { PillarSections } from "@/components/landing/PillarSections";
+import { PillarStory } from "@/components/landing/pillars/PillarStory";
 import {
   FinalCtaPanel,
   IndexNumber,
@@ -142,7 +142,7 @@ export function HomeScaffold({
               description={content.pillars.description}
             />
           </Reveal>
-          <PillarSections items={content.pillars.items} />
+          <PillarStory items={content.pillars.items} stage={content.pillars.stage} />
         </LandingSection>
       </ArrivingSection>
 

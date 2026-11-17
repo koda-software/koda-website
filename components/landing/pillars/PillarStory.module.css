@@ -1,0 +1,447 @@
+/*
+ * The pillar story. Without script, and on a phone, it is a numbered list with every
+ * chapter open; with room for the stage, one chapter is open at a time and the app
+ * window beside it shows that chapter's demo.
+ */
+.root {
+  --steps: 3;
+  --number: 2.25rem;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+/* Pinned, the story fills the window under the header, and the scroll moves through it. */
+.root[data-mode="pinned"] .pin {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  padding-top: 4.5rem;
+}
+
+.root[data-mode="pinned"] .layout {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- chapters ---------- */
+
+.chapters ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chapter {
+  --center: calc(0.85rem + var(--number) / 2);
+  position: relative;
+  padding: 0.85rem 0;
+}
+
+/* The rail runs from each chapter's number to the next one's, and fills as the story moves on. */
+.chapter:not(:last-child)::before,
+.chapter:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: var(--center);
+  bottom: calc(var(--center) * -1);
+  left: calc(var(--number) / 2 - 1px);
+  width: 2px;
+  border-radius: 2px;
+}
+
+.chapter:not(:last-child)::before {
+  background: rgba(11, 17, 22, 0.1);
+}
+
+.chapter:not(:last-child)::after {
+  background: linear-gradient(180deg, var(--color-blue-soft), var(--color-blue));
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+.root[data-mode="pinned"] .chapter::after,
+.root[data-mode="picked"] .chapter::after {
+  transform: scaleY(clamp(0, calc(var(--progress, 0) * var(--steps) - var(--index)), 1));
+}
+
+.root[data-mode="picked"] .chapter::after {
+  transition: transform 0.6s var(--ease);
+}
+
+.chapterTitle {
+  margin: 0;
+}
+
+.chapterTitle button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: var(--number) minmax(0, 1fr);
+  align-items: center;
+  gap: 1.1rem;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--color-ink);
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1.9vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  text-align: left;
+  transition: color 0.35s ease;
+}
+
+.root[data-mode="listed"] .chapterTitle button {
+  cursor: default;
+}
+
+.chapterNumber {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: var(--number);
+  height: var(--number);
+  place-items: center;
+  border: 1.5px solid rgba(11, 17, 22, 0.14);
+  border-radius: 999px;
+  background: var(--color-mist);
+  color: var(--color-muted);
+  font-family: var(--type-ui);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    transform 0.45s var(--ease);
+}
+
+.root:not([data-mode="listed"]) .chapter[data-active] .chapterNumber {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 5px rgba(56, 182, 255, 0.18);
+}
+
+.root[data-mode="pinned"] .chapter:not([data-active]) .chapterTitle button,
+.root[data-mode="picked"] .chapter:not([data-active]) .chapterTitle button {
+  color: rgba(11, 17, 22, 0.4);
+}
+
+.root[data-mode="pinned"] .chapter:not([data-active]) .chapterTitle button:hover,
+.root[data-mode="picked"] .chapter:not([data-active]) .chapterTitle button:hover {
+  color: rgba(11, 17, 22, 0.72);
+}
+
+.chapterBody {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.55s var(--ease);
+}
+
+.chapterInner {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: calc(var(--number) + 1.1rem);
+}
+
+.chapterInner > * {
+  transition:
+    opacity 0.45s ease,
+    transform 0.55s var(--ease);
+}
+
+.root[data-mode="pinned"] .chapter:not([data-active]) .chapterBody,
+.root[data-mode="picked"] .chapter:not([data-active]) .chapterBody {
+  grid-template-rows: 0fr;
+}
+
+/* Closed chapters keep their text for search engines, but out of the tab order. */
+.root[data-mode="pinned"] .chapter:not([data-active]) .chapterInner,
+.root[data-mode="picked"] .chapter:not([data-active]) .chapterInner {
+  visibility: hidden;
+  transition: visibility 0s 0.55s;
+}
+
+.root[data-mode="pinned"] .chapter:not([data-active]) .chapterInner > *,
+.root[data-mode="picked"] .chapter:not([data-active]) .chapterInner > * {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.chapter[data-active] .chapterInner > :nth-child(2) {
+  transition-delay: 0.08s;
+}
+
+.chapter[data-active] .chapterInner > :nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+.chapterInner p {
+  margin: 0.85rem 0 0;
+  color: var(--color-muted);
+  font-family: var(--font-display);
+  font-size: clamp(0.98rem, 1.2vw, 1.06rem);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.chapterInner ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chapterInner li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  color: var(--color-ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.chapterInner li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-blue-soft);
+  transform: translateY(-2px);
+}
+
+.chapterLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 1.25rem 0 0.35rem;
+  color: var(--color-blue);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.chapterLink span {
+  border-bottom: 1px solid rgba(56, 182, 255, 0.34);
+  padding-bottom: 1px;
+}
+
+.chapterLink svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.15s ease;
+}
+
+.chapterLink:hover {
+  color: var(--color-blue-deep);
+}
+
+.chapterLink:hover svg {
+  transform: translateX(2px);
+}
+
+/* ---------- the app window ---------- */
+
+.stageColumn {
+  position: relative;
+}
+
+/* A soft light behind the window, so it sits on the mist rather than on nothing. */
+.stageColumn::before {
+  content: "";
+  position: absolute;
+  inset: -12% -8%;
+  z-index: -1;
+  background:
+    radial-gradient(45% 50% at 30% 30%, rgba(56, 182, 255, 0.16), transparent 70%),
+    radial-gradient(40% 45% at 75% 75%, rgba(99, 102, 241, 0.1), transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.window {
+  overflow: hidden;
+  border: 1px solid rgba(11, 17, 22, 0.08);
+  border-radius: var(--radius-panel);
+  background: #fff;
+  box-shadow:
+    0 50px 90px -60px rgba(2, 2, 13, 0.5),
+    0 2px 6px rgba(2, 2, 13, 0.04);
+}
+
+/* Pinned, the window is held to the height of the screen, giving up width where it has to. */
+.root[data-mode="pinned"] .window {
+  width: min(100%, calc((100vh - 4.5rem - 7.5rem) * 640 / 440));
+  margin-left: auto;
+}
+
+.windowBar {
+  display: flex;
+  height: 2.9rem;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(11, 17, 22, 0.07);
+  background: rgba(250, 253, 255, 0.97);
+  padding: 0 0.9rem 0 1rem;
+}
+
+.lights {
+  display: flex;
+  gap: 6px;
+}
+
+.lights i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ff6b5f;
+}
+
+.lights i:nth-child(2) {
+  background: #ffca47;
+}
+
+.lights i:nth-child(3) {
+  background: #23c46e;
+}
+
+.crumbs {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.crumbSlash {
+  color: rgba(11, 17, 22, 0.25);
+}
+
+/* Every module name sits in the same place; the current one rolls in as the story moves. */
+.crumbTrack {
+  display: grid;
+}
+
+.crumb {
+  grid-area: 1 / 1;
+  color: var(--color-ink);
+  font-weight: 650;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s var(--ease);
+}
+
+.crumb[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.pips {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.pips i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(11, 17, 22, 0.14);
+  transition:
+    width 0.4s var(--ease),
+    background 0.3s ease;
+}
+
+.pips i[data-on] {
+  width: 18px;
+  background: var(--color-blue-soft);
+}
+
+.replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(11, 17, 22, 0.1);
+  border-radius: 999px;
+  background: #fff;
+  padding: 0.3rem 0.7rem;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.replay svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.replay:hover {
+  border-color: rgba(11, 17, 22, 0.22);
+  color: var(--color-ink);
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 70% at 20% 0%, #ffffff 0%, transparent 60%),
+    linear-gradient(180deg, #f7fafc, #edf2f7);
+}
+
+/* ---------- a phone: the chapters alone ---------- */
+
+@media (max-width: 639px) {
+  .stageColumn {
+    display: none;
+  }
+
+  .chapterTitle button {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .replay span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter::after,
+  .chapterBody,
+  .chapterInner > *,
+  .chapterNumber,
+  .crumb,
+  .pips i {
+    transition: none !important;
+  }
+}
