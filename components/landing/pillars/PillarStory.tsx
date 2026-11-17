@@ -101,19 +101,14 @@ export function PillarStory({ items, stage }: { items: FeaturePillar[]; stage: S
         onUpdate: (self) => {
           root.style.setProperty("--progress", self.progress.toFixed(4));
           // A chapter opens when the rail reaches its number, not halfway there, so the line always
-          // finishes its run before the next chapter takes over. The small allowance absorbs rounding
-          // at the snap points. Bails out without a render while the chapter stays the same.
+          // finishes its run before the next chapter takes over. Only the reader's own scrolling moves
+          // it; nothing pulls the page on to a chapter once they stop. The small allowance absorbs
+          // rounding at a chapter's exact position. Bails out without a render while the chapter stays the same.
           setActive(Math.min(count - 1, Math.floor(self.progress * (count - 1) + 0.02)));
         },
         pin,
         // Under ScrollSmoother the page itself is transformed, so a fixed pin would have nothing to hold on to.
         pinType: smooth ? "transform" : "fixed",
-        snap: {
-          delay: 0.08,
-          duration: { max: 0.6, min: 0.25 },
-          ease: "power2.inOut",
-          snapTo: 1 / (count - 1),
-        },
         start: "top top",
         trigger: root,
       });
@@ -155,9 +150,9 @@ export function PillarStory({ items, stage }: { items: FeaturePillar[]; stage: S
       window.scrollTo({ behavior: "smooth", top });
       return;
     }
-    // Under ScrollSmoother a single jump, whether `scrollTo` or the smoother's own, can leave the
-    // page standing where it was once the snap has had its say. Tweening the smoother's position
-    // scrolls frame by frame instead, which the smoother and the snap both follow.
+    // Under ScrollSmoother a single jump, whether `scrollTo` or the smoother's own, could leave the
+    // page standing where it was. Tweening the smoother's position scrolls frame by frame instead,
+    // which the smoother follows.
     void Promise.all([loadGsap(), import("gsap/ScrollSmoother")]).then(([gsap, { ScrollSmoother }]) => {
       const smoother = ScrollSmoother.get();
       if (!smoother) {
