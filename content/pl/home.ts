@@ -11,7 +11,7 @@ export const homeContent: HomeContent = {
   hero: {
     title: "Ty prowadzisz firmę. System zajmie się resztą",
     description:
-      "Opero to platforma BPM low-code, w której modelujesz własne procesy, prowadzisz obieg dokumentów, automatyzujesz powtarzalne kroki i trzymasz dane firmy pod kontrolą. Bez pisania kodu.",
+      "Opero to platforma do budowy aplikacji biznesowych dla każdego obszaru firmy. Modelujesz w niej własne procesy, prowadzisz obieg dokumentów i automatyzujesz powtarzalne kroki. Bez pisania kodu.",
     primaryCta: "Umów demo",
     secondaryCta: "Poznaj Opero",
     supportPoints: [

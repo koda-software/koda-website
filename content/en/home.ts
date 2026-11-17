@@ -11,7 +11,7 @@ export const homeContent: HomeContent = {
   hero: {
     title: "You run the business. Your system runs the rest",
     description:
-      "Opero is a low-code BPM platform where you model your own processes, run document workflow, automate repetitive steps and keep company data under control. No code required.",
+      "Opero is a platform for building business applications for every area of your company. Model your own processes, run document workflow and automate repetitive steps. No code required.",
     primaryCta: "Book a demo",
     secondaryCta: "Explore Opero",
     supportPoints: [
