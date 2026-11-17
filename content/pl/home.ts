@@ -77,7 +77,7 @@ export const homeContent: HomeContent = {
   video: {
     title: "Zobacz Opero w działaniu.",
     description:
-      "Przychodnia, firma logistyczna, kancelaria, salon urody i deweloper, wszystkie w ten sam poniedziałkowy poranek. A potem warsztat samochodowy opisuje, jak pracuje, a agent buduje to w Opero.",
+      "Firmy z różnych branż prowadzą w Opero swoją codzienną pracę.",
     ariaLabel: "Film o Opero",
     soundOn: "Włącz dźwięk",
     soundOff: "Wyłącz dźwięk",

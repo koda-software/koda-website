@@ -77,7 +77,7 @@ export const homeContent: HomeContent = {
   video: {
     title: "See Opero at work.",
     description:
-      "A clinic, a logistics company, a law firm, a beauty salon and a property developer, all on the same Monday morning. Then a car repair shop describes how it works, and an agent builds it in Opero.",
+      "Companies across industries run their everyday work in Opero.",
     ariaLabel: "Opero explainer film",
     soundOn: "Turn sound on",
     soundOff: "Turn sound off",
