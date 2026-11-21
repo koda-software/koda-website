@@ -70,7 +70,7 @@ export const privacyContent: PrivacyContent = {
         "Formularz zawiera także ukryte pole-pułapkę, niewidoczne dla człowieka. Wypełniają je automaty rozsyłające spam. Jeżeli pole jest wypełnione, zgłoszenie jest odrzucane i nie dociera do nikogo. Nie jest to przetwarzanie danych osobowych - sprawdzamy wyłącznie, czy pole pozostało puste.",
         "Nasz dostawca hostingu prowadzi standardowe logi serwera, obejmujące adres IP, datę i godzinę zapytania oraz typ przeglądarki. Są to dane techniczne konieczne do świadczenia usługi i zapewnienia bezpieczeństwa; nie łączymy ich z danymi z formularza i nie wykorzystujemy do identyfikowania odwiedzających.",
         "Jeżeli wyrażą Państwo zgodę na analitykę, Google Tag Manager i Google Analytics otrzymają dane techniczne i informacje o korzystaniu z serwisu, takie jak adres odwiedzanej strony, aktywność w sesji, przybliżona lokalizacja oraz typ przeglądarki i urządzenia. Google używa adresu IP podczas zbierania danych do określenia przybliżonej lokalizacji, a następnie usuwa go przed zapisaniem danych w Analytics.",
-        "Za tą samą zgodą Microsoft Clarity rejestruje przebieg wizyty: ruchy myszy, kliknięcia, przewijanie, zmiany rozmiaru okna oraz wygląd odwiedzanych stron. Na tej podstawie powstają nagrania sesji i mapy cieplne. Treść wpisywana w pola formularzy jest maskowana w przeglądarce i nie jest wysyłana do Microsoft. Clarity określa przybliżoną lokalizację na podstawie adresu IP.",
+        "Za tą samą zgodą Microsoft Clarity rejestruje przebieg wizyty: ruchy myszy, kliknięcia, przewijanie, zmiany rozmiaru okna oraz wygląd odwiedzanych stron. Na tej podstawie powstają nagrania sesji i mapy cieplne. Treść wpisywana w pola formularzy jest maskowana w przeglądarce i nie jest wysyłana do Microsoft. Clarity określa przybliżoną lokalizację na podstawie adresu IP. Do każdego nagrania dołączamy identyfikator klienta i sesji Google Analytics, aby móc zestawić nagranie ze statystykami tej samej wizyty.",
       ],
     },
     {
@@ -139,7 +139,7 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Microsoft Ireland Operations Limited",
           description:
-            "Microsoft Clarity, ładowane wyłącznie po wyrażeniu zgody na analitykę, tworzy nagrania sesji i mapy cieplne opisane w punkcie 3. Według Microsoft usługa Clarity działa jako administrator danych, więc Microsoft przetwarza te dane także na własny rachunek, zgodnie ze swoim oświadczeniem o ochronie prywatności.",
+            "Microsoft Clarity, ładowane wyłącznie po wyrażeniu zgody na analitykę, tworzy nagrania sesji i mapy cieplne opisane w punkcie 3. Otrzymuje przy tym identyfikator klienta i sesji Google Analytics. Według Microsoft usługa Clarity działa jako administrator danych, więc Microsoft przetwarza te dane także na własny rachunek, zgodnie ze swoim oświadczeniem o ochronie prywatności.",
         },
       ],
     },

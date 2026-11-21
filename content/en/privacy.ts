@@ -51,7 +51,7 @@ export const privacyContent: PrivacyContent = {
         "The form also carries a hidden trap field, invisible to a person. Spam robots fill it in. If it is filled in, the submission is discarded and reaches nobody. This is not processing of personal data - we only check whether the field stayed empty.",
         "Our hosting provider keeps standard server logs containing the IP address, the time of the request and the browser type. These are technical records needed to run the service and keep it secure; we do not combine them with form data and do not use them to identify visitors.",
         "If you consent to analytics, Google Tag Manager and Google Analytics receive technical and usage information such as the page address, session activity, approximate location, browser and device type. Google uses the IP address at collection time to determine approximate location and then discards it before the data is logged in Analytics.",
-        "Under the same consent, Microsoft Clarity records how a visit unfolds: mouse movements, clicks, scrolling, window resizing and how the pages look. These are used to build session recordings and heatmaps. Text typed into form fields is masked in the browser and is not sent to Microsoft. Clarity derives approximate location from the IP address.",
+        "Under the same consent, Microsoft Clarity records how a visit unfolds: mouse movements, clicks, scrolling, window resizing and how the pages look. These are used to build session recordings and heatmaps. Text typed into form fields is masked in the browser and is not sent to Microsoft. Clarity derives approximate location from the IP address. We attach the Google Analytics client and session identifiers to each recording, so a recording can be matched with the statistics for the same visit.",
       ],
     },
     {
@@ -120,7 +120,7 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Microsoft Ireland Operations Limited",
           description:
-            "Microsoft Clarity, loaded only after analytics consent, creates the session recordings and heatmaps described in section 3. According to Microsoft, Clarity operates as a data controller, so Microsoft also processes this data on its own account, under its privacy statement.",
+            "Microsoft Clarity, loaded only after analytics consent, creates the session recordings and heatmaps described in section 3. It also receives the Google Analytics client and session identifiers. According to Microsoft, Clarity operates as a data controller, so Microsoft also processes this data on its own account, under its privacy statement.",
         },
       ],
     },
