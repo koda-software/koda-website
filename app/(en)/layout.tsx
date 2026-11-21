@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Atkinson_Hyperlegible_Next, Sora } from "next/font/google";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleAnalyticsConsent } from "@/components/analytics/GoogleAnalyticsConsent";
+import { ConsentManager } from "@/components/consent/ConsentManager";
 import { commonContent } from "@/content/en/common";
-import { GOOGLE_ANALYTICS_CONSENT_BOOTSTRAP } from "@/lib/analytics/google";
+import { CONSENT_BOOTSTRAP } from "@/lib/consent/google";
 import { localizePath } from "@/lib/i18n/routes";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/lib/seo/json-ld";
 import { siteConfig } from "@/lib/seo/site";
@@ -55,14 +55,14 @@ export default function EnglishRootLayout({ children }: Readonly<{ children: Rea
   return (
     <html lang="en" className={`${sora.variable} ${atkinson.variable} h-full antialiased`}>
       <body className={`${atkinson.className} min-h-full`}>
-        <Script id="analytics-consent-default" strategy="beforeInteractive">
-          {GOOGLE_ANALYTICS_CONSENT_BOOTSTRAP}
+        <Script id="consent-default" strategy="beforeInteractive">
+          {CONSENT_BOOTSTRAP}
         </Script>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
         {children}
         <SpeedInsights />
-        <GoogleAnalyticsConsent content={commonContent.analytics} privacyHref={localizePath("en", "privacy")} />
+        <ConsentManager content={commonContent.consent} locale="en" privacyHref={localizePath("en", "privacy")} />
       </body>
     </html>
   );

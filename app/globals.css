@@ -234,6 +234,28 @@ html {
   }
 }
 
+/* Cookie consent: the card rises in; the preferences dialog dims the page. */
+.consent-enter {
+  animation: consent-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes consent-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+
+.consent-dialog::backdrop {
+  background: rgba(11, 17, 22, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consent-enter {
+    animation: none;
+  }
+}
+
 /* Rich text rendered from the Opero blog module. Token-based so article bodies
    inherit exactly the type ramp and rhythm used by the marketing pages. */
 .blog-prose {

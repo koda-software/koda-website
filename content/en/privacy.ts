@@ -1,3 +1,4 @@
+import { consentServiceRows } from "../consent-services";
 import type { PrivacyContent } from "../types";
 
 /**
@@ -16,10 +17,10 @@ export const privacyContent: PrivacyContent = {
   hero: {
     title: "Privacy policy",
     description:
-      "This site uses Google Analytics only after you consent. Without that consent, no Google Analytics script is loaded and no analytics cookies are set.",
+      "This site uses Google Analytics, loaded through Google Tag Manager, only after you consent. Without that consent, no Google script is requested and no analytics cookies are set.",
   },
   updatedLabel: "Last updated",
-  updatedAt: "2026-09-02",
+  updatedAt: "2026-11-21",
   sections: [
     {
       heading: "1. Data controller",
@@ -49,7 +50,7 @@ export const privacyContent: PrivacyContent = {
         "Two pieces of information travel with your enquiry that the form does not ask for: the language version of the site and the address of the page you sent it from. They exist so we know which language to reply in and what the enquiry is about.",
         "The form also carries a hidden trap field, invisible to a person. Spam robots fill it in. If it is filled in, the submission is discarded and reaches nobody. This is not processing of personal data - we only check whether the field stayed empty.",
         "Our hosting provider keeps standard server logs containing the IP address, the time of the request and the browser type. These are technical records needed to run the service and keep it secure; we do not combine them with form data and do not use them to identify visitors.",
-        "If you consent to analytics, Google Analytics receives technical and usage information such as the page address, session activity, approximate location, browser and device type. Google uses the IP address at collection time to determine approximate location and then discards it before the data is logged in Analytics.",
+        "If you consent to analytics, Google Tag Manager and Google Analytics receive technical and usage information such as the page address, session activity, approximate location, browser and device type. Google uses the IP address at collection time to determine approximate location and then discards it before the data is logged in Analytics.",
       ],
     },
     {
@@ -73,7 +74,7 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Measuring visits and understanding how the site is used with Google Analytics",
           description:
-            "Your consent under Article 6(1)(a) GDPR. Analytics remains disabled until you accept it, and you may withdraw your consent at any time through Analytics settings in the footer.",
+            "Your consent under Article 6(1)(a) GDPR. Analytics remains disabled until you accept it, and you may withdraw your consent at any time through Cookie settings in the footer.",
         },
         {
           term: "Obligations imposed by law",
@@ -89,7 +90,7 @@ export const privacyContent: PrivacyContent = {
         "Correspondence that did not lead to working together is deleted no later than 24 months after the last contact.",
         "Where a contract was concluded, data relating to its performance is kept for the period required by law - tax and accounting rules in particular - and then until the relevant limitation periods expire.",
         "Server logs are retained by our hosting provider under its own retention policy, typically for a period counted in days.",
-        "Your analytics preference remains in your browser's local storage until you change it or clear site data. Google Analytics cookies expire after up to two years by default; withdrawing consent disables Analytics and removes its cookies from this site.",
+        "Your cookie choice remains in your browser's local storage until you change it or clear site data. We rely on a consent for 13 months and on a refusal for 6 months; after that we ask again. Google Analytics cookies expire after up to two years by default; withdrawing consent disables Analytics and removes its cookies from this site.",
         "User-level and event-level analytics data is retained in Google Analytics only for the retention period configured for the property, within the limits available for a standard Google Analytics account.",
       ],
     },
@@ -112,14 +113,14 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Google Ireland Limited",
           description:
-            "Google Analytics, loaded only after consent, measures visits and site usage. Advertising storage, advertising user data, ad personalization and Google signals are disabled in the site's tag configuration.",
+            "Google Tag Manager and Google Analytics, loaded only after consent, measure visits and site usage. Advertising storage, advertising user data, ad personalization and Google signals are disabled in the site's tag configuration.",
         },
       ],
     },
     {
       heading: "7. Transfers outside the European Economic Area",
       paragraphs: [
-        "Vercel and Resend are established in the United States. Google Analytics is provided in Europe by Google Ireland Limited, which may use affiliates and subprocessors in other countries. Data may therefore be processed outside the European Economic Area.",
+        "Vercel and Resend are established in the United States. Google Tag Manager and Google Analytics are provided in Europe by Google Ireland Limited, which may use affiliates and subprocessors in other countries. Data may therefore be processed outside the European Economic Area.",
         "Such transfers rely on the safeguards set out in Chapter V GDPR - standard contractual clauses approved by the European Commission, or the adequacy decision covering the EU-US Data Privacy Framework - as set out in the data processing agreements concluded with those providers.",
         "We will provide a copy of the safeguards in place on request sent to kontakt@kodasoft.pl.",
       ],
@@ -142,19 +143,20 @@ export const privacyContent: PrivacyContent = {
       heading: "9. Is providing data mandatory",
       paragraphs: [
         "Providing data is entirely voluntary, but without a name, an email address and a message we cannot answer the enquiry. The remaining fields may be left blank.",
-        "Consent to analytics is voluntary and refusing it does not affect access to the site. We take no automated decisions and do not use Analytics to build individual marketing profiles.",
+        "Consent to cookies is voluntary and refusing it does not affect access to the site. We take no automated decisions and do not use Analytics to build individual marketing profiles.",
       ],
     },
     {
       heading: "10. Cookies and tracking technologies",
       paragraphs: [
-        "The site stores your analytics choice in local storage so it can respect the decision on later visits. This preference is necessary to remember whether Google Analytics may load.",
-        "Google Analytics is implemented in basic consent mode: until you choose 'Accept analytics', the Google script is not requested, no data is sent to Google Analytics and no analytics cookies are set.",
-        "After consent, Google Analytics may set the first-party cookies _ga and _ga_<measurement-id> to distinguish users and preserve session state. Their default expiry is up to two years, subject to browser limits.",
-        "You can withdraw or grant consent at any time through Analytics settings in the footer. Withdrawing consent disables further Analytics collection and removes Google Analytics cookies accessible to this site.",
+        "The site stores your choice (the groups you allowed and the date of the decision) in local storage so it can respect it on later visits. This preference is necessary and needs no consent.",
+        "Other services are grouped into analytics and marketing. They run in Google's basic consent mode: until you switch a group on, its scripts are not requested, no data is sent and no cookies are set. A group with no service is not shown in the banner.",
+        "You can grant or withdraw consent at any time through Cookie settings in the footer. Withdrawing analytics consent stops further collection and removes Google Analytics cookies accessible to this site.",
         "The typeface used on the site is bundled onto our own server when the site is built. Your browser makes no request to a third party to load it.",
         "Vercel Speed Insights also collects anonymous page-speed metrics such as how long the largest element takes to appear. It uses no cookies and cannot identify an individual.",
+        "Services that need consent, with their cookies and how long they are kept:",
       ],
+      rows: consentServiceRows("en"),
     },
     {
       heading: "11. Links to other sites",

@@ -1,3 +1,4 @@
+import { consentServiceRows } from "../consent-services";
 import type { PrivacyContent } from "../types";
 
 /**
@@ -8,8 +9,10 @@ import type { PrivacyContent } from "../types";
  *
  * - `app/api/contact/route.ts` wysyła zgłoszenie mailem przez Resend i nie
  *   zapisuje go nigdzie po stronie serwisu; pola i ich limity są tam widoczne.
- * - Google Analytics jest ładowane dopiero po zgodzie, a wybór użytkownika
- *   zostaje zapisany w `localStorage` i można go zmienić w stopce.
+ * - Google Tag Manager (a w nim Google Analytics) jest ładowany dopiero po
+ *   zgodzie; wybór zostaje zapisany w `localStorage` i można go zmienić w
+ *   stopce (`components/consent/`). Usługi wymagające zgody są w
+ *   `content/consent-services.ts`; punkt 10 wylicza je stamtąd.
  * - `next/font/google` osadza krój Sora w czasie budowania, więc przeglądarka
  *   czytelnika nie łączy się z serwerami Google.
  * - Jedyny pomiar to `@vercel/speed-insights`, który nie używa ciasteczek.
@@ -33,10 +36,10 @@ export const privacyContent: PrivacyContent = {
   hero: {
     title: "Polityka prywatności",
     description:
-      "Ten serwis korzysta z Google Analytics wyłącznie po wyrażeniu zgody. Bez niej skrypt Google Analytics nie jest ładowany i nie są zapisywane analityczne pliki cookies.",
+      "Ten serwis korzysta z Google Analytics, ładowanego przez Google Tag Manager, wyłącznie po wyrażeniu zgody. Bez niej żaden skrypt Google nie jest pobierany i nie są zapisywane analityczne pliki cookies.",
   },
   updatedLabel: "Ostatnia aktualizacja",
-  updatedAt: "2026-09-02",
+  updatedAt: "2026-11-21",
   sections: [
     {
       heading: "1. Administrator danych",
@@ -66,7 +69,7 @@ export const privacyContent: PrivacyContent = {
         "Razem ze zgłoszeniem przekazywane są dwie informacje, o które formularz nie pyta wprost: wersja językowa serwisu oraz adres podstrony, z której formularz został wysłany. Służą wyłącznie temu, żebyśmy wiedzieli, w jakim języku odpowiedzieć i jakiego zagadnienia dotyczy zapytanie.",
         "Formularz zawiera także ukryte pole-pułapkę, niewidoczne dla człowieka. Wypełniają je automaty rozsyłające spam. Jeżeli pole jest wypełnione, zgłoszenie jest odrzucane i nie dociera do nikogo. Nie jest to przetwarzanie danych osobowych - sprawdzamy wyłącznie, czy pole pozostało puste.",
         "Nasz dostawca hostingu prowadzi standardowe logi serwera, obejmujące adres IP, datę i godzinę zapytania oraz typ przeglądarki. Są to dane techniczne konieczne do świadczenia usługi i zapewnienia bezpieczeństwa; nie łączymy ich z danymi z formularza i nie wykorzystujemy do identyfikowania odwiedzających.",
-        "Jeżeli wyrażą Państwo zgodę na analitykę, Google Analytics otrzyma dane techniczne i informacje o korzystaniu z serwisu, takie jak adres odwiedzanej strony, aktywność w sesji, przybliżona lokalizacja oraz typ przeglądarki i urządzenia. Google używa adresu IP podczas zbierania danych do określenia przybliżonej lokalizacji, a następnie usuwa go przed zapisaniem danych w Analytics.",
+        "Jeżeli wyrażą Państwo zgodę na analitykę, Google Tag Manager i Google Analytics otrzymają dane techniczne i informacje o korzystaniu z serwisu, takie jak adres odwiedzanej strony, aktywność w sesji, przybliżona lokalizacja oraz typ przeglądarki i urządzenia. Google używa adresu IP podczas zbierania danych do określenia przybliżonej lokalizacji, a następnie usuwa go przed zapisaniem danych w Analytics.",
       ],
     },
     {
@@ -90,7 +93,7 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Pomiar odwiedzin i sposobu korzystania z serwisu za pomocą Google Analytics",
           description:
-            "Państwa zgoda - art. 6 ust. 1 lit. a RODO. Analityka pozostaje wyłączona do czasu jej zaakceptowania, a zgodę można w każdej chwili wycofać w Ustawieniach analityki w stopce.",
+            "Państwa zgoda - art. 6 ust. 1 lit. a RODO. Analityka pozostaje wyłączona do czasu jej zaakceptowania, a zgodę można w każdej chwili wycofać w Ustawieniach cookies w stopce.",
         },
         {
           term: "Obowiązki wynikające z przepisów",
@@ -106,7 +109,7 @@ export const privacyContent: PrivacyContent = {
         "Korespondencję, która nie doprowadziła do współpracy, usuwamy najpóźniej po 24 miesiącach od ostatniego kontaktu.",
         "Jeżeli doszło do zawarcia umowy, dane związane z jej wykonaniem przechowujemy przez okres wymagany przepisami - w szczególności podatkowymi i rachunkowymi - a następnie do upływu terminów przedawnienia roszczeń.",
         "Logi serwera przechowuje nasz dostawca hostingu zgodnie ze swoją polityką retencji, standardowo przez okres liczony w dniach.",
-        "Wybór dotyczący analityki pozostaje w pamięci lokalnej przeglądarki do czasu jego zmiany lub usunięcia danych witryny. Pliki cookies Google Analytics domyślnie wygasają po maksymalnie dwóch latach; wycofanie zgody wyłącza Analytics i usuwa jego pliki cookies z tego serwisu.",
+        "Wybór dotyczący plików cookies pozostaje w pamięci lokalnej przeglądarki do czasu jego zmiany lub usunięcia danych witryny. Zgodę uznajemy przez 13 miesięcy, a odmowę przez 6 miesięcy; potem zapytamy ponownie. Pliki cookies Google Analytics domyślnie wygasają po maksymalnie dwóch latach; wycofanie zgody wyłącza Analytics i usuwa jego pliki cookies z tego serwisu.",
         "Dane analityczne na poziomie użytkownika i zdarzenia są przechowywane w Google Analytics wyłącznie przez okres retencji skonfigurowany dla usługi, w granicach dostępnych dla standardowego konta Google Analytics.",
       ],
     },
@@ -129,14 +132,14 @@ export const privacyContent: PrivacyContent = {
         {
           term: "Google Ireland Limited",
           description:
-            "Google Analytics, ładowane wyłącznie po wyrażeniu zgody, mierzy odwiedziny i sposób korzystania z serwisu. Przechowywanie reklamowe, dane użytkownika na potrzeby reklam, personalizacja reklam i Google signals są wyłączone w konfiguracji tagu serwisu.",
+            "Google Tag Manager i Google Analytics, ładowane wyłącznie po wyrażeniu zgody, mierzą odwiedziny i sposób korzystania z serwisu. Przechowywanie reklamowe, dane użytkownika na potrzeby reklam, personalizacja reklam i Google signals są wyłączone w konfiguracji tagu serwisu.",
         },
       ],
     },
     {
       heading: "7. Przekazywanie danych poza Europejski Obszar Gospodarczy",
       paragraphs: [
-        "Vercel i Resend mają siedziby w Stanach Zjednoczonych. Usługę Google Analytics świadczy w Europie Google Ireland Limited, która może korzystać z podmiotów powiązanych i podwykonawców w innych krajach. Dane mogą być zatem przetwarzane poza Europejskim Obszarem Gospodarczym.",
+        "Vercel i Resend mają siedziby w Stanach Zjednoczonych. Usługi Google Tag Manager i Google Analytics świadczy w Europie Google Ireland Limited, która może korzystać z podmiotów powiązanych i podwykonawców w innych krajach. Dane mogą być zatem przetwarzane poza Europejskim Obszarem Gospodarczym.",
         "Przekazywanie odbywa się na podstawie zabezpieczeń przewidzianych w rozdziale V RODO - standardowych klauzul umownych zatwierdzonych przez Komisję Europejską lub decyzji o odpowiednim stopniu ochrony dotyczącej Ram Ochrony Danych UE-USA - określonych w umowach powierzenia przetwarzania zawartych z tymi dostawcami.",
         "Kopię zastosowanych zabezpieczeń udostępnimy na żądanie przesłane na adres kontakt@kodasoft.pl.",
       ],
@@ -159,19 +162,20 @@ export const privacyContent: PrivacyContent = {
       heading: "9. Czy podanie danych jest obowiązkowe",
       paragraphs: [
         "Podanie danych jest całkowicie dobrowolne, ale bez imienia, adresu e-mail i treści wiadomości nie będziemy w stanie odpowiedzieć na zapytanie. Pozostałe pola można pominąć.",
-        "Zgoda na analitykę jest dobrowolna, a jej odmowa nie wpływa na dostęp do serwisu. Nie podejmujemy decyzji w sposób zautomatyzowany i nie używamy Analytics do tworzenia indywidualnych profili marketingowych.",
+        "Zgoda na pliki cookies jest dobrowolna, a jej odmowa nie wpływa na dostęp do serwisu. Nie podejmujemy decyzji w sposób zautomatyzowany i nie używamy Analytics do tworzenia indywidualnych profili marketingowych.",
       ],
     },
     {
       heading: "10. Pliki cookies i technologie śledzące",
       paragraphs: [
-        "Serwis zapisuje wybór dotyczący analityki w pamięci lokalnej przeglądarki, aby respektować go podczas kolejnych wizyt. Ta preferencja jest niezbędna do zapamiętania, czy Google Analytics może zostać załadowane.",
-        "Google Analytics działa w podstawowym trybie zgody: dopóki nie wybiorą Państwo opcji „Zgadzam się na analitykę”, skrypt Google nie jest pobierany, żadne dane nie są wysyłane do Google Analytics i nie są zapisywane analityczne pliki cookies.",
-        "Po wyrażeniu zgody Google Analytics może zapisać własne pliki cookies _ga i _ga_<identyfikator-pomiaru>, aby rozróżniać użytkowników i zachować stan sesji. Domyślnie wygasają po maksymalnie dwóch latach, z uwzględnieniem ograniczeń przeglądarki.",
-        "Zgodę można w każdej chwili udzielić lub wycofać w Ustawieniach analityki w stopce. Wycofanie zgody wyłącza dalsze zbieranie danych przez Analytics i usuwa pliki cookies Google Analytics dostępne dla tego serwisu.",
+        "Serwis zapisuje Państwa wybór (grupy, na które wyrażono zgodę, i datę decyzji) w pamięci lokalnej przeglądarki, aby respektować go podczas kolejnych wizyt. Ta preferencja jest niezbędna i nie wymaga zgody.",
+        "Pozostałe usługi są podzielone na grupy: analityka i marketing. Działają w podstawowym trybie zgody Google: dopóki nie włączą Państwo danej grupy, jej skrypty nie są pobierane, żadne dane nie są wysyłane i nie są zapisywane pliki cookies. Grupa bez żadnej usługi nie jest pokazywana w banerze.",
+        "Zgodę można w każdej chwili udzielić lub wycofać w Ustawieniach cookies w stopce. Wycofanie zgody na analitykę wyłącza dalsze zbieranie danych i usuwa pliki cookies Google Analytics dostępne dla tego serwisu.",
         "Krój pisma używany w serwisie jest osadzony na naszym serwerze w czasie budowania strony. Przeglądarka nie łączy się w tym celu z serwerami firm trzecich.",
         "Vercel Speed Insights również zbiera anonimowe wskaźniki szybkości ładowania stron - takie jak czas wyświetlenia największego elementu. Narzędzie nie używa ciasteczek i nie pozwala zidentyfikować pojedynczej osoby.",
+        "Usługi wymagające zgody, z plikami cookies i okresem ich przechowywania:",
       ],
+      rows: consentServiceRows("pl"),
     },
     {
       heading: "11. Odnośniki do serwisów zewnętrznych",

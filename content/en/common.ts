@@ -4,14 +4,33 @@ import { featureNavItems } from "./features";
 
 export const commonContent: ShellContent = {
   brand: "KodaSoft",
-  analytics: {
-    title: "Help us improve KodaSoft",
+  consent: {
+    title: "Can we count your visit?",
     description:
-      "With your permission, Google Analytics will use analytics cookies to measure visits and how the site is used. Google Analytics stays off until you accept.",
-    privacyLinkLabel: "Read the privacy policy",
-    acceptLabel: "Accept analytics",
-    rejectLabel: "Continue without analytics",
-    settingsLabel: "Analytics settings",
+      "With your consent, Google Analytics shows us which pages help and which need work. We don't sell data. You can change your mind any time from the footer.",
+    privacyLinkLabel: "Privacy policy",
+    acceptLabel: "Accept",
+    rejectLabel: "Reject",
+    customiseLabel: "Choose what you allow",
+    settingsLabel: "Cookie settings",
+    preferences: {
+      title: "Cookie settings",
+      description: "Everything except the necessary is off by default. A service loads only once its group is switched on.",
+      closeLabel: "Close without changes",
+      alwaysOnLabel: "Always on",
+      detailsLabel: "Details",
+      rejectAllLabel: "Reject all",
+      saveLabel: "Save my choice",
+      acceptAllLabel: "Accept all",
+      fields: { vendor: "Provider", cookies: "Cookies", transfer: "Outside the EEA" },
+      noCookiesLabel: "Sets no cookies",
+      policyNote: "Full list of providers and cookies: privacy policy, section 10",
+    },
+    categories: {
+      necessary: { label: "Necessary", description: "Remembers your choice in the browser's storage." },
+      analytics: { label: "Analytics", description: "Shows us which pages help and which need work." },
+      marketing: { label: "Marketing", description: "Measures how ad campaigns perform." },
+    },
   },
   nav: {
     home: "Home",

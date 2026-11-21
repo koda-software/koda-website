@@ -30,18 +30,62 @@ export type CtaContent = {
   href: string;
 };
 
-export type AnalyticsConsentContent = {
+/** Consent categories a visitor can switch on. "Necessary" is implicit and always on. */
+export type ConsentCategory = "analytics" | "marketing";
+
+type ConsentCategoryCopy = { label: string; description: string };
+
+/** Copy for the cookie banner and its preferences dialog. Services come from `content/consent-services.ts`. */
+export type ConsentContent = {
   title: string;
   description: string;
   privacyLinkLabel: string;
   acceptLabel: string;
   rejectLabel: string;
+  customiseLabel: string;
+  /** The footer link that reopens the preferences on every page. */
   settingsLabel: string;
+  preferences: {
+    title: string;
+    description: string;
+    closeLabel: string;
+    alwaysOnLabel: string;
+    /** Followed by the number of services, e.g. "Szczegóły (1)". */
+    detailsLabel: string;
+    rejectAllLabel: string;
+    saveLabel: string;
+    acceptAllLabel: string;
+    fields: { vendor: string; cookies: string; transfer: string };
+    noCookiesLabel: string;
+    policyNote: string;
+  };
+  categories: Record<"necessary" | ConsentCategory, ConsentCategoryCopy>;
+};
+
+type LocalizedText = { pl: string; en: string };
+
+/**
+ * One third-party service that needs consent. Every factual field must come
+ * from the vendor's own documentation; list those pages in `sources`.
+ */
+export type ConsentService = {
+  id: string;
+  name: string;
+  /** The legal entity that provides the service to EEA visitors. */
+  vendor: string;
+  category: ConsentCategory;
+  purpose: LocalizedText;
+  cookies: Array<{ name: string; lifetime: LocalizedText; purpose: LocalizedText }>;
+  /** Where data may go outside the EEA and on what Chapter V GDPR basis. */
+  transfer: LocalizedText;
+  privacyPolicyUrl: string;
+  /** Vendor pages the facts above were taken from. Not shown to visitors. */
+  sources: string[];
 };
 
 export type ShellContent = {
   brand: string;
-  analytics: AnalyticsConsentContent;
+  consent: ConsentContent;
   nav: {
     home: string;
     openMenu: string;

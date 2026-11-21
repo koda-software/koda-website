@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { localizePath, type PageKey } from "@/lib/i18n/routes";
 import type { NavItem, NavSubItem, ShellContent } from "@/content/types";
 import { siteConfig } from "@/lib/seo/site";
-import { AnalyticsSettingsButton } from "@/components/analytics/AnalyticsSettingsButton";
+import { ConsentSettingsButton } from "@/components/consent/ConsentSettingsButton";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type SiteFooterProps = {
@@ -175,7 +175,7 @@ export function SiteFooter({ locale, page, content, navItems, alternatePaths }: 
           >
             {footer.privacyLabel}
           </Link>
-          <AnalyticsSettingsButton label={content.analytics.settingsLabel} />
+          <ConsentSettingsButton label={content.consent.settingsLabel} />
           <span className="text-white/65">{footer.productLine}</span>
           <LanguageSwitcher
             alternatePaths={alternatePaths}

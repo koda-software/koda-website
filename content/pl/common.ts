@@ -4,14 +4,33 @@ import { featureNavItems } from "./features";
 
 export const commonContent: ShellContent = {
   brand: "KodaSoft",
-  analytics: {
-    title: "Pomóż nam ulepszać KodaSoft",
+  consent: {
+    title: "Czy możemy liczyć odwiedziny?",
     description:
-      "Za Państwa zgodą Google Analytics użyje analitycznych plików cookies do pomiaru odwiedzin i sposobu korzystania z serwisu. Google Analytics pozostaje wyłączone do czasu wyrażenia zgody.",
-    privacyLinkLabel: "Przeczytaj politykę prywatności",
-    acceptLabel: "Zgadzam się na analitykę",
-    rejectLabel: "Kontynuuj bez analityki",
-    settingsLabel: "Ustawienia analityki",
+      "Za Twoją zgodą Google Analytics pokaże nam, które strony pomagają, a które trzeba poprawić. Nie sprzedajemy danych. Zgodę zmienisz w każdej chwili w stopce.",
+    privacyLinkLabel: "Polityka prywatności",
+    acceptLabel: "Akceptuję",
+    rejectLabel: "Odrzuć",
+    customiseLabel: "Wybierz, na co się zgadzasz",
+    settingsLabel: "Ustawienia cookies",
+    preferences: {
+      title: "Ustawienia cookies",
+      description: "Poza niezbędnymi wszystko jest domyślnie wyłączone. Usługa ładuje się dopiero po włączeniu jej grupy.",
+      closeLabel: "Zamknij bez zmian",
+      alwaysOnLabel: "Zawsze włączone",
+      detailsLabel: "Szczegóły",
+      rejectAllLabel: "Odrzuć wszystkie",
+      saveLabel: "Zapisz wybór",
+      acceptAllLabel: "Akceptuj wszystkie",
+      fields: { vendor: "Dostawca", cookies: "Pliki cookies", transfer: "Poza EOG" },
+      noCookiesLabel: "Nie zapisuje plików cookies",
+      policyNote: "Pełna lista podmiotów i plików: polityka prywatności, punkt 10",
+    },
+    categories: {
+      necessary: { label: "Niezbędne", description: "Zapamiętanie Twojego wyboru w pamięci przeglądarki." },
+      analytics: { label: "Analityka", description: "Pokazuje, które strony pomagają, a które trzeba poprawić." },
+      marketing: { label: "Marketing", description: "Pomiar skuteczności kampanii reklamowych." },
+    },
   },
   nav: {
     home: "Start",
