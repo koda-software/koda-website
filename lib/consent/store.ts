@@ -7,7 +7,7 @@ import type { ConsentCategory } from "@/content/types";
  * service that does something the banner did not describe): every stored
  * choice with an older version is ignored and the banner asks again.
  */
-export const CONSENT_VERSION = 2;
+export const CONSENT_VERSION = 3;
 export const CONSENT_STORAGE_KEY = "kodasoft-consent-v2";
 export const CONSENT_CHANGED_EVENT = "kodasoft:consent-changed";
 export const CONSENT_SETTINGS_EVENT = "kodasoft:open-consent-settings";

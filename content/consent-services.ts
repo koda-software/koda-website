@@ -64,6 +64,99 @@ export const consentServices: ConsentService[] = [
       "https://business.safety.google/privacy/",
     ],
   },
+  {
+    id: "microsoft-clarity",
+    name: "Microsoft Clarity",
+    vendor: "Microsoft Ireland Operations Limited",
+    category: "analytics",
+    purpose: {
+      pl: "Tworzy nagrania przebiegu wizyt (ruchy myszy, kliknięcia, przewijanie) i mapy cieplne, które pokazują, jak korzystają Państwo ze stron. Treść wpisywana w pola formularzy jest maskowana i nie trafia do Microsoft. Lokalizację określa na podstawie adresu IP. Microsoft działa jako odrębny administrator danych.",
+      en: "Records how visits unfold (mouse movements, clicks, scrolling) and builds heatmaps showing how the pages are used. Text typed into form fields is masked and never reaches Microsoft. Location is derived from the IP address. Microsoft acts as a separate data controller.",
+    },
+    cookies: [
+      {
+        name: "_clck",
+        lifetime: { pl: "1 rok", en: "1 year" },
+        purpose: {
+          pl: "Plik własny serwisu. Przechowuje identyfikator użytkownika Clarity i ustawienia.",
+          en: "First-party. Keeps the Clarity user ID and preferences.",
+        },
+      },
+      {
+        name: "_clsk",
+        lifetime: { pl: "1 dzień", en: "1 day" },
+        purpose: {
+          pl: "Plik własny serwisu. Łączy kolejne odsłony w jedno nagranie sesji.",
+          en: "First-party. Joins page views into a single session recording.",
+        },
+      },
+      {
+        name: "CLID",
+        lifetime: { pl: "TODO: verify", en: "TODO: verify" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft. Zapamiętuje, kiedy Clarity po raz pierwszy zobaczyło przeglądarkę w dowolnym serwisie z Clarity.",
+          en: "Third-party (Microsoft). Records when Clarity first saw the browser on any site that uses Clarity.",
+        },
+      },
+      {
+        name: "MUID",
+        lifetime: { pl: "około 13 miesięcy", en: "about 13 months" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft (clarity.ms, bing.com). Rozpoznaje przeglądarkę w serwisach Microsoft; Microsoft używa go także do reklamy i analityki.",
+          en: "Third-party (Microsoft: clarity.ms, bing.com). Identifies the browser across Microsoft sites; Microsoft also uses it for advertising and analytics.",
+        },
+      },
+      {
+        name: "SM",
+        lifetime: { pl: "do końca sesji przeglądarki", en: "until the browser session ends" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft. Synchronizuje MUID między domenami Microsoft.",
+          en: "Third-party (Microsoft). Synchronises MUID across Microsoft domains.",
+        },
+      },
+      {
+        name: "MR",
+        lifetime: { pl: "7 dni", en: "7 days" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft. Wskazuje, czy odświeżyć MUID.",
+          en: "Third-party (Microsoft). Indicates whether to refresh MUID.",
+        },
+      },
+      {
+        name: "SRM_B",
+        lifetime: { pl: "około 13 miesięcy", en: "about 13 months" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft (c.bing.com). TODO: verify",
+          en: "Third-party (Microsoft: c.bing.com). TODO: verify",
+        },
+      },
+      {
+        name: "ANONCHK",
+        lifetime: { pl: "TODO: verify", en: "TODO: verify" },
+        purpose: {
+          pl: "Plik zewnętrzny Microsoft. W Clarity zawsze ma wartość 0.",
+          en: "Third-party (Microsoft). Always set to 0 by Clarity.",
+        },
+      },
+    ],
+    transfer: {
+      pl: "Możliwe przekazanie do Microsoft Corporation w USA na podstawie standardowych klauzul umownych.",
+      en: "Possible transfer to Microsoft Corporation in the US under standard contractual clauses.",
+    },
+    privacyPolicyUrl: "https://www.microsoft.com/privacy/privacystatement",
+    sources: [
+      "https://learn.microsoft.com/en-us/clarity/setup-and-installation/cookie-list",
+      "https://learn.microsoft.com/en-us/clarity/faq",
+      "https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-data",
+      "https://learn.microsoft.com/en-us/clarity/setup-and-installation/consent-mode",
+      "https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-consent-api-v2",
+      "https://learn.microsoft.com/en-us/clarity/setup-and-installation/cookie-gcm",
+      // _clck (365 days) and _clsk (1 day) lifetimes, and Google Consent Mode handling: clarity-js source.
+      "https://unpkg.com/clarity-js/build/clarity.js",
+      // MUID, MR, SM, SRM_B lifetimes: observed Set-Cookie headers from c.clarity.ms/c.gif and c.bing.com/c.gif on 2026-11-21.
+      "https://clarity.microsoft.com/terms",
+    ],
+  },
 ];
 
 /** Section 10 rows of the privacy policy: one per service, in the reader's language. */

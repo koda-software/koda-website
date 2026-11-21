@@ -9,7 +9,7 @@ import type { PrivacyContent } from "../types";
  *
  * - `app/api/contact/route.ts` wysyła zgłoszenie mailem przez Resend i nie
  *   zapisuje go nigdzie po stronie serwisu; pola i ich limity są tam widoczne.
- * - Google Tag Manager (a w nim Google Analytics) jest ładowany dopiero po
+ * - Google Tag Manager (a w nim Google Analytics i Microsoft Clarity) jest ładowany dopiero po
  *   zgodzie; wybór zostaje zapisany w `localStorage` i można go zmienić w
  *   stopce (`components/consent/`). Usługi wymagające zgody są w
  *   `content/consent-services.ts`; punkt 10 wylicza je stamtąd.
@@ -36,7 +36,7 @@ export const privacyContent: PrivacyContent = {
   hero: {
     title: "Polityka prywatności",
     description:
-      "Ten serwis korzysta z Google Analytics, ładowanego przez Google Tag Manager, wyłącznie po wyrażeniu zgody. Bez niej żaden skrypt Google nie jest pobierany i nie są zapisywane analityczne pliki cookies.",
+      "Ten serwis korzysta z Google Analytics i Microsoft Clarity, ładowanych przez Google Tag Manager, wyłącznie po wyrażeniu zgody. Bez niej żaden z tych skryptów nie jest pobierany i nie są zapisywane analityczne pliki cookies.",
   },
   updatedLabel: "Ostatnia aktualizacja",
   updatedAt: "2026-11-21",
@@ -70,6 +70,7 @@ export const privacyContent: PrivacyContent = {
         "Formularz zawiera także ukryte pole-pułapkę, niewidoczne dla człowieka. Wypełniają je automaty rozsyłające spam. Jeżeli pole jest wypełnione, zgłoszenie jest odrzucane i nie dociera do nikogo. Nie jest to przetwarzanie danych osobowych - sprawdzamy wyłącznie, czy pole pozostało puste.",
         "Nasz dostawca hostingu prowadzi standardowe logi serwera, obejmujące adres IP, datę i godzinę zapytania oraz typ przeglądarki. Są to dane techniczne konieczne do świadczenia usługi i zapewnienia bezpieczeństwa; nie łączymy ich z danymi z formularza i nie wykorzystujemy do identyfikowania odwiedzających.",
         "Jeżeli wyrażą Państwo zgodę na analitykę, Google Tag Manager i Google Analytics otrzymają dane techniczne i informacje o korzystaniu z serwisu, takie jak adres odwiedzanej strony, aktywność w sesji, przybliżona lokalizacja oraz typ przeglądarki i urządzenia. Google używa adresu IP podczas zbierania danych do określenia przybliżonej lokalizacji, a następnie usuwa go przed zapisaniem danych w Analytics.",
+        "Za tą samą zgodą Microsoft Clarity rejestruje przebieg wizyty: ruchy myszy, kliknięcia, przewijanie, zmiany rozmiaru okna oraz wygląd odwiedzanych stron. Na tej podstawie powstają nagrania sesji i mapy cieplne. Treść wpisywana w pola formularzy jest maskowana w przeglądarce i nie jest wysyłana do Microsoft. Clarity określa przybliżoną lokalizację na podstawie adresu IP.",
       ],
     },
     {
@@ -91,7 +92,7 @@ export const privacyContent: PrivacyContent = {
             "Prawnie uzasadniony interes - art. 6 ust. 1 lit. f RODO - polegający na utrzymaniu serwisu w działaniu i odfiltrowaniu zgłoszeń automatycznych.",
         },
         {
-          term: "Pomiar odwiedzin i sposobu korzystania z serwisu za pomocą Google Analytics",
+          term: "Pomiar odwiedzin i sposobu korzystania z serwisu za pomocą Google Analytics i Microsoft Clarity",
           description:
             "Państwa zgoda - art. 6 ust. 1 lit. a RODO. Analityka pozostaje wyłączona do czasu jej zaakceptowania, a zgodę można w każdej chwili wycofać w Ustawieniach cookies w stopce.",
         },
@@ -111,6 +112,7 @@ export const privacyContent: PrivacyContent = {
         "Logi serwera przechowuje nasz dostawca hostingu zgodnie ze swoją polityką retencji, standardowo przez okres liczony w dniach.",
         "Wybór dotyczący plików cookies pozostaje w pamięci lokalnej przeglądarki do czasu jego zmiany lub usunięcia danych witryny. Zgodę uznajemy przez 13 miesięcy, a odmowę przez 6 miesięcy; potem zapytamy ponownie. Pliki cookies Google Analytics domyślnie wygasają po maksymalnie dwóch latach; wycofanie zgody wyłącza Analytics i usuwa jego pliki cookies z tego serwisu.",
         "Dane analityczne na poziomie użytkownika i zdarzenia są przechowywane w Google Analytics wyłącznie przez okres retencji skonfigurowany dla usługi, w granicach dostępnych dla standardowego konta Google Analytics.",
+        "Nagrania sesji Microsoft Clarity są dostępne przez 30 dni od nagrania, a mapy cieplne przez 9 miesięcy. Plik cookie _clck wygasa po roku, a _clsk po jednym dniu; okresy przechowywania plików cookies Microsoft podaje punkt 10.",
       ],
     },
     {
@@ -134,12 +136,17 @@ export const privacyContent: PrivacyContent = {
           description:
             "Google Tag Manager i Google Analytics, ładowane wyłącznie po wyrażeniu zgody, mierzą odwiedziny i sposób korzystania z serwisu. Przechowywanie reklamowe, dane użytkownika na potrzeby reklam, personalizacja reklam i Google signals są wyłączone w konfiguracji tagu serwisu.",
         },
+        {
+          term: "Microsoft Ireland Operations Limited",
+          description:
+            "Microsoft Clarity, ładowane wyłącznie po wyrażeniu zgody na analitykę, tworzy nagrania sesji i mapy cieplne opisane w punkcie 3. Według Microsoft usługa Clarity działa jako administrator danych, więc Microsoft przetwarza te dane także na własny rachunek, zgodnie ze swoim oświadczeniem o ochronie prywatności.",
+        },
       ],
     },
     {
       heading: "7. Przekazywanie danych poza Europejski Obszar Gospodarczy",
       paragraphs: [
-        "Vercel i Resend mają siedziby w Stanach Zjednoczonych. Usługi Google Tag Manager i Google Analytics świadczy w Europie Google Ireland Limited, która może korzystać z podmiotów powiązanych i podwykonawców w innych krajach. Dane mogą być zatem przetwarzane poza Europejskim Obszarem Gospodarczym.",
+        "Vercel i Resend mają siedziby w Stanach Zjednoczonych. Usługi Google Tag Manager i Google Analytics świadczy w Europie Google Ireland Limited, która może korzystać z podmiotów powiązanych i podwykonawców w innych krajach. Usługę Microsoft Clarity świadczy w Europie Microsoft Ireland Operations Limited, która przekazuje dane do Microsoft Corporation w Stanach Zjednoczonych na podstawie standardowych klauzul umownych. Dane mogą być zatem przetwarzane poza Europejskim Obszarem Gospodarczym.",
         "Przekazywanie odbywa się na podstawie zabezpieczeń przewidzianych w rozdziale V RODO - standardowych klauzul umownych zatwierdzonych przez Komisję Europejską lub decyzji o odpowiednim stopniu ochrony dotyczącej Ram Ochrony Danych UE-USA - określonych w umowach powierzenia przetwarzania zawartych z tymi dostawcami.",
         "Kopię zastosowanych zabezpieczeń udostępnimy na żądanie przesłane na adres kontakt@kodasoft.pl.",
       ],
@@ -162,7 +169,7 @@ export const privacyContent: PrivacyContent = {
       heading: "9. Czy podanie danych jest obowiązkowe",
       paragraphs: [
         "Podanie danych jest całkowicie dobrowolne, ale bez imienia, adresu e-mail i treści wiadomości nie będziemy w stanie odpowiedzieć na zapytanie. Pozostałe pola można pominąć.",
-        "Zgoda na pliki cookies jest dobrowolna, a jej odmowa nie wpływa na dostęp do serwisu. Nie podejmujemy decyzji w sposób zautomatyzowany i nie używamy Analytics do tworzenia indywidualnych profili marketingowych.",
+        "Zgoda na pliki cookies jest dobrowolna, a jej odmowa nie wpływa na dostęp do serwisu. Nie podejmujemy decyzji w sposób zautomatyzowany i nie używamy Google Analytics ani Microsoft Clarity do tworzenia indywidualnych profili marketingowych.",
       ],
     },
     {
@@ -170,7 +177,7 @@ export const privacyContent: PrivacyContent = {
       paragraphs: [
         "Serwis zapisuje Państwa wybór (grupy, na które wyrażono zgodę, i datę decyzji) w pamięci lokalnej przeglądarki, aby respektować go podczas kolejnych wizyt. Ta preferencja jest niezbędna i nie wymaga zgody.",
         "Pozostałe usługi są podzielone na grupy: analityka i marketing. Działają w podstawowym trybie zgody Google: dopóki nie włączą Państwo danej grupy, jej skrypty nie są pobierane, żadne dane nie są wysyłane i nie są zapisywane pliki cookies. Grupa bez żadnej usługi nie jest pokazywana w banerze.",
-        "Zgodę można w każdej chwili udzielić lub wycofać w Ustawieniach cookies w stopce. Wycofanie zgody na analitykę wyłącza dalsze zbieranie danych i usuwa pliki cookies Google Analytics dostępne dla tego serwisu.",
+        "Zgodę można w każdej chwili udzielić lub wycofać w Ustawieniach cookies w stopce. Wycofanie zgody na analitykę wyłącza dalsze zbieranie danych i usuwa pliki cookies Google Analytics i Microsoft Clarity zapisane w domenie tego serwisu. Pliki cookies zapisane przez Microsoft w jego własnych domenach (clarity.ms, bing.com) można usunąć w ustawieniach przeglądarki.",
         "Krój pisma używany w serwisie jest osadzony na naszym serwerze w czasie budowania strony. Przeglądarka nie łączy się w tym celu z serwerami firm trzecich.",
         "Vercel Speed Insights również zbiera anonimowe wskaźniki szybkości ładowania stron - takie jak czas wyświetlenia największego elementu. Narzędzie nie używa ciasteczek i nie pozwala zidentyfikować pojedynczej osoby.",
         "Usługi wymagające zgody, z plikami cookies i okresem ich przechowywania:",

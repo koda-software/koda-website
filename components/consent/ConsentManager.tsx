@@ -163,14 +163,18 @@ function applyToGoogle(choice: ConsentChoice) {
   window.gtag?.("consent", "update", googleConsentState(choice));
   window.gtag?.("set", "ads_data_redaction", !choice.marketing);
   window.gtag?.("set", "allow_ad_personalization_signals", choice.marketing);
-  if (!choice.analytics) deleteGoogleAnalyticsCookies();
+  if (!choice.analytics) deleteAnalyticsCookies();
 }
 
-function deleteGoogleAnalyticsCookies() {
+/** First-party analytics cookies: Google Analytics (`_ga`, `_ga_<ID>`) and Microsoft Clarity (`_clck`, `_clsk`). */
+function deleteAnalyticsCookies() {
   const names = document.cookie
     .split(";")
     .map((cookie) => cookie.split("=")[0]?.trim())
-    .filter((name): name is string => name === "_ga" || Boolean(name?.startsWith("_ga_")));
+    .filter(
+      (name): name is string =>
+        name === "_ga" || name === "_clck" || name === "_clsk" || Boolean(name?.startsWith("_ga_")),
+    );
 
   const host = window.location.hostname;
   const domains = [undefined, ...(host === "kodasoft.pl" || host.endsWith(".kodasoft.pl") ? [".kodasoft.pl"] : [])];

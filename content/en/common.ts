@@ -7,7 +7,7 @@ export const commonContent: ShellContent = {
   consent: {
     title: "Can we count your visit?",
     description:
-      "With your consent, Google Analytics shows us which pages help and which need work. We don't sell data. You can change your mind any time from the footer.",
+      "With your consent, Google Analytics and Microsoft Clarity show us which pages help and which need work. Clarity records how a visit unfolds: mouse movements, clicks and scrolling, without anything typed into forms. We don't sell data. You can change your mind any time from the footer.",
     privacyLinkLabel: "Privacy policy",
     acceptLabel: "Accept",
     rejectLabel: "Reject",
@@ -28,7 +28,7 @@ export const commonContent: ShellContent = {
     },
     categories: {
       necessary: { label: "Necessary", description: "Remembers your choice in the browser's storage." },
-      analytics: { label: "Analytics", description: "Shows us which pages help and which need work." },
+      analytics: { label: "Analytics", description: "Visit statistics, plus recordings of how visits unfold and heatmaps." },
       marketing: { label: "Marketing", description: "Measures how ad campaigns perform." },
     },
   },

@@ -17,7 +17,7 @@ export const privacyContent: PrivacyContent = {
   hero: {
     title: "Privacy policy",
     description:
-      "This site uses Google Analytics, loaded through Google Tag Manager, only after you consent. Without that consent, no Google script is requested and no analytics cookies are set.",
+      "This site uses Google Analytics and Microsoft Clarity, loaded through Google Tag Manager, only after you consent. Without that consent, none of these scripts is requested and no analytics cookies are set.",
   },
   updatedLabel: "Last updated",
   updatedAt: "2026-11-21",
@@ -51,6 +51,7 @@ export const privacyContent: PrivacyContent = {
         "The form also carries a hidden trap field, invisible to a person. Spam robots fill it in. If it is filled in, the submission is discarded and reaches nobody. This is not processing of personal data - we only check whether the field stayed empty.",
         "Our hosting provider keeps standard server logs containing the IP address, the time of the request and the browser type. These are technical records needed to run the service and keep it secure; we do not combine them with form data and do not use them to identify visitors.",
         "If you consent to analytics, Google Tag Manager and Google Analytics receive technical and usage information such as the page address, session activity, approximate location, browser and device type. Google uses the IP address at collection time to determine approximate location and then discards it before the data is logged in Analytics.",
+        "Under the same consent, Microsoft Clarity records how a visit unfolds: mouse movements, clicks, scrolling, window resizing and how the pages look. These are used to build session recordings and heatmaps. Text typed into form fields is masked in the browser and is not sent to Microsoft. Clarity derives approximate location from the IP address.",
       ],
     },
     {
@@ -72,7 +73,7 @@ export const privacyContent: PrivacyContent = {
             "Our legitimate interest under Article 6(1)(f) GDPR in keeping the service running and filtering out automated submissions.",
         },
         {
-          term: "Measuring visits and understanding how the site is used with Google Analytics",
+          term: "Measuring visits and understanding how the site is used with Google Analytics and Microsoft Clarity",
           description:
             "Your consent under Article 6(1)(a) GDPR. Analytics remains disabled until you accept it, and you may withdraw your consent at any time through Cookie settings in the footer.",
         },
@@ -92,6 +93,7 @@ export const privacyContent: PrivacyContent = {
         "Server logs are retained by our hosting provider under its own retention policy, typically for a period counted in days.",
         "Your cookie choice remains in your browser's local storage until you change it or clear site data. We rely on a consent for 13 months and on a refusal for 6 months; after that we ask again. Google Analytics cookies expire after up to two years by default; withdrawing consent disables Analytics and removes its cookies from this site.",
         "User-level and event-level analytics data is retained in Google Analytics only for the retention period configured for the property, within the limits available for a standard Google Analytics account.",
+        "Microsoft Clarity session recordings are available for 30 days after recording and heatmaps for 9 months. The _clck cookie expires after one year and _clsk after one day; section 10 gives the lifetimes of Microsoft's cookies.",
       ],
     },
     {
@@ -115,12 +117,17 @@ export const privacyContent: PrivacyContent = {
           description:
             "Google Tag Manager and Google Analytics, loaded only after consent, measure visits and site usage. Advertising storage, advertising user data, ad personalization and Google signals are disabled in the site's tag configuration.",
         },
+        {
+          term: "Microsoft Ireland Operations Limited",
+          description:
+            "Microsoft Clarity, loaded only after analytics consent, creates the session recordings and heatmaps described in section 3. According to Microsoft, Clarity operates as a data controller, so Microsoft also processes this data on its own account, under its privacy statement.",
+        },
       ],
     },
     {
       heading: "7. Transfers outside the European Economic Area",
       paragraphs: [
-        "Vercel and Resend are established in the United States. Google Tag Manager and Google Analytics are provided in Europe by Google Ireland Limited, which may use affiliates and subprocessors in other countries. Data may therefore be processed outside the European Economic Area.",
+        "Vercel and Resend are established in the United States. Google Tag Manager and Google Analytics are provided in Europe by Google Ireland Limited, which may use affiliates and subprocessors in other countries. Microsoft Clarity is provided in Europe by Microsoft Ireland Operations Limited, which transfers data to Microsoft Corporation in the United States under standard contractual clauses. Data may therefore be processed outside the European Economic Area.",
         "Such transfers rely on the safeguards set out in Chapter V GDPR - standard contractual clauses approved by the European Commission, or the adequacy decision covering the EU-US Data Privacy Framework - as set out in the data processing agreements concluded with those providers.",
         "We will provide a copy of the safeguards in place on request sent to kontakt@kodasoft.pl.",
       ],
@@ -143,7 +150,7 @@ export const privacyContent: PrivacyContent = {
       heading: "9. Is providing data mandatory",
       paragraphs: [
         "Providing data is entirely voluntary, but without a name, an email address and a message we cannot answer the enquiry. The remaining fields may be left blank.",
-        "Consent to cookies is voluntary and refusing it does not affect access to the site. We take no automated decisions and do not use Analytics to build individual marketing profiles.",
+        "Consent to cookies is voluntary and refusing it does not affect access to the site. We take no automated decisions and do not use Google Analytics or Microsoft Clarity to build individual marketing profiles.",
       ],
     },
     {
@@ -151,7 +158,7 @@ export const privacyContent: PrivacyContent = {
       paragraphs: [
         "The site stores your choice (the groups you allowed and the date of the decision) in local storage so it can respect it on later visits. This preference is necessary and needs no consent.",
         "Other services are grouped into analytics and marketing. They run in Google's basic consent mode: until you switch a group on, its scripts are not requested, no data is sent and no cookies are set. A group with no service is not shown in the banner.",
-        "You can grant or withdraw consent at any time through Cookie settings in the footer. Withdrawing analytics consent stops further collection and removes Google Analytics cookies accessible to this site.",
+        "You can grant or withdraw consent at any time through Cookie settings in the footer. Withdrawing analytics consent stops further collection and removes the Google Analytics and Microsoft Clarity cookies set on this site's domain. Cookies Microsoft sets on its own domains (clarity.ms, bing.com) can be removed in your browser settings.",
         "The typeface used on the site is bundled onto our own server when the site is built. Your browser makes no request to a third party to load it.",
         "Vercel Speed Insights also collects anonymous page-speed metrics such as how long the largest element takes to appear. It uses no cookies and cannot identify an individual.",
         "Services that need consent, with their cookies and how long they are kept:",

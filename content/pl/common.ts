@@ -7,7 +7,7 @@ export const commonContent: ShellContent = {
   consent: {
     title: "Czy możemy liczyć odwiedziny?",
     description:
-      "Za Twoją zgodą Google Analytics pokaże nam, które strony pomagają, a które trzeba poprawić. Nie sprzedajemy danych. Zgodę zmienisz w każdej chwili w stopce.",
+      "Za Twoją zgodą Google Analytics i Microsoft Clarity pokażą nam, które strony pomagają, a które trzeba poprawić. Clarity nagrywa przebieg wizyty: ruchy myszy, kliknięcia i przewijanie, bez treści wpisywanej w formularze. Nie sprzedajemy danych. Zgodę zmienisz w każdej chwili w stopce.",
     privacyLinkLabel: "Polityka prywatności",
     acceptLabel: "Akceptuję",
     rejectLabel: "Odrzuć",
@@ -28,7 +28,7 @@ export const commonContent: ShellContent = {
     },
     categories: {
       necessary: { label: "Niezbędne", description: "Zapamiętanie Twojego wyboru w pamięci przeglądarki." },
-      analytics: { label: "Analityka", description: "Pokazuje, które strony pomagają, a które trzeba poprawić." },
+      analytics: { label: "Analityka", description: "Statystyki odwiedzin oraz nagrania przebiegu wizyt i mapy cieplne." },
       marketing: { label: "Marketing", description: "Pomiar skuteczności kampanii reklamowych." },
     },
   },
