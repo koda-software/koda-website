@@ -71,9 +71,14 @@ export const ksefViewerPage: ToolPageContent = {
   },
   opero: {
     title: "Opero pobiera faktury z KSeF za Ciebie",
-    body: "Opero samo pobiera faktury kosztowe z KSeF, kieruje je do akceptacji i księguje, więc nikt nie otwiera plików XML ręcznie.",
+    body: "Opero samo pobiera faktury kosztowe z KSeF i kieruje je do akceptacji, gotowe do przekazania do księgowości, więc nikt nie otwiera plików XML ręcznie.",
     primaryCta: "Umów demo",
     secondaryCta: "Integracje w Opero",
+    points: [
+      { title: "Odczyt z XML", body: "Faktura z KSeF staje się rekordem faktury kosztowej, a druga kopia o tym samym numerze KSeF jest odrzucana." },
+      { title: "PDF dla każdego", body: "Reguła zamienia fakturę w PDF i trzyma go przy rekordzie, więc nikt nie potrzebuje XML." },
+      { title: "Wysyłka, która się nie poddaje", body: "Faktury sprzedaży są wysyłane ponownie, aż KSeF je przyjmie, a gdy KSeF nie działa, w trybie offline." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

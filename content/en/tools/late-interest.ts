@@ -133,6 +133,11 @@ export const lateInterestPage: LateInterestPageContent = {
     body: "In Opero you see a client's overdue sales invoices next to them, with the due date and the amount.",
     primaryCta: "Book a demo",
     secondaryCta: "Opero AI",
+    points: [
+      { title: "Days overdue on the list", body: "The invoice list can show how many days each invoice is overdue, so late payers stand out." },
+      { title: "Reminders around the due date", body: "A date rule notifies the account owner before or after the due date, up to 365 days either way." },
+      { title: "Payment demands in one step", body: "A rule generates a payment demand PDF from the invoice data, attaches it and sends it by email." },
+    ],
   },
   otherToolsTitle: "Other tools",
 };

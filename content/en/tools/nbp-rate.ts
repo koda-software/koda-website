@@ -96,6 +96,11 @@ export const nbpRatePage: ToolPageContent = {
     body: "Opero document templates fill in the amounts and totals on invoices from data that is already in the system.",
     primaryCta: "Book a demo",
     secondaryCta: "Documents in Opero",
+    points: [
+      { title: "NBP rates fetched for you", body: "Opero pulls Table A rates from the NBP API for foreign currency invoices, with non-working days handled." },
+      { title: "The source is recorded", body: "Opero writes down where the rate came from and never fills in a guess when NBP does not answer." },
+      { title: "Invoices from KSeF", body: "Cost invoices arrive from KSeF and become records, ready for approval." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

@@ -154,6 +154,11 @@ export const jpkViewerPage: JpkViewerPageContent = {
     body: "Opero przechowuje faktury razem z danymi kontrahentów i kwotami, więc gdy wiersz w JPK budzi wątpliwości, dokument, z którego pochodzi, masz pod ręką.",
     primaryCta: "Umów demo",
     secondaryCta: "Integracje w Opero",
+    points: [
+      { title: "Faktury z KSeF", body: "Faktury kosztowe przychodzą z KSeF, a plik źródłowy zostaje przy każdym rekordzie." },
+      { title: "Każda faktura w kilka sekund", body: "Listy filtrują się po dowolnym polu, także po datach względnych, np. ostatnich 30 dniach." },
+      { title: "Raporty z podglądem szczegółów", body: "Z każdej liczby w raporcie przejdziesz do faktur, które się na nią składają, albo wyeksportujesz dane." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

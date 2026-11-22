@@ -77,10 +77,15 @@ export const whiteListPage: ToolPageContent = {
     ],
   },
   opero: {
-    title: "Opero checks suppliers for you",
-    body: "When a cost invoice arrives in Opero, it checks the supplier and its bank account on the White List, and checks again before the payment is ordered.",
+    title: "Supplier checks built into every invoice",
+    body: "In Opero, a cost invoice brings the supplier's registry data with it and goes through approval before anyone orders the payment. For the account itself, keep this check as a step before you pay.",
     primaryCta: "Book a demo",
     secondaryCta: "Integrations in Opero",
+    points: [
+      { title: "Company data from a NIP", body: "Opero brings in a partner's name and address from REGON and CEIDG, or through VIES for EU VAT IDs." },
+      { title: "Checksums on every invoice", body: "With an AI provider connected, Opero reads a PDF invoice and checks the NIP and IBAN checksums." },
+      { title: "Approval before payment", body: "Above your limit, only the right approver can move the invoice on to payment." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

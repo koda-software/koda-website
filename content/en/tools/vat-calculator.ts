@@ -71,6 +71,11 @@ export const vatCalculatorPage: ToolPageContent = {
     body: "Opero calculates VAT, totals and the amount in words on invoices and documents, from data that is already in the system.",
     primaryCta: "Book a demo",
     secondaryCta: "Documents in Opero",
+    points: [
+      { title: "Totals from the lines", body: "Net, VAT and gross are added up from the invoice lines, so nobody retypes a sum." },
+      { title: "Sent to KSeF", body: "Sales invoices go to KSeF from Opero, and an accepted invoice is locked against edits." },
+      { title: "A PDF from your template", body: "A published template turns the invoice into a PDF with your header, totals and amount in words." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

@@ -97,10 +97,15 @@ export const counterpartyPage: ToolPageContent = {
     ],
   },
   opero: {
-    title: "Opero checks suppliers on the White List with every invoice",
-    body: "Opero keeps one list of your business partners. When a cost invoice arrives, it checks the supplier and its bank account on the VAT White List, and again before the payment is ordered.",
+    title: "Every business partner on one record",
+    body: "Opero keeps one list of your business partners and fills in their data from a NIP or an EU VAT ID, so invoices, contracts and letters all point to the same, verified company.",
     primaryCta: "Book a demo",
     secondaryCta: "Integrations in Opero",
+    points: [
+      { title: "One list of business partners", body: "Each partner has one record, with its data, invoices and documents in one place." },
+      { title: "Company data from a NIP", body: "Opero brings in a partner's name and address from REGON and CEIDG, or through VIES for EU VAT IDs." },
+      { title: "Checksums on every invoice", body: "With an AI provider connected, Opero reads a PDF invoice and checks the NIP and IBAN checksums." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

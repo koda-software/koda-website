@@ -119,6 +119,11 @@ export const b2bVsEmploymentPage: B2bVsEmploymentPageContent = {
     body: "In Opero, the documents of employees and B2B contractors, and their approvals, are kept in one place.",
     primaryCta: "Book a demo",
     secondaryCta: "Processes in Opero",
+    points: [
+      { title: "One record per person", body: "Contracts, invoices and documents of employees and B2B contractors stay on that person's record." },
+      { title: "Contracts generated from data", body: "When a hire is approved, a rule generates the contract PDF from the person's record." },
+      { title: "Approvals with a history", body: "Each document goes through its own approval stages, and every decision stays in the history." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

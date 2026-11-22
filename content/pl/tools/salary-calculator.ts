@@ -146,6 +146,11 @@ export const salaryCalculatorPage: SalaryCalculatorPageContent = {
     body: "Opero nie liczy wypłat. Możesz w nim za to prowadzić to, co dzieje się wokół nich: zatrudnienie z umową generowaną z danych pracownika, wnioski urlopowe z akceptacją kierownika i onboarding krok po kroku.",
     primaryCta: "Umów demo",
     secondaryCta: "Procesy w Opero",
+    points: [
+      { title: "Umowa z kartoteki pracownika", body: "Po akceptacji zatrudnienia PDF umowy powstaje z danych, które już są w kartotece." },
+      { title: "Wnioski urlopowe z akceptacją", body: "Pracownik widzi swoje wnioski, kierownik te czekające na niego, a kadry wszystkie." },
+      { title: "Onboarding krok po kroku", body: "Każdy etap onboardingu ma osobę i termin, więc sprzęt i formalności nie umykają." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

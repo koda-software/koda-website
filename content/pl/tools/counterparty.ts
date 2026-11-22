@@ -97,10 +97,15 @@ export const counterpartyPage: ToolPageContent = {
     ],
   },
   opero: {
-    title: "Opero sprawdza dostawców na białej liście przy każdej fakturze",
-    body: "W Opero masz jedną kartotekę kontrahentów. Gdy przychodzi faktura kosztowa, system sam sprawdza kontrahenta i jego rachunek na białej liście, a potem jeszcze raz przed zleceniem płatności.",
+    title: "Każdy kontrahent w jednej kartotece",
+    body: "W Opero masz jedną kartotekę kontrahentów, a ich dane uzupełniają się z NIP lub unijnego numeru VAT, więc faktury, umowy i pisma wskazują tę samą, sprawdzoną firmę.",
     primaryCta: "Umów demo",
     secondaryCta: "Integracje w Opero",
+    points: [
+      { title: "Jedna kartoteka kontrahentów", body: "Każdy kontrahent ma jeden rekord, a przy nim dane, faktury i dokumenty." },
+      { title: "Dane firmy z NIP", body: "Opero pobiera nazwę i adres kontrahenta z REGON i CEIDG, a dla unijnych numerów VAT przez VIES." },
+      { title: "Sumy kontrolne na każdej fakturze", body: "Z podłączonym dostawcą AI Opero odczytuje fakturę PDF i sprawdza sumy kontrolne NIP i IBAN." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

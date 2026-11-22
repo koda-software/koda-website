@@ -77,10 +77,15 @@ export const whiteListPage: ToolPageContent = {
     ],
   },
   opero: {
-    title: "Opero sprawdza kontrahentów za Ciebie",
-    body: "Gdy do Opero trafia faktura kosztowa, system sam sprawdza kontrahenta i jego rachunek na białej liście, a potem jeszcze raz przed zleceniem płatności.",
+    title: "Weryfikacja dostawcy przy każdej fakturze",
+    body: "W Opero faktura kosztowa przychodzi z danymi dostawcy z rejestrów i przechodzi akceptację, zanim ktokolwiek zleci płatność. Sam rachunek sprawdzaj tym narzędziem jako krok przed zapłatą.",
     primaryCta: "Umów demo",
     secondaryCta: "Integracje w Opero",
+    points: [
+      { title: "Dane firmy z NIP", body: "Opero pobiera nazwę i adres kontrahenta z REGON i CEIDG, a dla unijnych numerów VAT przez VIES." },
+      { title: "Sumy kontrolne na każdej fakturze", body: "Z podłączonym dostawcą AI Opero odczytuje fakturę PDF i sprawdza sumy kontrolne NIP i IBAN." },
+      { title: "Akceptacja przed płatnością", body: "Powyżej Twojego limitu tylko właściwa osoba może przekazać fakturę do zapłaty." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

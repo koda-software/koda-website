@@ -52,6 +52,11 @@ export const amountInWordsPage: AmountInWordsPageContent = {
     body: "Szablony dokumentów w Opero same wstawiają kwotę słownie na faktury, wezwania do zapłaty i umowy, z danych, które już są w systemie.",
     primaryCta: "Umów demo",
     secondaryCta: "Dokumenty w Opero",
+    points: [
+      { title: "Na każdym dokumencie", body: "Faktury, wezwania do zapłaty i umowy biorą kwotę słownie z sumy w rekordzie." },
+      { title: "Szablony, które projektujesz", body: "Tekst, tabele, pola podpisu i kody QR, z podglądem PDF przed publikacją." },
+      { title: "Generowane przez regułę", body: "Przy zmianie etapu PDF powstaje sam, trafia do rekordu i wychodzi mailem." },
+    ],
   },
   examples: {
     title: "Popularne kwoty słownie",

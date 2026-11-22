@@ -141,6 +141,11 @@ export const workingTimePage: WorkingTimePageContent = {
     body: "W Opero wniosek urlopowy może sam policzyć dni robocze według kalendarza firmy, z pominięciem świąt, sprawdzić pulę urlopu i przekazać wniosek do akceptacji kierownika.",
     primaryCta: "Umów demo",
     secondaryCta: "Automatyzacje w Opero",
+    points: [
+      { title: "Akceptacja kierownika", body: "Wniosek trafia do kierownika, a odrzucenie wymaga komentarza, więc powód zostaje w historii." },
+      { title: "Kto jest nieobecny, od razu", body: "Widok kalendarza pokazuje urlopy według zespołów i można go zasubskrybować w dowolnym kalendarzu." },
+      { title: "Przypomnienia przed terminami", body: "Reguła datowa przypomina kadrom o kończących się badaniach lekarskich i umowach." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

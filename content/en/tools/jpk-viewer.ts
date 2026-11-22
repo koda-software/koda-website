@@ -154,6 +154,11 @@ export const jpkViewerPage: JpkViewerPageContent = {
     body: "Opero keeps invoices together with contractor details and amounts, so when a JPK row raises a question, the document behind it is close at hand.",
     primaryCta: "Book a demo",
     secondaryCta: "Integrations in Opero",
+    points: [
+      { title: "Invoices from KSeF", body: "Cost invoices arrive from KSeF with the source file attached to each record." },
+      { title: "Find any invoice fast", body: "Lists filter on any field, including relative dates such as the last 30 days." },
+      { title: "Reports you can drill into", body: "Open the invoices behind any figure in a report, or export the raw data." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

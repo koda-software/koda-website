@@ -119,6 +119,11 @@ export const eDeliveryPage: EDeliveryPageContent = {
     body: "In Opero you register incoming and outgoing letters, assign them to people and keep track of reply deadlines, with a full history of events.",
     primaryCta: "Book a demo",
     secondaryCta: "Document workflow in Opero",
+    points: [
+      { title: "Connected to e-Delivery", body: "Official electronic delivery is part of the same document workflow as your other letters." },
+      { title: "Numbered and assigned", body: "Each letter gets a number on registration and goes to a department as a task with a due date." },
+      { title: "Deadlines that are watched", body: "Overdue replies trigger a reminder or move to someone else, and the full path stays in the history." },
+    ],
   },
   otherToolsTitle: "Other tools",
 };

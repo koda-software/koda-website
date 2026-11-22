@@ -71,6 +71,11 @@ export const vatCalculatorPage: ToolPageContent = {
     body: "Opero wylicza VAT, sumy i kwotę słownie na fakturach i dokumentach z danych, które już są w systemie.",
     primaryCta: "Umów demo",
     secondaryCta: "Dokumenty w Opero",
+    points: [
+      { title: "Sumy z pozycji", body: "Netto, VAT i brutto sumują się z pozycji faktury, więc nikt nie przepisuje kwot." },
+      { title: "Wysyłka do KSeF", body: "Faktury sprzedaży trafiają do KSeF prosto z Opero, a przyjętej faktury nie da się już zmienić." },
+      { title: "PDF z Twojego szablonu", body: "Opublikowany szablon zamienia fakturę w PDF z Twoim nagłówkiem, sumami i kwotą słownie." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

@@ -117,6 +117,11 @@ export const salaryCalculatorPage: SalaryCalculatorPageContent = {
     body: "Opero doesn't run payroll. It runs the work around it: hiring with a contract generated from the employee's record, leave requests approved by a manager, and step-by-step onboarding.",
     primaryCta: "Book a demo",
     secondaryCta: "Processes in Opero",
+    points: [
+      { title: "Contracts from the employee record", body: "When a hire is approved, the contract PDF is generated from data already on the record." },
+      { title: "Leave requests with approval", body: "Employees see their own requests, managers the ones waiting on them, and HR sees them all." },
+      { title: "Onboarding step by step", body: "Each onboarding stage has an owner and a due date, so IT setup and paperwork do not slip." },
+    ],
   },
   otherToolsTitle: "Other tools",
 };

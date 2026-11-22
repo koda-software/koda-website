@@ -119,6 +119,11 @@ export const eDeliveryPage: EDeliveryPageContent = {
     body: "W Opero rejestrujesz pisma przychodzące i wychodzące, przypisujesz je do osób i pilnujesz terminów odpowiedzi, z pełną historią zdarzeń.",
     primaryCta: "Umów demo",
     secondaryCta: "Obieg dokumentów w Opero",
+    points: [
+      { title: "Połączenie z e-Doręczeniami", body: "E-Doręczenia są częścią tego samego obiegu dokumentów co pozostałe pisma." },
+      { title: "Numer i przypisanie", body: "Każde pismo dostaje numer przy rejestracji i trafia do działu jako zadanie z terminem." },
+      { title: "Pilnowane terminy", body: "Spóźniona odpowiedź uruchamia przypomnienie albo trafia do innej osoby, a cała ścieżka zostaje w historii." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

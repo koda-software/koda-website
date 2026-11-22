@@ -96,6 +96,11 @@ export const nbpRatePage: ToolPageContent = {
     body: "Szablony dokumentów w Opero same uzupełniają kwoty i sumy na fakturach danymi, które już są w systemie.",
     primaryCta: "Umów demo",
     secondaryCta: "Dokumenty w Opero",
+    points: [
+      { title: "Kursy NBP pobierane za Ciebie", body: "Opero pobiera kursy z tabeli A przez API NBP do faktur walutowych, z uwzględnieniem dni wolnych." },
+      { title: "Zapisane źródło kursu", body: "Opero zapisuje, skąd pochodzi kurs, i nie wpisuje niczego na oko, gdy NBP nie odpowiada." },
+      { title: "Faktury z KSeF", body: "Faktury kosztowe przychodzą z KSeF i od razu stają się rekordami gotowymi do akceptacji." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

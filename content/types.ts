@@ -1349,7 +1349,14 @@ export type ToolPageContent = {
     note: string;
     items: Array<{ label: string; href?: string }>;
   };
-  opero: { title: string; body: string; primaryCta: string; secondaryCta: string };
+  opero: {
+    title: string;
+    body: string;
+    primaryCta: string;
+    secondaryCta: string;
+    /** What Opero does for the job the tool covers, shown as a row under the pitch. */
+    points: Array<{ title: string; body: string }>;
+  };
   otherToolsTitle: string;
 };
 

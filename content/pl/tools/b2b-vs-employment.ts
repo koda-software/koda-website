@@ -119,6 +119,11 @@ export const b2bVsEmploymentPage: B2bVsEmploymentPageContent = {
     body: "W Opero dokumenty pracowników i współpracowników B2B oraz ich akceptacje są w jednym miejscu.",
     primaryCta: "Umów demo",
     secondaryCta: "Procesy w Opero",
+    points: [
+      { title: "Jedna kartoteka na osobę", body: "Umowy, faktury i dokumenty pracowników oraz współpracowników B2B są w kartotece tej osoby." },
+      { title: "Umowy generowane z danych", body: "Po akceptacji zatrudnienia reguła generuje PDF umowy z danych w kartotece." },
+      { title: "Akceptacje z historią", body: "Każdy dokument przechodzi przez swoje etapy akceptacji, a każda decyzja zostaje w historii." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

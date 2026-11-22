@@ -133,6 +133,11 @@ export const workingTimePage: WorkingTimePageContent = {
     body: "In Opero, a leave request can count the working days itself from the company calendar, skipping public holidays, check the leave balance and send the request to the manager for approval.",
     primaryCta: "Book a demo",
     secondaryCta: "Automation in Opero",
+    points: [
+      { title: "Approved by the manager", body: "The request goes to the manager, and a rejection needs a comment, so the reason stays on record." },
+      { title: "Who is away, at a glance", body: "A calendar view shows leave by team, and any calendar app can subscribe to it." },
+      { title: "Reminders before deadlines", body: "A date rule reminds HR before a medical check or a contract expires." },
+    ],
   },
   otherToolsTitle: "Other tools",
 };

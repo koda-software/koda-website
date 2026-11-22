@@ -71,9 +71,14 @@ export const ksefViewerPage: ToolPageContent = {
   },
   opero: {
     title: "Opero downloads KSeF invoices for you",
-    body: "Opero downloads cost invoices from KSeF, routes them for approval and books them, so nobody opens XML files by hand.",
+    body: "Opero downloads cost invoices from KSeF and routes them for approval, ready to hand over to your accounting system, so nobody opens XML files by hand.",
     primaryCta: "Book a demo",
     secondaryCta: "Integrations in Opero",
+    points: [
+      { title: "Read from the XML", body: "A KSeF invoice becomes a cost invoice record, and a second copy with the same KSeF number is refused." },
+      { title: "A PDF for everyone", body: "A rule renders the invoice as a PDF and keeps it with the record, so nobody needs the XML." },
+      { title: "Sending that does not give up", body: "Sales invoices are retried until KSeF accepts them, with offline mode when KSeF is down." },
+    ],
   },
   otherToolsTitle: "More tools",
 };

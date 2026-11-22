@@ -133,6 +133,11 @@ export const lateInterestPage: LateInterestPageContent = {
     body: "W Opero widzisz zaległe faktury sprzedaży przy kontrahencie, z terminem i kwotą.",
     primaryCta: "Umów demo",
     secondaryCta: "Opero AI",
+    points: [
+      { title: "Dni zwłoki na liście", body: "Lista faktur może pokazywać, ile dni każda jest po terminie, więc spóźnialskich widać od razu." },
+      { title: "Przypomnienia wokół terminu", body: "Reguła datowa powiadamia opiekuna klienta przed terminem płatności lub po nim, do 365 dni w każdą stronę." },
+      { title: "Wezwanie do zapłaty jednym krokiem", body: "Reguła generuje PDF wezwania z danych faktury, dołącza go do rekordu i wysyła mailem." },
+    ],
   },
   otherToolsTitle: "Inne narzędzia",
 };

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
+import CheckIcon from "lucide-react/dist/esm/icons/check.mjs";
 import { PageHero } from "@/components/landing/LandingPrimitives";
 import type { ToolPageContent } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
@@ -28,8 +29,8 @@ const sectionTitleClass = "m-0 text-[clamp(1.6rem,2.6vw,2rem)] leading-[1.15] tr
 const bodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 
 /**
- * A free tool: a short banner, the tool straight on the page, then the rule behind
- * it, questions, the one Opero feature that does the job for you, and the other tools.
+ * A free tool: a short banner, the tool straight on the page, the one Opero feature
+ * that does the job for you, then the rule behind it, questions, and the other tools.
  *
  * Everything except the tool is server-rendered text. That text is what ranks, so it
  * stays plain and complete rather than hidden in the widget.
@@ -58,7 +59,41 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
         {children}
       </section>
 
-      <section aria-labelledby="tool-explainer" className={`${sectionClass} ${ruleClass} flex flex-wrap gap-x-16 gap-y-10`}>
+      {/* The one dark band on the page: full width, the text kept in the page column. */}
+      <section aria-labelledby="tool-opero" className="isolate border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white">
+        <div className={`${shellClass} py-[clamp(4rem,8vw,5.5rem)]`}>
+          <div className="flex flex-wrap items-end gap-x-16 gap-y-7">
+            <div className="min-w-0 flex-[1_1_30rem]">
+              <h2 className="m-0 text-[clamp(1.8rem,3vw,2.4rem)] leading-[1.12] tracking-[-0.03em] text-white" id="tool-opero">
+                {opero.title}
+              </h2>
+              <p className="m-0 mt-4 max-w-[39rem] text-[1.06rem] leading-[1.7] text-[var(--color-muted-light)]">{opero.body}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link className="action action-mist" href={ctas.primary}>
+                {opero.primaryCta}
+              </Link>
+              <Link className="action action-line-dark" href={ctas.secondary}>
+                {opero.secondaryCta}
+                <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <ul className="m-0 mt-10 grid list-none grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-4 p-0">
+            {opero.points.map((point) => (
+              <li className="flex gap-3.5 rounded-[var(--radius-card)] border border-white/10 bg-white/[0.04] p-6" key={point.title}>
+                <CheckIcon aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-[var(--color-muted-light)]" />
+                <div>
+                  <h3 className="m-0 font-display text-[1.08rem] font-semibold text-white">{point.title}</h3>
+                  <p className="m-0 mt-2 text-[0.98rem] leading-[1.6] text-[var(--color-muted-light)]">{point.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="tool-explainer" className={`${sectionClass} flex flex-wrap gap-x-16 gap-y-10`}>
         <div className="min-w-0 flex-[1_1_20rem]">
           <h2 className={sectionTitleClass} id="tool-explainer">
             {explainer.title}
@@ -146,27 +181,6 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
               <p className={`${bodyClass} mt-3 max-w-[46rem]`}>{item.answer}</p>
             </details>
           ))}
-        </div>
-      </section>
-
-      {/* The one dark band on the page: full width, the text kept in the page column. */}
-      <section aria-labelledby="tool-opero" className="isolate border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white">
-        <div className={`${sectionClass} flex flex-wrap items-center gap-x-16 gap-y-7`}>
-          <div className="min-w-0 flex-[1_1_30rem]">
-            <h2 className="m-0 text-[clamp(1.6rem,2.6vw,2rem)] leading-[1.15] tracking-[-0.03em] text-white" id="tool-opero">
-              {opero.title}
-            </h2>
-            <p className="m-0 mt-4 max-w-[39rem] text-[1.04rem] leading-[1.7] text-[var(--color-muted-light)]">{opero.body}</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link className="action action-mist" href={ctas.primary}>
-              {opero.primaryCta}
-            </Link>
-            <Link className="action action-line-dark" href={ctas.secondary}>
-              {opero.secondaryCta}
-              <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
-            </Link>
-          </div>
         </div>
       </section>
 
