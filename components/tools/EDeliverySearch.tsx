@@ -35,6 +35,11 @@ type Institution = { name: string; town: string; voivodeship: string; regon: str
 type InstitutionPage = { listDate: string; total: number; items: Institution[] };
 type InstitutionList = InstitutionPage & { params: string };
 
+type LoadingStage = keyof EDeliveryLabels["loading"]["stages"];
+
+/** After this long the loading panel says the register is slow, so people wait instead of leaving. */
+const SLOW_AFTER_MS = 6_000;
+
 type Notice = { message: string; link?: { href: string; label: string } };
 
 type Outcome = {
@@ -132,6 +137,8 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [stage, setStage] = useState<LoadingStage>("registers");
+  const [slow, setSlow] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
@@ -165,6 +172,10 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
       const signal = current.signal;
       setFieldError(null);
       setLoading(true);
+      setSlow(false);
+      const step = (next: LoadingStage) => {
+        if (controller.current === current) setStage(next);
+      };
 
       const result: Outcome = { institutions: null, companies: [], firms: [], notices: [], empty: null };
       const krsLink = { href: KRS_SEARCH_PAGE, label: e.krsSearch };
@@ -207,11 +218,13 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
 
       try {
         if (kind.kind === "text") {
+          step("list");
           result.institutions = await searchInstitutions(`q=${encodeURIComponent(kind.text)}`);
           if (result.institutions && !result.institutions.total) result.empty = { title: r.noInstitution, hint: r.companyHint };
         }
 
         if (kind.kind === "krs") {
+          step("krs");
           const entity = await readKrs(kind.krs);
           if (entity) result.companies.push(entity);
           else if (!result.notices.length && !removed) result.empty = { title: r.krsNotFound };
@@ -219,8 +232,10 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
 
         if (kind.kind === "nip") {
           const today = todayInPoland();
+          step("whiteList");
           const search = await readWhiteList(() => searchByNip(kind.nip, today, signal));
           const subject = search?.subject ?? null;
+          step(subject?.krs ? "krs" : "ceidg");
           const [entity, list, firms] = await Promise.all([
             subject?.krs ? readKrs(subject.krs) : null,
             subject?.regon ? searchInstitutions(`regon=${subject.regon}`) : null,
@@ -233,6 +248,7 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
 
         if (kind.kind === "regon") {
           const today = todayInPoland();
+          step("registers");
           const [list, search] = await Promise.all([
             searchInstitutions(`regon=${kind.regon}`),
             // The White List rejects 14-digit REGONs (WL-107).
@@ -240,6 +256,8 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
           ]);
           if (list?.total) result.institutions = list;
           const krs = search?.subject?.krs;
+          if (krs) step("krs");
+          else if (!list?.total) step("ceidg");
           const [entity, firms] = await Promise.all([krs ? readKrs(krs) : null, !krs && !list?.total ? readCeidg(`regon=${kind.regon}`) : null]);
           if (entity) result.companies.push(entity);
           if (firms && firms !== "off") result.firms = firms.items;
@@ -270,6 +288,13 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
     },
     [e, r],
   );
+
+  /* Once a lookup runs long, the panel says so: people wait when they can see the tool is still working. */
+  useEffect(() => {
+    if (!loading) return;
+    const timer = window.setTimeout(() => setSlow(true), SLOW_AFTER_MS);
+    return () => window.clearTimeout(timer);
+  }, [loading]);
 
   /* A shared link: ?q= runs the search once, after hydration, so the static HTML stays the same for everyone. */
   useEffect(() => {
@@ -468,7 +493,8 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
               </ul>
             ) : null}
           </div>
-          <button className="action action-ink h-14 cursor-pointer border-0 disabled:cursor-wait disabled:opacity-70" disabled={loading} type="submit">
+          <button className="action action-ink h-14 min-w-[10rem] cursor-pointer justify-center gap-2.5 border-0 disabled:cursor-wait disabled:opacity-80" disabled={loading} type="submit">
+            {loading ? <Spinner className="h-[1.1em] w-[1.1em]" /> : null}
             {loading ? labels.searching : labels.submit}
           </button>
         </div>
@@ -482,8 +508,10 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
         ) : null}
       </form>
 
+      {loading ? <LoadingPanel note={slow ? labels.loading.slow : labels.loading.note} slow={slow} stage={labels.loading.stages[stage]} /> : null}
+
       <div aria-busy={loading} aria-live="polite">
-        {outcome ? (
+        {outcome && !loading ? (
           <div className="grid">
             {outcome.notices.map((notice) => (
               <p className="m-0 border-t border-[var(--color-border-light)] py-5 text-[1.02rem] text-[#a3360f]" key={notice.message} role="alert">
@@ -618,6 +646,36 @@ export function EDeliverySearch({ labels, locale }: { labels: EDeliveryLabels; l
       </div>
 
       <PrivacyNote>{labels.privacyNote}</PrivacyNote>
+    </div>
+  );
+}
+
+function Spinner({ className }: { className: string }) {
+  return (
+    <svg aria-hidden="true" className={`${className} shrink-0 animate-spin motion-reduce:animate-none`} fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" opacity="0.25" r="9.5" stroke="currentColor" strokeWidth="3" />
+      <path d="M21.5 12a9.5 9.5 0 0 0-9.5-9.5" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
+    </svg>
+  );
+}
+
+/** Stands where the result will appear: what is being read now, a moving bar and the shape of a result. */
+function LoadingPanel({ stage, note, slow }: { stage: string; note: string; slow: boolean }) {
+  return (
+    <div className="grid gap-5">
+      <div className="tool-progress" />
+      <div className="grid gap-1.5" role="status">
+        <p className="m-0 flex items-center gap-3 font-display text-[clamp(1.15rem,2vw,1.3rem)] font-medium text-[var(--color-ink)]">
+          <Spinner className="h-[1.05em] w-[1.05em] text-[var(--color-blue)]" />
+          <span>{stage}</span>
+        </p>
+        <p className={`m-0 pl-[calc(1.05em+0.75rem)] text-[0.95rem] ${slow ? "text-[var(--color-ink-soft)]" : "text-[var(--color-muted)]"}`}>{note}</p>
+      </div>
+      <div aria-hidden="true" className="grid gap-3 py-2">
+        <div className="tool-skeleton h-6 w-[min(28rem,80%)]" />
+        <div className="tool-skeleton h-4 w-[min(20rem,60%)]" />
+        <div className="tool-skeleton mt-2 h-8 w-[min(24rem,70%)]" />
+      </div>
     </div>
   );
 }

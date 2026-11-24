@@ -1459,6 +1459,12 @@ export type EDeliveryLabels = {
   placeholder: string;
   submit: string;
   searching: string;
+  /** The panel shown while registers answer: what is being read now, and a note once it takes a while. */
+  loading: {
+    stages: { list: string; whiteList: string; krs: string; ceidg: string; registers: string };
+    note: string;
+    slow: string;
+  };
   /** The muted line under the field, by what the input looks like. */
   hints: { empty: string; text: string; nip: string; krs: string; regon: string };
   privacyNote: string;

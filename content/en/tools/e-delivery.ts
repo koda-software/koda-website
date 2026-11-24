@@ -133,6 +133,17 @@ export const eDeliveryLabels: EDeliveryLabels = {
   placeholder: "e.g. urząd skarbowy Gdynia or 0000690425",
   submit: "Search",
   searching: "Searching…",
+  loading: {
+    stages: {
+      list: "Searching the gov.pl list of public entities…",
+      whiteList: "Checking the NIP in the VAT taxpayer register…",
+      krs: "Reading the KRS extract…",
+      ceidg: "Checking the CEIDG entry…",
+      registers: "Checking the registers…",
+    },
+    note: "We ask the state registers live, so this usually takes a few seconds.",
+    slow: "The register is answering more slowly than usual. Almost there…",
+  },
   hints: {
     empty: "Type a name or a number and press Enter.",
     text: "Searching the gov.pl list of public entities. Press Enter.",

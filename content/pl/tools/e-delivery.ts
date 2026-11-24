@@ -133,6 +133,17 @@ export const eDeliveryLabels: EDeliveryLabels = {
   placeholder: "np. urząd skarbowy Gdynia albo 0000690425",
   submit: "Szukaj",
   searching: "Szukam…",
+  loading: {
+    stages: {
+      list: "Przeszukuję listę urzędów z gov.pl…",
+      whiteList: "Sprawdzam NIP w wykazie podatników VAT…",
+      krs: "Pobieram odpis z KRS…",
+      ceidg: "Sprawdzam wpis w CEIDG…",
+      registers: "Sprawdzam wpisy w rejestrach…",
+    },
+    note: "Pytamy rejestry państwowe na bieżąco, więc zwykle trwa to kilka sekund.",
+    slow: "Rejestr odpowiada dziś wolniej niż zwykle. Jeszcze chwila…",
+  },
   hints: {
     empty: "Wpisz nazwę lub numer i naciśnij Enter.",
     text: "Szukam w liście urzędów z gov.pl. Naciśnij Enter.",
