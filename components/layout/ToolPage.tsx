@@ -78,7 +78,7 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
               </p>
             ))}
             {explainer.guide ? (
-              <p className={bodyClass}>
+              <p className={toolBodyClass}>
                 <Link className="font-semibold text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={explainer.guide.href}>
                   {explainer.guide.label}
                 </Link>
