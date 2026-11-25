@@ -5,6 +5,16 @@ const faq: FeaturePageContent["faq"] = {
   title: "Najczęściej zadawane pytania.",
   items: [
     {
+      question: "Co to jest low-code?",
+      answer:
+        "Low-code to budowanie aplikacji i automatyzacji w gotowej platformie: większość rzeczy konfigurujesz w edytorach, a kod piszesz tylko tam, gdzie konfiguracja nie wystarcza. W Opero obiekty, formularze i procesy ustawiasz bez kodu, a reguły, skrypty i zapytania SQL dokładasz wtedy, gdy są potrzebne.",
+    },
+    {
+      question: "Czym low-code różni się od no-code?",
+      answer:
+        "No-code to konfiguracja bez żadnego kodu: obiekty, pola, formularze, menu i procesy. Low-code dodaje logikę tam, gdzie konfiguracja się kończy: skrypt, zapytanie SQL albo własny blok. W Opero to jedna platforma, więc zaczynasz od no-code i sięgasz po low-code tylko w miejscach, które tego wymagają.",
+    },
+    {
       question: "Co może uruchomić regułę i co reguła może zrobić?",
       answer:
         "Regułę uruchamia zmiana rekordu, przejście w procesie, przypomnienie o dacie, przychodzący e-mail, ostrzeżenie SLA w helpdesku, harmonogram cron, przycisk albo wywołanie zewnętrznego API. Potem reguła idzie po krokach narysowanych na kanwie, a typów wbudowanych jest ponad 50: aktualizacja rekordów, e-mail, generowanie dokumentu, przejście w procesie, webhook. Część wyzwalaczy i kroków wymaga włączonego modułu lub połączenia.",
@@ -54,9 +64,9 @@ const faq: FeaturePageContent["faq"] = {
 
 export const lowCodeFeature: FeaturePageContent = {
   seo: {
-    title: "Automatyzacja procesów i low-code",
+    title: "Platforma low-code do automatyzacji w firmie",
     description:
-      "Automatyzuj decyzje regułami, skryptami i zapytaniami SQL. Silnik reguł „warunek to akcja” bez budowy osobnego systemu. Low-code w Opero.",
+      "Platforma low-code Opero: reguły „gdy warunek, wykonaj kroki” z ponad 50 typami kroków, testy na prawdziwym rekordzie, a do reszty skrypty i SQL na tych samych danych.",
   },
   navLabel: "Low-code i automatyzacje",
   navDescription: "Decyzje, które zapadają same",
@@ -124,7 +134,7 @@ export const lowCodeFeature: FeaturePageContent = {
 
 export const lowCodePage: LowCodePageContent = {
   hero: {
-    title: "Przypomnienia i przekazania spraw jako reguły. Na resztę skrypty i SQL.",
+    title: "Platforma low-code: przypomnienia i przekazania spraw jako reguły. Na resztę skrypty i SQL.",
     description:
       "Umowa kończąca się 30 czerwca może powiadomić opiekuna 31 maja i 16 czerwca oraz założyć rekord odnowienia, bez zaglądania do arkusza. Rysujesz to jako regułę z ponad 50 wbudowanych typów kroków, testujesz na prawdziwym rekordzie bez żadnej wysyłki, a potem czytasz każde uruchomienie krok po kroku. Tam, gdzie reguła nie wystarcza, skrypt, zapytanie SQL lub własny blok pracują na tych samych danych.",
     primaryCta: "Umów prezentację",

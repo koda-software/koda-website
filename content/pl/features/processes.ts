@@ -6,9 +6,14 @@ const processesFaq: FeaturePageContent["faq"] = {
   title: "Najczęściej zadawane pytania.",
   items: [
     {
-      question: "Czym jest workflow w Opero?",
+      question: "Czym jest system workflow i jak działa w Opero?",
       answer:
         "To droga, jaką rekord przechodzi przez firmę: etapy, dozwolone przejścia między nimi i osoba odpowiedzialna na każdym kroku. Może działać na Twoich własnych obiektach albo na kontrahentach, fakturach, budżetach i zgłoszeniach helpdesku.",
+    },
+    {
+      question: "Które procesy biznesowe warto zautomatyzować najpierw?",
+      answer:
+        "Te, które powtarzają się co tydzień i mają akceptację albo termin: obieg faktur kosztowych, wnioski zakupowe i urlopowe, obieg umów, zgłoszenia serwisowe i reklamacje. Zacznij od jednego, uruchom go na prawdziwych sprawach i dopiero potem przenoś kolejne. Taki proces szybko pokazuje, gdzie sprawy dziś czekają i na kim.",
     },
     {
       question: "Czy zbudowanie procesu wymaga programisty?",
@@ -51,9 +56,9 @@ const processesFaq: FeaturePageContent["faq"] = {
 
 export const processesFeature: FeaturePageContent = {
   seo: {
-    title: "System workflow i procesy BPM",
+    title: "System workflow i automatyzacja procesów (BPM)",
     description:
-      "Zaprojektuj obieg pracy jako proces: etapy, przejścia, zadania i kanban. Automatyzuj akceptacje i procedury bez kodu. Zobacz workflow w Opero.",
+      "System workflow dla firm: wnioski, faktury kosztowe i umowy jako procesy z etapami, właścicielem, terminem i historią. Automatyzacja procesów biznesowych bez kodu.",
   },
   navLabel: "Procesy i workflow",
   navDescription: "Nic nie ginie między działami",
@@ -149,7 +154,7 @@ const heroImage = {
 export const processesPage: ProcessesPageContent = {
   seo: processesFeature.seo,
   hero: {
-    title: "Daj każdemu wnioskowi właściciela, termin i kolejny krok.",
+    title: "System workflow: każdy wniosek ma właściciela, termin i kolejny krok.",
     description:
       "Rozrysuj, jak wniosek zakupowy, umowa albo faktura kosztowa mają przechodzić przez firmę. Opero przypisuje do każdego kroku osobę i termin, a rekord, pliki, komentarze i decyzje trzyma w jednym miejscu.",
     primaryCta: "Umów prezentację",

@@ -3,9 +3,9 @@ import type { FeaturePageContent } from "@/content/types";
 
 export const documentsFeature: FeaturePageContent = {
   seo: {
-    title: "Elektroniczny obieg dokumentów (EOD) i DMS",
+    title: "System elektronicznego obiegu dokumentów (EOD)",
     description:
-      "Rejestruj dokumenty, prowadź je przez obieg akceptacji i trzymaj każdy plik przy sprawie. System EOD i DMS w jednej platformie Opero.",
+      "Program do elektronicznego obiegu dokumentów i DMS dla firm: rejestr pism, obieg faktur i umów, akceptacje według kwoty, pliki przy sprawie i przypomnienia.",
   },
   navLabel: "EOD / DMS",
   navDescription: "Każdy plik przy swojej sprawie",
@@ -95,6 +95,21 @@ export const documentsFeature: FeaturePageContent = {
     title: "Najczęściej zadawane pytania.",
     items: [
       {
+        question: "Co to jest elektroniczny obieg dokumentów (EOD)?",
+        answer:
+          "To system, w którym dokument po wpłynięciu do firmy staje się rekordem z numerem, osobą odpowiedzialną i ścieżką akceptacji, zamiast krążyć po mailach i dyskach. Każdy krok zostaje w historii, więc wiadomo, u kogo jest dokument, kto go zatwierdził i kiedy. W Opero obieg dotyczy pism, faktur, umów i wniosków, a pliki leżą przy sprawie, której dotyczą.",
+      },
+      {
+        question: "Jak wygląda wdrożenie elektronicznego obiegu dokumentów?",
+        answer:
+          "Zaczynamy od jednego rodzaju dokumentu, na przykład faktury kosztowej albo umowy. Ustalamy pola, etapy akceptacji, limity kwot i uprawnienia, uruchamiamy obieg na prawdziwych dokumentach i dopiero potem dokładamy kolejne rodzaje. Obieg konfiguruje się bez programowania, więc późniejsze zmiany wprowadza właściciel procesu, a nie dostawca.",
+      },
+      {
+        question: "Czy Opero obsługuje elektroniczny obieg faktur i KSeF?",
+        answer:
+          "Tak. Faktury zakupu pobrane z KSeF stają się rekordami, które przechodzą przez Twoją ścieżkę akceptacji, na przykład z inną drogą powyżej ustalonej kwoty. Faktury sprzedaży Opero wysyła do KSeF w formacie FA(3) i dołącza UPO. Szczegóły i ograniczenia opisujemy na stronie integracji.",
+      },
+      {
         question: "Czym EOD różni się od DMS?",
         answer:
           "EOD to droga dokumentu przez firmę: rejestracja, dekretacja, akceptacja, zamknięcie. DMS dba o same pliki: gdzie leżą, kto ma do nich dostęp i jak je znaleźć. Opero łączy jedno z drugim, bo pliki są przypięte do rekordu, który tę drogę przechodzi.",
@@ -134,7 +149,7 @@ export const documentsFeature: FeaturePageContent = {
 
 export const documentsPage: DocumentsPageContent = {
   hero: {
-    title: "Umowa, skan, akceptacja i przypomnienie w jednym rekordzie.",
+    title: "Elektroniczny obieg dokumentów: umowa, skan, akceptacja i przypomnienie w jednym rekordzie.",
     description:
       "Opero wypełnia PDF z opublikowanego szablonu, prowadzi rekord przez Twoje etapy akceptacji, otwiera załączniki w przeglądarce i powiadamia właściciela przed końcem umowy. Nie ma OCR, generowania plików Word ani podpisu kwalifikowanego, a na tej stronie piszemy, co zrobić zamiast tego.",
     primaryCta: "Umów prezentację",
