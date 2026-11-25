@@ -6,12 +6,10 @@ import { blogImageSrc } from "@/lib/blog/images";
 import { authorPath, blogIndexPath, categoryPath } from "@/lib/blog/routes";
 import { tiptapSections } from "@/lib/blog/tiptap";
 import type { ArticleFullRow, ArticleListRow } from "@/lib/blog/types";
-import { ArticleToc } from "./ArticleToc";
 import { AuthorAvatar, AuthorBox, type BlogAuthor } from "./AuthorBox";
 import { BlogRail } from "./BlogRail";
 import { ArticleCard } from "./cards";
 import type { BlogFrame } from "./frame";
-import { Pinned } from "./Pinned";
 import { ArticleCta, InlineFeature } from "./Promos";
 import { ShareLinks } from "./ShareLinks";
 import { TagChips } from "./TagChips";
@@ -25,14 +23,8 @@ type ArticlePageProps = Omit<BlogFrame, "topics"> & {
   keepReading: ArticleListRow[];
 };
 
-/**
- * Contents, text, rail. Under 1200px the contents column folds into a
- * disclosure above the text; under 980px the rail moves below the article.
- */
-const columnsClass =
-  "grid grid-cols-[12.5rem_minmax(0,45rem)_minmax(0,1fr)] items-start gap-x-14 gap-y-16 max-[1199px]:grid-cols-[minmax(0,1fr)_20rem] max-[980px]:grid-cols-1";
-/** The header's text starts where the article's text does: past the contents column. */
-const headerColumnsClass = "grid grid-cols-[12.5rem_minmax(0,1fr)] gap-x-14 max-[1199px]:grid-cols-1";
+/** Text, rail. Under 980px the rail moves below the article. */
+const columnsClass = "grid grid-cols-[minmax(0,1fr)_21.5rem] items-start gap-x-14 gap-y-16 max-[1199px]:grid-cols-[minmax(0,1fr)_20rem] max-[980px]:grid-cols-1";
 /** The in-text promo goes in before this section (zero-based), far enough in that the reader has started. */
 const promoBeforeSection = 3;
 /** Shorter articles keep their text unbroken. */
@@ -44,8 +36,7 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
   const updated = shouldShowUpdated(article.data_publikacji, article.updated_at) ? formatDate(article.updated_at, locale) : null;
   const sectionCount = (article.tresc?.doc?.content ?? []).filter((node) => node?.type === "heading").length;
   const showInline = Boolean(promos.inlineFeature) && sectionCount >= promoMinSections;
-  const { headings, before, after } = tiptapSections(article.tresc, showInline ? promoBeforeSection : Number.POSITIVE_INFINITY);
-  const hasContents = headings.length >= 2;
+  const { before, after } = tiptapSections(article.tresc, showInline ? promoBeforeSection : Number.POSITIVE_INFINITY);
 
   const author: BlogAuthor | null = article.autor_nazwa
     ? {
@@ -86,8 +77,8 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
             <PhotoBackdrop opacity={0.18} photo="workspace" priority />
           )}
 
-          <div className={`relative z-[1] mx-auto w-[min(100%,var(--shell-width))] ${headerColumnsClass}`}>
-            <div className="max-w-[56.25rem] min-[1200px]:col-start-2">
+          <div className="relative z-[1] mx-auto w-[min(100%,var(--shell-width))]">
+            <div className="max-w-[56.25rem]">
               <nav aria-label={ui.article.breadcrumb}>
                 <ol className="m-0 flex list-none flex-wrap items-center gap-x-2.5 gap-y-1 p-0 text-[0.88rem] text-white/66">
                   <li>
@@ -149,37 +140,7 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
 
         <div className={`${blogShellClass} pt-14`}>
           <div className={columnsClass} data-pin-bounds>
-            <Pinned className="flex flex-col gap-8 max-[1199px]:hidden">
-              {hasContents ? <ArticleToc headings={headings} label={ui.article.contents} /> : null}
-              <ShareLinks
-                labels={{
-                  share: ui.article.share,
-                  linkedIn: ui.article.shareOnLinkedIn,
-                  x: ui.article.shareOnX,
-                  copyLink: ui.article.copyLink,
-                  linkCopied: ui.article.linkCopied,
-                }}
-                title={article.tytul}
-                url={url}
-              />
-            </Pinned>
-
-            <div className="min-w-0 max-[1199px]:max-w-[45rem]">
-              {hasContents ? (
-                <details className="mb-10 rounded-[var(--radius-card)] border border-[var(--color-border-light)] bg-[var(--color-paper)] px-5 py-4 min-[1200px]:hidden">
-                  <summary className="cursor-pointer font-display text-[1rem] font-medium">{ui.article.contents}</summary>
-                  <ol className="m-0 mt-3 list-none p-0 text-[0.95rem] leading-[1.4]">
-                    {headings.map((heading) => (
-                      <li key={heading.id}>
-                        <a className="block py-1.5 text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]" href={`#${heading.id}`}>
-                          {heading.text}
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
-                </details>
-              ) : null}
-
+            <div className="min-w-0 max-w-[45rem]">
               <div className="blog-prose blog-prose-article">{before}</div>
               {after ? (
                 <>
@@ -189,6 +150,19 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
               ) : null}
 
               <TagChips locale={locale} tags={article.tagi ?? []} ui={ui} />
+              <div className="mt-10">
+                <ShareLinks
+                  labels={{
+                    share: ui.article.share,
+                    linkedIn: ui.article.shareOnLinkedIn,
+                    x: ui.article.shareOnX,
+                    copyLink: ui.article.copyLink,
+                    linkCopied: ui.article.linkCopied,
+                  }}
+                  title={article.tytul}
+                  url={url}
+                />
+              </div>
               <ArticleCta ctaHrefs={ctaHrefs} ui={ui} />
               {author ? <AuthorBox author={author} locale={locale} ui={ui} /> : null}
             </div>

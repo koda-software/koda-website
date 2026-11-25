@@ -1278,7 +1278,6 @@ export type BlogUiContent = {
   };
   article: {
     breadcrumb: string;
-    contents: string;
     share: string;
     shareOnLinkedIn: string;
     shareOnX: string;

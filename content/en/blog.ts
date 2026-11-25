@@ -79,7 +79,6 @@ export const blogContent: BlogUiContent = {
   },
   article: {
     breadcrumb: "Breadcrumb",
-    contents: "In this article",
     share: "Share",
     shareOnLinkedIn: "Share on LinkedIn",
     shareOnX: "Share on X",
