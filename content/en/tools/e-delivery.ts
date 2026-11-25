@@ -22,6 +22,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
       "Type an office's name and town and we find it in the gov.pl list. Type a NIP and we look up the company's KRS number in the VAT White List, then read its KRS entry. If the company is not in KRS, we check CEIDG. A KRS number works with or without its leading zeros.",
       "We do not search private individuals. The law shares their addresses with public entities only. Advocates, legal advisers and other regulated professions are in the address database search of the e-Doręczenia app, if you have your own mailbox.",
     ],
+    guide: { label: "Guide: e-Delivery in Poland step by step, from setting up the mailbox to deadlines", href: "/en/blog/e-delivery-obligation-october-2026" },
     table: {
       caption: "Where the address comes from",
       columns: ["You type", "We search", "How current"],

@@ -1392,6 +1392,8 @@ export type ToolPageContent = {
     title: string;
     paragraphs: string[];
     table?: { caption: string; columns: string[]; rows: string[][] };
+    /** Our blog guide on the topic, linked under the paragraphs. */
+    guide?: { label: string; href: string };
   };
   faq: { title: string; items: Array<{ question: string; answer: string }> };
   /** Official sources and the date the rules on the page were last checked. */

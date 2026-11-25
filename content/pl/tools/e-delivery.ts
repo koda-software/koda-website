@@ -22,6 +22,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
       "Wpisz nazwę urzędu i miejscowość, a znajdziemy go w liście z gov.pl. Wpisz NIP, a sprawdzimy w wykazie podatników VAT numer KRS firmy i pobierzemy jej wpis z KRS. Jeśli firmy nie ma w KRS, sprawdzimy CEIDG. Numer KRS możesz wpisać z zerami na początku albo bez nich.",
       "Adresów osób prywatnych nie wyszukujemy. Prawo udostępnia je tylko podmiotom publicznym. Adwokatów, radców prawnych i innych zawodów zaufania publicznego znajdziesz w wyszukiwarce bazy adresów elektronicznych w aplikacji e-Doręczenia, jeśli masz własną skrzynkę.",
     ],
+    guide: { label: "Poradnik: e-Doręczenia krok po kroku, od założenia skrzynki po terminy", href: "/pl/blog/e-doreczenia" },
     table: {
       caption: "Gdzie szukamy adresu",
       columns: ["Wpisujesz", "Szukamy w", "Aktualność"],
