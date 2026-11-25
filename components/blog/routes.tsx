@@ -1,21 +1,25 @@
+import type { ReactNode } from "react";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { blogBundle } from "@/lib/blog/bundle";
 import { blogImagePath, isFileId } from "@/lib/blog/images";
 import { getArticleAlternates } from "@/lib/blog/metadata";
+import { blogPromos } from "@/lib/blog/promos";
 import {
   archivePageSize,
   findRedirect,
+  getAllArticles,
   getArticleBySlug,
   getArticles,
   getArticlesByAuthor,
   getArticlesByTag,
   getAuthorBySlug,
+  getCategories,
   getCategoryBySlug,
   getPageSize,
   getSettings,
   getTagBySlug,
-  getTags,
+  getUsedTags,
 } from "@/lib/blog/queries";
 import {
   articlePath,
@@ -29,13 +33,16 @@ import {
   toSiteLocale,
 } from "@/lib/blog/routes";
 import { tiptapPlainText } from "@/lib/blog/tiptap";
-import type { BlogLocale } from "@/lib/blog/types";
-import { ArticleJsonLd, BreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import type { ArticleListRow, BlogLocale } from "@/lib/blog/types";
+import { localizePath } from "@/lib/i18n/routes";
+import { ArticleJsonLd, BlogListJsonLd, BreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
 import { ArticlePage } from "./ArticlePage";
 import { AuthorLinks, type BlogAuthor } from "./AuthorBox";
+import { BlogHubPage } from "./BlogHubPage";
 import { BlogListPage } from "./BlogListPage";
 import { BlogNotFound } from "./BlogNotFound";
+import type { BlogFrame } from "./frame";
 import { TagChips } from "./TagChips";
 
 /**
@@ -50,40 +57,139 @@ function totalPagesOf(total: number, pageSize: number) {
   return Math.max(1, Math.ceil(total / pageSize));
 }
 
-export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale; page?: number }) {
-  const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
-  const pageSize = await getPageSize();
-  // Most tags hold one article; listing them all here gives each tag page a second link.
-  const [{ rows, total }, tags] = await Promise.all([
-    getArticles({ jezyk: locale, page, pageSize }),
-    getTags(locale),
-  ]);
-  const totalPages = totalPagesOf(total, pageSize);
+const picksCount = 3;
+const keepReadingCount = 3;
 
-  // Page 1 renders even when empty; deeper pages beyond the range do not exist.
-  if (page > 1 && (page > totalPages || rows.length === 0)) {
-    notFound();
+/**
+ * What every blog page shows around its own content, plus the full listing it
+ * is drawn from. `pageKey` is the page's path, so pages draw different promos.
+ */
+async function blogChrome(locale: BlogLocale, pageKey: string, excludeId?: string) {
+  const { ui, ctaHrefs, shell } = blogBundle(locale);
+  const [articles, categories] = await Promise.all([getAllArticles(locale), getCategories(locale)]);
+  const counts = new Map<string, number>();
+
+  for (const article of articles) {
+    if (article.kategoria_slug) counts.set(article.kategoria_slug, (counts.get(article.kategoria_slug) ?? 0) + 1);
   }
 
+  const topics = categories
+    .map((category) => ({ slug: category.slug, name: category.nazwa, count: counts.get(category.slug) ?? 0 }))
+    .filter((topic) => topic.count > 0);
+  const picks = articles.filter((article) => article.wyrozniony === true && article.id !== excludeId).slice(0, picksCount);
+  const promos = blogPromos(locale, pageKey);
+  const toolsHref = localizePath(toSiteLocale(locale), "tools");
+  const frame: BlogFrame = { locale, ui, shell, ctaHrefs, toolsHref, topics, picks, promos };
+
+  return { articles, frame };
+}
+
+/** Home, the blog, then whatever the page adds. */
+function BlogBreadcrumbJsonLd({ locale, items = [] }: { locale: BlogLocale; items?: Array<{ name: string; path: string }> }) {
+  const { ui } = blogBundle(locale);
+
   return (
-    <PageShell locale={toSiteLocale(locale)} navItems={navItems} page="blog" shell={shell}>
+    <BreadcrumbJsonLd
+      items={[
+        { name: ui.labels.breadcrumbHome, path: localizePath(toSiteLocale(locale), "home") },
+        { name: ui.index.label, path: blogIndexPath(locale) },
+        ...items,
+      ]}
+    />
+  );
+}
+
+/** The category, tag and author archives: one page each, the same around their own list. */
+async function BlogArchive({
+  locale,
+  pathFor,
+  slugs,
+  list,
+  title,
+  description,
+  aside,
+  activeTopic,
+}: {
+  locale: BlogLocale;
+  pathFor: (locale: BlogLocale, slug: string) => string;
+  slugs: Record<BlogLocale, string>;
+  /** Passed unawaited, so it loads alongside the rest of the page. */
+  list: Promise<{ rows: ArticleListRow[] }>;
+  title: string;
+  description: string;
+  aside?: ReactNode;
+  activeTopic?: string;
+}) {
+  const { shell, navItems } = blogBundle(locale);
+  const path = pathFor(locale, slugs[locale]);
+  const [{ rows }, { articles, frame }] = await Promise.all([list, blogChrome(locale, path)]);
+
+  return (
+    <PageShell
+      alternatePaths={{ en: pathFor("en", slugs.en), pl: pathFor("pl", slugs.pl) }}
+      locale={toSiteLocale(locale)}
+      navItems={navItems}
+      page="blog"
+      shell={shell}
+    >
+      <BlogListJsonLd articles={listItems(locale, rows)} description={description} locale={toSiteLocale(locale)} name={title} path={path} />
+      <BlogBreadcrumbJsonLd items={[{ name: title, path }]} locale={locale} />
       <BlogListPage
-        buildHref={(target) => blogPagePath(locale, target)}
-        ctaHrefs={ctaHrefs}
-        footer={<TagChips locale={locale} tags={tags} ui={ui} />}
-        heading={{ title: ui.index.title, description: ui.index.description }}
-        locale={locale}
-        page={page}
+        {...frame}
+        activeTopic={activeTopic}
+        aside={aside}
+        buildHref={() => path}
+        heading={{ title, description }}
+        page={1}
         rows={rows}
-        totalPages={totalPages}
-        ui={ui}
+        total={articles.length}
+        totalPages={1}
       />
     </PageShell>
   );
 }
 
+function listItems(locale: BlogLocale, rows: ArticleListRow[]) {
+  return rows.map((row) => ({ name: row.tytul, path: articlePath(locale, row.slug) }));
+}
+
+export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale; page?: number }) {
+  const { ui, shell, navItems } = blogBundle(locale);
+  const path = blogPagePath(locale, page);
+  // Most tags hold one article; listing them all here gives each tag page a second link.
+  const [pageSize, tags, { articles, frame }] = await Promise.all([getPageSize(), getUsedTags(locale), blogChrome(locale, path)]);
+  const totalPages = totalPagesOf(articles.length, pageSize);
+
+  // Page 1 renders even when empty; deeper pages beyond the range do not exist.
+  if (page > totalPages) {
+    notFound();
+  }
+
+  const rows = articles.slice((page - 1) * pageSize, page * pageSize);
+
+  return (
+    <PageShell locale={toSiteLocale(locale)} navItems={navItems} page="blog" shell={shell}>
+      <BlogListJsonLd articles={listItems(locale, rows)} description={ui.seo.description} locale={toSiteLocale(locale)} name={ui.seo.title} path={path} />
+      <BlogBreadcrumbJsonLd locale={locale} />
+      {page === 1 ? (
+        <BlogHubPage {...frame} articles={articles} footer={<TagChips locale={locale} tags={tags} ui={ui} />} stream={rows} totalPages={totalPages} />
+      ) : (
+        <BlogListPage
+          {...frame}
+          buildHref={(target) => blogPagePath(locale, target)}
+          heading={{ title: ui.index.title, description: ui.index.description }}
+          page={page}
+          rows={rows}
+          total={articles.length}
+          totalPages={totalPages}
+        />
+      )}
+    </PageShell>
+  );
+}
+
 export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
-  const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
+  const { ui } = blogBundle(locale);
   const category = await getCategoryBySlug(slug, locale);
 
   if (!category) {
@@ -95,36 +201,23 @@ export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; 
     permanentRedirect(categoryPath(locale, category.slug));
   }
 
-  const { rows } = await getArticles({ jezyk: locale, kategoriaSlug: slug, pageSize: archivePageSize });
+  const list = getArticles({ jezyk: locale, kategoriaSlug: slug, pageSize: archivePageSize });
 
   return (
-    <PageShell
-      alternatePaths={{ en: categoryPath("en", category.slugs.en), pl: categoryPath("pl", category.slugs.pl) }}
-      locale={toSiteLocale(locale)}
-      navItems={navItems}
-      page="blog"
-      shell={shell}
-    >
-      <BlogListPage
-        buildHref={() => categoryPath(locale, slug)}
-        ctaHrefs={ctaHrefs}
-        heading={{
-          title: category.nazwa,
-          description: category.opis ?? ui.archives.categoryDescription,
-        }}
-        locale={locale}
-        page={1}
-        rows={rows}
-        showBackLink
-        totalPages={1}
-        ui={ui}
-      />
-    </PageShell>
+    <BlogArchive
+      activeTopic={slug}
+      description={category.opis ?? ui.archives.categoryDescription}
+      locale={locale}
+      pathFor={categoryPath}
+      list={list}
+      slugs={category.slugs}
+      title={category.nazwa}
+    />
   );
 }
 
 export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
-  const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
+  const { ui } = blogBundle(locale);
   const tag = await getTagBySlug(slug, locale);
 
   if (!tag) {
@@ -135,36 +228,22 @@ export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug:
     permanentRedirect(tagPath(locale, tag.slug));
   }
 
-  const { rows } = await getArticlesByTag({ tagSlug: slug, jezyk: locale, pageSize: archivePageSize });
+  const list = getArticlesByTag({ tagSlug: slug, jezyk: locale, pageSize: archivePageSize });
 
   return (
-    <PageShell
-      alternatePaths={{ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }}
-      locale={toSiteLocale(locale)}
-      navItems={navItems}
-      page="blog"
-      shell={shell}
-    >
-      <BlogListPage
-        buildHref={() => tagPath(locale, slug)}
-        ctaHrefs={ctaHrefs}
-        heading={{
-          title: tag.nazwa,
-          description: tag.opis ?? ui.archives.tagDescription,
-        }}
-        locale={locale}
-        page={1}
-        rows={rows}
-        showBackLink
-        totalPages={1}
-        ui={ui}
-      />
-    </PageShell>
+    <BlogArchive
+      description={tag.opis ?? ui.archives.tagDescription}
+      locale={locale}
+      pathFor={tagPath}
+      list={list}
+      slugs={tag.slugs}
+      title={tag.nazwa}
+    />
   );
 }
 
 export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
-  const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
+  const { ui } = blogBundle(locale);
   const record = await getAuthorBySlug(slug, locale);
 
   if (!record || record.aktywny === false) {
@@ -175,8 +254,7 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
     permanentRedirect(authorPath(locale, record.slug));
   }
 
-  const { rows } = await getArticlesByAuthor({ autorSlug: slug, jezyk: locale, pageSize: archivePageSize });
-
+  const list = getArticlesByAuthor({ autorSlug: slug, jezyk: locale, pageSize: archivePageSize });
   const author: BlogAuthor = {
     slug: record.slug,
     nazwa: record.imie_nazwisko,
@@ -187,42 +265,22 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
     linkedin: record.url_linkedin,
     x: record.url_x,
   };
-  const bio = tiptapPlainText(record.bio);
 
   return (
-    <PageShell
-      alternatePaths={{ en: authorPath("en", record.slugs.en), pl: authorPath("pl", record.slugs.pl) }}
-      locale={toSiteLocale(locale)}
-      navItems={navItems}
-      page="blog"
-      shell={shell}
-    >
-      <BlogListPage
-        aside={
-          <div>
-            {bio ? <p className="m-0 text-[1.02rem] leading-[1.65] text-white/68">{bio}</p> : null}
-            <AuthorLinks author={author} invert />
-          </div>
-        }
-        buildHref={() => authorPath(locale, slug)}
-        ctaHrefs={ctaHrefs}
-        heading={{
-          title: author.nazwa,
-          description: ui.archives.authorDescription,
-        }}
-        locale={locale}
-        page={1}
-        rows={rows}
-        showBackLink
-        totalPages={1}
-        ui={ui}
-      />
-    </PageShell>
+    <BlogArchive
+      aside={<AuthorLinks author={author} className="" invert />}
+      description={tiptapPlainText(record.bio) || ui.archives.authorDescription}
+      locale={locale}
+      pathFor={authorPath}
+      list={list}
+      slugs={record.slugs}
+      title={author.nazwa}
+    />
   );
 }
 
 export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
-  const { ui, ctaHrefs, shell, navItems } = blogBundle(locale);
+  const { shell, navItems } = blogBundle(locale);
   const article = await getArticleBySlug(slug, locale);
 
   if (!article) {
@@ -259,8 +317,19 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
     permanentRedirect(articlePath(locale, canonicalSlug));
   }
 
-  const settings = await getSettings();
+  const path = articlePath(locale, article.slug);
+  const [settings, { articles, frame }] = await Promise.all([getSettings(), blogChrome(locale, path, article.id)]);
   const { paths } = getArticleAlternates(article, locale);
+  // The editors' related articles first, then the newest from the same category, then the newest of all.
+  const others = articles.filter((row) => row.id !== article.id);
+  const relatedSlugs = new Set((article.powiazane ?? []).map((item) => item.slug));
+  const keepReading = [
+    ...new Set([
+      ...others.filter((row) => relatedSlugs.has(row.slug)),
+      ...others.filter((row) => row.kategoria_slug && row.kategoria_slug === article.kategoria_slug),
+      ...others,
+    ]),
+  ].slice(0, keepReadingCount);
   const imageFileId = [article.og_image, article.obraz_glowny, settings?.domyslny_og_image].find(isFileId);
   const sameAs = [article.autor_linkedin, article.autor_x, article.autor_www].filter(
     (value): value is string => typeof value === "string" && value.length > 0,
@@ -290,20 +359,22 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
         headline={article.tytul}
         image={imageFileId ? absoluteUrl(blogImagePath(imageFileId)) : absoluteUrl(siteConfig.defaultOgImage)}
         inLanguage={locale}
+        articleSection={article.kategoria_nazwa ?? undefined}
         keywords={article.tagi?.map((tag) => tag.nazwa)}
         type={article.typ_schema ?? "BlogPosting"}
-        url={absoluteUrl(articlePath(locale, article.slug))}
+        url={absoluteUrl(path)}
+        wordCount={article.liczba_slow ?? undefined}
       />
-      <BreadcrumbJsonLd
+      <BlogBreadcrumbJsonLd
         items={[
-          { name: ui.index.label, path: blogIndexPath(locale) },
           ...(article.kategoria_slug && article.kategoria_nazwa
             ? [{ name: article.kategoria_nazwa, path: categoryPath(locale, article.kategoria_slug) }]
             : []),
-          { name: article.tytul, path: articlePath(locale, article.slug) },
+          { name: article.tytul, path },
         ]}
+        locale={locale}
       />
-      <ArticlePage article={article} ctaHrefs={ctaHrefs} locale={locale} ui={ui} />
+      <ArticlePage {...frame} article={article} keepReading={keepReading} url={absoluteUrl(path)} />
     </PageShell>
   );
 }

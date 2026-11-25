@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import ArrowRightIcon from "lucide-react/dist/esm/icons/arrow-right.mjs";
-import CheckIcon from "lucide-react/dist/esm/icons/check.mjs";
 import { PageHero } from "@/components/landing/LandingPrimitives";
 import type { ToolPageContent } from "@/content/types";
 import type { Locale } from "@/lib/i18n/config";
+import { OperoBand } from "./OperoBand";
+import { ToolFaq, toolBodyClass, toolSectionTitleClass, toolShellClass } from "./toolPrimitives";
 
 export type ToolLink = { href: string; label: string; description: string };
 
@@ -22,11 +23,8 @@ type ToolPageProps = {
   extra?: ReactNode;
 };
 
-const shellClass = "mx-auto w-[min(100%,1100px)] px-[var(--page-gutter)]";
-const sectionClass = `${shellClass} py-[clamp(3.5rem,7vw,4.5rem)]`;
+const sectionClass = `${toolShellClass} py-[clamp(3.5rem,7vw,4.5rem)]`;
 const ruleClass = "border-t border-[var(--color-border-light)]";
-const sectionTitleClass = "m-0 text-[clamp(1.6rem,2.6vw,2rem)] leading-[1.15] tracking-[-0.03em] text-[var(--color-ink)]";
-const bodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 
 /**
  * A free tool: a short banner, the tool straight on the page, the one Opero feature
@@ -46,7 +44,7 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
         title={content.hero.title}
       />
 
-      <section aria-label={content.navLabel} className={`${shellClass} pb-[clamp(3.5rem,7vw,4.5rem)] pt-[clamp(2rem,4vw,3rem)]`}>
+      <section aria-label={content.navLabel} className={`${toolShellClass} pb-[clamp(3.5rem,7vw,4.5rem)] pt-[clamp(2rem,4vw,3rem)]`}>
         <nav aria-label={index.breadcrumbLabel} className="mb-8 print:hidden text-[0.92rem] text-[var(--color-muted)]">
           <Link className="underline-offset-4 hover:underline" href={index.href}>
             {index.label}
@@ -59,48 +57,23 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
         {children}
       </section>
 
-      {/* The one dark band on the page: full width, the text kept in the page column. */}
-      <section aria-labelledby="tool-opero" className="isolate border-y border-white/8 bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] text-white">
-        <div className={`${shellClass} py-[clamp(4rem,8vw,5.5rem)]`}>
-          <div className="flex flex-wrap items-end gap-x-16 gap-y-7">
-            <div className="min-w-0 flex-[1_1_30rem]">
-              <h2 className="m-0 text-[clamp(1.8rem,3vw,2.4rem)] leading-[1.12] tracking-[-0.03em] text-white" id="tool-opero">
-                {opero.title}
-              </h2>
-              <p className="m-0 mt-4 max-w-[39rem] text-[1.06rem] leading-[1.7] text-[var(--color-muted-light)]">{opero.body}</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link className="action action-mist" href={ctas.primary}>
-                {opero.primaryCta}
-              </Link>
-              <Link className="action action-line-dark" href={ctas.secondary}>
-                {opero.secondaryCta}
-                <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-          <ul className="m-0 mt-10 grid list-none grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-4 p-0">
-            {opero.points.map((point) => (
-              <li className="flex gap-3.5 rounded-[var(--radius-card)] border border-white/10 bg-white/[0.04] p-6" key={point.title}>
-                <CheckIcon aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-[var(--color-muted-light)]" />
-                <div>
-                  <h3 className="m-0 font-display text-[1.08rem] font-semibold text-white">{point.title}</h3>
-                  <p className="m-0 mt-2 text-[0.98rem] leading-[1.6] text-[var(--color-muted-light)]">{point.body}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <OperoBand
+        body={opero.body}
+        id="tool-opero"
+        points={opero.points}
+        primary={{ label: opero.primaryCta, href: ctas.primary }}
+        secondary={{ label: opero.secondaryCta, href: ctas.secondary }}
+        title={opero.title}
+      />
 
       <section aria-labelledby="tool-explainer" className={`${sectionClass} flex flex-wrap gap-x-16 gap-y-10`}>
         <div className="min-w-0 flex-[1_1_20rem]">
-          <h2 className={sectionTitleClass} id="tool-explainer">
+          <h2 className={toolSectionTitleClass} id="tool-explainer">
             {explainer.title}
           </h2>
           <div className="mt-5 grid gap-4">
             {explainer.paragraphs.map((paragraph) => (
-              <p className={bodyClass} key={paragraph}>
+              <p className={toolBodyClass} key={paragraph}>
                 {paragraph}
               </p>
             ))}
@@ -142,7 +115,7 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
 
       {sources ? (
         <section aria-labelledby="tool-sources" className={`${sectionClass} ${ruleClass}`}>
-          <h2 className={sectionTitleClass} id="tool-sources">
+          <h2 className={toolSectionTitleClass} id="tool-sources">
             {sources.title}
           </h2>
           <p className="m-0 mt-4 text-[0.92rem] text-[var(--color-muted)]">
@@ -155,7 +128,7 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
           </p>
           <ul className="m-0 mt-5 grid list-none gap-2.5 p-0">
             {sources.items.map((item) => (
-              <li className={bodyClass} key={item.label}>
+              <li className={toolBodyClass} key={item.label}>
                 {item.href ? (
                   <a className="text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={item.href} rel="noopener noreferrer" target="_blank">
                     {item.label}
@@ -166,23 +139,11 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
               </li>
             ))}
           </ul>
-          <p className={`${bodyClass} mt-5 max-w-[46rem] text-[0.95rem]`}>{sources.note}</p>
+          <p className={`${toolBodyClass} mt-5 max-w-[46rem] text-[0.95rem]`}>{sources.note}</p>
         </section>
       ) : null}
 
-      <section aria-labelledby="tool-faq" className={`${sectionClass} ${ruleClass}`}>
-        <h2 className={`${sectionTitleClass} mb-6`} id="tool-faq">
-          {faq.title}
-        </h2>
-        <div>
-          {faq.items.map((item, itemIndex) => (
-            <details className={`border-b border-[var(--color-border-light)] py-5`} key={item.question} open={itemIndex === 0}>
-              <summary className="cursor-pointer font-display text-[1.15rem] font-medium text-[var(--color-ink)]">{item.question}</summary>
-              <p className={`${bodyClass} mt-3 max-w-[46rem]`}>{item.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <ToolFaq className={`${sectionClass} ${ruleClass}`} faq={faq} id="tool-faq" />
 
       {otherTools.length ? (
         <section aria-labelledby="tool-more" className={`${sectionClass} pb-[clamp(4rem,8vw,6rem)]`}>

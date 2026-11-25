@@ -14,7 +14,7 @@ export function TagChips({ tags, locale, ui }: TagChipsProps) {
   if (tags.length === 0) return null;
 
   return (
-    <section className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[rgba(2,2,13,0.12)] pt-5">
+    <section className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[rgba(11,17,22,0.07)] pt-5">
       <h2 className={`${blogMetaClass} shrink-0`}>{ui.labels.tags}</h2>
       <ul className="flex list-none flex-wrap gap-1.5 p-0">
         {tags.map((tag) => (

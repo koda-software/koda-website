@@ -1,4 +1,4 @@
-import { filterPublishedRows, getArticles, getPageSize, getSitemapEntries } from "@/lib/blog/queries";
+import { filterPublishedRows, getArticles, getPageSize, getSitemapEntries, getUsedTags } from "@/lib/blog/queries";
 import { authorPath, blogIndexPath, blogLocales, blogPagePath, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
 import type { BlogLocale, SitemapRow } from "@/lib/blog/types";
 import { absoluteUrl } from "@/lib/seo/site";
@@ -53,7 +53,14 @@ function indexAlternates(): Record<string, string> {
 
 export async function GET() {
   // Scheduled articles must not be advertised before their publication time.
-  const rows = filterPublishedRows(await getSitemapEntries());
+  const published = filterPublishedRows(await getSitemapEntries());
+  // Tag pages without articles are noindex, so they are not listed either.
+  const usedTags = new Map(
+    await Promise.all(
+      blogLocales.map(async (locale) => [locale, new Set((await getUsedTags(locale)).map((tag) => tag.slug))] as const),
+    ),
+  );
+  const rows = published.filter((row) => row.typ !== "tag" || !row.jezyk || usedTags.get(row.jezyk)?.has(row.slug));
   const entries = new Map<string, Entry>();
   const newestArticle = rows
     .filter((row) => row.typ === "artykul")

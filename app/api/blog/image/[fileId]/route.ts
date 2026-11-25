@@ -19,11 +19,22 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/blog
     return new Response("Invalid file id.", { status: 400 });
   }
 
+  let companyId: string;
+
+  try {
+    companyId = requireCompanyId();
+  } catch (error) {
+    // A missing setting is ours to fix, so it must not read as an outage upstream.
+    console.error(error);
+    return new Response("Image proxy is not configured.", { status: 500 });
+  }
+
   let upstream: Response;
 
   try {
-    upstream = await operoFetch(`/v1/companies/${requireCompanyId()}/files/${fileId}/download`);
-  } catch {
+    upstream = await operoFetch(`/v1/companies/${companyId}/files/${fileId}/download`);
+  } catch (error) {
+    console.error(error);
     return new Response("Image backend unavailable.", { status: 502 });
   }
 

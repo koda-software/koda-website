@@ -577,6 +577,21 @@ html {
   border: 0;
 }
 
+/* The article body itself: larger, darker and at normal weight, because it is read
+   for minutes rather than scanned. Section headings stop below the fixed header
+   when a contents link jumps to them. */
+.blog-prose-article {
+  color: var(--color-ink-soft);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.blog-prose-article h2,
+.blog-prose-article h3 {
+  scroll-margin-top: 6.5rem;
+}
+
 /* Tightened variant for short rich text such as an author bio. */
 .blog-prose-compact {
   font-size: 0.96rem;

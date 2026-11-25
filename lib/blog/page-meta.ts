@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { blogBundle } from "./bundle";
 import { fillTemplate } from "./format";
 import { blogDefaultOgImage, createArticleMetadata, createBlogMetadata, symmetricAlternates, truncateDescription } from "./metadata";
-import { getArticleBySlug, getAuthorBySlug, getCategoryBySlug, getTagBySlug } from "./queries";
+import { getArticleBySlug, getAuthorBySlug, getCategoryBySlug, getTagBySlug, tagHasArticles } from "./queries";
 import { authorPath, blogIndexPath, blogPagePath, categoryPath, tagPath } from "./routes";
 import { tiptapPlainText } from "./tiptap";
 import type { BlogLocale } from "./types";
@@ -88,6 +88,8 @@ export async function blogTagMetadata(locale: BlogLocale, slug: string): Promise
     description: describe(tag.opis, fallbacksFor(ui, ui.seoTemplates.tagDescription, name)),
     path: tagPath(locale, slug),
     languages: symmetricAlternates({ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }),
+    // A tag nobody uses yet keeps its address but stays out of search until an article carries it.
+    noIndex: !(await tagHasArticles(slug, locale)),
     image: await blogDefaultOgImage(),
   });
 }

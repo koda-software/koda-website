@@ -24,7 +24,7 @@ export function ArticleRow({ article, locale, ui, priority = false }: ArticleRow
 
   return (
     <article
-      className={`grid gap-10 border-t border-[rgba(2,2,13,0.12)] py-10 max-[809px]:grid-cols-1 max-[809px]:gap-6 max-[809px]:py-8 ${
+      className={`grid gap-10 py-10 first:pt-0 max-[809px]:grid-cols-1 max-[809px]:gap-6 max-[809px]:py-8 ${
         image ? "grid-cols-[minmax(15rem,0.48fr)_minmax(0,1fr)]" : "grid-cols-1"
       }`}
     >

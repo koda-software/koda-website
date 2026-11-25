@@ -1,74 +1,66 @@
-import Link from "next/link";
-import { PageHero } from "@/components/landing/LandingPrimitives";
+import type { ReactNode } from "react";
+import { TwoTone } from "@/components/landing/TwoTone";
+import { OperoBand } from "@/components/layout/OperoBand";
+import { PhotoBackdrop } from "@/components/layout/PhotoBackdrop";
+import type { BlogUiContent } from "@/content/types";
 
 /**
  * Shared class idioms for the blog, mirroring the homepage and solutions pages:
- * editorial, bordered, no card grids or decorative elements.
+ * editorial, bordered, graphite and mist.
  */
 export const blogShellClass = "mx-auto w-[min(100%,var(--shell-width))] px-[var(--page-gutter)]";
-export const blogSectionClass = `${blogShellClass} py-[var(--section-y)]`;
 export const blogBodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color-muted)]";
 export const blogMetaClass = "text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]";
 export const blogPrimaryButtonClass = "action action-ink";
-export const blogSecondaryButtonClass = "action action-line";
+/** A list beside the rail. The rail drops under the list once the list would get too narrow. */
+export const blogWithRailClass = "grid grid-cols-[minmax(0,1fr)_20rem] items-start gap-x-16 gap-y-[4.5rem] max-[1100px]:grid-cols-1";
+/** The rule and title that open a section of a listing. */
+export const blogSectionHeadClass = "flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-[rgba(11,17,22,0.2)] pt-5";
+export const blogSectionTitleClass = "m-0 text-[1.75rem] leading-[1.15] tracking-[-0.03em] max-[809px]:text-[1.45rem]";
+/** The small heading over a list in the rail. */
+export const blogRailHeadClass = "m-0 border-t border-[rgba(11,17,22,0.2)] pb-4 pt-5 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em]";
 
-type BlogHeroProps = {
+type BlogMastheadProps = {
   title: string;
   description?: string;
-  aside?: React.ReactNode;
+  aside?: ReactNode;
 };
 
 /**
- * Dark header band shared by the index, pagination and archive pages. Shorter
- * than the solutions hero because these pages lead with a list, not a pitch.
+ * The dark band that names the page. Deliberately short: these pages lead with
+ * a list, and the first story should be on screen before anyone scrolls. The
+ * top padding clears the fixed site header.
  */
-export function BlogHero({ title, description, aside }: BlogHeroProps) {
+export function BlogMasthead({ title, description, aside }: BlogMastheadProps) {
   return (
-    <PageHero
-      description={description}
-      descriptionClassName="max-w-[680px] text-[1.12rem] max-[809px]:text-[1rem]"
-      photo="workspace"
-      photoOpacity={0.22}
-      sectionClassName="pb-[4.75rem] pt-[10rem] max-[809px]:pt-[8rem]"
-      shellClassName="grid-cols-[minmax(0,1fr)_minmax(16rem,0.46fr)] items-end gap-12 max-[980px]:gap-8"
-      title={title}
-      titleClassName="max-w-[900px]"
-    >
-      {aside ? <div className="border-y border-white/[0.12] py-6">{aside}</div> : null}
-    </PageHero>
+    <header className="relative isolate overflow-hidden bg-[var(--color-surface-dark)] [background-image:var(--gradient-hero)] px-[var(--page-gutter)] pb-[3.25rem] pt-[7.25rem] text-white">
+      <PhotoBackdrop opacity={0.2} photo="workspace" priority />
+      <div className="relative z-[1] mx-auto flex w-[min(100%,var(--shell-width))] flex-wrap items-end justify-between gap-x-16 gap-y-6">
+        <h1 className="m-0 max-w-[51.25rem] flex-[999_1_32rem] text-balance text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.04] tracking-[-0.045em]">
+          <TwoTone text={title} />
+        </h1>
+        {description || aside ? (
+          <div className="max-w-[28.75rem] flex-[1_1_22rem]">
+            {description ? <p className="m-0 text-[1rem] leading-[1.6] text-white/72">{description}</p> : null}
+            {aside ? <div className={description ? "mt-5 border-t border-white/[0.12] pt-5" : ""}>{aside}</div> : null}
+          </div>
+        ) : null}
+      </div>
+    </header>
   );
 }
 
-/** Bordered, centered closing CTA — the same pattern the marketing pages end on. */
-export function BlogFinalCta({
-  title,
-  description,
-  primaryHref,
-  primaryLabel,
-  secondaryHref,
-  secondaryLabel,
-}: {
-  title: string;
-  description: string;
-  primaryHref: string;
-  primaryLabel: string;
-  secondaryHref: string;
-  secondaryLabel: string;
-}) {
+/** The dark band every listing closes on: the same one the tool pages use. */
+export function BlogClosingBand({ ui, ctaHrefs }: { ui: BlogUiContent; ctaHrefs: { primary: string; secondary: string } }) {
   return (
-    <section className={`${blogSectionClass} pt-0`}>
-      <div className="border-y border-[rgba(2,2,13,0.12)] py-[4rem] text-center">
-        <h2 className="mx-auto m-0 max-w-[820px] text-[2.5rem] leading-[1.1] text-[var(--color-ink)] max-[809px]:text-[1.75rem]">{title}</h2>
-        <p className={`${blogBodyClass} mx-auto mt-5 max-w-[640px]`}>{description}</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link className={blogPrimaryButtonClass} href={primaryHref}>
-            {primaryLabel}
-          </Link>
-          <Link className={blogSecondaryButtonClass} href={secondaryHref}>
-            {secondaryLabel}
-          </Link>
-        </div>
-      </div>
-    </section>
+    <div className="mt-24 max-[809px]:mt-16">
+      <OperoBand
+        body={ui.cta.description}
+        id="blog-closing"
+        primary={{ label: ui.cta.primaryCta, href: ctaHrefs.primary }}
+        secondary={{ label: ui.cta.secondaryCta, href: ctaHrefs.secondary }}
+        title={ui.cta.title}
+      />
+    </div>
   );
 }

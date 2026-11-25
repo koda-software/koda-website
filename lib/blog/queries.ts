@@ -256,6 +256,16 @@ async function readAllArticles(jezyk: BlogLocale): Promise<ArticleListRow[]> {
   return all;
 }
 
+/**
+ * The whole published listing for one locale, newest first. The index groups it
+ * by category and the article page draws its "keep reading" covers from it.
+ */
+export const getAllArticles = unstable_cache(
+  async (jezyk: BlogLocale): Promise<ArticleListRow[]> => readAllArticles(jezyk),
+  ["blog", "wszystkie"],
+  { tags: [BLOG_TAG, blogTag("lista")] },
+);
+
 export const getSitemapEntries = unstable_cache(readSitemapEntries, ["blog", "sitemap"], {
   tags: [BLOG_TAG, blogTag("sitemap")],
 });
@@ -341,6 +351,24 @@ export async function getTags(locale: BlogLocale): Promise<Array<Localized<TagRe
   const unique = [...new Map(tags.map((tag) => [tag.slug, tag])).values()];
 
   return unique.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
+}
+
+/**
+ * Whether a tag's page has anything to list. Reads through the same cache entry
+ * the tag page renders from, so checking costs no extra request.
+ */
+export async function tagHasArticles(tagSlug: string, jezyk: BlogLocale): Promise<boolean> {
+  const { rows } = await getArticlesByTag({ tagSlug, jezyk, pageSize: archivePageSize });
+
+  return rows.length > 0;
+}
+
+/** The tags worth linking to: those with at least one published article in this language. */
+export async function getUsedTags(locale: BlogLocale): Promise<Array<Localized<TagRecord>>> {
+  const tags = await getTags(locale);
+  const used = await Promise.all(tags.map((tag) => tagHasArticles(tag.slug, locale)));
+
+  return tags.filter((_, index) => used[index]);
 }
 
 export async function getAuthors(locale: BlogLocale): Promise<Array<Localized<AuthorRecord>>> {

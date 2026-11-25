@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { foldText } from "@/lib/fold-text";
 import { blogImageSrc } from "./images";
 import type { TiptapMark, TiptapNode, TiptapPayload } from "./types";
 
@@ -111,6 +112,9 @@ function hasVisibleContent(node: TiptapNode): boolean {
   return (node.content ?? []).some(hasVisibleContent);
 }
 
+/** Set on section headings by `tiptapSections`; the renderer turns it into the heading's id. */
+const anchorAttr = "sectionAnchor";
+
 function renderNode(node: TiptapNode | null | undefined, key: string): ReactNode {
   if (!node || typeof node.type !== "string") return null;
 
@@ -147,7 +151,7 @@ function renderNode(node: TiptapNode | null | undefined, key: string): ReactNode
       const Heading = `h${level}` as "h2" | "h3" | "h4" | "h5" | "h6";
 
       return (
-        <Heading key={key} style={textAlignStyle(node.attrs)}>
+        <Heading id={attrString(node.attrs, anchorAttr) ?? undefined} key={key} style={textAlignStyle(node.attrs)}>
           {renderChildren(node.content, key)}
         </Heading>
       );
@@ -347,6 +351,74 @@ export function renderTiptap(payload: TiptapPayload | null | undefined): ReactNo
     console.error("[blog/tiptap] failed to render document, falling back to plain text.", error);
     return renderPlainText(payload.plainText);
   }
+}
+
+export type TiptapHeading = { id: string; text: string };
+
+function nodeText(node: TiptapNode | null | undefined): string {
+  if (!node) return "";
+  if (typeof node.text === "string") return node.text;
+  return (node.content ?? []).map(nodeText).join("");
+}
+
+/** "Rolling out, step by step" → "rolling-out-step-by-step"; Polish letters fold to ASCII. */
+function slugify(text: string) {
+  return foldText(text)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+function isSectionHeading(node: TiptapNode) {
+  return node.type === "heading" && (attrNumber(node.attrs, "level") ?? 2) <= 2 && nodeText(node).trim() !== "";
+}
+
+/**
+ * The article's top-level sections, for the table of contents, plus the body
+ * rendered in two parts so a block can sit between them.
+ *
+ * Every section heading gets a stable id built from its own text, so a link to
+ * `#the-six-stages` survives edits elsewhere in the article. The body is cut
+ * just before section number `splitBefore` (zero-based); with fewer sections
+ * than that, everything lands in `before`.
+ */
+export function tiptapSections(
+  payload: TiptapPayload | null | undefined,
+  splitBefore: number,
+): { headings: TiptapHeading[]; before: ReactNode; after: ReactNode } {
+  const source = payload?.doc && Array.isArray(payload.doc.content) ? payload.doc.content : null;
+
+  if (!payload || !source) {
+    return { headings: [], before: renderTiptap(payload), after: null };
+  }
+
+  const headings: TiptapHeading[] = [];
+  const taken = new Set<string>();
+  let splitAt = -1;
+
+  const nodes = source.map((node, index) => {
+    if (!node || !isSectionHeading(node)) return node;
+
+    const text = nodeText(node).trim();
+    const base = slugify(text) || "section";
+    let id = base;
+
+    for (let copy = 2; taken.has(id); copy += 1) id = `${base}-${copy}`;
+
+    taken.add(id);
+    if (headings.length === splitBefore) splitAt = index;
+    headings.push({ id, text });
+
+    return { ...node, attrs: { ...node.attrs, [anchorAttr]: id } };
+  });
+
+  const part = (content: TiptapNode[]) => renderTiptap({ ...payload, doc: { ...payload.doc, type: "doc", content } });
+
+  if (splitAt <= 0) {
+    return { headings, before: part(nodes), after: null };
+  }
+
+  return { headings, before: part(nodes.slice(0, splitAt)), after: part(nodes.slice(splitAt)) };
 }
 
 /** Plain-text projection used for meta descriptions and JSON-LD. */

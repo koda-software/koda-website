@@ -1,3 +1,4 @@
+import type { ToolKey } from "@/lib/i18n/tools";
 import type { FeatureKey } from "@/lib/i18n/features";
 import type { PageKey } from "@/lib/i18n/routes";
 import type { JpkCheckId, KsefKind, VatRateKey } from "@/lib/tools/jpk";
@@ -1253,6 +1254,48 @@ export type BlogUiContent = {
     description: string;
     backLabel: string;
   };
+  /** The index page: lead story, topic sections, the full stream and the rail. */
+  hub: {
+    topStories: string;
+    latest: string;
+    /** `{count}` is replaced with the number of articles. */
+    allCount: string;
+    allShort: string;
+    streamHeading: string;
+    streamCount: string;
+    picks: string;
+    topics: string;
+    rail: string;
+    freeTools: string;
+    /** `{count}` is replaced with the number of tools. */
+    allTools: string;
+  };
+  search: {
+    label: string;
+    placeholder: string;
+    empty: string;
+    unavailable: string;
+  };
+  article: {
+    breadcrumb: string;
+    contents: string;
+    share: string;
+    shareOnLinkedIn: string;
+    shareOnX: string;
+    copyLink: string;
+    linkCopied: string;
+    keepReading: string;
+  };
+  /** Labels on the internal ads; their subjects come from the tool and feature pages. */
+  promos: {
+    product: string;
+    productAlt: string;
+    freeTool: string;
+    openTool: string;
+    inOpero: string;
+    /** `{name}` is replaced with the feature's name. */
+    featureLink: string;
+  };
   cta: {
     title: string;
     description: string;
@@ -1325,6 +1368,17 @@ export type ToolsIndexContent = {
   /** The breadcrumb's accessible name. */
   breadcrumbLabel: string;
   hero: { title: string; description: string };
+  /** The accessible name of the category jump links under the hero. */
+  jumpLabel: string;
+  /** Why the tools can be trusted; icons are picked by position. */
+  trust: Array<{ title: string; body: string }>;
+  /** The tools, grouped for the page and its headings. Every live tool belongs to one group. */
+  categories: Array<{ id: string; title: string; description: string; tools: ToolKey[] }>;
+  /** The longer index card for each tool: what it does and three things it covers. */
+  cards: Record<ToolKey, { description: string; highlights: string[] }>;
+  cardCta: string;
+  faq: { title: string; items: Array<{ question: string; answer: string }> };
+  opero: { title: string; body: string; primaryCta: string; secondaryCta: string };
 };
 
 /** The server-rendered parts every tool page shares; the widget's own labels live with the tool. */

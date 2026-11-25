@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  env: {
+    // Read by lib/deploy-rotation.ts. Written into the bundle here, so a page regenerated
+    // after the build still picks the same promo as the page built with it. The deployment
+    // id changes on every deploy, a redeploy of the same commit included.
+    DEPLOY_SEED: process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? String(Date.now()),
+  },
   experimental: {
     // Prerendering the blog calls the Opero API for every page. Next defaults to
     // one worker per core (23 here), which bursts hundreds of requests at the
