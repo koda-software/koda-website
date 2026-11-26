@@ -67,30 +67,34 @@ export const articlePromoKeys = [
 
 export type ArticlePromoKey = (typeof articlePromoKeys)[number];
 
-/** The feature page each article promo links to, and the screenshot it shows. */
-const articlePromoSetup: Record<ArticlePromoKey, { feature: FeatureKey; image: string }> = {
-  "obieg-faktur-ksef": { feature: "integrations", image: "/opero/ksef/invoice-automation-rule.webp" },
-  "sciezki-akceptacji": { feature: "processes", image: "/opero/processes/transition-required-comment.webp" },
-  "projektant-procesow": { feature: "processes", image: "/opero/processes/hero-workflow-canvas.webp" },
-  "zadania-i-kanban": { feature: "processes", image: "/opero/processes/my-tasks.webp" },
-  "rejestr-dokumentow": { feature: "documents", image: "/opero/documents/hero-case-record.webp" },
-  "podglad-plikow": { feature: "documents", image: "/opero/documents/record-with-file-preview.webp" },
-  "szablony-dokumentow": { feature: "documents", image: "/opero/documents/template-editor.webp" },
-  "powiadomienia-o-terminach": { feature: "lowCode", image: "/opero/communication/notifications-magnifier.webp" },
-  "reguly-automatyzacji": { feature: "lowCode", image: "/opero/low-code/rule-canvas-hero.webp" },
-  "zapytania-sql-i-bloki": { feature: "lowCode", image: "/opero/low-code/saved-query-editor.webp" },
-  "rejestr-zamiast-arkusza": { feature: "noCode", image: "/opero/no-code/data-model-fields.webp" },
-  "formularze-per-rola": { feature: "noCode", image: "/opero/no-code/view-layout-builder.webp" },
-  "formularz-publiczny": { feature: "noCode", image: "/opero/customer-request-story/02-form-builder.webp" },
-  "strona-startowa": { feature: "noCode", image: "/opero/no-code/custom-dashboard.webp" },
-  "platforma-no-code": { feature: "noCode", image: "/opero/no-code/view-layout-hero.webp" },
-  "raporty-z-drazeniem": { feature: "reports", image: "/opero/reports/hero.webp" },
-  "lejek-sprzedazy": { feature: "reports", image: "/opero/reporting/open-deals-report.webp" },
-  "historia-zmian": { feature: "security", image: "/opero/security/record-history.webp" },
-  "uprawnienia-do-pol": { feature: "security", image: "/opero/security/roles-hero.webp" },
-  "wiele-spolek": { feature: "security", image: "/opero/security/company-exposure.webp" },
-  "api-i-webhooki": { feature: "integrations", image: "/opero/integrations/rule-webhook-hero.webp" },
-  "asystent-ai": { feature: "ai", image: "/opero/ai/ticket-triage-rule.webp" },
+/**
+ * The feature page each article promo links to. Its illustration is
+ * `public/opero/promos/<key>.webp`: 1024×640, one flat style shared by the
+ * whole set, so a new item needs an image drawn to match.
+ */
+const articlePromoFeature: Record<ArticlePromoKey, FeatureKey> = {
+  "obieg-faktur-ksef": "integrations",
+  "sciezki-akceptacji": "processes",
+  "projektant-procesow": "processes",
+  "zadania-i-kanban": "processes",
+  "rejestr-dokumentow": "documents",
+  "podglad-plikow": "documents",
+  "szablony-dokumentow": "documents",
+  "powiadomienia-o-terminach": "lowCode",
+  "reguly-automatyzacji": "lowCode",
+  "zapytania-sql-i-bloki": "lowCode",
+  "rejestr-zamiast-arkusza": "noCode",
+  "formularze-per-rola": "noCode",
+  "formularz-publiczny": "noCode",
+  "strona-startowa": "noCode",
+  "platforma-no-code": "noCode",
+  "raporty-z-drazeniem": "reports",
+  "lejek-sprzedazy": "reports",
+  "historia-zmian": "security",
+  "uprawnienia-do-pol": "security",
+  "wiele-spolek": "security",
+  "api-i-webhooki": "integrations",
+  "asystent-ai": "ai",
 };
 
 export function isArticlePromoKey(value: string | null | undefined): value is ArticlePromoKey {
@@ -103,13 +107,12 @@ const articlePromoCopy = { en: enArticlePromos, pl: plArticlePromos };
 const blogUi = { en: enBlog, pl: plBlog };
 
 function articlePromo(locale: BlogLocale, key: ArticlePromoKey): FeaturePromo {
-  const { feature, image } = articlePromoSetup[key];
 
   return {
     key,
     ...articlePromoCopy[locale][key],
-    href: localizeFeaturePath(locale, feature),
-    image,
+    href: localizeFeaturePath(locale, articlePromoFeature[key]),
+    image: `/opero/promos/${key}.webp`,
     linkLabel: blogUi[locale].promos.howItWorks,
   };
 }

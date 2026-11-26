@@ -1,4 +1,6 @@
 import { strict as assert } from "node:assert";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { test } from "node:test";
 import { articlePromoKeys, blogPromos, isArticlePromoKey } from "./promos";
 
@@ -31,7 +33,8 @@ test("every promo key resolves to copy, a link and an image", () => {
     for (const locale of ["pl", "en"] as const) {
       const { feature } = blogPromos(locale, "/blog/x", key);
       assert.ok(feature?.name.trim() && feature.description.trim(), `${locale} copy for ${key}`);
-      assert.match(feature?.image ?? "", /^\/opero\/.+\.webp$/);
+      assert.match(feature?.image ?? "", /^\/opero\/promos\/[a-z0-9-]+\.webp$/);
+      assert.ok(existsSync(join(process.cwd(), "public", feature?.image ?? "")), `image for ${key}`);
     }
   }
 });
