@@ -159,10 +159,10 @@ export function ToolList({ tools, ui, toolsHref, toolCount, headingId }: { tools
       <h2 className={blogRailHeadClass} id={headingId}>
         {ui.hub.freeTools}
       </h2>
-      <ul className="m-0 list-none border-b border-[var(--color-border-light)] p-0">
+      <ul className="m-0 list-none p-0">
         {tools.map((tool) => (
-          <li className="border-t border-[var(--color-border-light)]" key={tool.key}>
-            <Link className="group flex items-center gap-3.5 py-3" href={tool.href}>
+          <li className="py-3.5 first:pt-0" key={tool.key}>
+            <Link className="group flex items-center gap-3.5" href={tool.href}>
               <ToolIcon size="sm" />
               <span className="min-w-0">
                 <span className="block text-[0.98rem] font-semibold leading-[1.3] transition-colors group-hover:text-[var(--color-blue)]">{tool.name}</span>
@@ -172,7 +172,7 @@ export function ToolList({ tools, ui, toolsHref, toolCount, headingId }: { tools
           </li>
         ))}
       </ul>
-      <Link className={`${textLinkClass} mt-1.5`} href={toolsHref}>
+      <Link className={`${textLinkClass} mt-2`} href={toolsHref}>
         {fillTemplate(ui.hub.allTools, { count: toolCount })}
         <Arrow />
       </Link>

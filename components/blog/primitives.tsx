@@ -13,12 +13,14 @@ export const blogBodyClass = "m-0 text-[1.04rem] leading-[1.7] text-[var(--color
 export const blogMetaClass = "text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]";
 export const blogPrimaryButtonClass = "action action-ink";
 /** A list beside the rail. The rail drops under the list once the list would get too narrow. */
-export const blogWithRailClass = "grid grid-cols-[minmax(0,1fr)_20rem] items-start gap-x-16 gap-y-[4.5rem] max-[1100px]:grid-cols-1";
-/** The rule and title that open a section of a listing. */
-export const blogSectionHeadClass = "flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-[rgba(11,17,22,0.2)] pt-5";
+export const blogWithRailClass = "grid grid-cols-[minmax(0,1fr)_20rem] items-start gap-x-20 gap-y-24 max-[1280px]:gap-x-14 max-[1100px]:grid-cols-1";
+/** The short bar that opens a section: it marks where one starts without ruling the page off. */
+export const blogAccentClass = "relative before:absolute before:left-0 before:top-0 before:h-[3px] before:w-9 before:rounded-full before:bg-[var(--color-blue)] before:content-['']";
+/** The title row that opens a section of a listing. */
+export const blogSectionHeadClass = `${blogAccentClass} flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 pt-6`;
 export const blogSectionTitleClass = "m-0 text-[1.75rem] leading-[1.15] tracking-[-0.03em] max-[809px]:text-[1.45rem]";
 /** The small heading over a list in the rail. */
-export const blogRailHeadClass = "m-0 border-t border-[rgba(11,17,22,0.2)] pb-4 pt-5 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em]";
+export const blogRailHeadClass = `${blogAccentClass} m-0 pb-5 pt-5 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em]`;
 
 type BlogMastheadProps = {
   title: string;

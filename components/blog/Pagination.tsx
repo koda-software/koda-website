@@ -38,7 +38,7 @@ export function Pagination({ page, totalPages, buildHref, ui }: PaginationProps)
   const items = pageWindow(page, totalPages);
 
   return (
-    <nav className="mt-12 flex flex-wrap items-center gap-2 border-t border-[rgba(11,17,22,0.07)] pt-8" aria-label={ui.labels.pagination}>
+    <nav className="mt-14 flex flex-wrap items-center gap-2" aria-label={ui.labels.pagination}>
       {page > 1 ? (
         <Link className={idleClass} href={buildHref(page - 1)} rel="prev">
           {ui.labels.previous}

@@ -9,9 +9,9 @@ import { BlogRail } from "./BlogRail";
 import { FeatureStory, HeadlineItem, LeadStory, StreamRow, TextItem } from "./cards";
 import type { BlogFrame } from "./frame";
 import { Pagination } from "./Pagination";
-import { PromoBanner, ToolBanner } from "./Promos";
+import { PromoBanner } from "./Promos";
 import { TopicBar, type Topic } from "./TopicBar";
-import { BlogClosingBand, BlogMasthead, blogBodyClass, blogSectionHeadClass, blogSectionTitleClass, blogShellClass, blogWithRailClass } from "./primitives";
+import { BlogClosingBand, BlogMasthead, blogAccentClass, blogBodyClass, blogSectionHeadClass, blogSectionTitleClass, blogShellClass, blogWithRailClass } from "./primitives";
 
 type BlogHubPageProps = BlogFrame & {
   /** Every published article, newest first. */
@@ -46,9 +46,9 @@ function SectionHead({ id, locale, topic, ui, compact = false }: { id: string; l
   );
 }
 
-const twoColumnClass = "grid grid-cols-2 gap-x-10 max-[809px]:grid-cols-1";
+const twoColumnClass = "grid grid-cols-2 gap-x-12 max-[809px]:grid-cols-1";
 
-/** A topic section: its newest article with the cover, then the next two as headlines with a standfirst. */
+/** A topic section: its newest article as a cover on two thirds of the row, the next few as headlines beside it. */
 function TopicSection({ section, locale, ui }: { section: Section; locale: BlogLocale; ui: BlogUiContent }) {
   const id = `topic-${section.topic.slug}`;
   const [first, ...rest] = section.articles;
@@ -56,13 +56,13 @@ function TopicSection({ section, locale, ui }: { section: Section; locale: BlogL
   return (
     <section aria-labelledby={id}>
       <SectionHead id={id} locale={locale} topic={section.topic} ui={ui} />
-      <div className="mt-7">
+      <div className="mt-9 grid grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start gap-x-10 gap-y-8 max-[809px]:grid-cols-1">
         <FeatureStory article={first} locale={locale} ui={ui} />
-      </div>
-      <div className={`${twoColumnClass} mt-9 gap-y-7`}>
-        {rest.slice(0, 2).map((article) => (
-          <TextItem article={article} key={article.id} locale={locale} ui={ui} withLead />
-        ))}
+        <div>
+          {rest.slice(0, 3).map((article) => (
+            <HeadlineItem article={article} key={article.id} locale={locale} withCategory={false} />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -74,9 +74,9 @@ function SmallSection({ section, locale, ui }: { section: Section; locale: BlogL
   return (
     <section aria-labelledby={id}>
       <SectionHead compact id={id} locale={locale} topic={section.topic} ui={ui} />
-      <div className="divide-y divide-[rgba(11,17,22,0.07)]">
+      <div>
         {section.articles.slice(0, 3).map((article) => (
-          <TextItem article={article} className="py-[1.125rem] first:pt-0 last:pb-0" key={article.id} locale={locale} ui={ui} />
+          <TextItem article={article} className="py-3.5 first:pt-0 last:pb-0" key={article.id} locale={locale} ui={ui} />
         ))}
       </div>
     </section>
@@ -108,12 +108,12 @@ export function BlogHubPage({ locale, ui, shell, ctaHrefs, toolsHref, articles, 
       <TopicBar active={null} locale={locale} topics={topics} total={articles.length} ui={ui} />
 
       {lead ? (
-        <section aria-label={ui.hub.topStories} className={`${blogShellClass} pt-12`}>
-          <div className="grid grid-cols-[minmax(0,1fr)_25rem] gap-x-14 gap-y-10 max-[1100px]:grid-cols-1">
+        <section aria-label={ui.hub.topStories} className={`${blogShellClass} pt-16 max-[809px]:pt-10`}>
+          <div className="grid grid-cols-[minmax(0,1fr)_25rem] gap-x-16 gap-y-12 max-[1100px]:grid-cols-1">
             <LeadStory article={lead} locale={locale} ui={ui} />
             {latest.length > 0 ? (
               <section aria-labelledby="blog-latest">
-                <div className="flex items-baseline justify-between gap-4 border-b border-[rgba(11,17,22,0.2)] pb-3.5">
+                <div className={`${blogAccentClass} flex items-baseline justify-between gap-4 pb-5 pt-5`}>
                   <h2 className="m-0 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.08em]" id="blog-latest">
                     {ui.hub.latest}
                   </h2>
@@ -121,7 +121,7 @@ export function BlogHubPage({ locale, ui, shell, ctaHrefs, toolsHref, articles, 
                     {fillTemplate(ui.hub.allCount, { count: articles.length })}
                   </a>
                 </div>
-                <div className="divide-y divide-[rgba(11,17,22,0.07)]">
+                <div>
                   {latest.map((article) => (
                     <HeadlineItem article={article} key={article.id} locale={locale} />
                   ))}
@@ -132,22 +132,19 @@ export function BlogHubPage({ locale, ui, shell, ctaHrefs, toolsHref, articles, 
         </section>
       ) : null}
 
-      <div className={`${blogShellClass} pt-12`}>
+      <div className={`${blogShellClass} pt-16 max-[809px]:pt-12`}>
         <PromoBanner ctaHrefs={ctaHrefs} shell={shell} ui={ui} />
       </div>
 
-      <div className={`${blogShellClass} pt-[4.5rem]`}>
+      <div className={`${blogShellClass} pt-24 max-[809px]:pt-16`}>
         <div className={blogWithRailClass} data-pin-bounds>
-          <div className="flex min-w-0 flex-col gap-[4.5rem]">
-            {wide.map((section, index) => (
-              <div className="contents" key={section.topic.slug}>
-                <TopicSection locale={locale} section={section} ui={ui} />
-                {index === 0 && promos.tool ? <ToolBanner tool={promos.tool} toolCount={promos.toolCount} toolsHref={toolsHref} ui={ui} /> : null}
-              </div>
+          <div className="flex min-w-0 flex-col gap-24 max-[809px]:gap-16">
+            {wide.map((section) => (
+              <TopicSection key={section.topic.slug} locale={locale} section={section} ui={ui} />
             ))}
 
             {small.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-10 gap-y-14 max-[809px]:grid-cols-1">
+              <div className={`${twoColumnClass} gap-y-16`}>
                 {small.map((section) => (
                   <SmallSection key={section.topic.slug} locale={locale} section={section} ui={ui} />
                 ))}
@@ -164,7 +161,7 @@ export function BlogHubPage({ locale, ui, shell, ctaHrefs, toolsHref, articles, 
               {stream.length === 0 ? (
                 <p className={`${blogBodyClass} mt-7`}>{ui.labels.emptyState}</p>
               ) : (
-                <div className="mt-7 divide-y divide-[rgba(11,17,22,0.07)]">
+                <div className="mt-9">
                   {stream.map((article) => (
                     <StreamRow article={article} key={article.id} locale={locale} ui={ui} />
                   ))}

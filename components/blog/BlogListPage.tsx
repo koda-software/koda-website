@@ -55,9 +55,9 @@ export function BlogListPage({
         <div className={blogWithRailClass} data-pin-bounds>
           <div className="min-w-0">
             {rows.length === 0 ? (
-              <p className={`${blogBodyClass} border-t border-[var(--color-border-light)] pt-10`}>{ui.labels.emptyState}</p>
+              <p className={`${blogBodyClass}`}>{ui.labels.emptyState}</p>
             ) : (
-              <div className="divide-y divide-[rgba(11,17,22,0.07)]">
+              <div>
                 {rows.map((article, index) => (
                   <ArticleRow article={article} key={article.id} locale={locale} priority={index === 0} ui={ui} />
                 ))}

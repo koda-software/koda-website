@@ -14,7 +14,7 @@ type BlogRailProps = Omit<BlogFrame, "topics"> & {
  */
 export function BlogRail({ locale, ui, shell, ctaHrefs, toolsHref, picks, promos, variant = "list" }: BlogRailProps) {
   return (
-    <aside aria-label={ui.hub.rail} className="flex h-full min-w-0 flex-col gap-10 self-stretch">
+    <aside aria-label={ui.hub.rail} className="flex h-full min-w-0 flex-col gap-14 self-stretch">
       {variant === "article" && promos.feature ? <FeatureCard ctaHrefs={ctaHrefs} feature={promos.feature} ui={ui} /> : null}
       {variant === "article" && promos.tool ? <ToolCard tool={promos.tool} ui={ui} /> : null}
 
@@ -23,7 +23,7 @@ export function BlogRail({ locale, ui, shell, ctaHrefs, toolsHref, picks, promos
           <h2 className={blogRailHeadClass} id="blog-picks">
             {ui.hub.picks}
           </h2>
-          <ol className="m-0 list-none divide-y divide-[rgba(11,17,22,0.07)] p-0">
+          <ol className="m-0 list-none p-0">
             {picks.map((article, index) => (
               <PickItem article={article} index={index} key={article.id} locale={locale} ui={ui} />
             ))}
