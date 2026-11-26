@@ -194,12 +194,27 @@ export async function BlogIndexRoute({ locale, page = 1 }: { locale: BlogLocale;
   );
 }
 
+/**
+ * A missing blog page follows its row in the CMS redirect table (a renamed slug, a removed
+ * category or author) and is a real 404 otherwise.
+ */
+async function redirectOrNotFound(path: string): Promise<never> {
+  const match = await findRedirect(path);
+
+  if (match) {
+    if (match.kod === "301") permanentRedirect(match.sciezka_do);
+    redirect(match.sciezka_do);
+  }
+
+  notFound();
+}
+
 export async function BlogCategoryRoute({ locale, slug }: { locale: BlogLocale; slug: string }) {
   const { ui } = blogBundle(locale);
   const category = await getCategoryBySlug(slug, locale);
 
   if (!category) {
-    notFound();
+    return redirectOrNotFound(categoryPath(locale, slug));
   }
 
   // Taxonomy slugs are translated: a slug from another locale moves to this one's.
@@ -227,7 +242,7 @@ export async function BlogTagRoute({ locale, slug }: { locale: BlogLocale; slug:
   const tag = await getTagBySlug(slug, locale);
 
   if (!tag) {
-    notFound();
+    return redirectOrNotFound(tagPath(locale, slug));
   }
 
   if (tag.slug !== slug) {
@@ -253,7 +268,7 @@ export async function BlogAuthorRoute({ locale, slug }: { locale: BlogLocale; sl
   const record = await getAuthorBySlug(slug, locale);
 
   if (!record || record.aktywny === false) {
-    notFound();
+    return redirectOrNotFound(authorPath(locale, slug));
   }
 
   if (record.slug !== slug) {

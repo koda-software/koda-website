@@ -1,5 +1,51 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import type { NextConfig } from "next";
 import { createMDX } from "fumadocs-mdx/next";
+
+/**
+ * The Opero guide's chapters were renumbered and renamed when the docs moved here
+ * (03-praca-na-danych/historia-zmian is now 05-rekordy/historia-zmian), and Google still
+ * crawls the old addresses. Page names are unique across chapters and the same in both
+ * languages, so each page's old address under any other chapter moves to its current one.
+ */
+function movedGuideRedirects() {
+  const guide = path.join(process.cwd(), "content/docs/pl/opero");
+  const chapters = readdirSync(guide, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+  const pages = chapters.flatMap((chapter) =>
+    readdirSync(path.join(guide, chapter))
+      .filter((file) => file.endsWith(".mdx"))
+      .map((file) => ({ chapter, page: file.replace(/\.mdx$/, "") })),
+  );
+  // Old pages that were renamed as well as moved.
+  const renamed = [
+    { old: "karta-rekordu", chapter: "05-rekordy", page: "formularz-rekordu" },
+    { old: "rejestr-rekordow", chapter: "04-listy-rekordow", page: "lista-rekordow" },
+  ];
+  // The lookahead sees the rest of the path, so "not this chapter" ends in its slash.
+  const oldChapter = (current: string) => `:chapter((?!${current}/)\\d{2}-[a-z0-9-]+)`;
+
+  return [
+    ...pages.map(({ chapter, page }) => ({
+      source: `/docs/:locale(en|pl)/opero/${oldChapter(chapter)}/${page}`,
+      destination: `/docs/:locale/opero/${chapter}/${page}`,
+      permanent: true,
+    })),
+    ...renamed.map(({ old, chapter, page }) => ({
+      source: `/docs/:locale(en|pl)/opero/:chapter(\\d{2}-[a-z0-9-]+)/${old}`,
+      destination: `/docs/:locale/opero/${chapter}/${page}`,
+      permanent: true,
+    })),
+    // Chapters have no page of their own, old or current: their address goes to the guide's start.
+    {
+      source: "/docs/:locale(en|pl)/opero/:chapter(\\d{2}-[a-z0-9-]+)",
+      destination: "/docs/:locale/opero",
+      permanent: true,
+    },
+  ];
+}
 
 const nextConfig: NextConfig = {
   images: {
@@ -74,6 +120,18 @@ const nextConfig: NextConfig = {
         destination: "/docs/:locale/:path*",
         permanent: true,
       },
+      // The docs app also served the guide and the API reference without the /docs prefix.
+      {
+        source: "/:locale(en|pl)/opero/:chapter(\\d{2}-[a-z0-9-]+)/:path*",
+        destination: "/docs/:locale/opero/:chapter/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:locale(en|pl)/api/:path*",
+        destination: "/docs/:locale/api/:path*",
+        permanent: true,
+      },
+      ...movedGuideRedirects(),
     ];
   },
   async headers() {
