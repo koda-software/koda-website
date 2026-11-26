@@ -47,13 +47,15 @@ Covers used so far (newest first; add each chosen cover here):
 
 | Article | Chosen cover |
 |---|---|
+| jak odebrać fakturę z KSeF (rewrite) | still life, no people: empty wire in-tray next to a tablet with a blurred invoice list, glasses, sticky notes (Seedream 5.5; option A, hands putting paper invoices into an archive box, not used) |
 | rejestr pełnomocnictw (rewrite) | medium shot: woman in a records room pulls a folder from a filing cabinet and checks it against a tablet, shelves of binders (Seedream 5.5; option A, close-up of signing next to a binder and company stamp, not used) |
 | KSeF od 2027 | close-up at a small shop counter: hands tear a till receipt from a receipt printer, tablet with a blurred e-invoice, card terminal (Seedream 5.5; option B, electrician invoicing at a kitchen table on a December evening, not used) |
 | low code | overhead: hands laying paper cards into a flow, same flow rebuilt as an app on a tablet, printed spreadsheet (option D, warehouse leader with tablet and crushed box, not used) |
 | automatyzacja procesów | two people at a desk, warehouse behind glass, he points at the monitor |
 | obieg dokumentów (EOD) | office manager hands over a contract, colleague shows the register on a laptop |
 | obieg faktur | finance manager at a laptop, colleague leans in, paper invoices |
-| e-Doręczenia | (older cover, office scene) |
+| e-Doręczenia | overhead: rubber-banded registered letters with postal slips, phone with a blurred inbox notification |
+| 13 older posts, recovered 2026-11-26 (diagram/mockup covers replaced; files in vault `_assets/okladki-2026-11-26/`) | close-ups: red pen circling one amount + ringing phone (automatyzacja regułami); hands pulling a thin folder from an archive box (historia sprawy); invoice handoff between hands + stamp (proces zamiast statusu); highlighted printout taped to a warehouse wall + phone (Excel). Overheads/still lifes: quote buried under papers with a faded sticky note (lejek); desk calendar with circled date + lit phone (powiadomienia); signed document + company stamps + tablet (pełnomocnictwa, unused); macro of blue and orange cable in a patch panel (API czy MCP). Wide: person facing a wall of sticky notes (wdrożenia); office mid-expansion, desks in plastic (firma urosła); drone shot of a business park with three companies (osobne systemy); software studio with port cranes outside (witamy). Single person on site: ops manager redrawing a whiteboard flow (kto zmienia proces); technician signing a report at a restaurant fridge (szablony) |
 
 - Model **`bytedance:seedream@5.5`** (Seedream 5.5, chosen by the user on
   2026-11-26), `width 2736`, `height 1536`, `numberResults 1` per concept,
