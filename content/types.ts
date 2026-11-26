@@ -1,5 +1,6 @@
 import type { ToolKey } from "@/lib/i18n/tools";
 import type { FeatureKey } from "@/lib/i18n/features";
+import type { ArticlePromoKey } from "@/lib/blog/promos";
 import type { PageKey } from "@/lib/i18n/routes";
 import type { JpkCheckId, KsefKind, VatRateKey } from "@/lib/tools/jpk";
 import type { JpkCsvLabels } from "@/lib/tools/jpk-csv";
@@ -1287,7 +1288,7 @@ export type BlogUiContent = {
     /** Heading of the FAQ under the article text. */
     faq: string;
   };
-  /** Labels on the internal ads; their subjects come from the tool and feature pages. */
+  /** Labels on the internal ads; their subjects come from the tool and feature pages, or an article promo. */
   promos: {
     product: string;
     productAlt: string;
@@ -1296,6 +1297,8 @@ export type BlogUiContent = {
     inOpero: string;
     /** `{name}` is replaced with the feature's name. */
     featureLink: string;
+    /** Link on a promo the editors chose for the article, whose title is a sentence rather than a name. */
+    howItWorks: string;
   };
   cta: {
     title: string;
@@ -2429,3 +2432,10 @@ export type LateInterestLabels = {
   defaultAmount: string;
   defaultLabel: string;
 };
+
+/**
+ * Copy for the article promos an editor picks per article in Opero
+ * ("Promowana funkcja"). `name` is the card's title, `description` one or two
+ * sentences on what the feature does for the reader.
+ */
+export type ArticlePromoCopy = Record<ArticlePromoKey, { name: string; description: string }>;

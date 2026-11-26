@@ -53,6 +53,11 @@ function CtaActions({ ui, ctaHrefs, className = "" }: { ui: BlogUiContent; ctaHr
   );
 }
 
+/** A chosen article promo has its own link text; a feature page is linked by name. */
+function featureLinkLabel(feature: FeaturePromo, ui: BlogUiContent) {
+  return feature.linkLabel ?? fillTemplate(ui.promos.featureLink, { name: feature.name });
+}
+
 function FeatureShot({ feature, ui, className }: { feature: FeaturePromo; ui: BlogUiContent; className: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- a cropped product screenshot; next/image optimization is off site-wide
@@ -100,7 +105,7 @@ export function FeatureCard({ feature, ui, ctaHrefs }: { feature: FeaturePromo; 
           {ui.cta.primaryCta}
         </Link>
         <Link className="group mt-1.5 flex min-h-11 items-center justify-center gap-2 text-[0.92rem] font-medium text-[var(--color-mist)]" href={feature.href}>
-          {fillTemplate(ui.promos.featureLink, { name: feature.name })}
+          {featureLinkLabel(feature, ui)}
           <Arrow className="text-[var(--color-blue-soft)]" />
         </Link>
       </div>
@@ -206,7 +211,7 @@ export function InlineFeature({ feature, ui }: { feature: FeaturePromo; ui: Blog
         <p className={`${promoTitleClass} mt-2 text-[1.2rem] leading-[1.25]`}>{feature.name}</p>
         <p className="m-0 mt-2 line-clamp-3 text-[0.98rem] leading-[1.6] text-[var(--color-muted)]">{feature.description}</p>
         <Link className={`${textLinkClass} mt-1`} href={feature.href}>
-          {fillTemplate(ui.promos.featureLink, { name: feature.name })}
+          {featureLinkLabel(feature, ui)}
           <Arrow />
         </Link>
       </div>

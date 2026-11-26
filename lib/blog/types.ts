@@ -81,6 +81,12 @@ export type ArticleFullRow = ArticleListRow & {
   tagi: Array<{ slug: string; nazwa: string }> | null;
   powiazane: Array<{ slug: string; tytul: string; zajawka: string | null }> | null;
   /**
+   * Key of the Opero feature this article promotes (dictionary
+   * `blog-promowana-funkcja`); see `articlePromoKeys` in promos.ts. `null`
+   * leaves the promo slots to the rotation.
+   */
+  promowana_funkcja: string | null;
+  /**
    * The article's FAQ rows (`artykul-faq`) in table order, resolved to the
    * requested locale. Outside the source locale the query keeps only rows whose
    * question and answer are both translated. `null` when there are none.

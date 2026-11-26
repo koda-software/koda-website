@@ -94,6 +94,7 @@ export const blogContent: BlogUiContent = {
     openTool: "Otwórz narzędzie",
     inOpero: "Zobacz to w Opero",
     featureLink: "{name} w Opero",
+    howItWorks: "Zobacz, jak to działa w Opero",
   },
   cta: {
     title: "Zobacz, jak to działa na Twoich procesach.",

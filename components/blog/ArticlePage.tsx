@@ -28,16 +28,28 @@ type ArticlePageProps = Omit<BlogFrame, "topics"> & {
 const columnsClass = "grid grid-cols-[minmax(0,1fr)_21.5rem] items-start gap-x-14 gap-y-16 max-[1199px]:grid-cols-[minmax(0,1fr)_20rem] max-[980px]:grid-cols-1";
 /** The in-text promo goes in before this section (zero-based), far enough in that the reader has started. */
 const promoBeforeSection = 3;
-/** Shorter articles keep their text unbroken. */
+/** Shorter articles keep their text unbroken, unless the editors chose the promo. */
 const promoMinSections = 5;
+
+/**
+ * The section the in-text promo goes in before, or Infinity for none. A rotated
+ * promo only breaks long articles; a chosen one moves earlier in short ones.
+ */
+function inlinePromoSection(promos: ArticlePageProps["promos"], sectionCount: number): number {
+  if (!promos.inlineFeature) return Number.POSITIVE_INFINITY;
+  if (promos.chosen) return sectionCount >= 2 ? Math.min(promoBeforeSection, sectionCount - 1) : Number.POSITIVE_INFINITY;
+
+  return sectionCount >= promoMinSections ? promoBeforeSection : Number.POSITIVE_INFINITY;
+}
 
 export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, url, picks, keepReading, promos }: ArticlePageProps) {
   const heroImage = blogImageSrc(article.obraz_glowny);
   const published = formatDate(article.data_publikacji, locale);
   const updated = shouldShowUpdated(article.data_publikacji, article.updated_at) ? formatDate(article.updated_at, locale) : null;
   const sectionCount = (article.tresc?.doc?.content ?? []).filter((node) => node?.type === "heading").length;
-  const showInline = Boolean(promos.inlineFeature) && sectionCount >= promoMinSections;
-  const { before, after } = tiptapSections(article.tresc, showInline ? promoBeforeSection : Number.POSITIVE_INFINITY);
+  const { before, after } = tiptapSections(article.tresc, inlinePromoSection(promos, sectionCount));
+  // A promo the editors chose always shows; with no section to break at, it follows the text.
+  const inlineAfterText = !after && promos.chosen ? promos.inlineFeature : undefined;
 
   const author: BlogAuthor | null = article.autor_nazwa
     ? {
@@ -149,6 +161,7 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
                   <div className="blog-prose blog-prose-article">{after}</div>
                 </>
               ) : null}
+              {inlineAfterText ? <InlineFeature feature={inlineAfterText} ui={ui} /> : null}
 
               <ArticleFaq items={article.faq ?? []} title={ui.article.faq} />
               <TagChips locale={locale} tags={article.tagi ?? []} ui={ui} />

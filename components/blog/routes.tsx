@@ -65,7 +65,7 @@ const keepReadingCount = 3;
  * What every blog page shows around its own content, plus the full listing it
  * is drawn from. `pageKey` is the page's path, so pages draw different promos.
  */
-async function blogChrome(locale: BlogLocale, pageKey: string, excludeId?: string) {
+async function blogChrome(locale: BlogLocale, pageKey: string, article?: { id: string; promoKey: string | null }) {
   const { ui, ctaHrefs, shell } = blogBundle(locale);
   const [articles, categories] = await Promise.all([getAllArticles(locale), getCategories(locale)]);
   const counts = new Map<string, number>();
@@ -77,8 +77,8 @@ async function blogChrome(locale: BlogLocale, pageKey: string, excludeId?: strin
   const topics = categories
     .map((category) => ({ slug: category.slug, name: category.nazwa, count: counts.get(category.slug) ?? 0 }))
     .filter((topic) => topic.count > 0);
-  const picks = articles.filter((article) => article.wyrozniony === true && article.id !== excludeId).slice(0, picksCount);
-  const promos = blogPromos(locale, pageKey);
+  const picks = articles.filter((row) => row.wyrozniony === true && row.id !== article?.id).slice(0, picksCount);
+  const promos = blogPromos(locale, pageKey, article?.promoKey);
   const toolsHref = localizePath(toSiteLocale(locale), "tools");
   const frame: BlogFrame = { locale, ui, shell, ctaHrefs, toolsHref, topics, picks, promos };
 
@@ -319,7 +319,10 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
   }
 
   const path = articlePath(locale, article.slug);
-  const [settings, { articles, frame }] = await Promise.all([getSettings(), blogChrome(locale, path, article.id)]);
+  const [settings, { articles, frame }] = await Promise.all([
+    getSettings(),
+    blogChrome(locale, path, { id: article.id, promoKey: article.promowana_funkcja }),
+  ]);
   const { paths } = getArticleAlternates(article, locale);
   // The editors' related articles first, then the newest from the same category, then the newest of all.
   const others = articles.filter((row) => row.id !== article.id);
