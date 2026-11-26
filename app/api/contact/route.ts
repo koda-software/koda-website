@@ -12,6 +12,9 @@ type ContactPayload = {
   message?: unknown;
   locale?: unknown;
   source?: unknown;
+  landing?: unknown;
+  previous?: unknown;
+  referrer?: unknown;
   website?: unknown;
 };
 
@@ -27,6 +30,7 @@ const maxLengths = {
   message: 4000,
   locale: 8,
   source: 220,
+  referrer: 120,
 };
 
 function clean(value: unknown, maxLength: number) {
@@ -74,6 +78,10 @@ export async function POST(request: Request) {
   const message = clean(payload.message, maxLengths.message);
   const locale = clean(payload.locale, maxLengths.locale);
   const source = clean(payload.source, maxLengths.source);
+  // The first page of the visit, the page before the form, and the outside site the visit came from.
+  const landing = clean(payload.landing, maxLengths.source);
+  const previous = clean(payload.previous, maxLengths.source);
+  const referrer = clean(payload.referrer, maxLengths.referrer);
 
   if (!name || !email || !message || !isEmail(email)) {
     return Response.json({ error: "Missing or invalid required fields." }, { status: 400 });
@@ -97,6 +105,9 @@ export async function POST(request: Request) {
     interest ? `Topic: ${interest}` : "",
     locale ? `Locale: ${locale}` : "",
     source ? `Source: ${source}` : "",
+    previous ? `Came from: ${previous}` : "",
+    landing ? `Landing page: ${landing}` : "",
+    referrer ? `Referrer: ${referrer}` : "",
     "",
     message,
   ]
@@ -113,6 +124,9 @@ export async function POST(request: Request) {
       ${field("Topic", interest)}
       ${field("Locale", locale)}
       ${field("Source", source)}
+      ${field("Came from", previous)}
+      ${field("Landing page", landing)}
+      ${field("Referrer", referrer)}
       <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
       <p style="white-space: pre-line;">${escapeHtml(message)}</p>
     </div>

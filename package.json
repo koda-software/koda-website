@@ -24,7 +24,7 @@
     "docs:sync-algolia": "tsx scripts/docs/sync-algolia.ts",
     "docs:sync-algolia:gate": "node scripts/docs/sync-algolia-gate.mjs",
     "test:docs": "node --test scripts/docs/tests/*.test.mjs",
-    "test:tools": "tsx --test lib/tools/*.test.ts lib/consent/*.test.ts lib/blog/*.test.ts",
+    "test:tools": "tsx --test lib/tools/*.test.ts lib/consent/*.test.ts lib/blog/*.test.ts lib/analytics/*.test.ts",
     "predev": "pnpm run docs:generate",
     "docs:accept-snapshot": "tsx scripts/docs/generate-validated.ts --accept-snapshot",
     "docs:sync-preview-algolia": "tsx scripts/docs/sync-preview-algolia.ts"

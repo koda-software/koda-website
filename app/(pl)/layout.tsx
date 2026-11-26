@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Atkinson_Hyperlegible_Next, Sora } from "next/font/google";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { JourneyTracker } from "@/components/analytics/JourneyTracker";
 import { ConsentManager } from "@/components/consent/ConsentManager";
 import { commonContent } from "@/content/pl/common";
 import { CONSENT_BOOTSTRAP } from "@/lib/consent/google";
@@ -62,6 +63,7 @@ export default function PolishRootLayout({ children }: Readonly<{ children: Reac
         <WebsiteJsonLd />
         {children}
         <SpeedInsights />
+        <JourneyTracker />
         <ConsentManager content={commonContent.consent} locale="pl" privacyHref={localizePath("pl", "privacy")} />
       </body>
     </html>

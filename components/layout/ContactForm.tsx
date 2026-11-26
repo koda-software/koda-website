@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useId, useState } from "react";
 import SendIcon from "lucide-react/dist/esm/icons/send.mjs";
+import { currentJourney } from "@/lib/analytics/journey";
 import type { Locale } from "@/lib/i18n/config";
 import { localizePath } from "@/lib/i18n/routes";
 import type { ContactFormContent } from "@/content/types";
@@ -68,6 +69,10 @@ export function ContactForm({ locale, content }: ContactFormProps) {
     setSubmitState("submitting");
     setMessage("");
 
+    // Read before sending: the page the visitor came from tells us what the request is about.
+    const journey = currentJourney();
+    const interest = form.interest;
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -78,6 +83,9 @@ export function ContactForm({ locale, content }: ContactFormProps) {
           ...form,
           locale,
           source: window.location.pathname,
+          landing: journey.landing,
+          previous: journey.previous,
+          referrer: journey.referrer,
         }),
       });
 
@@ -85,6 +93,15 @@ export function ContactForm({ locale, content }: ContactFormProps) {
         throw new Error("Contact request failed");
       }
 
+      // No personal data: only the topic and the pages that led here.
+      window.dataLayer?.push({
+        event: "generate_lead",
+        form: "contact",
+        interest,
+        locale,
+        landing_page: journey.landing,
+        previous_page: journey.previous,
+      });
       setSubmitState("success");
       setMessage(content.successMessage);
       setForm(initialState);
