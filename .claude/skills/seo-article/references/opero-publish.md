@@ -54,8 +54,18 @@ English goes under `$i18n.en` with the localizable fields: `tytul`, `slug`,
 Rich text: pass `{"format": "markdown", "markdown": "..."}`. Links are absolute
 `https://www.kodasoft.pl/pl/...` (EN: `/en/...` with the English slugs: look
 them up via `$i18n.en.slug` with `includeI18n: true`; product pages are in
-`lib/i18n/features.ts`). FAQ questions are `###` under a `## Najczęstsze pytania`
-/ `## FAQ` heading.
+`lib/i18n/features.ts`).
+
+FAQ does not go in `tresc`. The site shows the record's `faq` rows (child object
+`artykul-faq`) under the text and builds the FAQPage data from them; questions
+written as headings in the body get neither. Write the rows with
+`runtime_records_update_aggregate` (`formId: cmsf83o0u003301nu6rv802sd`,
+`recordId`, `payload: { clientMutationId, expectedVersion, subordinateObjects:
+{ faq: { create: [{ clientId, values: { pytanie, odpowiedz, $i18n: { en: {
+pytanie, odpowiedz } } } }], order: [clientIds] } } }`). Answers are plain text;
+a link is `<a href="https://www.kodasoft.pl/...">text</a>`. Read existing rows
+with `runtime_records_list_subordinate` (`query.root: { type:
+"61646a1a-151e-4889-af59-fba5b0265f52", recordId, formId }`, `field: "faq"`).
 
 ## Steps
 
