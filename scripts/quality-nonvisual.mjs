@@ -127,6 +127,7 @@ assert(robots.includes("User-Agent: *"), "robots.txt missing User-Agent rule");
 assert(robots.includes("Allow: /"), "robots.txt missing Allow rule");
 assert(robots.includes(`${siteUrl}/sitemap.xml`), "robots.txt missing sitemap URL");
 assert(robots.includes(`${siteUrl}/blog-sitemap.xml`), "robots.txt missing blog sitemap URL");
+assert(robots.includes(`${siteUrl}/docs-sitemap.xml`), "robots.txt missing docs sitemap URL");
 
 const ogMetadata = await sharp(path.join(root, ".next/server/app/og-image.png.body")).metadata();
 assert(ogMetadata.width === 1200 && ogMetadata.height === 630, "OG image must be 1200x630");

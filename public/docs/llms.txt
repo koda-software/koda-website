@@ -38,7 +38,7 @@ These docs describe public Opero concepts and the external Opero API. English is
 ## Machine-Readable References
 
 - [OpenAPI schema](https://opero.kodasoft.pl/api/swagger/v1/json): Current external API contract.
-- [Sitemap](https://kodasoft.pl/docs/sitemap.xml): Complete public docs URL list.
+- [Sitemap](https://www.kodasoft.pl/docs-sitemap.xml): Complete public docs URL list.
 - [Search index](https://kodasoft.pl/docs/static.json): Public structured search index with page titles, descriptions, and content excerpts.
 
 ## Optional
