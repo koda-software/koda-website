@@ -47,6 +47,7 @@ Covers used so far (newest first; add each chosen cover here):
 
 | Article | Chosen cover |
 |---|---|
+| wdrożenie EOD (rewrite of dlaczego wdrożenia się przeciągają) | close-up at table height: hand places a paper invoice on a hand-drawn process sketch on the meeting table, contract on the sketch, colleague drawing a flow on a whiteboard behind (Seedream 5.5; take A4 of the workshop concept; not used: overhead workshop table with three people (A3), office manager carrying a box of binders past a half-empty shelf (B)) |
 | workflow: co to jest (rewrite of proces zamiast pola ze statusem) | overhead still life, hand in frame: purchase request with a stapled quote on a desk, taped parcel, hand holding a phone with an approve button, desk calendar, mug (Seedream 5.5; option A, hand sliding a folder into a pigeonhole while holding a tablet with a process diagram, not used) |
 | jak odebrać fakturę z KSeF (rewrite) | still life, no people: empty wire in-tray next to a tablet with a blurred invoice list, glasses, sticky notes (Seedream 5.5; option A, hands putting paper invoices into an archive box, not used) |
 | rejestr pełnomocnictw (rewrite) | medium shot: woman in a records room pulls a folder from a filing cabinet and checks it against a tablet, shelves of binders (Seedream 5.5; option A, close-up of signing next to a binder and company stamp, not used) |
