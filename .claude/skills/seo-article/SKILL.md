@@ -64,7 +64,7 @@ publication slot. Typical reply: "Approved, make images".
 ## 3. Images
 
 Follow `references/images.md`: two **different cover concepts** from Runware
-FLUX that each show the article's subject (not a generic office; vary the shot
+Seedream 5.5 that each show the article's subject (not a generic office; vary the shot
 from recent covers listed there), 2–3 minimal diagrams from the HTML templates,
 all checked visually before sending. After the user picks, record the chosen
 cover in the list in `images.md`.

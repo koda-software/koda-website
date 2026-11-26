@@ -19,7 +19,7 @@ as a set.
   rejected).
 - 2–3 diagrams per article; place each under the heading it explains.
 
-## Cover (Runware, FLUX 3)
+## Cover (Runware, Seedream 5.5)
 
 Runware MCP (server `06852363-…`, tool `run`; load with ToolSearch). If the
 server needs auth, tell the user to authorise it via /mcp. If the account is out
@@ -47,15 +47,26 @@ Covers used so far (newest first; add each chosen cover here):
 
 | Article | Chosen cover |
 |---|---|
+| KSeF od 2027 | close-up at a small shop counter: hands tear a till receipt from a receipt printer, tablet with a blurred e-invoice, card terminal (Seedream 5.5; option B, electrician invoicing at a kitchen table on a December evening, not used) |
 | low code | overhead: hands laying paper cards into a flow, same flow rebuilt as an app on a tablet, printed spreadsheet (option D, warehouse leader with tablet and crushed box, not used) |
 | automatyzacja procesów | two people at a desk, warehouse behind glass, he points at the monitor |
 | obieg dokumentów (EOD) | office manager hands over a contract, colleague shows the register on a laptop |
 | obieg faktur | finance manager at a laptop, colleague leans in, paper invoices |
 | e-Doręczenia | (older cover, office scene) |
 
-- Model `bfl:flux@3-image`, `width 2736`, `height 1536`, `numberResults 1` per
-  concept, `outputFormat PNG`, `settings {"grounding": false}`, `includeCost true`
-  (about $0.10 per image).
+- Model **`bytedance:seedream@5.5`** (Seedream 5.5, chosen by the user on
+  2026-11-26), `width 2736`, `height 1536`, `numberResults 1` per concept,
+  `outputFormat PNG`, `includeCost true` (about $0.035 per image). No `settings`
+  needed; it has no grounding option.
+- Seedream comes out darker and more cinematic than the other models. It suits a
+  close-up; for a dim indoor scene (evening, kitchen) ask for brighter, even
+  light or it turns gloomy.
+- Comparison on the same two prompts (KSeF article, 2026-11-26): FLUX 3
+  (`bfl:flux@3-image`, $0.10, `settings {"grounding": false}`) was clean but
+  slightly staged; Nano Banana 2.1 (`google:nano-banana@2.1`, $0.05, sizes from a
+  fixed list, e.g. 2752×1536) was the most realistic but put a readable English
+  heading on a screen and a British street outside a window. Use either only if
+  the user asks.
 - Prompt pattern (English): *Editorial documentary photograph / overhead
   editorial photograph … <the concrete scene for this article> … <one or two
   props that carry the idea>. Screens show soft, out-of-focus content, no
