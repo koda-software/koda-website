@@ -47,6 +47,7 @@ Covers used so far (newest first; add each chosen cover here):
 
 | Article | Chosen cover |
 |---|---|
+| rejestr pełnomocnictw (rewrite) | medium shot: woman in a records room pulls a folder from a filing cabinet and checks it against a tablet, shelves of binders (Seedream 5.5; option A, close-up of signing next to a binder and company stamp, not used) |
 | KSeF od 2027 | close-up at a small shop counter: hands tear a till receipt from a receipt printer, tablet with a blurred e-invoice, card terminal (Seedream 5.5; option B, electrician invoicing at a kitchen table on a December evening, not used) |
 | low code | overhead: hands laying paper cards into a flow, same flow rebuilt as an app on a tablet, printed spreadsheet (option D, warehouse leader with tablet and crushed box, not used) |
 | automatyzacja procesów | two people at a desk, warehouse behind glass, he points at the monitor |
@@ -82,6 +83,13 @@ Covers used so far (newest first; add each chosen cover here):
 ```
 
   (1600×900, saturation 0.72, WebP via get-low; ~70–140 KB.)
+- **Convert and compress only with `tools/get-low`** (`-to webp`), never
+  cwebp, ffmpeg, sharp, ImageMagick or Runware's own WebP output. get-low can't
+  resize, so headless Chromium only crops and mutes to a PNG and get-low makes
+  the WebP; `render.sh` already does both. If you process a file by hand,
+  finish it with `tools/get-low -to webp`.
+- If `render.sh` fails with `bash\r: No such file or directory`, the checkout
+  has CRLF line endings (`core.autocrlf`): run `sed -i 's/\r$//'` on the script.
 - Alt text describes the scene and starts with the article's topic, e.g.
   "Automatyzacja procesów biznesowych: pracownik magazynu pokazuje…".
 
