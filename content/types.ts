@@ -1,6 +1,5 @@
 import type { ToolKey } from "@/lib/i18n/tools";
 import type { FeatureKey } from "@/lib/i18n/features";
-import type { ArticlePromoKey } from "@/lib/blog/promos";
 import type { PageKey } from "@/lib/i18n/routes";
 import type { JpkCheckId, KsefKind, VatRateKey } from "@/lib/tools/jpk";
 import type { JpkCsvLabels } from "@/lib/tools/jpk-csv";
@@ -2433,9 +2432,3 @@ export type LateInterestLabels = {
   defaultLabel: string;
 };
 
-/**
- * Copy for the article promos an editor picks per article in Opero
- * ("Promowana funkcja"). `name` is the card's title, `description` one or two
- * sentences on what the feature does for the reader.
- */
-export type ArticlePromoCopy = Record<ArticlePromoKey, { name: string; description: string }>;

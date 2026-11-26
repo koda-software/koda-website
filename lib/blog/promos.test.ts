@@ -1,40 +1,64 @@
 import { strict as assert } from "node:assert";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { test } from "node:test";
-import { articlePromoKeys, blogPromos, isArticlePromoKey } from "./promos";
+import { blogPromos, systemFeaturePromo } from "./promos";
+import type { SystemFeatureRow } from "./types";
 
-test("a chosen promo fills both feature slots, in each language", () => {
-  for (const locale of ["pl", "en"] as const) {
-    const promos = blogPromos(locale, "/blog/x", "obieg-faktur-ksef");
+const fileId = "0b6f0b1e-3c1d-4f7a-9a39-5d4b8f2b7c11";
 
-    assert.equal(promos.chosen, true);
-    assert.equal(promos.feature?.key, "obieg-faktur-ksef");
-    assert.equal(promos.inlineFeature, promos.feature);
-    assert.ok(promos.feature?.name && promos.feature.description && promos.feature.linkLabel);
-    assert.match(promos.feature?.href ?? "", new RegExp(`^/${locale}/`));
-  }
+function feature(id: string, overrides: Partial<SystemFeatureRow> = {}): SystemFeatureRow {
+  return {
+    id,
+    tytul: `Feature ${id}`,
+    opis: `What ${id} does.`,
+    obraz: fileId,
+    obraz_alt: null,
+    link: `/pl/opero/${id}`,
+    etykieta_linku: null,
+    ...overrides,
+  };
+}
+
+const pool = ["a", "b", "c", "d"].map((id) => feature(id));
+
+test("an article's own feature fills both slots", () => {
+  const chosen = feature("chosen", { etykieta_linku: "Zobacz" });
+  const promos = blogPromos("pl", "/blog/x", { features: pool, chosen });
+
+  assert.equal(promos.chosen, true);
+  assert.equal(promos.feature?.key, "chosen");
+  assert.equal(promos.inlineFeature, promos.feature);
+  assert.equal(promos.feature?.linkLabel, "Zobacz");
+  assert.match(promos.feature?.image ?? "", new RegExp(fileId));
 });
 
-test("an empty or unknown key falls back to the rotation", () => {
-  for (const key of [null, undefined, "", "no-such-promo"]) {
-    const promos = blogPromos("pl", "/blog/x", key);
+test("without a pick, two different features rotate from the Opero records", () => {
+  for (const chosen of [null, undefined, feature("broken", { link: "javascript:alert(1)" })]) {
+    const promos = blogPromos("pl", "/blog/x", { features: pool, chosen });
 
     assert.equal(promos.chosen, false);
-    assert.equal(promos.feature?.linkLabel, undefined);
+    assert.ok(pool.some((row) => row.id === promos.feature?.key));
+    assert.ok(pool.some((row) => row.id === promos.inlineFeature?.key));
     assert.notEqual(promos.inlineFeature?.key, promos.feature?.key);
+    assert.ok(promos.feature?.linkLabel, "records always carry a link label");
   }
 });
 
-test("every promo key resolves to copy, a link and an image", () => {
-  for (const key of articlePromoKeys) {
-    assert.ok(isArticlePromoKey(key));
+test("with no usable records, the feature pages fill the rotation", () => {
+  const promos = blogPromos("en", "/blog/x", { features: [feature("x", { tytul: " " })] });
 
-    for (const locale of ["pl", "en"] as const) {
-      const { feature } = blogPromos(locale, "/blog/x", key);
-      assert.ok(feature?.name.trim() && feature.description.trim(), `${locale} copy for ${key}`);
-      assert.match(feature?.image ?? "", /^\/opero\/promos\/[a-z0-9-]+\.webp$/);
-      assert.ok(existsSync(join(process.cwd(), "public", feature?.image ?? "")), `image for ${key}`);
-    }
-  }
+  assert.equal(promos.chosen, false);
+  assert.match(promos.feature?.href ?? "", /^\/en\//);
+  assert.match(promos.feature?.image ?? "", /^\/opero\//);
+  assert.equal(promos.feature?.linkLabel, undefined);
+});
+
+test("a record without an image or with an unsafe link", () => {
+  const plain = systemFeaturePromo("en", feature("plain", { obraz: null, opis: null }));
+  assert.equal(plain?.image, undefined);
+  assert.equal(plain?.description, "");
+  assert.equal(plain?.linkLabel, "See how it works in Opero");
+
+  assert.equal(systemFeaturePromo("pl", feature("x", { link: "//evil.example" })), null);
+  assert.equal(systemFeaturePromo("pl", feature("x", { link: null })), null);
+  assert.equal(systemFeaturePromo("pl", feature("x", { link: "https://opero.pl/x" }))?.href, "https://opero.pl/x");
 });

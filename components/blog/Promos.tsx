@@ -53,16 +53,18 @@ function CtaActions({ ui, ctaHrefs, className = "" }: { ui: BlogUiContent; ctaHr
   );
 }
 
-/** A chosen article promo has its own link text; a feature page is linked by name. */
+/** An Opero feature record has its own link text; a feature page is linked by name. */
 function featureLinkLabel(feature: FeaturePromo, ui: BlogUiContent) {
   return feature.linkLabel ?? fillTemplate(ui.promos.featureLink, { name: feature.name });
 }
 
 function FeatureShot({ feature, ui, className }: { feature: FeaturePromo; ui: BlogUiContent; className: string }) {
+  if (!feature.image) return null;
+
   return (
     // eslint-disable-next-line @next/next/no-img-element -- a cropped product screenshot; next/image optimization is off site-wide
     <img
-      alt={fillTemplate(ui.promos.productAlt, { name: feature.name })}
+      alt={feature.imageAlt?.trim() || fillTemplate(ui.promos.productAlt, { name: feature.name })}
       className={`block aspect-[16/10] w-full object-cover object-left-top ${className}`}
       decoding="async"
       height={400}

@@ -81,17 +81,34 @@ export type ArticleFullRow = ArticleListRow & {
   tagi: Array<{ slug: string; nazwa: string }> | null;
   powiazane: Array<{ slug: string; tytul: string; zajawka: string | null }> | null;
   /**
-   * Key of the Opero feature this article promotes (dictionary
-   * `blog-promowana-funkcja`); see `articlePromoKeys` in promos.ts. `null`
-   * leaves the promo slots to the rotation.
+   * The "Funkcja systemu" record this article promotes, resolved to the
+   * requested locale. `null` when none is linked or the record is inactive,
+   * which leaves the promo slots to the rotation.
    */
-  promowana_funkcja: string | null;
+  funkcja: SystemFeatureRow | null;
   /**
    * The article's FAQ rows (`artykul-faq`) in table order, resolved to the
    * requested locale. Outside the source locale the query keeps only rows whose
    * question and answer are both translated. `null` when there are none.
    */
   faq: ArticleFaqItem[] | null;
+};
+
+/**
+ * A "Funkcja systemu" record (`blog_funkcje_systemu`, or an article's
+ * `funkcja`): an Opero feature the blog's banners promote. Text fields are in
+ * the requested locale, falling back to Polish.
+ */
+export type SystemFeatureRow = {
+  id: string;
+  tytul: string | null;
+  opis: string | null;
+  /** File id, served through the blog image proxy. */
+  obraz: string | null;
+  obraz_alt: string | null;
+  /** A site path or a web address. */
+  link: string | null;
+  etykieta_linku: string | null;
 };
 
 /** One question of an article's FAQ. Both fields are plain text. */

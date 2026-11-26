@@ -19,6 +19,7 @@ import {
   getCategoryBySlug,
   getPageSize,
   getSettings,
+  getSystemFeatures,
   getTagBySlug,
   getUsedTags,
 } from "@/lib/blog/queries";
@@ -34,7 +35,7 @@ import {
   toSiteLocale,
 } from "@/lib/blog/routes";
 import { tiptapPlainText } from "@/lib/blog/tiptap";
-import type { ArticleListRow, BlogLocale } from "@/lib/blog/types";
+import type { ArticleListRow, BlogLocale, SystemFeatureRow } from "@/lib/blog/types";
 import { localizePath } from "@/lib/i18n/routes";
 import { ArticleJsonLd, BlogListJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
@@ -65,9 +66,13 @@ const keepReadingCount = 3;
  * What every blog page shows around its own content, plus the full listing it
  * is drawn from. `pageKey` is the page's path, so pages draw different promos.
  */
-async function blogChrome(locale: BlogLocale, pageKey: string, article?: { id: string; promoKey: string | null }) {
+async function blogChrome(locale: BlogLocale, pageKey: string, article?: { id: string; funkcja: SystemFeatureRow | null }) {
   const { ui, ctaHrefs, shell } = blogBundle(locale);
-  const [articles, categories] = await Promise.all([getAllArticles(locale), getCategories(locale)]);
+  const [articles, categories, features] = await Promise.all([
+    getAllArticles(locale),
+    getCategories(locale),
+    getSystemFeatures(locale),
+  ]);
   const counts = new Map<string, number>();
 
   for (const article of articles) {
@@ -78,7 +83,7 @@ async function blogChrome(locale: BlogLocale, pageKey: string, article?: { id: s
     .map((category) => ({ slug: category.slug, name: category.nazwa, count: counts.get(category.slug) ?? 0 }))
     .filter((topic) => topic.count > 0);
   const picks = articles.filter((row) => row.wyrozniony === true && row.id !== article?.id).slice(0, picksCount);
-  const promos = blogPromos(locale, pageKey, article?.promoKey);
+  const promos = blogPromos(locale, pageKey, { features, chosen: article?.funkcja });
   const toolsHref = localizePath(toSiteLocale(locale), "tools");
   const frame: BlogFrame = { locale, ui, shell, ctaHrefs, toolsHref, topics, picks, promos };
 
@@ -321,7 +326,7 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
   const path = articlePath(locale, article.slug);
   const [settings, { articles, frame }] = await Promise.all([
     getSettings(),
-    blogChrome(locale, path, { id: article.id, promoKey: article.promowana_funkcja }),
+    blogChrome(locale, path, { id: article.id, funkcja: article.funkcja }),
   ]);
   const { paths } = getArticleAlternates(article, locale);
   // The editors' related articles first, then the newest from the same category, then the newest of all.

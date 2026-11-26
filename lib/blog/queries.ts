@@ -13,6 +13,7 @@ import type {
   Localized,
   RedirectRow,
   SitemapRow,
+  SystemFeatureRow,
   TagRecord,
 } from "./types";
 import { blogLocales, sourceLocale } from "./routes";
@@ -101,13 +102,21 @@ export async function getArticles(options: {
   return fetchArticles(options.jezyk, options.kategoriaSlug ?? null, pageSize, (page - 1) * pageSize);
 }
 
+/** Active "Funkcja systemu" records in this locale, in their editors' order. */
+export const getSystemFeatures = unstable_cache(
+  async (jezyk: BlogLocale) => executeSavedQuery<SystemFeatureRow>("blog_funkcje_systemu", { jezyk }),
+  ["blog", "funkcje"],
+  { tags: [BLOG_TAG, blogTag("funkcje")] },
+);
+
 export async function getArticleBySlug(slug: string, jezyk: BlogLocale): Promise<ArticleFullRow | null> {
   const read = unstable_cache(
     async () => {
       const rows = await executeSavedQuery<ArticleFullRow>("blog_artykul_po_slug", { slug, jezyk });
       return rows[0] ?? null;
     },
-    ["blog", "artykul", jezyk, slug],
+    // Bump the version when the row's shape changes, so no cached row of the old shape is served.
+    ["blog", "artykul", "v2", jezyk, slug],
     { tags: [BLOG_TAG, blogTag("artykul", slug)] },
   );
 
