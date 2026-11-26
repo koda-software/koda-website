@@ -84,7 +84,7 @@ export const integrationsFeature: FeaturePageContent = {
       { question: "Is there a ready connector for our accounting or ERP product?", answer: "Not as a packaged connector. The ready integrations are KSeF, Google Maps, SMSPLANET, OpenAI, Anthropic and Google Gemini, plus mailbox sync for Google Workspace, Microsoft 365 and IMAP/SMTP. Other systems connect through the API and webhooks, and someone on your side or ours builds that link." },
       { question: "Can another system notify Opero when something happens?", answer: "Yes, by calling the API: it can create or update a record, or run a rule with its own input. A service that can only send a webhook in its own fixed format needs a small adapter in between." },
       { question: "Can Opero call a system inside our network?", answer: "The Call webhook step reaches public addresses on ports 80 and 443, and private address ranges are blocked. A system that is not reachable from the internet can call the Opero API itself instead, or sit behind a gateway you publish." },
-      { question: "What does the company lookup check? Does it cover the VAT White List?", answer: "It confirms that a company is in the registry and brings in its data: REGON and CEIDG for Poland, and for foreign VAT IDs a service that uses VIES for the EU and also covers GB, CH, LI, NO and AU. It does not check bank accounts against the White List." },
+      { question: "What does the company lookup check? Does it cover the VAT White List?", answer: "It confirms that a company is in the registry and brings in its data: REGON and CEIDG for Poland, and for foreign VAT IDs a service that uses VIES for the EU and also covers GB, CH, LI, NO and AU. The White List is handled by the VAT verification module on the counterparty record: it checks VAT status and bank accounts against it whenever a counterparty is created or edited." },
       { question: "We run several companies. How does that work?", answer: "KSeF credentials can be set for the whole organization or for each company separately, so each NIP can use its own certificate. An API token always belongs to one company and sees only what is exposed to it." },
       { question: "Do we need a developer?", answer: "Not for the ready integrations: you enter the credentials in a form, verify the connection and build rules visually. Connecting your own system through the API does need someone who can write a little code on the other side." },
     ],
@@ -196,7 +196,7 @@ export const integrationsPage: IntegrationsPageContent = {
     items: [
       {
         title: "Company data from a NIP",
-        description: "Opero asks REGON for the name, legal form and address, with CEIDG helping on addresses for sole traders. Foreign VAT IDs go to a registry service that uses VIES for the EU and also covers GB, CH, LI, NO and AU. The rule step has three exits: found, not found (malformed, unregistered or closed) and error. It does not check bank accounts against the White List.",
+        description: "Opero asks REGON for the name, legal form and address, with CEIDG helping on addresses for sole traders. Foreign VAT IDs go to a registry service that uses VIES for the EU and also covers GB, CH, LI, NO and AU. The rule step has three exits: found, not found (malformed, unregistered or closed) and error. VAT status and bank accounts are checked against the White List by the VAT verification module on the counterparty record.",
         rows: [
           { label: "NIP", value: "000 000 00 00" },
           { label: "Name", value: "Example Sp. z o.o." },
