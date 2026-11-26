@@ -1,5 +1,5 @@
-import { filterPublishedRows, getArticles, getPageSize, getSitemapEntries, getUsedTags } from "@/lib/blog/queries";
-import { authorPath, blogIndexPath, blogLocales, blogPagePath, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
+import { filterPublishedRows, getArticleBySlug, getSitemapEntries } from "@/lib/blog/queries";
+import { authorPath, blogIndexPath, blogLocales, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
 import type { BlogLocale, SitemapRow } from "@/lib/blog/types";
 import { absoluteUrl } from "@/lib/seo/site";
 
@@ -54,33 +54,28 @@ function indexAlternates(): Record<string, string> {
 export async function GET() {
   // Scheduled articles must not be advertised before their publication time.
   const published = filterPublishedRows(await getSitemapEntries());
-  // Tag pages without articles are noindex, so they are not listed either.
-  const usedTags = new Map(
-    await Promise.all(
-      blogLocales.map(async (locale) => [locale, new Set((await getUsedTags(locale)).map((tag) => tag.slug))] as const),
-    ),
+  // Tag and author pages are noindex, so they are not listed. The listing query behind the
+  // sitemap rows does not carry an article's noindex flag, so each article is checked here.
+  const indexable = await Promise.all(
+    published.map(async (row) => {
+      if (row.typ === "tag" || row.typ === "autor") return false;
+      if (row.typ !== "artykul" || !row.jezyk) return true;
+      const article = await getArticleBySlug(row.slug, row.jezyk);
+      return article !== null && article.noindex !== true;
+    }),
   );
-  const rows = published.filter((row) => row.typ !== "tag" || !row.jezyk || usedTags.get(row.jezyk)?.has(row.slug));
+  const rows = published.filter((_, index) => indexable[index]);
   const entries = new Map<string, Entry>();
   const newestArticle = rows
     .filter((row) => row.typ === "artykul")
     .reduce<string | null>((newest, row) => (!newest || row.lastmod > newest ? row.lastmod : newest), null);
 
-  const pageSize = await getPageSize();
-
   for (const locale of blogLocales) {
     // The index changes when its newest article does, not when we deploy.
     const lastmod = newestArticle ?? new Date().toISOString();
 
+    // Pages 2..n are noindex, so only the first page of the index is listed.
     entries.set(absoluteUrl(blogIndexPath(locale)), { lastmod, alternates: indexAlternates() });
-
-    // Pages 2..n are indexable, so they are listed too; the count comes from the
-    // same list query the index renders from. Locales paginate differently, so no hreflang.
-    const { total } = await getArticles({ jezyk: locale, pageSize });
-
-    for (let page = 2; page <= Math.ceil(total / pageSize); page++) {
-      entries.set(absoluteUrl(blogPagePath(locale, page)), { lastmod });
-    }
   }
 
   for (const row of rows) {

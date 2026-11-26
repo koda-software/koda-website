@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { blogBundle } from "./bundle";
 import { fillTemplate } from "./format";
 import { blogDefaultOgImage, createArticleMetadata, createBlogMetadata, symmetricAlternates, truncateDescription } from "./metadata";
-import { getArticleBySlug, getAuthorBySlug, getCategoryBySlug, getTagBySlug, tagHasArticles } from "./queries";
+import { getArticleBySlug, getAuthorBySlug, getCategoryBySlug, getTagBySlug } from "./queries";
 import { authorPath, blogIndexPath, blogPagePath, categoryPath, tagPath } from "./routes";
 import { tiptapPlainText } from "./tiptap";
 import type { BlogLocale } from "./types";
@@ -47,6 +47,8 @@ export async function blogIndexMetadata(locale: BlogLocale, page = 1): Promise<M
     path: blogPagePath(locale, page),
     // Paginated pages are self-canonical and carry no cross-language twin.
     languages: isFirstPage ? symmetricAlternates({ en: blogIndexPath("en"), pl: blogIndexPath("pl") }) : undefined,
+    // Pages 2..n only repeat article teasers: crawlers follow them, search shows the articles.
+    noIndex: !isFirstPage,
     image: await blogDefaultOgImage(),
   });
 }
@@ -88,8 +90,9 @@ export async function blogTagMetadata(locale: BlogLocale, slug: string): Promise
     description: describe(tag.opis, fallbacksFor(ui, ui.seoTemplates.tagDescription, name)),
     path: tagPath(locale, slug),
     languages: symmetricAlternates({ en: tagPath("en", tag.slugs.en), pl: tagPath("pl", tag.slugs.pl) }),
-    // A tag nobody uses yet keeps its address but stays out of search until an article carries it.
-    noIndex: !(await tagHasArticles(slug, locale)),
+    // Tag pages are thin lists of teasers that competed with the articles in search, so they are
+    // never indexed; crawlers still follow them to the articles.
+    noIndex: true,
     image: await blogDefaultOgImage(),
   });
 }
@@ -110,6 +113,8 @@ export async function blogAuthorMetadata(locale: BlogLocale, slug: string): Prom
     description: describe(bio, fallbacksFor(ui, ui.seoTemplates.authorDescription, name)),
     path: authorPath(locale, slug),
     languages: symmetricAlternates({ en: authorPath("en", author.slugs.en), pl: authorPath("pl", author.slugs.pl) }),
+    // Author pages list the same teasers as the index, so they stay out of search but are followed.
+    noIndex: true,
     image: await blogDefaultOgImage(),
   });
 }

@@ -193,9 +193,10 @@ export async function getArticlesByAuthor(options: {
  * `a.f_jezyk` column, so it fails server-side. Deriving the list here also
  * removes a single point of failure for `generateStaticParams`.
  *
- * Known gap: `blog_lista_artykulow` does not return `noindex`, so a noindex
- * article is still listed. Categories are filtered, since the record API does
- * expose their flag. Ask the backend to add `noindex` to the listing query.
+ * `blog_lista_artykulow` does not return `noindex`, so the sitemap route checks
+ * each article's own row and drops noindex ones. Categories are filtered here,
+ * since the record API exposes their flag. Adding `noindex` to the listing
+ * query would save those per-article reads.
  */
 async function readSitemapEntries(): Promise<SitemapRow[]> {
   const [categories, tags, authors] = await Promise.all([
