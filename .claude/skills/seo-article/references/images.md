@@ -47,6 +47,7 @@ Covers used so far (newest first; add each chosen cover here):
 
 | Article | Chosen cover |
 |---|---|
+| workflow: co to jest (rewrite of proces zamiast pola ze statusem) | overhead still life, hand in frame: purchase request with a stapled quote on a desk, taped parcel, hand holding a phone with an approve button, desk calendar, mug (Seedream 5.5; option A, hand sliding a folder into a pigeonhole while holding a tablet with a process diagram, not used) |
 | jak odebrać fakturę z KSeF (rewrite) | still life, no people: empty wire in-tray next to a tablet with a blurred invoice list, glasses, sticky notes (Seedream 5.5; option A, hands putting paper invoices into an archive box, not used) |
 | rejestr pełnomocnictw (rewrite) | medium shot: woman in a records room pulls a folder from a filing cabinet and checks it against a tablet, shelves of binders (Seedream 5.5; option A, close-up of signing next to a binder and company stamp, not used) |
 | KSeF od 2027 | close-up at a small shop counter: hands tear a till receipt from a receipt printer, tablet with a blurred e-invoice, card terminal (Seedream 5.5; option B, electrician invoicing at a kitchen table on a December evening, not used) |
