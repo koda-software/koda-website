@@ -85,6 +85,7 @@ export const blogContent: BlogUiContent = {
     copyLink: "Kopiuj link",
     linkCopied: "Link skopiowany",
     keepReading: "Czytaj dalej",
+    faq: "Najczęściej zadawane pytania",
   },
   promos: {
     product: "Produkt KodaSoft",

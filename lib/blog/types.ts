@@ -80,6 +80,18 @@ export type ArticleFullRow = ArticleListRow & {
   autor_x: string | null;
   tagi: Array<{ slug: string; nazwa: string }> | null;
   powiazane: Array<{ slug: string; tytul: string; zajawka: string | null }> | null;
+  /**
+   * The article's FAQ rows (`artykul-faq`) in table order, resolved to the
+   * requested locale. Outside the source locale the query keeps only rows whose
+   * question and answer are both translated. `null` when there are none.
+   */
+  faq: ArticleFaqItem[] | null;
+};
+
+/** One question of an article's FAQ. Both fields are plain text. */
+export type ArticleFaqItem = {
+  pytanie: string;
+  odpowiedz: string;
 };
 
 /** Rows of `blog_artykuly_po_autorze` carry the author header alongside each article. */

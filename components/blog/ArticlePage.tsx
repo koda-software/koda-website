@@ -6,6 +6,7 @@ import { blogImageSrc } from "@/lib/blog/images";
 import { authorPath, blogIndexPath, categoryPath } from "@/lib/blog/routes";
 import { tiptapSections } from "@/lib/blog/tiptap";
 import type { ArticleFullRow, ArticleListRow } from "@/lib/blog/types";
+import { ArticleFaq } from "./ArticleFaq";
 import { AuthorAvatar, AuthorBox, type BlogAuthor } from "./AuthorBox";
 import { BlogRail } from "./BlogRail";
 import { ArticleCard } from "./cards";
@@ -149,6 +150,7 @@ export function ArticlePage({ article, locale, ui, shell, ctaHrefs, toolsHref, u
                 </>
               ) : null}
 
+              <ArticleFaq items={article.faq ?? []} title={ui.article.faq} />
               <TagChips locale={locale} tags={article.tagi ?? []} ui={ui} />
               <div className="mt-10">
                 <ShareLinks

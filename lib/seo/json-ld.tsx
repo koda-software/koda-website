@@ -9,7 +9,8 @@ function JsonLd({ data }: { data: Record<string, unknown> }) {
     <script
       type="application/ld+json"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      // `<` is escaped so CMS text (FAQ answers carry HTML) can never close the script element early.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
   );
 }

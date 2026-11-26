@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { foldText } from "@/lib/fold-text";
 import { blogImageSrc } from "./images";
+import { isExternalHref } from "./links";
 import type { TiptapMark, TiptapNode, TiptapPayload } from "./types";
 
 /**
@@ -39,10 +40,6 @@ function textAlignStyle(attrs: TiptapNode["attrs"]): CSSProperties | undefined {
   }
 
   return undefined;
-}
-
-function isExternalHref(href: string) {
-  return /^https?:\/\//i.test(href) && !/^https?:\/\/(www\.)?kodasoft\.pl/i.test(href);
 }
 
 function applyMark(mark: TiptapMark, children: ReactNode, key: string): ReactNode {

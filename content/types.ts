@@ -1284,6 +1284,8 @@ export type BlogUiContent = {
     copyLink: string;
     linkCopied: string;
     keepReading: string;
+    /** Heading of the FAQ under the article text. */
+    faq: string;
   };
   /** Labels on the internal ads; their subjects come from the tool and feature pages. */
   promos: {

@@ -3,6 +3,7 @@ import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { blogBundle } from "@/lib/blog/bundle";
 import { blogImagePath, isFileId } from "@/lib/blog/images";
+import { faqAnswerHtml, parseFaqAnswer } from "@/lib/blog/faq";
 import { getArticleAlternates } from "@/lib/blog/metadata";
 import { blogPromos } from "@/lib/blog/promos";
 import {
@@ -35,7 +36,7 @@ import {
 import { tiptapPlainText } from "@/lib/blog/tiptap";
 import type { ArticleListRow, BlogLocale } from "@/lib/blog/types";
 import { localizePath } from "@/lib/i18n/routes";
-import { ArticleJsonLd, BlogListJsonLd, BreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { ArticleJsonLd, BlogListJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
 import { ArticlePage } from "./ArticlePage";
 import { AuthorLinks, type BlogAuthor } from "./AuthorBox";
@@ -374,6 +375,11 @@ export async function BlogArticleRoute({ locale, slug }: { locale: BlogLocale; s
         ]}
         locale={locale}
       />
+      {article.faq?.length ? (
+        <FaqJsonLd
+          items={article.faq.map((item) => ({ question: item.pytanie, answer: faqAnswerHtml(parseFaqAnswer(item.odpowiedz)) }))}
+        />
+      ) : null}
       <ArticlePage {...frame} article={article} keepReading={keepReading} url={absoluteUrl(path)} />
     </PageShell>
   );
