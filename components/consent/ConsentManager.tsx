@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { consentServices } from "@/content/consent-services";
 import type { ConsentCategory, ConsentContent } from "@/content/types";
@@ -17,6 +16,7 @@ import {
   readConsent,
   writeConsent,
 } from "@/lib/consent/store";
+import { ConsentBanner } from "./ConsentBanner";
 import { ConsentPreferences } from "./ConsentPreferences";
 
 declare global {
@@ -49,6 +49,8 @@ export function ConsentManager({ content, locale, privacyHref }: ConsentManagerP
   const [sessionChoice, setSessionChoice] = useState<ConsentChoice>();
   const [revealed, setRevealed] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  /** The banner's switches, kept here so they survive a trip to the details and back. */
+  const [draft, setDraft] = useState<Record<ConsentCategory, boolean>>({ analytics: false, marketing: false });
   const [loadTags, setLoadTags] = useState(false);
 
   // null: still on the server or hydrating, so render nothing that could mismatch.
@@ -103,47 +105,23 @@ export function ConsentManager({ content, locale, privacyHref }: ConsentManagerP
       ) : null}
 
       {bannerVisible ? (
-        <section
-          aria-labelledby="consent-title"
-          aria-describedby="consent-description"
-          className="consent-enter fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-6 z-[100] flex w-[min(27.5rem,calc(100vw-3rem))] flex-col gap-4 rounded-[var(--radius-card)] bg-[var(--color-paper)] p-6 text-[var(--color-ink)] shadow-[0_1px_0_rgba(11,17,22,0.04),0_30px_70px_-30px_rgba(11,17,22,0.4),0_0_0_1px_rgba(11,17,22,0.08)] max-[640px]:bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-[640px]:left-2 max-[640px]:w-[calc(100vw-1rem)] max-[640px]:px-4 max-[640px]:pb-4 max-[640px]:pt-5"
-          role="dialog"
-        >
-          <div className="grid gap-2">
-            <h2 id="consent-title" className="m-0 font-[family-name:var(--font-sans-brand)] text-[1.25rem] font-semibold leading-[1.3] tracking-[-0.02em] max-[640px]:text-[1.125rem]">
-              {content.title}
-            </h2>
-            <p id="consent-description" className="m-0 text-[0.94rem] leading-[1.55] text-[var(--color-muted)]">
-              {content.description}{" "}
-              <Link className="font-medium text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={privacyHref}>
-                {content.privacyLinkLabel}
-              </Link>
-            </p>
-          </div>
-          {/* Equal weight is a legal requirement: same size, colour and layer for both answers. */}
-          <div className="grid grid-cols-2 gap-2">
-            <button className={answerButton} type="button" onClick={() => decide(all(false))}>
-              {content.rejectLabel}
-            </button>
-            <button className={answerButton} type="button" onClick={() => decide(all(true))}>
-              {content.acceptLabel}
-            </button>
-          </div>
-          <button
-            className="min-h-11 self-center border-0 bg-transparent px-2 text-[0.88rem] font-medium text-[var(--color-ink)] underline decoration-[var(--color-muted-light)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-            type="button"
-            onClick={() => setPreferencesOpen(true)}
-          >
-            {content.customiseLabel}
-          </button>
-        </section>
+        <ConsentBanner
+          categories={OFFERED}
+          content={content}
+          privacyHref={privacyHref}
+          selected={draft}
+          onSelect={setDraft}
+          onDecide={decide}
+          onCustomise={() => setPreferencesOpen(true)}
+          all={all}
+        />
       ) : null}
 
       {preferencesOpen ? (
         <ConsentPreferences
           categories={OFFERED}
           content={content}
-          initial={{ analytics: Boolean(choice?.analytics), marketing: Boolean(choice?.marketing) }}
+          initial={choice ? { analytics: choice.analytics, marketing: choice.marketing } : draft}
           locale={locale}
           privacyHref={privacyHref}
           onClose={() => setPreferencesOpen(false)}
@@ -154,9 +132,6 @@ export function ConsentManager({ content, locale, privacyHref }: ConsentManagerP
     </>
   );
 }
-
-const answerButton =
-  "min-h-11 cursor-pointer rounded-[var(--radius-button)] border-0 bg-[var(--color-ink)] px-4 text-[0.94rem] font-semibold text-white transition-colors hover:bg-[var(--color-ink-soft)] max-[640px]:min-h-12";
 
 function applyToGoogle(choice: ConsentChoice) {
   window[GA_DISABLE_KEY] = !choice.analytics;

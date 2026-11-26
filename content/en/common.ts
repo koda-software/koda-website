@@ -9,9 +9,9 @@ export const commonContent: ShellContent = {
     description:
       "With your consent, Google Analytics and Microsoft Clarity show us which pages help and which need work. Clarity records how a visit unfolds: mouse movements, clicks and scrolling, without anything typed into forms. We don't sell data. You can change your mind any time from the footer.",
     privacyLinkLabel: "Privacy policy",
-    acceptLabel: "Accept",
+    acceptLabel: "Accept all",
     rejectLabel: "Reject",
-    customiseLabel: "Choose what you allow",
+    customiseLabel: "Details and services",
     settingsLabel: "Cookie settings",
     preferences: {
       title: "Cookie settings",

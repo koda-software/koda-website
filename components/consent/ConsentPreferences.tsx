@@ -72,16 +72,11 @@ export function ConsentPreferences({ categories, content, initial, locale, priva
           const copy = content.categories[category];
           return (
             <Row key={category} label={copy.label} description={copy.description} switchId={`consent-${category}`}>
-              <button
-                aria-checked={selected[category]}
-                aria-labelledby={`consent-${category}`}
-                className={`flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-0 p-[3px] transition-colors ${selected[category] ? "justify-end bg-[var(--color-ink)]" : "justify-start bg-[var(--color-muted-light)]"}`}
-                role="switch"
-                type="button"
-                onClick={() => setSelected((current) => ({ ...current, [category]: !current[category] }))}
-              >
-                <span className="block size-[22px] rounded-full bg-white" />
-              </button>
+              <ConsentSwitch
+                checked={selected[category]}
+                labelledBy={`consent-${category}`}
+                onToggle={() => setSelected((current) => ({ ...current, [category]: !current[category] }))}
+              />
               <details className="col-span-2 mt-1 text-[0.86rem]">
                 <summary className="cursor-pointer font-medium text-[var(--color-blue)]">
                   {t.detailsLabel} ({services.length})
@@ -110,15 +105,15 @@ export function ConsentPreferences({ categories, content, initial, locale, priva
         })}
       </div>
 
-      {/* All three carry the same weight; none is pre-selected or highlighted. */}
+      {/* Same order and emphasis as the first layer: accepting everything is the primary action. */}
       <div className="mt-6 grid grid-cols-3 gap-2 max-[640px]:grid-cols-2">
         <button className={`${choiceButton} max-[640px]:order-2`} type="button" onClick={() => onDecide(all(false))}>
           {t.rejectAllLabel}
         </button>
-        <button className={`${choiceButton} max-[640px]:order-1 max-[640px]:col-span-2`} type="button" onClick={() => onDecide(selected)}>
+        <button className={`${choiceButton} max-[640px]:order-3`} type="button" onClick={() => onDecide(selected)}>
           {t.saveLabel}
         </button>
-        <button className={`${choiceButton} max-[640px]:order-3`} type="button" onClick={() => onDecide(all(true))}>
+        <button className={`${primaryButton} max-[640px]:order-1 max-[640px]:col-span-2`} type="button" onClick={() => onDecide(all(true))}>
           {t.acceptAllLabel}
         </button>
       </div>
@@ -132,8 +127,35 @@ export function ConsentPreferences({ categories, content, initial, locale, priva
   );
 }
 
-const choiceButton =
-  "min-h-11 cursor-pointer rounded-[var(--radius-button)] border border-[var(--color-ink)] bg-[var(--color-paper)] px-3 text-[0.88rem] font-semibold text-[var(--color-ink)] transition-colors hover:bg-[var(--color-mist)] max-[640px]:min-h-12";
+const choiceButton = "action action-line w-full px-4";
+const primaryButton = "action action-ink w-full px-4";
+
+/** An on/off switch; `disabled` shows a category that cannot be turned off. */
+export function ConsentSwitch({
+  checked,
+  disabled = false,
+  labelledBy,
+  onToggle,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  labelledBy: string;
+  onToggle?: () => void;
+}) {
+  return (
+    <button
+      aria-checked={checked}
+      aria-disabled={disabled || undefined}
+      aria-labelledby={labelledBy}
+      className={`flex h-7 w-12 shrink-0 rounded-full border-0 p-[3px] transition-colors ${checked ? "justify-end bg-[var(--color-ink)]" : "justify-start bg-[var(--color-muted-light)]"} ${disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer"}`}
+      role="switch"
+      type="button"
+      onClick={disabled ? undefined : onToggle}
+    >
+      <span className="block size-[22px] rounded-full bg-white" />
+    </button>
+  );
+}
 
 function Row({
   label,
