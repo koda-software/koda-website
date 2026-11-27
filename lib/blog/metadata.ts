@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { absoluteUrl, siteConfig, withoutBrandSuffix } from "@/lib/seo/site";
 import type { Locale } from "@/lib/i18n/config";
 import { blogImagePath, isFileId } from "./images";
+import { articleOgImagePath } from "./og-image";
 import { getSettings } from "./queries";
 import { articlePath, articleSlugsByLocale, blogIndexPath } from "./routes";
 import type { ArticleFullRow, BlogLocale } from "./types";
@@ -139,8 +140,7 @@ export function symmetricAlternates(paths: Record<BlogLocale, string>) {
  * The CMS fallback contract for an article page: CMS SEO fields win, editorial
  * fields are the fallback, and the site defaults close the chain.
  */
-export async function createArticleMetadata(article: ArticleFullRow, locale: BlogLocale): Promise<Metadata> {
-  const settings = await getSettings();
+export function createArticleMetadata(article: ArticleFullRow, locale: BlogLocale): Metadata {
   const { languages } = getArticleAlternates(article, locale);
   const title = article.meta_title ?? article.tytul;
   const description = truncate(article.meta_description ?? article.zajawka ?? "");
@@ -151,7 +151,8 @@ export async function createArticleMetadata(article: ArticleFullRow, locale: Blo
     description,
     path: articlePath(locale, article.slug),
     languages,
-    image: resolveOgImage(article.og_image, article.obraz_glowny, settings?.domyslny_og_image),
+    // The branded card: cover, title and wordmark (app/og/blog/[locale]/[slug]).
+    image: absoluteUrl(articleOgImagePath(locale, article)),
     noIndex: article.noindex === true,
     article: {
       publishedTime: article.data_publikacji,
