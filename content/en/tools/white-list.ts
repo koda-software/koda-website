@@ -17,7 +17,7 @@ export const whiteListPage: ToolPageContent = {
     title: "Why companies check the White List before paying",
     paragraphs: [
       "The White List (biała lista) is Poland's register of VAT taxpayers, kept by the head of the National Revenue Administration. It shows a company's VAT status and the bank accounts it has reported to the tax office.",
-      "If a single transaction over PLN 15,000 is paid to an account that is not on the list, the payment is not a tax-deductible cost and the payer becomes jointly liable for the supplier's VAT. What counts is the list on the day the transfer is ordered.",
+      "If a single transaction over PLN 15,000 is paid to an account that is not on the list, the payer becomes jointly liable for the supplier's VAT. For an invoice issued by 31 December 2026 the payment is also not a tax-deductible cost. For invoices issued from 1 January 2027 an act of 18 September 2026 removes that income tax penalty, while joint liability stays. What counts is the list on the day the transfer is ordered.",
       "Both consequences are avoided by paying through the split payment mechanism (MPP), or by filing a ZAW-NR notice with the supplier's tax office within 7 days of ordering the transfer.",
       "Virtual accounts, such as those used for bulk payments, are not listed directly. Enter the account number next to the NIP and the register also checks it against virtual accounts.",
     ],
@@ -36,13 +36,14 @@ export const whiteListPage: ToolPageContent = {
   sources: {
     title: "Legal basis and sources",
     updatedLabel: "Rules current as of",
-    updatedAt: "2026-11-15",
+    updatedAt: "2026-11-27",
     note: "This tool is for information only. The binding source is the VAT taxpayer register kept by the head of the National Revenue Administration (KAS).",
     items: [
       { label: "VAT White List search (podatki.gov.pl, in Polish)", href: "https://www.podatki.gov.pl/wykaz-podatnikow-vat-wyszukiwarka" },
       { label: "White List API (Polish Ministry of Finance)", href: "https://wl-api.mf.gov.pl" },
       { label: "Art. 96b of the Polish VAT Act (the register)" },
-      { label: "Art. 15d(1)(3) of the CIT Act and art. 22p(1)(3) of the PIT Act (tax-deductible costs)" },
+      { label: "Art. 15d(1)(3) of the CIT Act and art. 22p(1)(3) of the PIT Act (tax-deductible costs, invoices issued by 31 December 2026)" },
+      { label: "Act of 18 September 2026 amending the PIT and CIT Acts, Journal of Laws 2026 item 1371 (no cost penalty for invoices from 1 January 2027)" },
       { label: "Art. 117ba of the Tax Ordinance (joint liability, ZAW-NR notice)" },
       { label: "Art. 19 of the Entrepreneurs' Law (the PLN 15,000 threshold)" },
     ],

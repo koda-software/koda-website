@@ -17,7 +17,7 @@ export const whiteListPage: ToolPageContent = {
     title: "Po co sprawdzać kontrahenta na białej liście",
     paragraphs: [
       "Biała lista to wykaz podatników VAT prowadzony przez Szefa Krajowej Administracji Skarbowej. Pokazuje status VAT firmy i rachunki bankowe, które zgłosiła do urzędu.",
-      "Jeśli za jedną transakcję powyżej 15 000 zł płacisz na rachunek spoza wykazu, nie zaliczysz tej płatności do kosztów podatkowych i odpowiadasz solidarnie za VAT kontrahenta. Liczy się stan wykazu z dnia zlecenia przelewu.",
+      "Jeśli za jedną transakcję powyżej 15 000 zł płacisz na rachunek spoza wykazu, odpowiadasz solidarnie za VAT kontrahenta. Przy fakturze wystawionej do 31 grudnia 2026 roku nie zaliczysz też tej płatności do kosztów podatkowych. Dla faktur wystawionych od 1 stycznia 2027 roku tę sankcję w PIT i CIT znosi ustawa z 18 września 2026 roku, a odpowiedzialność solidarna zostaje. Liczy się stan wykazu z dnia zlecenia przelewu.",
       "Tych skutków unikniesz, płacąc w mechanizmie podzielonej płatności albo składając zawiadomienie ZAW-NR do urzędu skarbowego kontrahenta w ciągu 7 dni od zlecenia przelewu.",
       "Rachunki wirtualne, na przykład do płatności masowych, nie są wypisane w wykazie wprost. Wpisz numer konta w polu obok NIP, a wykaz sprawdzi go także wśród rachunków wirtualnych.",
     ],
@@ -36,13 +36,14 @@ export const whiteListPage: ToolPageContent = {
   sources: {
     title: "Podstawa prawna i źródła",
     updatedLabel: "Zasady aktualne na:",
-    updatedAt: "2026-11-15",
+    updatedAt: "2026-11-27",
     note: "Narzędzie ma charakter informacyjny. Wiążący jest wykaz podatników VAT prowadzony przez Szefa KAS.",
     items: [
       { label: "Wyszukiwarka wykazu podatników VAT (podatki.gov.pl)", href: "https://www.podatki.gov.pl/wykaz-podatnikow-vat-wyszukiwarka" },
       { label: "API wykazu podatników VAT (Ministerstwo Finansów)", href: "https://wl-api.mf.gov.pl" },
       { label: "Art. 96b ustawy o podatku od towarów i usług (wykaz podatników VAT)" },
-      { label: "Art. 15d ust. 1 pkt 3 ustawy o CIT i art. 22p ust. 1 pkt 3 ustawy o PIT (koszty podatkowe)" },
+      { label: "Art. 15d ust. 1 pkt 3 ustawy o CIT i art. 22p ust. 1 pkt 3 ustawy o PIT (koszty podatkowe, faktury wystawione do 31 grudnia 2026 roku)" },
+      { label: "Ustawa z 18 września 2026 r. o zmianie ustaw o PIT i CIT, Dz.U. 2026 poz. 1371 (bez sankcji w kosztach dla faktur od 1 stycznia 2027 roku)" },
       { label: "Art. 117ba Ordynacji podatkowej (odpowiedzialność solidarna, zawiadomienie ZAW-NR)" },
       { label: "Art. 19 ustawy Prawo przedsiębiorców (próg 15 000 zł)" },
     ],
