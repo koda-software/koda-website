@@ -8,7 +8,7 @@ import type { ArticleFullRow, BlogLocale } from "./types";
  * LinkedIn, Facebook and Slack, which keep a shared image for weeks, fetch the
  * new one.
  */
-const cardDesign = "1";
+const cardDesign = "2";
 
 /** Everything the card shows. The route and the address both read it from here so they cannot drift. */
 export function articleOgCard(article: ArticleFullRow) {

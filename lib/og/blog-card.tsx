@@ -15,15 +15,15 @@ const brandBlue = "#38b6ff";
  */
 const assets = Promise.all([
   readFile(join(process.cwd(), "lib/og/fonts/Sora-SemiBold.ttf")),
-  readFile(join(process.cwd(), "public/branding/kodasoft-logo-white.svg")),
+  readFile(join(process.cwd(), "public/branding/opero-kodasoft-logo-white.svg")),
 ]).then(([sora, logo]) => ({ sora, logo: `data:image/svg+xml;base64,${logo.toString("base64")}` }));
 
 /** Long titles step down so three or four lines still fit above the fold of a feed card. */
 function titleSize(title: string) {
-  if (title.length <= 40) return 70;
-  if (title.length <= 65) return 60;
-  if (title.length <= 95) return 52;
-  return 46;
+  if (title.length <= 40) return 64;
+  if (title.length <= 65) return 56;
+  if (title.length <= 95) return 50;
+  return 44;
 }
 
 /**
@@ -41,7 +41,7 @@ async function coverDataUri(cover: Buffer) {
 
 /**
  * The branded link preview for a blog article: the cover under a dark wash,
- * the Kodasoft wordmark, the category and the title in Sora. Without a cover it
+ * the Opero logo signed "by kodasoft_", the category and the title in Sora. Without a cover it
  * falls back to the gradient of the site-wide card (app/og-image.png).
  *
  * Returns a JPEG: Satori writes PNG, which for a photo is around a megabyte,
@@ -85,11 +85,15 @@ export async function renderBlogCard({
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            padding: "60px 72px 64px",
+            // Feeds crop the 1.91:1 card: LinkedIn's desktop feed shows about 1.6:1 and trims ~90px
+            // off each side, X shows 2:1 and trims ~15px off top and bottom. 140px at the sides keeps
+            // the logo and text whole down to about 1.5:1.
+            padding: "60px 140px 64px",
           }}
         >
+          {/* The "opero / by kodasoft_" lockup; its viewBox is 186.3 x 60.17. */}
           {/* eslint-disable-next-line @next/next/no-img-element -- Satori draws this into a bitmap; next/image has no meaning here. */}
-          <img alt="" src={logo} width={189} height={50} />
+          <img alt="" src={logo} width={285} height={92} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             {label ? (
               <div
@@ -109,7 +113,7 @@ export async function renderBlogCard({
               style={{
                 display: "block",
                 lineClamp: 4,
-                maxWidth: 1000,
+                maxWidth: 920,
                 fontSize: titleSize(title),
                 lineHeight: 1.16,
                 letterSpacing: -0.5,
