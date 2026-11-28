@@ -22,7 +22,10 @@ export const eDeliveryPage: EDeliveryPageContent = {
       "Type an office's name and town and we find it in the gov.pl list. Type a NIP and we look up the company's KRS number in the VAT White List, then read its KRS entry. If the company is not in KRS, we check CEIDG. A KRS number works with or without its leading zeros.",
       "We do not search private individuals. The law shares their addresses with public entities only. Advocates, legal advisers and other regulated professions are in the address database search of the e-Doręczenia app, if you have your own mailbox.",
     ],
-    guide: { label: "Guide: e-Delivery in Poland step by step, from setting up the mailbox to deadlines", href: "/en/blog/e-delivery-obligation-october-2026" },
+    guides: [
+      { label: "Guide: e-Delivery in Poland step by step, from setting up the mailbox to deadlines", href: "/en/blog/e-delivery-obligation-october-2026" },
+      { label: "Document workflow in a company: registering letters, approvals and deadlines", href: "/en/blog/document-workflow-in-a-company" },
+    ],
     table: {
       caption: "Where the address comes from",
       columns: ["You type", "We search", "How current"],
@@ -119,7 +122,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
     title: "Official letters in one document workflow",
     body: "In Opero you register incoming and outgoing letters, assign them to people and keep track of reply deadlines, with a full history of events.",
     primaryCta: "Book a demo",
-    secondaryCta: "Document workflow in Opero",
+    secondaryCta: "Document management system",
     points: [
       { title: "Connected to e-Delivery", body: "Official electronic delivery is part of the same document workflow as your other letters." },
       { title: "Numbered and assigned", body: "Each letter gets a number on registration and goes to a department as a task with a due date." },

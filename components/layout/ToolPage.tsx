@@ -77,13 +77,13 @@ export function ToolPage({ content, locale, index, ctas, otherTools, children, e
                 {paragraph}
               </p>
             ))}
-            {explainer.guide ? (
-              <p className={toolBodyClass}>
-                <Link className="font-semibold text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={explainer.guide.href}>
-                  {explainer.guide.label}
+            {explainer.guides?.map((guide) => (
+              <p className={toolBodyClass} key={guide.href}>
+                <Link className="font-semibold text-[var(--color-blue)] underline underline-offset-4 hover:text-[var(--color-blue-deep)]" href={guide.href}>
+                  {guide.label}
                 </Link>
               </p>
-            ) : null}
+            ))}
           </div>
         </div>
         {explainer.table ? (

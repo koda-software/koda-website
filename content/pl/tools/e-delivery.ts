@@ -3,9 +3,9 @@ import { GOV_REGISTER_PAGE } from "@/lib/tools/e-delivery";
 
 export const eDeliveryPage: EDeliveryPageContent = {
   seo: {
-    title: "Wyszukiwarka adresów do e-Doręczeń",
+    title: "Wyszukiwarka e-Doręczeń: baza adresów urzędów i firm",
     description:
-      "Znajdź adres do e-Doręczeń urzędu, szkoły, ZUS albo firmy z KRS lub CEIDG. Wpisz nazwę, NIP, KRS lub REGON i skopiuj adres AE:PL. Za darmo, bez logowania.",
+      "Darmowa wyszukiwarka adresów do e-Doręczeń urzędów i firm. Wpisz nazwę, NIP, KRS lub REGON i skopiuj adres AE:PL z gov.pl, KRS lub CEIDG. Bez logowania.",
   },
   navLabel: "Adres do e-Doręczeń",
   navDescription: "Znajdź adres AE:PL urzędu albo firmy po nazwie, NIP, KRS lub REGON.",
@@ -22,7 +22,10 @@ export const eDeliveryPage: EDeliveryPageContent = {
       "Wpisz nazwę urzędu i miejscowość, a znajdziemy go w liście z gov.pl. Wpisz NIP, a sprawdzimy w wykazie podatników VAT numer KRS firmy i pobierzemy jej wpis z KRS. Jeśli firmy nie ma w KRS, sprawdzimy CEIDG. Numer KRS możesz wpisać z zerami na początku albo bez nich.",
       "Adresów osób prywatnych nie wyszukujemy. Prawo udostępnia je tylko podmiotom publicznym. Adwokatów, radców prawnych i innych zawodów zaufania publicznego znajdziesz w wyszukiwarce bazy adresów elektronicznych w aplikacji e-Doręczenia, jeśli masz własną skrzynkę.",
     ],
-    guide: { label: "Poradnik: e-Doręczenia krok po kroku, od założenia skrzynki po terminy", href: "/pl/blog/e-doreczenia" },
+    guides: [
+      { label: "Poradnik: e-Doręczenia krok po kroku, od założenia skrzynki po terminy", href: "/pl/blog/e-doreczenia" },
+      { label: "Elektroniczny obieg dokumentów w firmie: rejestracja pism, akceptacje i terminy", href: "/pl/blog/obieg-dokumentow-w-firmie" },
+    ],
     table: {
       caption: "Gdzie szukamy adresu",
       columns: ["Wpisujesz", "Szukamy w", "Aktualność"],
@@ -119,7 +122,7 @@ export const eDeliveryPage: EDeliveryPageContent = {
     title: "Pisma urzędowe w jednym obiegu dokumentów",
     body: "W Opero rejestrujesz pisma przychodzące i wychodzące, przypisujesz je do osób i pilnujesz terminów odpowiedzi, z pełną historią zdarzeń.",
     primaryCta: "Umów demo",
-    secondaryCta: "Obieg dokumentów w Opero",
+    secondaryCta: "System elektronicznego obiegu dokumentów",
     points: [
       { title: "Połączenie z e-Doręczeniami", body: "E-Doręczenia są częścią tego samego obiegu dokumentów co pozostałe pisma." },
       { title: "Numer i przypisanie", body: "Każde pismo dostaje numer przy rejestracji i trafia do działu jako zadanie z terminem." },
