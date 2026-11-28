@@ -40,14 +40,11 @@ function totalOf(rows: Array<{ total?: number | null }>, fallback: number) {
 /**
  * Whether an article is public *now*.
  *
- * The CMS queries disagree about scheduling: `blog_lista_artykulow` gates on
- * `data_publikacji <= now`, but `blog_artykul_po_slug` and `blog_sitemap` gate
- * on status alone. Taken at face value that makes a scheduled article reachable
- * and crawlable at its own URL hours before it appears in any listing. The site
- * applies the stricter rule uniformly so "scheduled" means "not public yet".
- *
- * Evaluated outside `unstable_cache` so the comparison uses the current time
- * rather than whenever the entry happened to be written.
+ * Every article query already gates on `status = 'opublikowany' AND
+ * data_publikacji <= now()`. A cached row, though, was gated when it was
+ * written, so the site checks the date again here, outside `unstable_cache`,
+ * against the current time, so "scheduled" keeps meaning "not public yet"
+ * whatever a cache entry holds.
  */
 export function isPublished(dataPublikacji: string | null | undefined): boolean {
   if (!dataPublikacji) return false;
@@ -188,15 +185,11 @@ export async function getArticlesByAuthor(options: {
  * Every indexable blog URL, assembled from the article listing (once per
  * locale) and the taxonomy records.
  *
- * This deliberately does not use the `blog_sitemap` saved query: that query was
- * not migrated to the localisation model — its SQL still selects the dropped
- * `a.f_jezyk` column, so it fails server-side. Deriving the list here also
- * removes a single point of failure for `generateStaticParams`.
- *
- * `blog_lista_artykulow` does not return `noindex`, so the sitemap route checks
- * each article's own row and drops noindex ones. Categories are filtered here,
- * since the record API exposes their flag. Adding `noindex` to the listing
- * query would save those per-article reads.
+ * The `blog_sitemap` saved query is not used: it lists taxonomy slugs in the
+ * source language only, while hreflang needs each locale's slug, which the
+ * record API returns. Articles carry their `noindex` flag from
+ * `blog_lista_artykulow`, so the sitemap route can drop them without reading
+ * each article. Noindex categories are dropped here.
  */
 async function readSitemapEntries(): Promise<SitemapRow[]> {
   const [categories, tags, authors] = await Promise.all([
@@ -215,6 +208,7 @@ async function readSitemapEntries(): Promise<SitemapRow[]> {
         jezyk,
         lastmod: article.updated_at,
         data_publikacji: article.data_publikacji,
+        noindex: article.noindex ?? null,
       });
     }
 

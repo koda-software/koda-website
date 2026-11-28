@@ -3,7 +3,8 @@ import { toBlogLocale } from "./routes";
 import type { BlogLocale } from "./types";
 
 /**
- * Build-time route enumeration. Slugs come from `blog_sitemap`; anything
+ * Build-time route enumeration. Slugs come from the same rows as the sitemap
+ * (`readSitemapEntries`: the article listing plus taxonomy records); anything
  * published later renders on first visit (`dynamicParams` stays on) and is then
  * cached like every other page.
  *

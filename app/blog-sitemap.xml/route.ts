@@ -1,4 +1,4 @@
-import { filterPublishedRows, getArticleBySlug, getSitemapEntries } from "@/lib/blog/queries";
+import { filterPublishedRows, getSitemapEntries } from "@/lib/blog/queries";
 import { authorPath, blogIndexPath, blogLocales, categoryPath, sitemapRowPaths, tagPath } from "@/lib/blog/routes";
 import type { BlogLocale, SitemapRow } from "@/lib/blog/types";
 import { absoluteUrl } from "@/lib/seo/site";
@@ -54,17 +54,8 @@ function indexAlternates(): Record<string, string> {
 export async function GET() {
   // Scheduled articles must not be advertised before their publication time.
   const published = filterPublishedRows(await getSitemapEntries());
-  // Tag and author pages are noindex, so they are not listed. The listing query behind the
-  // sitemap rows does not carry an article's noindex flag, so each article is checked here.
-  const indexable = await Promise.all(
-    published.map(async (row) => {
-      if (row.typ === "tag" || row.typ === "autor") return false;
-      if (row.typ !== "artykul" || !row.jezyk) return true;
-      const article = await getArticleBySlug(row.slug, row.jezyk);
-      return article !== null && article.noindex !== true;
-    }),
-  );
-  const rows = published.filter((_, index) => indexable[index]);
+  // Tag and author pages are noindex, so they are not listed; neither are noindex articles.
+  const rows = published.filter((row) => row.typ !== "tag" && row.typ !== "autor" && row.noindex !== true);
   const entries = new Map<string, Entry>();
   const newestArticle = rows
     .filter((row) => row.typ === "artykul")

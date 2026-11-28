@@ -1,85 +1,36 @@
-import crypto from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { BLOG_TAG } from "@/lib/blog/tags";
-import { articlePath, blogIndexPath, blogLocales, toBlogLocale, toSiteLocale } from "@/lib/blog/routes";
+import { blogIndexPath, blogLocales, toSiteLocale } from "@/lib/blog/routes";
 import { operoSignatureHeader, verifyOperoSignature } from "@/lib/blog/webhook-signature";
 import { localizePath } from "@/lib/i18n/routes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type WebhookPayload = {
-  id?: unknown;
-  typ?: unknown;
-  slug?: unknown;
-  jezyk?: unknown;
-  status?: unknown;
-  secret?: unknown;
-};
-
-/** Constant-time compare that does not leak length through early return. */
-function secretMatches(provided: string | null, expected: string) {
-  if (!provided) return false;
-
-  const providedHash = crypto.createHash("sha256").update(provided, "utf8").digest();
-  const expectedHash = crypto.createHash("sha256").update(expected, "utf8").digest();
-
-  return crypto.timingSafeEqual(providedHash, expectedHash);
-}
-
 /**
- * Legacy shared-secret check, kept only until every Opero rule signs its
- * requests with the `HMAC_SHA256` credential. The secret may arrive as a
- * header, a bearer token, a query parameter or a body field, so every
- * candidate is checked against the same constant-time comparison.
+ * Called by the Opero blog rules whenever something visible on the site
+ * changes. Every request is signed by the `kodasoft_blog_revalidate`
+ * credential (HMAC over the timestamp and the raw body), so the body itself
+ * carries nothing secret and is not needed: every blog read is tagged `blog`,
+ * and one purge of that tag refreshes every blog page, the sitemap and the
+ * search index.
  */
-function candidateSecrets(request: Request, url: URL, body: WebhookPayload): string[] {
-  const authorization = request.headers.get("authorization") ?? "";
-  const bearer = authorization.toLowerCase().startsWith("bearer ") ? authorization.slice(7) : null;
-
-  return [
-    request.headers.get("x-opero-secret"),
-    request.headers.get("x-webhook-secret"),
-    request.headers.get("x-revalidate-secret"),
-    bearer,
-    url.searchParams.get("secret"),
-    typeof body.secret === "string" ? body.secret : null,
-  ].filter((value): value is string => typeof value === "string" && value.length > 0);
-}
-
-function asString(value: unknown): string | null {
-  return typeof value === "string" && value.trim() !== "" ? value.trim() : null;
-}
-
 export async function POST(request: Request) {
   const signingSecret = process.env.OPERO_REVALIDATE_HMAC_SECRET;
-  const legacySecret = process.env.OPERO_REVALIDATE_SECRET;
 
-  if (!signingSecret && !legacySecret) {
+  if (!signingSecret) {
     return Response.json({ error: "Revalidation is not configured." }, { status: 500 });
   }
 
-  const url = new URL(request.url);
   // The signature covers the exact bytes Opero sent, so it is checked against the raw text.
   const raw = await request.text().catch(() => "");
-  let body: WebhookPayload = {};
+  const check = verifyOperoSignature({
+    secret: signingSecret,
+    rawBody: raw,
+    header: request.headers.get(operoSignatureHeader),
+  });
 
-  try {
-    if (raw.trim()) body = JSON.parse(raw) as WebhookPayload;
-  } catch {
-    // A malformed body is not fatal — the coarse purge below still applies.
-    body = {};
-  }
-
-  const signed =
-    !!signingSecret &&
-    verifyOperoSignature({ secret: signingSecret, rawBody: raw, header: request.headers.get(operoSignatureHeader) }).ok;
-  const legacy =
-    !signed &&
-    !!legacySecret &&
-    candidateSecrets(request, url, body).some((candidate) => secretMatches(candidate, legacySecret));
-
-  if (!signed && !legacy) {
+  if (!check.ok) {
     return Response.json({}, { status: 401 });
   }
 
@@ -88,11 +39,8 @@ export async function POST(request: Request) {
   revalidateTag(BLOG_TAG, { expire: 0 });
 
   const revalidated: string[] = [`tag:${BLOG_TAG}`];
-  const slug = asString(body.slug);
-  const jezyk = toBlogLocale(asString(body.jezyk));
-  const targets = jezyk ? [jezyk] : blogLocales;
 
-  for (const locale of targets) {
+  for (const locale of blogLocales) {
     const indexPath = blogIndexPath(locale);
     revalidatePath(indexPath);
     revalidated.push(indexPath);
@@ -101,12 +49,6 @@ export async function POST(request: Request) {
     const homePath = localizePath(toSiteLocale(locale), "home");
     revalidatePath(homePath);
     revalidated.push(homePath);
-
-    if (slug) {
-      const path = articlePath(locale, slug);
-      revalidatePath(path);
-      revalidated.push(path);
-    }
   }
 
   return Response.json({ revalidated, now: new Date().toISOString() });

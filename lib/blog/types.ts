@@ -46,6 +46,8 @@ export type ArticleListRow = {
   obraz_alt: string | null;
   czas_czytania: number | null;
   wyrozniony?: boolean | null;
+  /** Returned by `blog_lista_artykulow` only; the sitemap leaves these articles out. */
+  noindex?: boolean | null;
   kategoria_slug: string | null;
   kategoria_nazwa: string | null;
   autor_slug?: string | null;
@@ -128,9 +130,9 @@ export type AuthorArticleRow = ArticleListRow & {
 };
 
 /**
- * An indexable blog URL. Derived in `queries.ts` from the article listing plus
- * the taxonomy records — the `blog_sitemap` saved query was not migrated to the
- * localisation model and still fails server-side.
+ * A blog URL candidate for the sitemap and route enumeration. Derived in
+ * `queries.ts` from the article listing plus the taxonomy records, which carry
+ * each locale's slug for hreflang.
  */
 export type SitemapRow = {
   typ: "artykul" | "kategoria" | "tag" | "autor";
@@ -139,6 +141,8 @@ export type SitemapRow = {
   jezyk: BlogLocale | null;
   lastmod: string;
   data_publikacji: string | null;
+  /** Articles only: the page renders, but stays out of the sitemap. */
+  noindex?: boolean | null;
   /** Taxonomy only: the record's slug in every locale, for hreflang. */
   slugs?: Record<BlogLocale, string>;
 };
