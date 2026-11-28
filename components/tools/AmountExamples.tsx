@@ -1,7 +1,8 @@
 import type { AmountInWordsPageContent } from "@/content/types";
 import { parseAmount, toEnglishWords, toPolishWords } from "@/lib/tools/amount-in-words";
 
-const options = { sayOne: false, capitalize: false };
+/* The form that goes on an invoice or transfer: "sto złotych 00/100". */
+const options = { sayOne: false, capitalize: false, minor: "fraction" } as const;
 
 /**
  * Common amounts written out, rendered on the server. People search for exact amounts

@@ -1442,6 +1442,9 @@ export type AmountInWordsLabels = {
   optionsLegend: string;
   sayOneLabel: string;
   capitalizeLabel: string;
+  /** The switch between grosze in words and grosze as "56/100". */
+  minorLegend: string;
+  minorStyles: { words: string; fraction: string };
 };
 
 /** Exactly the copy the White List widget needs. */

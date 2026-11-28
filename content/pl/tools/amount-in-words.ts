@@ -2,15 +2,15 @@ import type { AmountInWordsLabels, AmountInWordsPageContent } from "@/content/ty
 
 export const amountInWordsPage: AmountInWordsPageContent = {
   seo: {
-    title: "Kwota słownie - kalkulator online",
+    title: "Kwota słownie - z groszami 00/100 i po angielsku",
     description:
-      "Kwota słownie online: wpisz liczbę, a kalkulator zamieni ją na słowa razem z groszami. Złote, euro i dolary, do faktury, umowy i przelewu. Bez rejestracji.",
+      "1 234,56 zł słownie: tysiąc dwieście trzydzieści cztery złote 56/100. Wpisz kwotę i skopiuj zapis na fakturę, umowę lub przelew. Też po angielsku, w EUR i USD.",
   },
   navLabel: "Kwota słownie",
   navDescription: "Zamień kwotę na słowa, z groszami, gotową do faktury lub przelewu.",
   hero: {
     title: "Kwota słownie",
-    description: "Zamiana liczby na słowa: wpisz kwotę, a dostaniesz ją zapisaną słownie razem z groszami, gotową do wklejenia na fakturę, umowę albo przelew.",
+    description: "Zamiana liczby na słowa: wpisz kwotę, a dostaniesz ją zapisaną słownie, z groszami słownie albo jako 56/100, po polsku i po angielsku. Gotową do wklejenia na fakturę, umowę albo przelew.",
   },
   explainer: {
     title: "Jak zapisać kwotę słownie",
@@ -37,6 +37,21 @@ export const amountInWordsPage: AmountInWordsPageContent = {
           "Nie. Ustawa o VAT jej nie wymaga. Wiele firm dalej ją podaje z przyzwyczajenia, a na umowach, wekslach i drukach przelewu bywa potrzebna.",
       },
       {
+        question: "Grosze słownie czy 56/100?",
+        answer:
+          "Oba zapisy są poprawne. Na fakturach i w umowach najczęściej spotkasz „56/100”, czyli grosze jako ułamek: „tysiąc dwieście trzydzieści cztery złote 56/100”. Przy pełnej kwocie piszesz „00/100”. Zapis słowny („i pięćdziesiąt sześć groszy”) jest dłuższy, ale nic nie zostaje w cyfrach.",
+      },
+      {
+        question: "Kwota słownie razem czy osobno?",
+        answer:
+          "Osobno. Każdy liczebnik to osobne słowo: „dwadzieścia jeden”, „trzy tysiące sześćset”. Jednym wyrazem piszesz tylko liczebniki, które same są jednym słowem, jak „jedenaście”, „dwieście” czy „pięćset”.",
+      },
+      {
+        question: "Jak napisać kwotę słownie po angielsku?",
+        answer:
+          "Narzędzie pokazuje wersję angielską pod polską. Po angielsku łączniki stoją między dziesiątkami a jednościami („thirty-four”), a grosze piszesz słownie po „and” albo jako ułamek: „one thousand two hundred thirty-four zlotys 56/100”.",
+      },
+      {
         question: "„Tysiąc” czy „jeden tysiąc”?",
         answer:
           "Obie formy są w użyciu. „Tysiąc” jest krótsze i poprawne językowo. „Jeden tysiąc” utrudnia dopisanie czegoś przed kwotą, dlatego wybierają je niektóre banki i działy księgowe.",
@@ -60,7 +75,7 @@ export const amountInWordsPage: AmountInWordsPageContent = {
   },
   examples: {
     title: "Popularne kwoty słownie",
-    intro: "Najczęściej sprawdzane kwoty, zapisane tak, jak wpisuje się je na fakturze lub przelewie.",
+    intro: "Najczęściej sprawdzane kwoty, zapisane tak, jak wpisuje się je na fakturze lub przelewie: z groszami jako 00/100.",
     columns: ["Kwota", "Słownie"],
     amounts: ["100", "200", "500", "1000", "1500", "2000", "2500", "3000", "5000", "10000", "15000", "100000"],
   },
@@ -74,7 +89,7 @@ export const amountInWordsLabels: AmountInWordsLabels = {
   examplesLabel: "Przykłady:",
   examples: ["1 234,56", "21 000", "112,14", "0,99"],
   defaultAmount: "1 234,56",
-  resultHeadings: { pl: "Po polsku" },
+  resultHeadings: { pl: "Po polsku", en: "Po angielsku" },
   copy: "Kopiuj",
   copied: "Skopiowano",
   privacyNote: "Kwota zostaje w Twojej przeglądarce. Nic nie wysyłamy.",
@@ -88,4 +103,6 @@ export const amountInWordsLabels: AmountInWordsLabels = {
   optionsLegend: "Opcje zapisu",
   sayOneLabel: "„jeden tysiąc” zamiast „tysiąc”",
   capitalizeLabel: "Wielka litera na początku",
+  minorLegend: "Grosze:",
+  minorStyles: { words: "słownie", fraction: "56/100" },
 };

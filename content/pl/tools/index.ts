@@ -65,7 +65,7 @@ export const toolsIndexContent: ToolsIndexContent = {
     },
     amountInWords: {
       description: "Zamień liczbę na słowa razem z groszami. Kwota jest gotowa do wklejenia na fakturę, umowę albo przelew.",
-      highlights: ["Złote, euro, dolary, funty, franki", "Razem z groszami", "Kopiowanie jednym kliknięciem"],
+      highlights: ["Złote, euro, dolary, funty, franki", "Grosze słownie albo 56/100", "Po polsku i po angielsku"],
     },
     ksefViewer: {
       description: "Upuść plik XML faktury z KSeF, a zobaczysz ją jako zwykłą fakturę: sprzedawcę, nabywcę, pozycje, VAT i płatność.",

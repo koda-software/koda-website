@@ -114,7 +114,21 @@ export type WordOptions = {
   /** Polish only: "jeden tysiąc" rather than "tysiąc" (and the same for milion, miliard). */
   sayOne: boolean;
   capitalize: boolean;
+  /**
+   * How the minor part is written: in words ("i pięćdziesiąt sześć groszy") or as the
+   * fraction invoices and transfers use ("56/100"). Words when left out.
+   */
+  minor?: MinorStyle;
 };
+
+export type MinorStyle = "words" | "fraction";
+
+export const minorStyles: MinorStyle[] = ["words", "fraction"];
+
+/** "56/100": the minor part as two digits over a hundred. */
+function minorFraction(amount: Extract<ParsedAmount, { kind: "ok" }>) {
+  return `${String(amount.minor).padStart(2, "0")}/100`;
+}
 
 /* ---------- Polish ---------- */
 
@@ -203,8 +217,9 @@ export function polishNumber(n: number, sayOne = false): string {
 export function toPolishWords(amount: Extract<ParsedAmount, { kind: "ok" }>, currency: CurrencyCode, options: WordOptions): string {
   const names = polishCurrency[currency];
   const main = `${polishNumber(amount.whole, options.sayOne)} ${names.main[polishForm(amount.whole)]}`;
-  const minor = `${polishNumber(amount.minor)} ${names.minor[polishForm(amount.minor)]}`;
+  if (options.minor === "fraction") return finish(`${main} ${minorFraction(amount)}`, options.capitalize);
 
+  const minor = `${polishNumber(amount.minor)} ${names.minor[polishForm(amount.minor)]}`;
   return finish(`${main} i ${minor}`, options.capitalize);
 }
 
@@ -270,8 +285,9 @@ export function englishNumber(n: number): string {
 export function toEnglishWords(amount: Extract<ParsedAmount, { kind: "ok" }>, currency: CurrencyCode, options: WordOptions): string {
   const names = englishCurrency[currency];
   const main = `${englishNumber(amount.whole)} ${names.main[amount.whole === 1 ? 0 : 1]}`;
-  const minor = `${englishNumber(amount.minor)} ${names.minor[amount.minor === 1 ? 0 : 1]}`;
+  if (options.minor === "fraction") return finish(`${main} ${minorFraction(amount)}`, options.capitalize);
 
+  const minor = `${englishNumber(amount.minor)} ${names.minor[amount.minor === 1 ? 0 : 1]}`;
   return finish(`${main} and ${minor}`, options.capitalize);
 }
 

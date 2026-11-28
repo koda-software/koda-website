@@ -10,7 +10,7 @@ export const amountInWordsPage: AmountInWordsPageContent = {
   navDescription: "Write an amount out in Polish and English words, ready for an invoice or transfer.",
   hero: {
     title: "Amount in words",
-    description: "Type an amount and get it written out in Polish and English, ready to paste into an invoice, contract or transfer.",
+    description: "Type an amount and get it written out in Polish and English, with grosze in words or as 56/100, ready to paste into an invoice, contract or transfer.",
   },
   explainer: {
     title: "How Polish writes amounts in words",
@@ -37,6 +37,11 @@ export const amountInWordsPage: AmountInWordsPageContent = {
           "No. The Polish VAT Act does not require it. Many companies still add it out of habit, and contracts, promissory notes and some transfer forms ask for it.",
       },
       {
+        question: "Grosze in words or as 56/100?",
+        answer:
+          "Both are correct. Polish invoices and contracts most often show grosze as a fraction: “tysiąc dwieście trzydzieści cztery złote 56/100”, and “00/100” for a whole amount. Writing them in words (“i pięćdziesiąt sześć groszy”) is longer but leaves nothing in digits.",
+      },
+      {
         question: "“Tysiąc” or “jeden tysiąc”?",
         answer:
           "Both are used. “Tysiąc” is shorter and grammatically correct. “Jeden tysiąc” makes it harder to add words in front of the amount, so some banks and finance teams prefer it.",
@@ -60,7 +65,7 @@ export const amountInWordsPage: AmountInWordsPageContent = {
   },
   examples: {
     title: "Common amounts in Polish words",
-    intro: "The amounts people look up most often, written the way they go on a Polish invoice or transfer.",
+    intro: "The amounts people look up most often, written the way they go on a Polish invoice or transfer, with grosze as 00/100.",
     columns: ["Amount", "In Polish", "In English"],
     amounts: ["100", "200", "500", "1000", "1500", "2000", "2500", "3000", "5000", "10000", "15000", "100000"],
   },
@@ -88,4 +93,6 @@ export const amountInWordsLabels: AmountInWordsLabels = {
   optionsLegend: "Writing options",
   sayOneLabel: "“jeden tysiąc” instead of “tysiąc” (Polish)",
   capitalizeLabel: "Capital first letter",
+  minorLegend: "Grosze:",
+  minorStyles: { words: "in words", fraction: "56/100" },
 };

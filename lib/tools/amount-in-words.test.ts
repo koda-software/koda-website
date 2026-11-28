@@ -103,3 +103,13 @@ test("writes English amounts", () => {
   assert.equal(toEnglishWords(ok("1,01"), "GBP", words), "one pound and one penny");
   assert.equal(toEnglishWords(ok("2,50"), "USD", { ...words, capitalize: true }), "Two dollars and fifty cents");
 });
+
+test("writes the minor part as a fraction over 100 when asked", () => {
+  const fraction: WordOptions = { ...words, minor: "fraction" };
+  assert.equal(toPolishWords(ok("1 234,56"), "PLN", fraction), "tysiąc dwieście trzydzieści cztery złote 56/100");
+  assert.equal(toPolishWords(ok("3600"), "PLN", fraction), "trzy tysiące sześćset złotych 00/100");
+  assert.equal(toPolishWords(ok("0,05"), "EUR", fraction), "zero euro 05/100");
+  assert.equal(toPolishWords(ok("1000"), "PLN", { sayOne: true, capitalize: true, minor: "fraction" }), "Jeden tysiąc złotych 00/100");
+  assert.equal(toEnglishWords(ok("3600"), "EUR", fraction), "three thousand six hundred euros 00/100");
+  assert.equal(toEnglishWords(ok("1,5"), "USD", fraction), "one dollar 50/100");
+});

@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { AmountInWordsLabels } from "@/content/types";
 import {
   currencyCodes,
+  minorStyles,
   parseAmount,
   toEnglishWords,
   toPolishWords,
@@ -30,7 +31,7 @@ export function AmountInWords({ labels }: { labels: AmountInWordsLabels }) {
   const amountId = useId();
   const [amount, setAmount] = useState(labels.defaultAmount);
   const [currency, setCurrency] = useState<CurrencyCode>("PLN");
-  const [options, setOptions] = useState<WordOptions>({ sayOne: false, capitalize: false });
+  const [options, setOptions] = useState<WordOptions>({ sayOne: false, capitalize: false, minor: "words" });
   const [copied, setCopied] = useState<string | null>(null);
   const copiedTimer = useRef<number | undefined>(undefined);
 
@@ -166,6 +167,24 @@ export function AmountInWords({ labels }: { labels: AmountInWordsLabels }) {
 
       <fieldset className="m-0 mt-2 flex flex-wrap items-center gap-x-8 gap-y-3 border-0 p-0">
         <legend className="sr-only">{labels.optionsLegend}</legend>
+        <div aria-label={labels.minorLegend} className="inline-flex flex-wrap items-center gap-2.5" role="group">
+          <span aria-hidden="true" className="text-[0.95rem] text-[var(--color-ink)]">
+            {labels.minorLegend}
+          </span>
+          <div className="flex gap-1.5">
+            {minorStyles.map((style) => (
+              <button
+                aria-pressed={options.minor === style}
+                className={`${pillBase} ${options.minor === style ? pillOn : pillOff}`}
+                key={style}
+                onClick={() => update({ minor: style })}
+                type="button"
+              >
+                {labels.minorStyles[style]}
+              </button>
+            ))}
+          </div>
+        </div>
         <label className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-[0.95rem] text-[var(--color-ink)]">
           <input
             checked={options.sayOne}
