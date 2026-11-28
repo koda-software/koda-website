@@ -223,12 +223,8 @@ async function readSitemapEntries(): Promise<SitemapRow[]> {
       rows.push(taxonomy("kategoria", category));
     }
 
-    const tagSlugs = new Set<string>();
     for (const tag of tags) {
-      const row = taxonomy("tag", tag);
-      if (tagSlugs.has(row.slug)) continue;
-      tagSlugs.add(row.slug);
-      rows.push(row);
+      rows.push(taxonomy("tag", tag));
     }
 
     for (const author of authors) {
@@ -350,11 +346,10 @@ export async function getCategories(locale: BlogLocale): Promise<Array<Localized
 }
 
 export async function getTags(locale: BlogLocale): Promise<Array<Localized<TagRecord>>> {
+  // Tag slugs are unique: the "Blog — slug tagu" rule in Opero suffixes a colliding one.
   const tags = (await fetchTags()).map((record) => localize(record, locale));
-  // The CMS holds two records for some slugs; they render the same page, so list it once.
-  const unique = [...new Map(tags.map((tag) => [tag.slug, tag])).values()];
 
-  return unique.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
+  return tags.sort((a, b) => a.nazwa.localeCompare(b.nazwa, locale));
 }
 
 /**
