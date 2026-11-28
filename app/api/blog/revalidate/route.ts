@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { BLOG_TAG } from "@/lib/blog/tags";
 import { articlePath, blogIndexPath, blogLocales, toBlogLocale, toSiteLocale } from "@/lib/blog/routes";
+import { operoSignatureHeader, verifyOperoSignature } from "@/lib/blog/webhook-signature";
 import { localizePath } from "@/lib/i18n/routes";
 
 export const runtime = "nodejs";
@@ -27,9 +28,10 @@ function secretMatches(provided: string | null, expected: string) {
 }
 
 /**
- * The CMS webhook rule may carry the secret as a header, a bearer token, a
- * query parameter or a body field depending on how the rule is configured, so
- * every candidate is checked against the same constant-time comparison.
+ * Legacy shared-secret check, kept only until every Opero rule signs its
+ * requests with the `HMAC_SHA256` credential. The secret may arrive as a
+ * header, a bearer token, a query parameter or a body field, so every
+ * candidate is checked against the same constant-time comparison.
  */
 function candidateSecrets(request: Request, url: URL, body: WebhookPayload): string[] {
   const authorization = request.headers.get("authorization") ?? "";
@@ -50,24 +52,34 @@ function asString(value: unknown): string | null {
 }
 
 export async function POST(request: Request) {
-  const expected = process.env.OPERO_REVALIDATE_SECRET;
+  const signingSecret = process.env.OPERO_REVALIDATE_HMAC_SECRET;
+  const legacySecret = process.env.OPERO_REVALIDATE_SECRET;
 
-  if (!expected) {
+  if (!signingSecret && !legacySecret) {
     return Response.json({ error: "Revalidation is not configured." }, { status: 500 });
   }
 
   const url = new URL(request.url);
+  // The signature covers the exact bytes Opero sent, so it is checked against the raw text.
+  const raw = await request.text().catch(() => "");
   let body: WebhookPayload = {};
 
   try {
-    const raw = await request.text();
     if (raw.trim()) body = JSON.parse(raw) as WebhookPayload;
   } catch {
     // A malformed body is not fatal — the coarse purge below still applies.
     body = {};
   }
 
-  if (!candidateSecrets(request, url, body).some((candidate) => secretMatches(candidate, expected))) {
+  const signed =
+    !!signingSecret &&
+    verifyOperoSignature({ secret: signingSecret, rawBody: raw, header: request.headers.get(operoSignatureHeader) }).ok;
+  const legacy =
+    !signed &&
+    !!legacySecret &&
+    candidateSecrets(request, url, body).some((candidate) => secretMatches(candidate, legacySecret));
+
+  if (!signed && !legacy) {
     return Response.json({}, { status: 401 });
   }
 
