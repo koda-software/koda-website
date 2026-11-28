@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { commonContent, navItems } from "@/content/pl/common";
 import { featureCtas, featurePages } from "@/content/pl/features";
+import { glossaryIndexContent, glossaryStripTitle, glossaryTermsForFeature } from "@/content/pl/glossary";
 import { aiPage } from "@/content/pl/features/ai";
 import { noCodePage } from "@/content/pl/features/no-code";
 import { documentsPage } from "@/content/pl/features/documents";
@@ -18,6 +19,7 @@ import { SecurityFeaturePage } from "@/components/layout/features/SecurityFeatur
 import { IntegrationsFeaturePage } from "@/components/layout/features/IntegrationsFeaturePage";
 import { AiFeaturePage } from "@/components/layout/AiFeaturePage";
 import { NoCodeFeaturePage } from "@/components/layout/NoCodeFeaturePage";
+import { GlossaryTermsStrip } from "@/components/layout/GlossaryPages";
 import { PageShell } from "@/components/layout/PageShell";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/lib/seo/json-ld";
 import { createFeaturePageMetadata } from "@/lib/seo/metadata";
@@ -121,6 +123,7 @@ export default async function PlOperoFeaturePage({ params }: PageProps<"/pl/oper
             secondaryHref={featureCtas.secondary}
           />
         )}
+        <GlossaryTermsStrip allLabel={glossaryIndexContent.labels.allTerms} terms={glossaryTermsForFeature(feature)} title={glossaryStripTitle} />
       </PageShell>
     </>
   );

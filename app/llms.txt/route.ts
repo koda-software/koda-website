@@ -1,6 +1,7 @@
 import { locales } from "@/lib/i18n/config";
 import { featureKeys, localizeFeaturePath } from "@/lib/i18n/features";
 import { localizePath } from "@/lib/i18n/routes";
+import { glossaryBasePath } from "@/lib/i18n/glossary";
 import { featurePages } from "@/content/en/features";
 import { toolLinks } from "@/content/en/tools";
 import { absoluteUrl, siteConfig } from "@/lib/seo/site";
@@ -66,6 +67,7 @@ ${toolLines}
 
 - Languages: ${locales.join(", ")}. The Polish homepage is / and the English one /en; other Polish pages live under /pl, English ones under /en.
 - Built by ${siteConfig.name}, ${siteConfig.url}.
+- Polish glossary of document, process and reporting terms: ${absoluteUrl(glossaryBasePath)}
 - Documentation page list: ${absoluteUrl("/docs-sitemap.xml")}
 - Full page list: ${absoluteUrl("/sitemap.xml")}
 `;

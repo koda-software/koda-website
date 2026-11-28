@@ -1,4 +1,6 @@
+import { glossaryTerms } from "@/content/pl/glossary";
 import { locales } from "@/lib/i18n/config";
+import { glossaryBasePath, glossaryPath } from "@/lib/i18n/glossary";
 import { featureKeys, getFeatureAlternatePaths, localizeFeaturePath } from "@/lib/i18n/features";
 import { getAlternatePaths, localizePath, pageKeys } from "@/lib/i18n/routes";
 import { getToolAlternatePaths, localizeToolPath, toolKeys } from "@/lib/i18n/tools";
@@ -46,7 +48,15 @@ function buildEntries(): Entry[] {
     return entriesFor(paths, alternates, "0.6", "monthly");
   });
 
-  return [...pages, ...features, ...tools];
+  // Polish only, so each entry names itself as the Polish page and the x-default.
+  const glossary = [glossaryBasePath, ...glossaryTerms.map((term) => glossaryPath(term.slug))].map((path) => ({
+    path,
+    alternates: { pl: path, "x-default": path },
+    priority: "0.5",
+    changefreq: "monthly",
+  }));
+
+  return [...pages, ...features, ...tools, ...glossary];
 }
 
 function renderEntry({ path, alternates, priority, changefreq }: Entry) {

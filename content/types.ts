@@ -2435,3 +2435,50 @@ export type LateInterestLabels = {
   defaultLabel: string;
 };
 
+
+/** One glossary entry under /pl/slownik. The definition comes first because it is what a search snippet quotes. */
+export type GlossaryTerm = {
+  slug: string;
+  /** The term as written in a heading, e.g. "BPMN". */
+  term: string;
+  /** The line under the heading: the expansion of an abbreviation, or what field the term belongs to. */
+  subtitle: string;
+  seo: { title: string; description: string };
+  /** One or two sentences that answer "co to jest" on their own; also the DefinedTerm description. */
+  definition: string;
+  sections: Array<{
+    title: string;
+    paragraphs: string[];
+    list?: string[];
+    /** A worked example, set apart from the running text. */
+    example?: string;
+  }>;
+  /** Our longer blog guide on the topic, linked after the sections. */
+  guide?: { label: string; href: string };
+  /** How the term maps to Opero, linking to the feature page that does the job. */
+  opero: { title: string; body: string; link: { label: string; href: string } };
+  faq: Array<{ question: string; answer: string }>;
+  /** Slugs of other entries worth reading next. */
+  related: string[];
+  sources?: Array<{ label: string; href: string }>;
+  /** ISO date the entry was last checked. */
+  updatedAt: string;
+};
+
+export type GlossaryIndexContent = {
+  seo: { title: string; description: string };
+  navLabel: string;
+  breadcrumbLabel: string;
+  hero: { title: string; description: string };
+  intro: string;
+  labels: {
+    definition: string;
+    example: string;
+    faq: string;
+    related: string;
+    sources: string;
+    updated: string;
+    allTerms: string;
+  };
+  opero: { title: string; body: string; primaryCta: string; secondaryCta: string };
+};

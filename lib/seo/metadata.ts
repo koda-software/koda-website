@@ -58,6 +58,20 @@ export function createToolPageMetadata({ locale, tool, title, description }: { l
   });
 }
 
+/**
+ * A glossary entry or the glossary index. Polish only, so the alternates name the page itself
+ * for Polish and as x-default rather than pointing English readers at a page that does not exist.
+ */
+export function createGlossaryMetadata({ path, title, description }: { path: string; title: string; description: string }): Metadata {
+  return buildMetadata({
+    locale: "pl",
+    path,
+    alternates: { pl: path, "x-default": path },
+    title,
+    description,
+  });
+}
+
 function buildMetadata({
   locale,
   path,
@@ -68,7 +82,7 @@ function buildMetadata({
 }: {
   locale: Locale;
   path: string;
-  alternates: Record<Locale | "x-default", string>;
+  alternates: Partial<Record<Locale | "x-default", string>>;
   title: string;
   description: string;
   noIndex?: boolean;

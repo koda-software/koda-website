@@ -83,6 +83,69 @@ export function BreadcrumbJsonLd({ items }: { items: Array<{ name: string; path:
   );
 }
 
+/** The glossary as a DefinedTermSet; each entry page points back to it with `inDefinedTermSet`. */
+function glossarySet(name: string, path: string) {
+  return { "@type": "DefinedTermSet", name, url: absoluteUrl(path) };
+}
+
+export function DefinedTermJsonLd({
+  term,
+  definition,
+  path,
+  dateModified,
+  set,
+}: {
+  term: string;
+  definition: string;
+  path: string;
+  dateModified: string;
+  set: { name: string; path: string };
+}) {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "DefinedTerm",
+        name: term,
+        description: definition,
+        url: absoluteUrl(path),
+        inLanguage: "pl",
+        dateModified,
+        inDefinedTermSet: glossarySet(set.name, set.path),
+      }}
+    />
+  );
+}
+
+export function DefinedTermSetJsonLd({
+  name,
+  description,
+  path,
+  terms,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  terms: Array<{ term: string; definition: string; path: string }>;
+}) {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        ...glossarySet(name, path),
+        description,
+        inLanguage: "pl",
+        hasDefinedTerm: terms.map((item) => ({
+          "@type": "DefinedTerm",
+          name: item.term,
+          description: item.definition,
+          url: absoluteUrl(item.path),
+        })),
+      }}
+    />
+  );
+}
+
 export type ArticleJsonLdInput = {
   type: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle";
   headline: string;
