@@ -1,4 +1,4 @@
-import { defaultLocale, type Locale, locales } from "./config";
+import { defaultLocale, type Locale, locales, rootLocale } from "./config";
 
 export type PageKey = "home" | "opero" | "solutions" | "blog" | "about" | "contact" | "privacy" | "tools";
 
@@ -22,7 +22,7 @@ export const pageKeys: PageKey[] = ["home", "opero", "solutions", "blog", "about
 
 export function localizePath(locale: Locale, page: PageKey): string {
   if (page === "home") {
-    return locale === defaultLocale ? "/" : `/${locale}`;
+    return locale === rootLocale ? "/" : `/${locale}`;
   }
 
   return `/${locale}/${pageSlugs[page][locale]}`;
@@ -39,6 +39,7 @@ export function getAlternatePaths(page: PageKey): Record<Locale | "x-default", s
 }
 
 export function getRouteLocale(pathname: string): Locale {
+  if (pathname === "/") return rootLocale;
   if (pathname === "/pl" || pathname.startsWith("/pl/")) return "pl";
   return defaultLocale;
 }

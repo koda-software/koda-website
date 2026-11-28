@@ -90,6 +90,13 @@ const nextConfig: NextConfig = {
         destination: "https://www.kodasoft.pl/:path*",
         permanent: true,
       },
+      // The Polish homepage moved from /pl to the root (lib/i18n/config.ts rootLocale).
+      // /pl was indexed, so it hands its signals to / instead of serving a duplicate.
+      {
+        source: "/pl",
+        destination: "/",
+        permanent: true,
+      },
       // /docs picks a language. The docs app's i18n proxy and the SaaS edge used to do this.
       // Temporary, so browsers don't pin one language. Same test as the "/" redirect in vercel.json.
       {

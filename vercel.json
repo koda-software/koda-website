@@ -1,20 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": ["fra1"],
-  "redirects": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept-language",
-          "value": "(^|.*,\\s*)pl(?:-|;|,|$).*"
-        }
-      ],
-      "destination": "/pl",
-      "permanent": false
-    }
+  "regions": [
+    "fra1"
   ],
   "crons": [
     {

@@ -36,8 +36,8 @@ const featurePages = Object.values(featureSlugs).flatMap((slugs) => {
 });
 
 const pages = [
-  { file: ".next/server/app/index.html", route: "/", locale: "en", canonical: siteUrl, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
-  { file: ".next/server/app/pl.html", route: "/pl", locale: "pl", canonical: `${siteUrl}/pl`, alternates: { en: siteUrl, pl: `${siteUrl}/pl`, "x-default": siteUrl } },
+  { file: ".next/server/app/index.html", route: "/", locale: "pl", canonical: siteUrl, alternates: { en: `${siteUrl}/en`, pl: siteUrl, "x-default": `${siteUrl}/en` } },
+  { file: ".next/server/app/en.html", route: "/en", locale: "en", canonical: `${siteUrl}/en`, alternates: { en: `${siteUrl}/en`, pl: siteUrl, "x-default": `${siteUrl}/en` } },
   { file: ".next/server/app/en/opero.html", route: "/en/opero", locale: "en", canonical: `${siteUrl}/en/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, service: true },
   { file: ".next/server/app/pl/opero.html", route: "/pl/opero", locale: "pl", canonical: `${siteUrl}/pl/opero`, alternates: { en: `${siteUrl}/en/opero`, pl: `${siteUrl}/pl/opero`, "x-default": `${siteUrl}/en/opero` }, service: true },
   ...featurePages,

@@ -64,7 +64,7 @@ ${toolLines}
 
 ## Notes
 
-- Languages: ${locales.join(", ")}. Polish pages live under /pl.
+- Languages: ${locales.join(", ")}. The Polish homepage is / and the English one /en; other Polish pages live under /pl, English ones under /en.
 - Built by ${siteConfig.name}, ${siteConfig.url}.
 - Documentation page list: ${absoluteUrl("/docs-sitemap.xml")}
 - Full page list: ${absoluteUrl("/sitemap.xml")}
